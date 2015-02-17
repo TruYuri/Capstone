@@ -20,7 +20,7 @@ public class Sector : MonoBehaviour
         this.transform.parent = MapManager.Instance.gameObject.transform;
         Tiles = new List<GameObject>();
         var baseTile = Resources.Load<GameObject>("Tile");
-        
+
         // Generate center columns
         for(int i = -75; i <= 75; i += 10)
         {
@@ -72,7 +72,18 @@ public class Sector : MonoBehaviour
         }
 	}
 
-    private void InitializeSector(Vector3 position) { }
+    public Tile GetTileAtPosition(Vector3 point)
+    {
+        foreach(var tile in Tiles)
+        {
+            if(tile.gameObject.renderer.bounds.Contains(point))
+            {
+                return tile.GetComponent<Tile>();
+            }
+        }
+
+        return null;
+    }
 	
 	// Update is called once per frame
 	void Update () 
