@@ -1,20 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-namespace SpaceGame
-{
-    public class Map : MonoBehaviour {
+public class Map : MonoBehaviour {
 
-        private List<Sector> Sectors;
+    private List<Sector> Sectors;
 
-	    // Use this for initialization
-	    void Start () {
-            Sectors = new List<Sector>();
-	    }
+	// Use this for initialization
+	void Start () {
+        Sectors = new List<Sector>();
+	}
 	
-	    // Update is called once per frame
-	    void Update () {
+	// Update is called once per frame
+	void Update () {
 	        
-	    }
-    }
+	}
 }
