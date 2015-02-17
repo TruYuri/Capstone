@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 
 [System.Serializable] 
-public class Sector : MonoBehaviour {
+public class Sector : MonoBehaviour
+{
 
     List<GameObject> Tiles;
 
 	// Use this for initialization
-	void Start () {
+	void Start () 
+    {
         Tiles = new List<GameObject>();
         var baseTile = Resources.Load<GameObject>("Tile");
         
@@ -51,6 +53,7 @@ public class Sector : MonoBehaviour {
             Tiles.Add(Instantiate(baseTile, position, Quaternion.identity) as GameObject);
         }
 
+        // DEBUG
         System.Random r = new System.Random();
         foreach(var tile in Tiles)
         {
@@ -59,7 +62,8 @@ public class Sector : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+    {
 	
 	}
 }
