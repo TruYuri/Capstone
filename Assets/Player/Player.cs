@@ -3,23 +3,31 @@ using System.Collections;
 
 public class Player : MonoBehaviour
 {
-
 	// Use this for initialization
 	void Start () 
     {
-	
 	}
 
     void OnTriggerEnter(Collider other)
     {
-        var render = other.GetComponent<MeshRenderer>();
-        render.enabled = true;
+        if (other.tag == "Tile")
+        {
+            var render = other.GetComponent<MeshRenderer>();
+            render.enabled = true;
+        }
+        else if(other.tag == "Sector")
+        {
+            MapManager.Instance.GenerateNewSectors(other.transform.parent.GetComponent<Sector>());
+        }
     }
 
     void OnTriggerExit(Collider other)
     {
-        var render = other.GetComponent<MeshRenderer>();
-        render.enabled = false;
+        if (other.tag == "Tile")
+        {
+            var render = other.GetComponent<MeshRenderer>();
+            render.enabled = false;
+        }
     }
 	
 	
@@ -36,5 +44,7 @@ public class Player : MonoBehaviour
                 transform.position = Vector3.MoveTowards(transform.position, hit.point, Time.deltaTime * speed);
             }
         }
+
+        var scrollChange = Input.GetAxis("Mouse ScrollWheel");
 	}
 }

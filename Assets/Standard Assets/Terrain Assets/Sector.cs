@@ -4,12 +4,20 @@ using System.Collections.Generic;
 [System.Serializable] 
 public class Sector : MonoBehaviour
 {
+    // Adjoining sectors
+    public GameObject TopRight { get; set; }
+    public GameObject Right { get; set; }
+    public GameObject BottomRight { get; set; }
+    public GameObject BottomLeft { get; set; }
+    public GameObject Left { get; set; }
+    public GameObject TopLeft { get; set; }
 
-    List<GameObject> Tiles;
+    private List<GameObject> Tiles;
 
 	// Use this for initialization
 	void Start () 
     {
+        this.transform.parent = MapManager.Instance.gameObject.transform;
         Tiles = new List<GameObject>();
         var baseTile = Resources.Load<GameObject>("Tile");
         
@@ -55,11 +63,16 @@ public class Sector : MonoBehaviour
 
         // DEBUG
         System.Random r = new System.Random();
+
         foreach(var tile in Tiles)
         {
+            tile.transform.parent = this.transform;
+            // DEBUG
             tile.renderer.material.color = new Color((float)r.NextDouble(), (float)r.NextDouble(), (float)r.NextDouble(), 0.0f);
         }
 	}
+
+    private void InitializeSector(Vector3 position) { }
 	
 	// Update is called once per frame
 	void Update () 
