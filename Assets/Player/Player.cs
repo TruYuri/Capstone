@@ -15,8 +15,6 @@ public class Player : MonoBehaviour
     {
         if (other.tag == "Tile")
         {
-            var render = other.GetComponent<MeshRenderer>();
-            render.enabled = true;
         }
         else if(other.tag == "Sector")
         {
@@ -50,8 +48,6 @@ public class Player : MonoBehaviour
     {
         if (other.tag == "Tile")
         {
-            var render = other.GetComponent<MeshRenderer>();
-            render.enabled = false;
         }
     }
 	
@@ -62,22 +58,7 @@ public class Player : MonoBehaviour
         var tile = currentSector.GetTileAtPosition(transform.position);
         if(tile != null)
         {
-            if(tile != currentTile)
-            {
-                // undo current tile
-                if(currentTile != null)
-                    currentTile.gameObject.GetComponent<MeshRenderer>().enabled = false;
-
-                // do new tile
-                currentTile = tile;
-                currentTile.gameObject.GetComponent<MeshRenderer>().enabled = true;
-            }
-        }
-        else if(currentTile != null)
-        {
-            // undo current tile
-            currentTile.gameObject.GetComponent<MeshRenderer>().enabled = false;
-            currentTile = null;
+            currentTile = tile;
         }
 
         if (Input.GetMouseButton(0))

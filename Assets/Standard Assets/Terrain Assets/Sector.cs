@@ -21,36 +21,51 @@ public class Sector : MonoBehaviour
         Tiles = new List<GameObject>();
         var baseTile = Resources.Load<GameObject>("Tile");
 
+        GameObject tile;
+
         // Generate center columns
-        for(int i = -75; i <= 75; i += 10)
+        for(int i = -85; i <= 85; i += 10)
         {
             Vector3 position = this.transform.position + new Vector3(i, 0, -5);
-            Tiles.Add(Instantiate(baseTile, position, Quaternion.identity) as GameObject);
+            tile = Instantiate(baseTile, position, Quaternion.identity) as GameObject;
+            tile.transform.parent = this.transform;
+            Tiles.Add(tile);
 
             position = this.transform.position + new Vector3(i, 0, 5);
-            Tiles.Add(Instantiate(baseTile, position, Quaternion.identity) as GameObject);
+            tile = Instantiate(baseTile, position, Quaternion.identity) as GameObject;
+            tile.transform.parent = this.transform;
+            Tiles.Add(tile);
         }
 
         // Generate middle columns
-        for (int n = 0; n < 3; n++)
+        for (int n = 0; n < 4; n++)
         {
             int shift = 2 * n * 10;
-            for (int i = -65 + n * 10; i <= 65 - n * 10; i += 10)
+            for (int i = -75 + n * 10; i <= 75 - n * 10; i += 10)
             {
                 Vector3 position = this.transform.position + new Vector3(i, 0, -15 - shift);
-                Tiles.Add(Instantiate(baseTile, position, Quaternion.identity) as GameObject);
+                tile = Instantiate(baseTile, position, Quaternion.identity) as GameObject;
+                tile.transform.parent = this.transform;
+                Tiles.Add(tile);
 
                 position = this.transform.position + new Vector3(i, 0, -25 - shift);
-                Tiles.Add(Instantiate(baseTile, position, Quaternion.identity) as GameObject);
+                tile = Instantiate(baseTile, position, Quaternion.identity) as GameObject;
+                tile.transform.parent = this.transform;
+                Tiles.Add(tile);
 
                 position = this.transform.position + new Vector3(i, 0, 15 + shift);
-                Tiles.Add(Instantiate(baseTile, position, Quaternion.identity) as GameObject);
+                tile = Instantiate(baseTile, position, Quaternion.identity) as GameObject;
+                tile.transform.parent = this.transform;
+                Tiles.Add(tile);
 
                 position = this.transform.position + new Vector3(i, 0, 25 + shift);
-                Tiles.Add(Instantiate(baseTile, position, Quaternion.identity) as GameObject);
+                tile = Instantiate(baseTile, position, Quaternion.identity) as GameObject;
+                tile.transform.parent = this.transform;
+                Tiles.Add(tile);
             }
         }
 
+        /*
         // Generate outermost columns
         for (int i = -35; i <= 35; i += 10)
         {
@@ -60,25 +75,28 @@ public class Sector : MonoBehaviour
             position = this.transform.position + new Vector3(i, 0, 75);
             Tiles.Add(Instantiate(baseTile, position, Quaternion.identity) as GameObject);
         }
+        */
 
         // DEBUG
-        System.Random r = new System.Random();
+        //System.Random r = new System.Random();
 
+        /*
         foreach(var tile in Tiles)
         {
             tile.transform.parent = this.transform;
             // DEBUG
             tile.renderer.material.color = new Color((float)r.NextDouble(), (float)r.NextDouble(), (float)r.NextDouble(), 0.0f);
-        }
+        }*/
 	}
 
     public Tile GetTileAtPosition(Vector3 point)
     {
         foreach(var tile in Tiles)
         {
-            if(tile.gameObject.renderer.bounds.Contains(point))
+            var tileComp = tile.GetComponent<Tile>();
+            if(tileComp.Bounds.Contains(point))
             {
-                return tile.GetComponent<Tile>();
+                return tileComp;
             }
         }
 

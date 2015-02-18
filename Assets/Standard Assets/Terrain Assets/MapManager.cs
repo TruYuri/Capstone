@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 public class MapManager : MonoBehaviour
 {
-    private static Vector3 TOP_RIGHT_OFFSET = new Vector3(140.0f, 0, -92.5f);
-    private static Vector3 RIGHT_OFFSET = new Vector3(0.0f, 0, -185.0f);
-    private static Vector3 BOTTOM_RIGHT_OFFSET = new Vector3(-140.0f, 0, -92.5f);
-    private static Vector3 BOTTOM_LEFT_OFFSET = new Vector3(-140.0f, 0, 92.5f);
-    private static Vector3 LEFT_OFFSET = new Vector3(0.0f, 0, 185.0f);
-    private static Vector3 TOP_LEFT_OFFSET = new Vector3(140.0f, 0, 92.5f);
+    private static Vector3 TOP_RIGHT_OFFSET = new Vector3(149.0f, 0, -98.3f);
+    private static Vector3 RIGHT_OFFSET = new Vector3(0.0f, 0, -196.5f);
+    private static Vector3 BOTTOM_RIGHT_OFFSET = new Vector3(-149.0f, 0, -98.3f);
+    private static Vector3 BOTTOM_LEFT_OFFSET = new Vector3(-149.0f, 0, 98.3f);
+    private static Vector3 LEFT_OFFSET = new Vector3(0.0f, 0, 196.5f);
+    private static Vector3 TOP_LEFT_OFFSET = new Vector3(149.0f, 0, 98.3f);
 
     private static MapManager instance;
     private List<GameObject> Sectors;
@@ -110,8 +110,13 @@ public class MapManager : MonoBehaviour
             Sectors.Add(origin.TopLeft);
         }
 
+        ResolveLooseConnections();
+    }
+
+    private void ResolveLooseConnections()
+    {
         // resolve broken links
-        foreach(var sector in newSectors)
+        foreach (var sector in Sectors)
         {
             var component = sector.GetComponent<Sector>();
 
@@ -134,7 +139,7 @@ public class MapManager : MonoBehaviour
     {
         foreach(var sector in Sectors)
         {
-            if (sector.transform.position == position)
+            if(Vector3.Distance(sector.transform.position, position) <= 1.0f)
                 return sector;
         }
 
