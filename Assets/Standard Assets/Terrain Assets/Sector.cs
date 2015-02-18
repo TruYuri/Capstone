@@ -65,27 +65,15 @@ public class Sector : MonoBehaviour
             }
         }
 
-        /*
-        // Generate outermost columns
-        for (int i = -35; i <= 35; i += 10)
-        {
-            Vector3 position = this.transform.position + new Vector3(i, 0, -75);
-            Tiles.Add(Instantiate(baseTile, position, Quaternion.identity) as GameObject);
-
-            position = this.transform.position + new Vector3(i, 0, 75);
-            Tiles.Add(Instantiate(baseTile, position, Quaternion.identity) as GameObject);
-        }
-        */
-
         // DEBUG
-        //System.Random r = new System.Random();
-
         /*
-        foreach(var tile in Tiles)
+        System.Random r = new System.Random();
+
+        
+        foreach(var tile2 in Tiles)
         {
-            tile.transform.parent = this.transform;
             // DEBUG
-            tile.renderer.material.color = new Color((float)r.NextDouble(), (float)r.NextDouble(), (float)r.NextDouble(), 0.0f);
+            tile2.renderer.material.color = new Color((float)r.NextDouble(), (float)r.NextDouble(), (float)r.NextDouble(), 0.0f);
         }*/
 	}
 
@@ -106,6 +94,5 @@ public class Sector : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-	
 	}
 }

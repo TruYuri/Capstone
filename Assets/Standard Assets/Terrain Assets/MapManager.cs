@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 public class MapManager : MonoBehaviour
 {
-    private static Vector3 TOP_RIGHT_OFFSET = new Vector3(149.0f, 0, -98.3f);
-    private static Vector3 RIGHT_OFFSET = new Vector3(0.0f, 0, -196.5f);
-    private static Vector3 BOTTOM_RIGHT_OFFSET = new Vector3(-149.0f, 0, -98.3f);
-    private static Vector3 BOTTOM_LEFT_OFFSET = new Vector3(-149.0f, 0, 98.3f);
-    private static Vector3 LEFT_OFFSET = new Vector3(0.0f, 0, 196.5f);
-    private static Vector3 TOP_LEFT_OFFSET = new Vector3(149.0f, 0, 98.3f);
+    private static Vector3 TOP_RIGHT_OFFSET = new Vector3(98.3f, 0.0f, 149.0f);
+    private static Vector3 RIGHT_OFFSET = new Vector3(196.5f, 0, 0.0f);
+    private static Vector3 BOTTOM_RIGHT_OFFSET = new Vector3(98.3f, 0.0f, -149.0f);
+    private static Vector3 BOTTOM_LEFT_OFFSET = new Vector3(-98.3f, 0.0f, -149.0f);
+    private static Vector3 LEFT_OFFSET = new Vector3(-196.5f, 0, 0);
+    private static Vector3 TOP_LEFT_OFFSET = new Vector3(-98.3f, 0.0f, 149.0f);
 
     private static MapManager instance;
     private List<GameObject> Sectors;

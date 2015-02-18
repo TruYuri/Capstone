@@ -6,9 +6,12 @@ public class Player : MonoBehaviour
 	// Use this for initialization
     Sector currentSector;
     Tile currentTile;
+    public static Player Instance;
+
 
 	void Start () 
     {
+        Instance = this;
 	}
 
     void OnTriggerEnter(Collider other)
@@ -68,11 +71,16 @@ public class Player : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 float speed = 50.0f;
-                transform.position = Vector3.MoveTowards(transform.position, hit.point, Time.deltaTime * speed);
+
+                var dir = hit.point - transform.position;
+                dir.Normalize();
+                transform.position += dir * speed * Time.deltaTime;
+
                 transform.position = transform.localPosition = new Vector3(transform.position.x, 0.0f, transform.position.z);
             }
         }
 
         var scrollChange = Input.GetAxis("Mouse ScrollWheel");
+        Camera.main.transform.position += 20.0f * scrollChange * Camera.main.transform.forward;
 	}
 }
