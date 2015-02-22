@@ -8,7 +8,6 @@ public class Player : MonoBehaviour
     Tile currentTile;
     public static Player Instance;
 
-
 	void Start () 
     {
         Instance = this;
@@ -23,7 +22,9 @@ public class Player : MonoBehaviour
         {
             var sector = other.transform.parent.GetComponent<Sector>();
 
-            if (currentSector == null || (sector.transform.position - this.transform.position).sqrMagnitude
+            if (currentSector == null)
+                currentSector = sector;
+            else if((sector.transform.position - this.transform.position).sqrMagnitude
                 < (currentSector.transform.position - this.transform.position).sqrMagnitude)
             {
                 currentSector = sector;
@@ -58,7 +59,7 @@ public class Player : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-        var tile = currentSector.GetTileAtPosition(transform.position);
+        Tile tile = null;// = currentSector.GetTileAtPosition(transform.position);
         if(tile != null)
         {
             currentTile = tile;
@@ -77,10 +78,13 @@ public class Player : MonoBehaviour
                 transform.position += dir * speed * Time.deltaTime;
 
                 transform.position = transform.localPosition = new Vector3(transform.position.x, 0.0f, transform.position.z);
+                transform.DetachChildren();
+                transform.LookAt(hit.point);
+                Camera.main.transform.parent = transform;
             }
         }
 
         var scrollChange = Input.GetAxis("Mouse ScrollWheel");
-        Camera.main.transform.position += 20.0f * scrollChange * Camera.main.transform.forward;
+        Camera.main.transform.position += 100.0f * scrollChange * Camera.main.transform.forward;
 	}
 }

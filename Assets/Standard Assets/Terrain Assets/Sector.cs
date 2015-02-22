@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 [System.Serializable] 
 public class Sector : MonoBehaviour
 {
@@ -15,23 +19,34 @@ public class Sector : MonoBehaviour
     private List<GameObject> Tiles;
 
 	// Use this for initialization
+
+    // note: ONLY RUN THIS ONCE, AT LOAD.
+    // copy the first generated sector and just change values - faster
 	void Start () 
     {
-        this.transform.parent = MapManager.Instance.gameObject.transform;
+        this.transform.parent = MapManager.Instance.transform;
+   
+        if (MapManager.Sector != this.gameObject)
+        {
+            return;
+        }
+
+        // this is our first sector, so generate it. all other sectors will just copy it
+        MapManager.Sector = this.gameObject;       
         Tiles = new List<GameObject>();
-        var baseTile = Resources.Load<GameObject>("Tile");
+        var baseTile = MapManager.Tile;
 
         GameObject tile;
 
         // Generate center columns
         for(int i = -85; i <= 85; i += 10)
         {
-            Vector3 position = this.transform.position + new Vector3(i, 0, -5);
+            Vector3 position = this.transform.position + new Vector3(-5, 0, i);
             tile = Instantiate(baseTile, position, Quaternion.identity) as GameObject;
             tile.transform.parent = this.transform;
             Tiles.Add(tile);
 
-            position = this.transform.position + new Vector3(i, 0, 5);
+            position = this.transform.position + new Vector3(5, 0, i);
             tile = Instantiate(baseTile, position, Quaternion.identity) as GameObject;
             tile.transform.parent = this.transform;
             Tiles.Add(tile);
@@ -43,38 +58,29 @@ public class Sector : MonoBehaviour
             int shift = 2 * n * 10;
             for (int i = -75 + n * 10; i <= 75 - n * 10; i += 10)
             {
-                Vector3 position = this.transform.position + new Vector3(i, 0, -15 - shift);
+                Vector3 position = this.transform.position + new Vector3(-15 - shift, 0, i);
                 tile = Instantiate(baseTile, position, Quaternion.identity) as GameObject;
                 tile.transform.parent = this.transform;
                 Tiles.Add(tile);
 
-                position = this.transform.position + new Vector3(i, 0, -25 - shift);
+                position = this.transform.position + new Vector3(-25 - shift, 0, i);
                 tile = Instantiate(baseTile, position, Quaternion.identity) as GameObject;
                 tile.transform.parent = this.transform;
                 Tiles.Add(tile);
 
-                position = this.transform.position + new Vector3(i, 0, 15 + shift);
+                position = this.transform.position + new Vector3(15 + shift, 0, i);
                 tile = Instantiate(baseTile, position, Quaternion.identity) as GameObject;
                 tile.transform.parent = this.transform;
                 Tiles.Add(tile);
 
-                position = this.transform.position + new Vector3(i, 0, 25 + shift);
+                position = this.transform.position + new Vector3(25 + shift, 0, i);
                 tile = Instantiate(baseTile, position, Quaternion.identity) as GameObject;
                 tile.transform.parent = this.transform;
                 Tiles.Add(tile);
             }
         }
 
-        // DEBUG
-        /*
-        System.Random r = new System.Random();
-
-        
-        foreach(var tile2 in Tiles)
-        {
-            // DEBUG
-            tile2.renderer.material.color = new Color((float)r.NextDouble(), (float)r.NextDouble(), (float)r.NextDouble(), 0.0f);
-        }*/
+        MapManager.Instance.GenerateNewSectors(this);
 	}
 
     public Tile GetTileAtPosition(Vector3 point)
