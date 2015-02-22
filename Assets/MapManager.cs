@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 public class MapManager : MonoBehaviour
 {
-    public static GameObject Tile;
-    public static GameObject Sector;
+    public static Object Tile;
+    public static Object Sector;
 
     private static Vector3 TOP_RIGHT_OFFSET = new Vector3(98.3f, 0.0f, 149.0f);
     private static Vector3 RIGHT_OFFSET = new Vector3(196.5f, 0, 0.0f);
@@ -21,12 +21,6 @@ public class MapManager : MonoBehaviour
     {
         get 
         {
-            if (instance == null)
-            {
-                var obj = Instantiate(Resources.Load<GameObject>("MapManager"), Vector3.zero, Quaternion.identity) as GameObject;
-                instance = obj.GetComponent<MapManager>();
-            }
-
             return instance;
         }
     }
@@ -35,11 +29,10 @@ public class MapManager : MonoBehaviour
 	public void Start()
     {
         Sectors = new List<GameObject>();
-        var sector = Resources.Load<GameObject>("Sector");
+        Sector = Resources.Load<GameObject>("Sector");
         Tile = Resources.Load<GameObject>("Tile");
-        Sector = Instantiate(sector, Vector3.zero, Quaternion.identity) as GameObject;
+        Sectors.Add(Instantiate(Sector, Vector3.zero, Quaternion.identity) as GameObject);
         instance = this;
-        Sectors.Add(Sector);
 	}
 
     public void GenerateNewSectors(Sector origin)

@@ -25,14 +25,7 @@ public class Sector : MonoBehaviour
 	void Start () 
     {
         this.transform.parent = MapManager.Instance.transform;
-   
-        if (MapManager.Sector != this.gameObject)
-        {
-            return;
-        }
-
-        // this is our first sector, so generate it. all other sectors will just copy it
-        MapManager.Sector = this.gameObject;       
+        // this is our first sector, so generate it. all other sectors will just copy it     
         Tiles = new List<GameObject>();
         var baseTile = MapManager.Tile;
 
@@ -79,8 +72,6 @@ public class Sector : MonoBehaviour
                 Tiles.Add(tile);
             }
         }
-
-        MapManager.Instance.GenerateNewSectors(this);
 	}
 
     public Tile GetTileAtPosition(Vector3 point)

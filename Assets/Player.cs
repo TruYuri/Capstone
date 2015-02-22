@@ -22,9 +22,7 @@ public class Player : MonoBehaviour
         {
             var sector = other.transform.parent.GetComponent<Sector>();
 
-            if (currentSector == null)
-                currentSector = sector;
-            else if((sector.transform.position - this.transform.position).sqrMagnitude
+            if (currentSector == null || (sector.transform.position - this.transform.position).sqrMagnitude
                 < (currentSector.transform.position - this.transform.position).sqrMagnitude)
             {
                 currentSector = sector;
@@ -59,7 +57,7 @@ public class Player : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-        Tile tile = null;// = currentSector.GetTileAtPosition(transform.position);
+        Tile tile = currentSector.GetTileAtPosition(transform.position);
         if(tile != null)
         {
             currentTile = tile;

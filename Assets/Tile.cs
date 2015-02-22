@@ -5,7 +5,6 @@ public class Tile : MonoBehaviour
 {
     public Bounds Bounds { get; set; }
     public static System.Random Generator = new System.Random();
-    private Transform playerCamera;
     private SpriteRenderer spriteRenderer;
 
 	// Use this for initialization
@@ -17,8 +16,10 @@ public class Tile : MonoBehaviour
 
         this.GetComponent<SpriteRenderer>().transform.position = new Vector3(this.transform.position.x, height, this.transform.position.z);
 
-        playerCamera = Camera.main.transform;
         spriteRenderer = this.GetComponent<SpriteRenderer>();
+
+        // generate with probabilities
+        // if(need something generated)
 	}
 
 	// Update is called once per frame
@@ -27,7 +28,7 @@ public class Tile : MonoBehaviour
         if (this.spriteRenderer.isVisible)
         {
             //renderer.enabled = true;
-            transform.rotation = playerCamera.rotation;
+            transform.rotation = Camera.main.transform.rotation;
         }
         //else
             //renderer.enabled = false;
