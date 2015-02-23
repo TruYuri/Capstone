@@ -25,7 +25,6 @@ public class Sector : MonoBehaviour
 	void Start () 
     {
         this.transform.parent = MapManager.Instance.transform;
-        // this is our first sector, so generate it. all other sectors will just copy it     
         Tiles = new List<GameObject>();
         var baseTile = MapManager.Tile;
 
