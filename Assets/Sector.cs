@@ -8,6 +8,10 @@ using UnityEditor;
 [System.Serializable] 
 public class Sector : MonoBehaviour
 {
+    private static Object Tile;
+
+    private const string TILE_PREFAB = "Tile";
+
     // Adjoining sectors
     public GameObject TopRight { get; set; }
     public GameObject Right { get; set; }
@@ -16,7 +20,7 @@ public class Sector : MonoBehaviour
     public GameObject Left { get; set; }
     public GameObject TopLeft { get; set; }
 
-    private List<GameObject> Tiles;
+    private List<GameObject> _tiles;
 
 	// Use this for initialization
 
@@ -25,8 +29,10 @@ public class Sector : MonoBehaviour
 	void Start () 
     {
         this.transform.parent = MapManager.Instance.transform;
-        Tiles = new List<GameObject>();
-        var baseTile = MapManager.Tile;
+        _tiles = new List<GameObject>();
+
+        if(Tile == null)
+            Tile = Resources.Load<GameObject>(TILE_PREFAB);
 
         GameObject tile;
 
@@ -34,14 +40,14 @@ public class Sector : MonoBehaviour
         for(int i = -85; i <= 85; i += 10)
         {
             Vector3 position = this.transform.position + new Vector3(-5, 0, i);
-            tile = Instantiate(baseTile, position, Quaternion.identity) as GameObject;
+            tile = Instantiate(Tile, position, Quaternion.identity) as GameObject;
             tile.transform.parent = this.transform;
-            Tiles.Add(tile);
+            _tiles.Add(tile);
 
             position = this.transform.position + new Vector3(5, 0, i);
-            tile = Instantiate(baseTile, position, Quaternion.identity) as GameObject;
+            tile = Instantiate(Tile, position, Quaternion.identity) as GameObject;
             tile.transform.parent = this.transform;
-            Tiles.Add(tile);
+            _tiles.Add(tile);
         }
 
         // Generate middle columns
@@ -51,31 +57,31 @@ public class Sector : MonoBehaviour
             for (int i = -75 + n * 10; i <= 75 - n * 10; i += 10)
             {
                 Vector3 position = this.transform.position + new Vector3(-15 - shift, 0, i);
-                tile = Instantiate(baseTile, position, Quaternion.identity) as GameObject;
+                tile = Instantiate(Tile, position, Quaternion.identity) as GameObject;
                 tile.transform.parent = this.transform;
-                Tiles.Add(tile);
+                _tiles.Add(tile);
 
                 position = this.transform.position + new Vector3(-25 - shift, 0, i);
-                tile = Instantiate(baseTile, position, Quaternion.identity) as GameObject;
+                tile = Instantiate(Tile, position, Quaternion.identity) as GameObject;
                 tile.transform.parent = this.transform;
-                Tiles.Add(tile);
+                _tiles.Add(tile);
 
                 position = this.transform.position + new Vector3(15 + shift, 0, i);
-                tile = Instantiate(baseTile, position, Quaternion.identity) as GameObject;
+                tile = Instantiate(Tile, position, Quaternion.identity) as GameObject;
                 tile.transform.parent = this.transform;
-                Tiles.Add(tile);
+                _tiles.Add(tile);
 
                 position = this.transform.position + new Vector3(25 + shift, 0, i);
-                tile = Instantiate(baseTile, position, Quaternion.identity) as GameObject;
+                tile = Instantiate(Tile, position, Quaternion.identity) as GameObject;
                 tile.transform.parent = this.transform;
-                Tiles.Add(tile);
+                _tiles.Add(tile);
             }
         }
 	}
 
     public Tile GetTileAtPosition(Vector3 point)
     {
-        foreach(var tile in Tiles)
+        foreach(var tile in _tiles)
         {
             var tileComp = tile.GetComponent<Tile>();
             if(tileComp.Bounds.Contains(point))

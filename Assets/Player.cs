@@ -3,52 +3,58 @@ using System.Collections;
 
 public class Player : MonoBehaviour
 {
-	// Use this for initialization
-    Sector currentSector;
-    Tile currentTile;
-    public static Player Instance;
+    private static Player _instance;
+
+    private const string TILE_TAG = "Tile";
+    private const string SECTOR_TAG = "Sector";
+    private const string MOUSE_SCROLLWHEEL = "Mouse ScrollWheel";
+
+    private Sector _currentSector;
+    private Tile _currentTile;
+
+    public static Player Instance { get { return _instance; } }
 
 	void Start () 
     {
-        Instance = this;
+        _instance = this;
 	}
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Tile")
+        if (other.tag == TILE_TAG)
         {
         }
-        else if(other.tag == "Sector")
+        else if(other.tag == SECTOR_TAG)
         {
             var sector = other.transform.parent.GetComponent<Sector>();
 
-            if (currentSector == null || (sector.transform.position - this.transform.position).sqrMagnitude
-                < (currentSector.transform.position - this.transform.position).sqrMagnitude)
+            if (_currentSector == null || (sector.transform.position - this.transform.position).sqrMagnitude
+                < (_currentSector.transform.position - this.transform.position).sqrMagnitude)
             {
-                currentSector = sector;
-                MapManager.Instance.GenerateNewSectors(currentSector);
+                _currentSector = sector;
+                MapManager.Instance.GenerateNewSectors(_currentSector);
             }
         }
     }
 
     void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Sector")
+        if (other.tag == TILE_TAG)
         {
             var sector = other.transform.parent.GetComponent<Sector>();
 
-            if (currentSector == null || (sector.transform.position - this.transform.position).sqrMagnitude
-                < (currentSector.transform.position - this.transform.position).sqrMagnitude)
+            if (_currentSector == null || (sector.transform.position - this.transform.position).sqrMagnitude
+                < (_currentSector.transform.position - this.transform.position).sqrMagnitude)
             {
-                currentSector = sector;
-                MapManager.Instance.GenerateNewSectors(currentSector);
+                _currentSector = sector;
+                MapManager.Instance.GenerateNewSectors(_currentSector);
             }
         }
     }
 
     void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Tile")
+        if (other.tag == TILE_TAG)
         {
         }
     }
@@ -57,10 +63,10 @@ public class Player : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-        Tile tile = currentSector.GetTileAtPosition(transform.position);
+        Tile tile = _currentSector.GetTileAtPosition(transform.position);
         if(tile != null)
         {
-            currentTile = tile;
+            _currentTile = tile;
         }
 
         if (Input.GetMouseButton(0))
@@ -82,7 +88,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        var scrollChange = Input.GetAxis("Mouse ScrollWheel");
+        var scrollChange = Input.GetAxis(MOUSE_SCROLLWHEEL);
         Camera.main.transform.position += 100.0f * scrollChange * Camera.main.transform.forward;
 	}
 }
