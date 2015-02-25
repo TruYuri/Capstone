@@ -2,6 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 
+public struct TextureAtlasDetails
+{
+    public Texture2D Texture;
+    public Vector2 TextureOffset;
+    public Vector2 TextureScale;
+
+    public TextureAtlasDetails(Texture2D texture, Vector2 offset, Vector2 scale)
+    {
+        Texture = texture;
+        TextureOffset = offset;
+        TextureScale = scale;
+    }
+}
+
 public class MapManager : MonoBehaviour
 {
     private readonly Vector3 TOP_RIGHT_OFFSET = new Vector3(98.3f, 0.0f, 149.0f);
@@ -12,7 +26,7 @@ public class MapManager : MonoBehaviour
     private readonly Vector3 TOP_LEFT_OFFSET = new Vector3(-98.3f, 0.0f, 149.0f);
     private const string SECTOR_PREFAB = "Sector";
     private const string INI_PATH = "/Resources/Planets.ini";
-    private const string MATERIALS_PATH = "PlanetMaterials/";
+    private const string MATERIALS_PATH = "PlanetTextures/";
     private const string PLANET_SECTION_HEADER = "[PlanetSpawnRates]";
     private const string PLANET_TEXTURE_DETAIL = "SpriteName";
     private const string PLANET_UNINHABITED_DETAIL = "Uninhabited";
@@ -28,14 +42,16 @@ public class MapManager : MonoBehaviour
     private Object _sectorPrefab;
     private List<GameObject> _sectors;
     private Dictionary<string, float> _planetTypeSpawnTable;
-    private Dictionary<string, Material> _planetTextureTable;
+    private Dictionary<string, TextureAtlasDetails> _planetTextureTable;
     private Dictionary<string, Dictionary<Inhabitance, float>> _planetInhabitanceSpawnTable;
     private Dictionary<string, Dictionary<Resource, float>> _planetResourceSpawnTable;
     private Dictionary<string, Dictionary<string, string>> _planetSpawnDetails;
+    private Texture2D _textureAtlas;
+    private Rect[] _atlasEntries;
 
     public static MapManager Instance { get { return _instance; } }
     public Dictionary<string, float> PlanetTypeSpawnTable { get { return _planetTypeSpawnTable; } }
-    public Dictionary<string, Material> PlanetTextureTable { get { return _planetTextureTable; } }
+    public Dictionary<string, TextureAtlasDetails> PlanetTextureTable { get { return _planetTextureTable; } }
     public Dictionary<string, Dictionary<Inhabitance, float>> PlanetInhabitanceSpawnTable { get { return _planetInhabitanceSpawnTable; } }
     public Dictionary<string, Dictionary<Resource, float>> PlanetResourceSpawnTable { get { return _planetResourceSpawnTable; } }
     public Dictionary<string, Dictionary<string, string>> PlanetSpawnDetails { get { return _planetSpawnDetails; } }
@@ -46,7 +62,7 @@ public class MapManager : MonoBehaviour
         _sectors = new List<GameObject>();
         _sectorPrefab = Resources.Load<GameObject>(SECTOR_PREFAB);
         _planetTypeSpawnTable = new Dictionary<string, float>();
-        _planetTextureTable = new Dictionary<string, Material>();
+        _planetTextureTable = new Dictionary<string, TextureAtlasDetails>();
         _planetInhabitanceSpawnTable = new Dictionary<string, Dictionary<Inhabitance, float>>();
         _planetResourceSpawnTable = new Dictionary<string, Dictionary<Resource, float>>();
         _planetSpawnDetails = new Dictionary<string, Dictionary<string, string>>();
@@ -65,14 +81,20 @@ public class MapManager : MonoBehaviour
         }
         spawnTables.Remove(PLANET_SECTION_HEADER);
 
+        // using these to guarantee same order in the texture atlas. Dictionaries don't guarantee order.
+        Texture2D[] textures = new Texture2D[spawnTables.Count];
+        string[] planetNames = new string[spawnTables.Count];
+
+        int planetCount = 0;
         foreach(var planet in spawnTables)
         {
             _planetInhabitanceSpawnTable.Add(planet.Key, new Dictionary<Inhabitance, float>());
             _planetResourceSpawnTable.Add(planet.Key, new Dictionary<Resource, float>());
 
-            // cache texture
-            var path = MATERIALS_PATH + spawnTables[planet.Key][PLANET_TEXTURE_DETAIL];
-            _planetTextureTable.Add(planet.Key, Resources.Load<Material>(path));
+            // load texture for atlasing
+            var tex = Resources.Load<Texture2D>(MATERIALS_PATH + spawnTables[planet.Key][PLANET_TEXTURE_DETAIL]);
+            textures[planetCount] = tex;
+            planetNames[planetCount++] = planet.Key; 
 
             // cache per-planet Inhabitance probabilities
             _planetInhabitanceSpawnTable[planet.Key].Add(Inhabitance.Uninhabited, runningTotal = float.Parse(spawnTables[planet.Key][PLANET_UNINHABITED_DETAIL]));
@@ -87,8 +109,6 @@ public class MapManager : MonoBehaviour
             _planetResourceSpawnTable[planet.Key].Add(Resource.Asterminium, runningTotal += float.Parse(spawnTables[planet.Key][PLANET_ASTERMINIUM_DETAIL]));
 
             // remove used data from the table
-            spawnTables[planet.Key].Remove(PLANET_TEXTURE_DETAIL);
-
             spawnTables[planet.Key].Remove(PLANET_UNINHABITED_DETAIL);
             spawnTables[planet.Key].Remove(PLANET_PRIMITIVE_DETAIL);
             spawnTables[planet.Key].Remove(PLANET_INDUSTRIAL_DETAIL);
@@ -98,6 +118,18 @@ public class MapManager : MonoBehaviour
             spawnTables[planet.Key].Remove(PLANET_ORE_DETAIL);
             spawnTables[planet.Key].Remove(PLANET_OIL_DETAIL);
             spawnTables[planet.Key].Remove(PLANET_ASTERMINIUM_DETAIL);
+        }
+
+        _textureAtlas = new Texture2D(spawnTables.Count * 256, 256);
+        _atlasEntries = _textureAtlas.PackTextures(textures, 0);
+
+        for (int i = 0; i < planetCount; i++)
+        {
+            _planetTextureTable.Add(planetNames[i], 
+                new TextureAtlasDetails((_atlasEntries[i].width == 0 && _atlasEntries[i].height == 0 ? null : _textureAtlas), 
+                                        new Vector2(_atlasEntries[i].x, _atlasEntries[i].y),
+                                        new Vector2(_atlasEntries[i].width, _atlasEntries[i].height)));
+            spawnTables[planetNames[i]].Remove(PLANET_TEXTURE_DETAIL);
         }
 
         // Store the remaining misc. data

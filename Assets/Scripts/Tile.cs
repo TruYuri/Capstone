@@ -107,14 +107,17 @@ public class Tile : MonoBehaviour
             }
         }
 
-        if(mapManager.PlanetTextureTable[_planetType] != null)
+        if(mapManager.PlanetTextureTable[_planetType].Texture != null)
         {
             var particle = this.GetComponent<ParticleSystem>();
 
             if (_tileSize == TileSize.Small)
                 particle.particleSystem.startSize *= 0.5f;
 
-            particle.renderer.material = particle.renderer.sharedMaterial = mapManager.PlanetTextureTable[_planetType];
+            // particle.renderer.material = particle.renderer.sharedMaterial = mapManager.PlanetTextureTable[_planetType];
+            particle.renderer.material.mainTexture = mapManager.PlanetTextureTable[_planetType].Texture;
+            particle.renderer.material.mainTextureOffset = mapManager.PlanetTextureTable[_planetType].TextureOffset;
+            particle.renderer.material.mainTextureScale = mapManager.PlanetTextureTable[_planetType].TextureScale;
             particle.transform.position = new Vector3(this.transform.position.x, Generator.Next() % 50 - 25, this.transform.position.z);
 
             particle.enableEmission = true;
