@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        if (other.tag == TILE_TAG)
+        if (other.tag == SECTOR_TAG)
         {
             var sector = other.transform.parent.GetComponent<Sector>();
 
