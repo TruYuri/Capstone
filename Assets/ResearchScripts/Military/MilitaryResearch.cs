@@ -3,7 +3,7 @@ using System.Collections;
 
 public abstract class MilitaryResearch : MonoBehaviour {
 
-	public bool unlocked;
+	public bool unlocked = false;
 	public double bonusArmor;
 	public double bonusAsterminiumPlating;
 	public double bonusThrusters;
@@ -20,8 +20,12 @@ public abstract class MilitaryResearch : MonoBehaviour {
 	public double hull;
 	public double firepower;
 	public double speed;
-	public double capacty;
+	public double capacity;
 	public double escapeDeath = 0;
+	public double baseHull;
+	public double baseFirepower;
+	public double baseSpeed;
+	public double baseCapacity;
 
 
 	// Use this for initialization

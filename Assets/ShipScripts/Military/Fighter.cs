@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Fighter : MonoBehaviour {
+public class Fighter : MilitaryShip {
 
 	// Use this for initialization
 	void Start () {

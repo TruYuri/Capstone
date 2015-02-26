@@ -7,11 +7,16 @@ public class FighterResearch : MilitaryResearch {
 	void Start () {
 
 		unlocked = true;
-		hull = 1;
-		firepower = 1;
-		speed = 5;
-		capacty = 0;
-		escapeDeath = 0;
+		baseHull = 1;
+		baseFirepower = 1;
+		baseSpeed = 5;
+		baseCapacity = 0;
+
+		hull = baseHull;
+		firepower = baseFirepower;
+		speed = baseSpeed;
+		capacity = baseCapacity;
+
 		bonusArmor = .25;
 		bonusAsterminiumPlating = .02;
 		bonusThrusters = 1;
@@ -33,31 +38,42 @@ public class FighterResearch : MilitaryResearch {
 	{return speed;}
 
 	public double getCapacity()
-	{return capacty;}
+	{return capacity;}
 
 	public double getEscapeDeath()
 	{return escapeDeath;}
 
 	override public void Armor()
 	{
-		currArmor++;
-		hull = hull + (currArmor * bonusArmor);
+		if(currArmor < maxPoints)
+		{
+			currArmor++;
+			hull = baseHull + (currArmor * bonusArmor);
+		}
 	}
 	override public void AsterminiumPlating()
 	{
-		currAsterminiumPlating++;
-		escapeDeath = escapeDeath + (currAsterminiumPlating * bonusAsterminiumPlating);
-		
+		if(currAsterminiumPlating < maxPoints)
+		{
+			currAsterminiumPlating++;
+			escapeDeath = (currAsterminiumPlating * bonusAsterminiumPlating);
+		}
 	}
 	override public void Thrusters()
 	{
-		currThrusters++;
-		speed = speed + (currThrusters * bonusThrusters);
+		if(currThrusters < maxPoints)
+		{
+			currThrusters++;
+			speed = baseSpeed + (currThrusters * bonusThrusters);
+		}
 	}
 	override public void Plasmas()
 	{
-		currPlasmas++;
-		firepower = firepower + (currPlasmas * bonusPlasmas);
+		if(currPlasmas < maxPoints)
+		{
+			currPlasmas++;
+			firepower = baseFirepower + (currPlasmas * bonusPlasmas);
+		}
 	}
 	override public void Torpedoes()
 	{
