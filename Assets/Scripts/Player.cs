@@ -31,7 +31,10 @@ public class Player : MonoBehaviour
             if (_currentSector == null || (sector.transform.position - this.transform.position).sqrMagnitude
                 < (_currentSector.transform.position - this.transform.position).sqrMagnitude)
             {
+                if (_currentSector != null)
+                    _currentSector.renderer.material.color = Color.white;
                 _currentSector = sector;
+                _currentSector.renderer.material.color = Color.green;
                 MapManager.Instance.GenerateNewSectors(_currentSector);
             }
         }
@@ -46,7 +49,10 @@ public class Player : MonoBehaviour
             if (_currentSector == null || (sector.transform.position - this.transform.position).sqrMagnitude
                 < (_currentSector.transform.position - this.transform.position).sqrMagnitude)
             {
+                if (_currentSector != null)
+                    _currentSector.renderer.material.color = Color.white;
                 _currentSector = sector;
+                _currentSector.renderer.material.color = Color.green;
                 MapManager.Instance.GenerateNewSectors(_currentSector);
             }
         }
@@ -63,6 +69,7 @@ public class Player : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
+        Camera.main.transform.LookAt(transform);
         Tile tile = _currentSector.GetTileAtPosition(transform.position);
         if(tile != null)
         {
@@ -75,20 +82,27 @@ public class Player : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
             {
-                float speed = 50.0f;
+                if (hit.collider.tag == TILE_TAG)
+                {
 
-                var dir = hit.point - transform.position;
-                dir.Normalize();
-                transform.position += dir * speed * Time.deltaTime;
+                }
+                else
+                {
+                    float speed = 10.0f;
 
-                transform.position = transform.localPosition = new Vector3(transform.position.x, 0.0f, transform.position.z);
-                transform.DetachChildren();
-                transform.LookAt(hit.point);
-                Camera.main.transform.parent = transform;
+                    var dir = hit.point - transform.position;
+                    dir.Normalize();
+                    transform.position += dir * speed * Time.deltaTime;
+
+                    transform.position = transform.localPosition = new Vector3(transform.position.x, 0.0f, transform.position.z);
+                    transform.DetachChildren();
+                    transform.LookAt(hit.point);
+                    Camera.main.transform.parent = transform;
+                }
             }
         }
 
         var scrollChange = Input.GetAxis(MOUSE_SCROLLWHEEL);
-        Camera.main.transform.position += 100.0f * scrollChange * Camera.main.transform.forward;
+        Camera.main.transform.position += 10.0f * scrollChange * Camera.main.transform.forward;
 	}
 }

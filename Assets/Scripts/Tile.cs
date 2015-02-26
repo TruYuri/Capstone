@@ -116,10 +116,13 @@ public class Tile : MonoBehaviour
             particleSystem.renderer.material.mainTexture = mapManager.PlanetTextureTable[_planetType].Texture;
             particleSystem.renderer.material.mainTextureOffset = mapManager.PlanetTextureTable[_planetType].TextureOffset;
             particleSystem.renderer.material.mainTextureScale = mapManager.PlanetTextureTable[_planetType].TextureScale;
-            particleSystem.transform.position = new Vector3(this.transform.position.x, Generator.Next() % 50 - 25, this.transform.position.z);
+
+            //particleSystem.transform.position = new Vector3(this.transform.position.x, Generator.Next() % 50 - 25, this.transform.position.z);
 
             particleSystem.enableEmission = true;
             particleSystem.renderer.enabled = true;
+
+            this.GetComponent<SphereCollider>().enabled = true;
         }
 	}
 
