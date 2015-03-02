@@ -1,15 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Fighter : MilitaryShip {
-
+public class Fighter : MilitaryShip 
+{
 	// Use this for initialization
-	void Start () {
+	void Start () 
+    {
 	//create new Fighter
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+    {
 	//Display Fighter
 	}
 }

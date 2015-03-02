@@ -1,15 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GuardSatellite : MonoBehaviour {
-
+public class GuardSatellite : Ship
+{
 	// Use this for initialization
-	void Start () {
+	void Start () 
+    {
 		//create new Guard Satellite
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+    {
 		//Display Guard Satellite
 	}
 }
