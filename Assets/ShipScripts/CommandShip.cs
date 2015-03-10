@@ -40,9 +40,9 @@ public class CommandShip : MonoBehaviour
                 < (_currentSector.transform.position - this.transform.position).sqrMagnitude)
             {
                 if (_currentSector != null)
-                    _currentSector.renderer.material.color = Color.white;
+                    _currentSector.GetComponent<Renderer>().material.color = Color.white;
                 _currentSector = sector;
-                _currentSector.renderer.material.color = Color.green;
+                _currentSector.GetComponent<Renderer>().material.color = Color.green;
                 MapManager.Instance.GenerateNewSectors(_currentSector);
             }
         }
@@ -58,9 +58,9 @@ public class CommandShip : MonoBehaviour
                 < (_currentSector.transform.position - this.transform.position).sqrMagnitude)
             {
                 if (_currentSector != null)
-                    _currentSector.renderer.material.color = Color.white;
+                    _currentSector.GetComponent<Renderer>().material.color = Color.white;
                 _currentSector = sector;
-                _currentSector.renderer.material.color = Color.green;
+                _currentSector.GetComponent<Renderer>().material.color = Color.green;
                 MapManager.Instance.GenerateNewSectors(_currentSector);
             }
         }

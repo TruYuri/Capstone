@@ -111,32 +111,36 @@ public class Tile : MonoBehaviour
 
         if(mapManager.PlanetTextureTable[_planetType].Texture != null)
         {
+            var system = GetComponent<ParticleSystem>();
+            var renderer = system.GetComponent<Renderer>();
+
             if (_tileSize == TileSize.Small)
-                particleSystem.startSize *= 0.5f;
+                system.startSize *= 0.5f;
 
-            particleSystem.renderer.material.mainTexture = mapManager.PlanetTextureTable[_planetType].Texture;
-            particleSystem.renderer.material.mainTextureOffset = mapManager.PlanetTextureTable[_planetType].TextureOffset;
-            particleSystem.renderer.material.mainTextureScale = mapManager.PlanetTextureTable[_planetType].TextureScale;
+            renderer.material.mainTexture = mapManager.PlanetTextureTable[_planetType].Texture;
+            renderer.material.mainTextureOffset = mapManager.PlanetTextureTable[_planetType].TextureOffset;
+            renderer.material.mainTextureScale = mapManager.PlanetTextureTable[_planetType].TextureScale;
 
-            particleSystem.enableEmission = true;
-            particleSystem.renderer.enabled = true;
+            system.enableEmission = true;
+            renderer.enabled = true;
 
-            this.GetComponent<SphereCollider>().enabled = true;
+            this.GetComponent<Collider>().enabled = true;
         }
 	}
 
 	// Update is called once per frame
 	void Update () 
     {
-        if (this.renderer.isVisible)
+
+        if (this.GetComponent<Renderer>().isVisible)
         {
-            particleSystem.enableEmission = true;
-            this.collider.enabled = true;
+            this.GetComponent<ParticleSystem>().enableEmission = true;
+            this.GetComponent<Collider>().enabled = true;
         }
         else
         {
-            particleSystem.enableEmission = false;
-            this.collider.enabled = false;
+            this.GetComponent<ParticleSystem>().enableEmission = false;
+            this.GetComponent<Collider>().enabled = false;
         }
 	}
 }
