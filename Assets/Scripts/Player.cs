@@ -13,10 +13,13 @@ public class Player : MonoBehaviour
     private readonly Vector3 CAMERA_OFFSET = new Vector3(0, 20, -13);
 
     private GameObject _controlledObject;
-    private GameObject _playerCommandShip;
+    private GameObject _commandShip;
     private Vector3 _currentCameraDistance;
     private Team _team;
     private List<Squad> _squads;
+    private ResearchTree _militaryResearch;
+    private ResearchTree _scientificResearch;
+    private int _numResearchStations;
 
     public static Player Instance { get { return _instance; } }
 
@@ -25,13 +28,22 @@ public class Player : MonoBehaviour
         _instance = this;
         _team = Team.Union;
 
+        _militaryResearch = new ResearchTree(5);
+        _militaryResearch.AddResearch(1, new FighterResearch());
+        _militaryResearch.AddResearch(2, new TransportResearch());
+        _militaryResearch.AddResearch(3, new GuardSatelliteResearch());
+        _militaryResearch.AddResearch(4, new HeavyFighterResearch());
+        _militaryResearch.AddResearch(5, new BehemothResearch());
+
+        _scientificResearch = new ResearchTree(5);
+
         // create command ship, look at it, control it
         var cmdShip = Resources.Load<GameObject>(COMMAND_SHIP_PREFAB);
-        _playerCommandShip = Instantiate(cmdShip) as GameObject;
+        _commandShip = Instantiate(cmdShip) as GameObject;
 
-        _controlledObject = _playerCommandShip;
-        Camera.main.transform.position = _playerCommandShip.transform.position + CAMERA_OFFSET;
-        Camera.main.transform.LookAt(_playerCommandShip.transform);
+        _controlledObject = _commandShip;
+        Camera.main.transform.position = _commandShip.transform.position + CAMERA_OFFSET;
+        Camera.main.transform.LookAt(_commandShip.transform);
 	}
 	
 	
@@ -52,24 +64,30 @@ public class Player : MonoBehaviour
             }
         }
 
-        switch(_controlledObject.tag)
-        {
-            case TILE_TAG:
-                UpdateSelectedPlanet();
-                break;
-            case COMMAND_SHIP_TAG:
-                UpdateCommandShip();
-                break;
-            case SQUAD_TAG:
-                UpdateSquad();
-                break;
-        }
-
         var scrollChange = Input.GetAxis(MOUSE_SCROLLWHEEL);
         Camera.main.transform.position += 10.0f * scrollChange * Camera.main.transform.forward;
 
         if (_controlledObject != null)
+        {
             _currentCameraDistance = this.transform.position - _controlledObject.transform.position;
+
+            switch (_controlledObject.tag)
+            {
+                case TILE_TAG:
+                    UpdateSelectedPlanet();
+                    break;
+                case COMMAND_SHIP_TAG:
+                    UpdateCommandShip();
+                    break;
+                case SQUAD_TAG:
+                    UpdateSquad();
+                    break;
+            }
+        }
+
+        // only run these at turn start or end
+        //_militaryResearch.Advance(_numResearchStations);
+        //_scientificResearch.Advance(_numResearchStations);
 	}
 
     private void UpdateCommandShip()
@@ -82,13 +100,13 @@ public class Player : MonoBehaviour
             {
                 float speed = 10.0f;
 
-                var dir = hit.point - _playerCommandShip.transform.position;
+                var dir = hit.point - _commandShip.transform.position;
                 dir.Normalize();
-                _playerCommandShip.transform.position += dir * speed * Time.deltaTime;
+                _commandShip.transform.position += dir * speed * Time.deltaTime;
 
-                _playerCommandShip.transform.position = new Vector3(_playerCommandShip.transform.position.x, 0.0f, _playerCommandShip.transform.position.z);
-                _playerCommandShip.transform.LookAt(hit.point);
-                transform.position = _playerCommandShip.transform.position + _currentCameraDistance;
+                _commandShip.transform.position = new Vector3(_commandShip.transform.position.x, 0.0f, _commandShip.transform.position.z);
+                _commandShip.transform.LookAt(hit.point);
+                transform.position = _commandShip.transform.position + _currentCameraDistance;
             }
         }
     }

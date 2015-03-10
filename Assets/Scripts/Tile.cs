@@ -26,6 +26,7 @@ public class Tile : MonoBehaviour
     private Resource _resourceType;
     private int _resourceCount;
     private Team _owner;
+    private Squad _squad;
 
     public Bounds Bounds { get { return _bounds; } }
 
@@ -38,12 +39,9 @@ public class Tile : MonoBehaviour
         // Determine tile type
         var mapManager = MapManager.Instance;
         var chance = (float)Generator.NextDouble();
-        var previousLimit = 0.0f;
         foreach(var planet in mapManager.PlanetTypeSpawnTable)
         {
-            if (chance > planet.Value)
-                previousLimit = planet.Value;
-            else
+            if (chance <= planet.Value)
             {
                 _planetType = planet.Key;
                 break;
@@ -82,12 +80,9 @@ public class Tile : MonoBehaviour
 
         // Determine Inhabitance
         chance = (float)Generator.NextDouble();
-        previousLimit = 0.0f;
         foreach(var inhabit in mapManager.PlanetInhabitanceSpawnTable[_planetType])
         {
-            if (chance > inhabit.Value)
-                previousLimit = inhabit.Value;
-            else
+            if (chance <= inhabit.Value)
             {
                 _planetInhabitance = inhabit.Key;
                 break;
@@ -97,12 +92,9 @@ public class Tile : MonoBehaviour
         // Determine Resource Type
         _resourceType = Resource.None;
         chance = (float)Generator.NextDouble();
-        previousLimit = 0.0f;
         foreach (var resource in mapManager.PlanetResourceSpawnTable[_planetType])
         {
-            if (chance > resource.Value)
-                previousLimit = resource.Value;
-            else
+            if (chance <= resource.Value)
             {
                 _resourceType = resource.Key;
                 break;
