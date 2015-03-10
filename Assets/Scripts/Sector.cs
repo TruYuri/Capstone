@@ -13,13 +13,8 @@ public class Sector : MonoBehaviour
     private const string TILE_PREFAB = "Tile";
 
     // Adjoining sectors
-    public GameObject TopRight { get; set; }
-    public GameObject Right { get; set; }
-    public GameObject BottomRight { get; set; }
-    public GameObject BottomLeft { get; set; }
-    public GameObject Left { get; set; }
-    public GameObject TopLeft { get; set; }
-
+    public int VerticalGridPosition { get; set; }
+    public int HorizontalGridPosition { get; set; }
     private List<GameObject> _tiles;
 
 	// Use this for initialization

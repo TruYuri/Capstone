@@ -40,7 +40,6 @@ public class MapManager : MonoBehaviour
 
     private static MapManager _instance;
     private Object _sectorPrefab;
-    private List<GameObject> _sectors;
     private Dictionary<string, float> _planetTypeSpawnTable;
     private Dictionary<string, TextureAtlasDetails> _planetTextureTable;
     private Dictionary<string, Dictionary<Inhabitance, float>> _planetInhabitanceSpawnTable;
@@ -48,6 +47,7 @@ public class MapManager : MonoBehaviour
     private Dictionary<string, Dictionary<string, string>> _planetSpawnDetails;
     private Texture2D _textureAtlas;
     private Rect[] _atlasEntries;
+    private Dictionary<int, Dictionary<int, GameObject>> _sectorMap;
 
     public static MapManager Instance { get { return _instance; } }
     public Dictionary<string, float> PlanetTypeSpawnTable { get { return _planetTypeSpawnTable; } }
@@ -59,13 +59,13 @@ public class MapManager : MonoBehaviour
 	// Use this for initialization
 	public void Start()
     {
-        _sectors = new List<GameObject>();
         _sectorPrefab = Resources.Load<GameObject>(SECTOR_PREFAB);
         _planetTypeSpawnTable = new Dictionary<string, float>();
         _planetTextureTable = new Dictionary<string, TextureAtlasDetails>();
         _planetInhabitanceSpawnTable = new Dictionary<string, Dictionary<Inhabitance, float>>();
         _planetResourceSpawnTable = new Dictionary<string, Dictionary<Resource, float>>();
         _planetSpawnDetails = new Dictionary<string, Dictionary<string, string>>();
+        _sectorMap = new Dictionary<int, Dictionary<int, GameObject>>();
 
         INIParser parser = new INIParser(Application.dataPath + INI_PATH);
         var spawnTables = parser.ParseINI();
@@ -137,108 +137,52 @@ public class MapManager : MonoBehaviour
 
         parser.CloseINI();
 
-        _sectors.Add(Instantiate(_sectorPrefab, Vector3.zero, Quaternion.identity) as GameObject);
+        // class init should set grid spots to zero.
+        var sector = Instantiate(_sectorPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+        _sectorMap.Add(0, new Dictionary<int, GameObject>());
+        _sectorMap[0].Add(0, sector);
+
         _instance = this;
 	}
 
     public void GenerateNewSectors(Sector origin)
     {
-        var position = Vector3.zero;
+        var position = origin.transform.position;
+        var v = origin.VerticalGridPosition;
+        var h = origin.HorizontalGridPosition;
 
-        // Generate any needed immediate neighbors and link them
-        if (origin.TopRight == null)
+        if (Mathf.Abs(v) % 2 == 0) // even grid row
         {
-            position = origin.transform.position + TOP_RIGHT_OFFSET;
-
-            origin.TopRight = Instantiate(_sectorPrefab, position, Quaternion.identity) as GameObject;
-            origin.TopRight.GetComponent<Sector>().BottomLeft = origin.gameObject;
-
-            _sectors.Add(origin.TopRight);
+            GenerateSector(position + TOP_RIGHT_OFFSET, v + 1, h);
+            GenerateSector(position + RIGHT_OFFSET, v, h + 1);
+            GenerateSector(position + BOTTOM_RIGHT_OFFSET, v - 1, h);
+            GenerateSector(position + BOTTOM_LEFT_OFFSET, v - 1, h - 1);
+            GenerateSector(position + LEFT_OFFSET, v, h - 1);
+            GenerateSector(position + TOP_LEFT_OFFSET, v + 1, h - 1);
         }
-
-        if (origin.Right == null)
+        else // odd row
         {
-            position = origin.transform.position + RIGHT_OFFSET;
-
-            origin.Right = Instantiate(_sectorPrefab, position, Quaternion.identity) as GameObject;
-            origin.Right.GetComponent<Sector>().Left = origin.gameObject;
-
-            _sectors.Add(origin.Right);
+            GenerateSector(position + TOP_RIGHT_OFFSET, v + 1, h + 1);
+            GenerateSector(position + RIGHT_OFFSET, v, h + 1);
+            GenerateSector(position + BOTTOM_RIGHT_OFFSET, v - 1, h + 1);
+            GenerateSector(position + BOTTOM_LEFT_OFFSET, v - 1, h);
+            GenerateSector(position + LEFT_OFFSET, v, h - 1);
+            GenerateSector(position + TOP_LEFT_OFFSET, v + 1, h);
         }
-
-        if (origin.BottomRight == null)
-        {
-            position = origin.transform.position + BOTTOM_RIGHT_OFFSET;
-
-            origin.BottomRight = Instantiate(_sectorPrefab, position, Quaternion.identity) as GameObject;
-            origin.BottomRight.GetComponent<Sector>().TopLeft = origin.gameObject;
-
-            _sectors.Add(origin.BottomRight);
-        }
-
-        if (origin.BottomLeft == null)
-        {
-            position = origin.transform.position + BOTTOM_LEFT_OFFSET;
-
-            origin.BottomLeft = Instantiate(_sectorPrefab, position, Quaternion.identity) as GameObject;
-            origin.BottomLeft.GetComponent<Sector>().TopRight = origin.gameObject;
-
-            _sectors.Add(origin.BottomLeft);
-        }
-
-        if (origin.Left == null)
-        {
-            position = origin.transform.position + LEFT_OFFSET;
-
-            origin.Left = Instantiate(_sectorPrefab, position, Quaternion.identity) as GameObject;
-            origin.Left.GetComponent<Sector>().Right = origin.gameObject;
-
-            _sectors.Add(origin.Left);
-        }
-
-        if (origin.TopLeft == null)
-        {
-            position = origin.transform.position + TOP_LEFT_OFFSET;
-
-            origin.TopLeft = Instantiate(_sectorPrefab, position, Quaternion.identity) as GameObject;
-            origin.TopLeft.GetComponent<Sector>().BottomRight = origin.gameObject;
-
-            _sectors.Add(origin.TopLeft);
-        }
-
-        ResolveLooseConnections();
     }
 
-    private void ResolveLooseConnections()
+    private void GenerateSector(Vector3 position, int vertical, int horizontal)
     {
-        // resolve broken links
-        foreach (var sector in _sectors)
+        if (!_sectorMap.ContainsKey(vertical))
+            _sectorMap.Add(vertical, new Dictionary<int, GameObject>());
+
+        if(!_sectorMap[vertical].ContainsKey(horizontal))
         {
+            var sector = Instantiate(_sectorPrefab, position, Quaternion.identity) as GameObject;
             var component = sector.GetComponent<Sector>();
-
-            if (component.TopRight == null)
-                component.TopRight = FindSectorAtPosition(sector.transform.position + TOP_RIGHT_OFFSET);
-            if (component.Right == null)
-                component.Right = FindSectorAtPosition(sector.transform.position + RIGHT_OFFSET);
-            if (component.BottomRight == null)
-                component.BottomRight = FindSectorAtPosition(sector.transform.position + BOTTOM_RIGHT_OFFSET);
-            if (component.BottomLeft == null)
-                component.BottomLeft = FindSectorAtPosition(sector.transform.position + BOTTOM_LEFT_OFFSET);
-            if (component.Left == null)
-                component.Left = FindSectorAtPosition(sector.transform.position + LEFT_OFFSET);
-            if (component.TopLeft == null)
-                component.TopLeft = FindSectorAtPosition(sector.transform.position + TOP_LEFT_OFFSET);
+            component.VerticalGridPosition = vertical;
+            component.HorizontalGridPosition = horizontal;
+            _sectorMap[vertical].Add(horizontal, sector);
         }
-    }
-	
-    private GameObject FindSectorAtPosition(Vector3 position)
-    {
-        foreach(var sector in _sectors)
-        {
-            if(Vector3.Distance(sector.transform.position, position) <= 1.0f)
-                return sector;
-        }
-
-        return null;
     }
 }

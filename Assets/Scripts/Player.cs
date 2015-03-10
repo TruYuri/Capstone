@@ -1,108 +1,105 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class Player : MonoBehaviour
 {
     private static Player _instance;
 
+    private const string COMMAND_SHIP_TAG = "CommandShip";
+    private const string SQUAD_TAG = "Squad";
     private const string TILE_TAG = "Tile";
-    private const string SECTOR_TAG = "Sector";
+    private const string COMMAND_SHIP_PREFAB = "CommandShip";
     private const string MOUSE_SCROLLWHEEL = "Mouse ScrollWheel";
+    private readonly Vector3 CAMERA_OFFSET = new Vector3(0, 20, -13);
 
-    private Sector _currentSector;
-    private Tile _currentTile;
+    private GameObject _controlledObject;
+    private GameObject _playerCommandShip;
+    private Vector3 _currentCameraDistance;
+    private Team _team;
+    private List<Squad> _squads;
 
     public static Player Instance { get { return _instance; } }
 
 	void Start () 
     {
         _instance = this;
+        _team = Team.Union;
+
+        // create command ship, look at it, control it
+        var cmdShip = Resources.Load<GameObject>(COMMAND_SHIP_PREFAB);
+        _playerCommandShip = Instantiate(cmdShip) as GameObject;
+
+        _controlledObject = _playerCommandShip;
+        Camera.main.transform.position = _playerCommandShip.transform.position + CAMERA_OFFSET;
+        Camera.main.transform.LookAt(_playerCommandShip.transform);
 	}
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == TILE_TAG)
-        {
-        }
-        else if(other.tag == SECTOR_TAG)
-        {
-            var sector = other.transform.parent.GetComponent<Sector>();
-
-            if (_currentSector == null || (sector.transform.position - this.transform.position).sqrMagnitude
-                < (_currentSector.transform.position - this.transform.position).sqrMagnitude)
-            {
-                if (_currentSector != null)
-                    _currentSector.renderer.material.color = Color.white;
-                _currentSector = sector;
-                _currentSector.renderer.material.color = Color.green;
-                MapManager.Instance.GenerateNewSectors(_currentSector);
-            }
-        }
-    }
-
-    void OnTriggerStay(Collider other)
-    {
-        if (other.tag == SECTOR_TAG)
-        {
-            var sector = other.transform.parent.GetComponent<Sector>();
-
-            if (_currentSector == null || (sector.transform.position - this.transform.position).sqrMagnitude
-                < (_currentSector.transform.position - this.transform.position).sqrMagnitude)
-            {
-                if (_currentSector != null)
-                    _currentSector.renderer.material.color = Color.white;
-                _currentSector = sector;
-                _currentSector.renderer.material.color = Color.green;
-                MapManager.Instance.GenerateNewSectors(_currentSector);
-            }
-        }
-    }
-
-    void OnTriggerExit(Collider other)
-    {
-        if (other.tag == TILE_TAG)
-        {
-        }
-    }
 	
 	
 	// Update is called once per frame
 	void Update () 
     {
-        Camera.main.transform.LookAt(transform);
-        Tile tile = _currentSector.GetTileAtPosition(transform.position);
-        if(tile != null)
+        if (Input.GetMouseButtonDown(1))
         {
-            _currentTile = tile;
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.tag == TILE_TAG || hit.collider.tag == COMMAND_SHIP_TAG || hit.collider.tag == SQUAD_TAG)
+                {
+                    _controlledObject = hit.collider.gameObject;
+                    transform.position = _controlledObject.transform.position + _currentCameraDistance;
+                }
+            }
         }
 
+        switch(_controlledObject.tag)
+        {
+            case TILE_TAG:
+                UpdateSelectedPlanet();
+                break;
+            case COMMAND_SHIP_TAG:
+                UpdateCommandShip();
+                break;
+            case SQUAD_TAG:
+                UpdateSquad();
+                break;
+        }
+
+        var scrollChange = Input.GetAxis(MOUSE_SCROLLWHEEL);
+        Camera.main.transform.position += 10.0f * scrollChange * Camera.main.transform.forward;
+
+        if (_controlledObject != null)
+            _currentCameraDistance = this.transform.position - _controlledObject.transform.position;
+	}
+
+    private void UpdateCommandShip()
+    {
         if (Input.GetMouseButton(0))
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
             {
-                if (hit.collider.tag == TILE_TAG)
-                {
+                float speed = 10.0f;
 
-                }
-                else
-                {
-                    float speed = 10.0f;
+                var dir = hit.point - _playerCommandShip.transform.position;
+                dir.Normalize();
+                _playerCommandShip.transform.position += dir * speed * Time.deltaTime;
 
-                    var dir = hit.point - transform.position;
-                    dir.Normalize();
-                    transform.position += dir * speed * Time.deltaTime;
-
-                    transform.position = transform.localPosition = new Vector3(transform.position.x, 0.0f, transform.position.z);
-                    transform.DetachChildren();
-                    transform.LookAt(hit.point);
-                    Camera.main.transform.parent = transform;
-                }
+                _playerCommandShip.transform.position = new Vector3(_playerCommandShip.transform.position.x, 0.0f, _playerCommandShip.transform.position.z);
+                _playerCommandShip.transform.LookAt(hit.point);
+                transform.position = _playerCommandShip.transform.position + _currentCameraDistance;
             }
         }
+    }
 
-        var scrollChange = Input.GetAxis(MOUSE_SCROLLWHEEL);
-        Camera.main.transform.position += 10.0f * scrollChange * Camera.main.transform.forward;
-	}
+    private void UpdateSelectedPlanet()
+    {
+
+    }
+
+    private void UpdateSquad()
+    {
+
+    }
 }

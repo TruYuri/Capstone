@@ -2,9 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public enum Inhabitance { Uninhabited, Primitive, Industrial, SpaceAge }
-public enum Resource { None, Forest, Ore, Oil, Asterminium }
-public enum TileSize { Small, Large }
 public class Tile : MonoBehaviour
 {
     private static System.Random Generator = new System.Random();
@@ -28,6 +25,7 @@ public class Tile : MonoBehaviour
     private TileSize _tileSize;
     private Resource _resourceType;
     private int _resourceCount;
+    private Team _owner;
 
     public Bounds Bounds { get { return _bounds; } }
 
@@ -35,6 +33,7 @@ public class Tile : MonoBehaviour
 	void Start () 
     {
         _bounds = new UnityEngine.Bounds(this.transform.position, new Vector3(10, 10, 10));
+        _owner = Team.None;
 
         // Determine tile type
         var mapManager = MapManager.Instance;
@@ -50,6 +49,9 @@ public class Tile : MonoBehaviour
                 break;
             }
         }
+
+        if (mapManager.PlanetTextureTable[_planetType].Texture == null) // crappy way to check if it's empty space, but it works for now
+            return;
 
         // Determine Size, Population, and Resource Amount
         chance = (float)Generator.NextDouble();
@@ -112,12 +114,9 @@ public class Tile : MonoBehaviour
             if (_tileSize == TileSize.Small)
                 particleSystem.startSize *= 0.5f;
 
-            // particle.renderer.material = particle.renderer.sharedMaterial = mapManager.PlanetTextureTable[_planetType];
             particleSystem.renderer.material.mainTexture = mapManager.PlanetTextureTable[_planetType].Texture;
             particleSystem.renderer.material.mainTextureOffset = mapManager.PlanetTextureTable[_planetType].TextureOffset;
             particleSystem.renderer.material.mainTextureScale = mapManager.PlanetTextureTable[_planetType].TextureScale;
-
-            //particleSystem.transform.position = new Vector3(this.transform.position.x, Generator.Next() % 50 - 25, this.transform.position.z);
 
             particleSystem.enableEmission = true;
             particleSystem.renderer.enabled = true;
@@ -130,8 +129,14 @@ public class Tile : MonoBehaviour
 	void Update () 
     {
         if (this.renderer.isVisible)
+        {
             particleSystem.enableEmission = true;
+            this.collider.enabled = true;
+        }
         else
+        {
             particleSystem.enableEmission = false;
+            this.collider.enabled = false;
+        }
 	}
 }
