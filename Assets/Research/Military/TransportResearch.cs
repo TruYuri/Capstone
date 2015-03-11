@@ -8,60 +8,63 @@ public class TransportResearch : Research
     private const string THRUSTERS = "Thrusters";
     private const string CAPACITY = "Capacity";
 
-    public TransportResearch() : base("Transport", 2, 10, 0, 2, 100)
+    private Ship transportShip;
+
+    public TransportResearch(Ship ship) : base(ship.Name, 2)
     {
-        researchables.Add(ARMOR, 0);
-        researchables.Add(PLATING, 0);
-        researchables.Add(THRUSTERS, 0);
-        researchables.Add(CAPACITY, 0);
+        this.transportShip = ship;
+        upgrades.Add(ARMOR, 0);
+        upgrades.Add(PLATING, 0);
+        upgrades.Add(THRUSTERS, 0);
+        upgrades.Add(CAPACITY, 0);
     }
 
-    public override void AdvanceResearchLevel(string researchName, int stations)
+    public override void UpgradeResearch(string name, int stations)
     {
-        base.AdvanceResearchLevel(researchName, stations);
+        base.UpgradeResearch(name, stations);
 
-        switch (researchName)
+        switch (name)
         {
             case ARMOR:
-                AdvanceArmor();
+                UpgradeArmor();
                 break;
             case PLATING:
-                AdvancePlating();
+                UpgradePlating();
                 break;
             case THRUSTERS:
-                AdvanceThrusters();
+                UpgradeThrusters();
                 break;
             case CAPACITY:
-                AdvanceCapacity();
+                UpgradeCapacity();
                 break;
         }
     }
 
-    private void AdvanceArmor()
+    private void UpgradeArmor()
     {
-        researchables[ARMOR]++;
-        hull += 2.0f;
+        upgrades[ARMOR]++;
+        transportShip.Hull += 2.0f;
     }
 
-    private void AdvancePlating()
+    private void UpgradePlating()
     {
-        if (researchables[ARMOR] < 5)
+        if (upgrades[ARMOR] < 5)
             return;
 
-        researchables[PLATING]++;
-        protection = researchables[PLATING] * 0.02f;
+        upgrades[PLATING]++;
+        transportShip.Protection = upgrades[PLATING] * 0.02f;
     }
 
-    private void AdvanceThrusters()
+    private void UpgradeThrusters()
     {
-        researchables[THRUSTERS]++;
-        speed += 0.5f;
+        upgrades[THRUSTERS]++;
+        transportShip.Speed += 0.5f;
     }
 
-    private void AdvanceCapacity()
+    private void UpgradeCapacity()
     {
-        researchables[CAPACITY]++;
-        capacity += 100;
+        upgrades[CAPACITY]++;
+        transportShip.Capacity += 100;
     }
 
     public override bool Unlock()

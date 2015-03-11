@@ -10,84 +10,87 @@ public class HeavyFighterResearch : Research
     private const string THRUSTERS = "Thrusters";
     private const string CAPACITY = "Capacity";
 
-    public HeavyFighterResearch() : base("Heavy Fighter", 4, 3, 3, 2, 10)
+    private Ship heavyFighterShip;
+
+    public HeavyFighterResearch(Ship ship) : base(ship.Name, 4)
     {
-        researchables.Add(ARMOR, 0);
-        researchables.Add(PLATING, 0);
-        researchables.Add(PLASMAS, 0);
-        researchables.Add(TORPEDOES, 0);
-        researchables.Add(THRUSTERS, 0);
-        researchables.Add(CAPACITY, 0);
+        this.heavyFighterShip = ship;
+        upgrades.Add(ARMOR, 0);
+        upgrades.Add(PLATING, 0);
+        upgrades.Add(PLASMAS, 0);
+        upgrades.Add(TORPEDOES, 0);
+        upgrades.Add(THRUSTERS, 0);
+        upgrades.Add(CAPACITY, 0);
     }
 
-    public override void AdvanceResearchLevel(string researchName, int stations)
+    public override void UpgradeResearch(string name, int stations)
     {
-        base.AdvanceResearchLevel(researchName, stations);
+        base.UpgradeResearch(name, stations);
 
-        switch (researchName)
+        switch (name)
         {
             case ARMOR:
-                AdvanceArmor();
+                UpgradeArmor();
                 break;
             case PLATING:
-                AdvancePlating();
+                UpgradePlating();
                 break;
             case PLASMAS:
-                AdvancePlasmas();
+                UpgradePlasmas();
                 break;
             case TORPEDOES:
-                AdvanceTorpedoes();
+                UpgradeTorpedoes();
                 break;
             case THRUSTERS:
-                AdvanceThrusters();
+                UpgradeThrusters();
                 break;
             case CAPACITY:
-                AdvanceCapacity();
+                UpgradeCapacity();
                 break;
         }
     }
 
-    private void AdvanceArmor()
+    private void UpgradeArmor()
     {
-        researchables[ARMOR]++;
-        hull += 0.5f;
+        upgrades[ARMOR]++;
+        heavyFighterShip.Hull += 0.5f;
     }
 
-    private void AdvancePlating()
+    private void UpgradePlating()
     {
-        if (researchables[ARMOR] < 5)
+        if (upgrades[ARMOR] < 5)
             return;
 
-        researchables[PLATING]++;
-        protection = researchables[PLATING] * 0.02f;
+        upgrades[PLATING]++;
+        heavyFighterShip.Protection = upgrades[PLATING] * 0.02f;
     }
 
-    private void AdvancePlasmas()
+    private void UpgradePlasmas()
     {
-        researchables[PLASMAS]++;
-        firepower += 0.75f;
+        upgrades[PLASMAS]++;
+        heavyFighterShip.Firepower += 0.75f;
     }
 
-    private void AdvanceTorpedoes()
+    private void UpgradeTorpedoes()
     {
-        if (researchables[TORPEDOES] < 5)
+        if (upgrades[PLASMAS] < 5)
             return;
 
-        firepower -= researchables[TORPEDOES] * 0.02f;
-        researchables[TORPEDOES]++;
-        firepower += researchables[TORPEDOES] * 0.02f;
+        heavyFighterShip.Firepower -= upgrades[TORPEDOES] * 0.02f;
+        upgrades[TORPEDOES]++;
+        heavyFighterShip.Firepower += upgrades[TORPEDOES] * 0.02f;
     }
 
-    private void AdvanceThrusters()
+    private void UpgradeThrusters()
     {
-        researchables[THRUSTERS]++;
-        speed += 0.5f;
+        upgrades[THRUSTERS]++;
+        heavyFighterShip.Speed += 0.5f;
     }
 
-    private void AdvanceCapacity()
+    private void UpgradeCapacity()
     {
-        researchables[CAPACITY]++;
-        capacity += 10;
+        upgrades[CAPACITY]++;
+        heavyFighterShip.Capacity += 10;
     }
 
     public override bool Unlock()

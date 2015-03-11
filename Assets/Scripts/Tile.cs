@@ -27,7 +27,7 @@ public class Tile : MonoBehaviour
     private int _resourceCount;
     private Team _owner;
     private Squad _squad;
-
+    private Structure _structure;
     public Bounds Bounds { get { return _bounds; } }
 
 	// Use this for initialization
