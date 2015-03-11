@@ -44,10 +44,10 @@ public class Player : MonoBehaviour
             { "Behemoth", new Ship("Behemoth", 20, 10, 1, 50) },
             { "Command Ship", new Ship("Command Ship", 20, 2, 5, 0) },
             { "Resource Transport", new Ship("Resource Transport", 1, 0, 0, 0) },
-            { "Gathering Complex", new Structure("Gathering Complex", 50, 0, 1, 0, 50, 50) },
-            { "Research Complex", new Structure("Research Complex", 50, 0, 1, 0, 25, 100) },
-            { "Military Complex", new Structure("Military Complex", 50, 0, 1, 0, 150, 500) },
-            { "Base", new Structure("Base", 50, 0, 1, 0, 200, 1000) },
+            { "Gathering Complex", new Structure("Gathering Complex", 50, 0, 1, 0, 50, 50, 100) },
+            { "Research Complex", new Structure("Research Complex", 50, 0, 1, 0, 25, 100, 0) },
+            { "Military Complex", new Structure("Military Complex", 50, 0, 1, 0, 150, 500, 0) },
+            { "Base", new Structure("Base", 50, 0, 1, 0, 200, 1000, 100) },
             { "Relay", new Relay("Relay", 20, 0, 1, 0, 1, 0) },
             { "Warp Portal", new WarpPortal("Warp Portal", 20, 0, 1, 0, 2, 0)}
         };
@@ -134,10 +134,13 @@ public class Player : MonoBehaviour
             }
         }
 
+        // cleanup dead squads
         foreach(var squad in _squads)
         {
-            //if(squad.e)
+            if (squad.Size < 1)
+                Destroy(squad);
         }
+
         // only run these at turn start or end
         //_militaryResearch.Advance(_numResearchStations);
         //_scientificResearch.Advance(_numResearchStations);
@@ -162,6 +165,14 @@ public class Player : MonoBehaviour
                 transform.position = _commandShip.transform.position + _currentCameraDistance;
             }
         }
+    }
+
+    public void UpgradeResearch(string type, string research, string property)
+    {
+        if(type == "Military")
+            _militaryResearch.GetResearch(research).UpgradeResearch(property, _numResearchStations);
+        else
+            _scientificResearch.GetResearch(research).UpgradeResearch(property, _numResearchStations);
     }
 
     private void UpdateSelectedPlanet()
