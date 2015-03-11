@@ -43,7 +43,7 @@ public class Player : MonoBehaviour
             { "Heavy Fighter", new Ship("Heavy Fighter", 3, 3, 2, 10) },
             { "Behemoth", new Ship("Behemoth", 20, 10, 1, 50) },
             { "Command Ship", new Ship("Command Ship", 20, 2, 5, 0) },
-            { "Resource Transport", new Ship("Resource Transport", 1, 0, 0, 0) },
+            { "Resource Transport", new Ship("Resource Transport", 50, 0, 1, 0) },
             { "Gathering Complex", new Structure("Gathering Complex", 50, 0, 1, 0, 50, 50, 100) },
             { "Research Complex", new Structure("Research Complex", 50, 0, 1, 0, 25, 100, 0) },
             { "Military Complex", new Structure("Military Complex", 50, 0, 1, 0, 150, 500, 0) },
@@ -148,7 +148,6 @@ public class Player : MonoBehaviour
 
     private void UpdateCommandShip()
     {
-		Debug.Log(_shipStats["Fighter"].Hull);
         if (Input.GetMouseButton(0))
         {
             RaycastHit hit;
