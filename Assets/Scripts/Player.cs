@@ -148,6 +148,7 @@ public class Player : MonoBehaviour
 
     private void UpdateCommandShip()
     {
+		Debug.Log(_shipStats["Fighter"].Hull);
         if (Input.GetMouseButton(0))
         {
             RaycastHit hit;
@@ -184,4 +185,9 @@ public class Player : MonoBehaviour
     {
 
     }
+
+	public Ship GetShip(string name)
+	{
+		return _shipStats[name];
+	}
 }
