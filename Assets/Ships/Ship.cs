@@ -58,4 +58,16 @@ public class Ship
         this.speed = this.baseSpeed = speed;
         this.capacity = this.baseCapacity = capacity;
     }
+
+    public virtual Ship Copy()
+    {
+        var ship = new Ship(name, baseHull, baseFirepower, baseSpeed, baseCapacity);
+        ship.Hull = hull;
+        ship.Firepower = firepower;
+        ship.Speed = speed;
+        ship.Capacity = capacity;
+        ship.Protection = protection;
+
+        return ship;
+    }
 }

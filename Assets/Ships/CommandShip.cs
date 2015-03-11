@@ -1,17 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CommandShip : MonoBehaviour
+public class CommandShip : Squad
 {
     private const string TILE_TAG = "Tile";
     private const string SECTOR_TAG = "Sector";
     private Sector _currentSector;
     private Tile _currentTile;
+    private Ship _ship;
+
+    public Ship Ship 
+    {
+        get { return _ship; }
+        set { _ship = value; }
+    }
 
 	// Use this for initialization
 	void Start () 
     {
-	
 	}
 	
 	// Update is called once per frame

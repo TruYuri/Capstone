@@ -116,7 +116,8 @@ public class Tile : MonoBehaviour
             system.enableEmission = true;
             renderer.enabled = true;
 
-            this.GetComponent<Collider>().enabled = true;
+            this.GetComponent<SphereCollider>().enabled = true;
+            this.GetComponent<Squad>().enabled = true;
         }
 	}
 

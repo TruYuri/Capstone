@@ -9,12 +9,13 @@ public class Player : MonoBehaviour
     private const string SQUAD_TAG = "Squad";
     private const string TILE_TAG = "Tile";
     private const string COMMAND_SHIP_PREFAB = "CommandShip";
+    private const string SQUAD_PREFAB = "Squad";
     private const string MOUSE_SCROLLWHEEL = "Mouse ScrollWheel";
     private readonly Vector3 CAMERA_OFFSET = new Vector3(0, 20, -13);
 
     // Human player variables - new class? Derive from this for AI later
     private GameObject _controlledObject;
-    private GameObject _commandShip;
+    private CommandShip _commandShip;
     private Vector3 _currentCameraDistance;
     //
 
@@ -32,6 +33,8 @@ public class Player : MonoBehaviour
         _instance = this;
         _team = Team.Union;
 
+        // Initialize ship definitions
+        // TODO: .ini this
         _shipStats = new Dictionary<string, Ship>()
         {
             { "Fighter", new Ship("Fighter", 1, 1, 5, 0) },
@@ -45,10 +48,12 @@ public class Player : MonoBehaviour
             { "Research Complex", new Structure("Research Complex", 50, 0, 1, 0, 25, 100) },
             { "Military Complex", new Structure("Military Complex", 50, 0, 1, 0, 150, 500) },
             { "Base", new Structure("Base", 50, 0, 1, 0, 200, 1000) },
-            { "Relay", new Relay("Relay", 20, 0, 1, 0, 1) },
-            { "Warp Portal", new WarpPortal("Warp Portal", 20, 0, 1, 0, 2)}
+            { "Relay", new Relay("Relay", 20, 0, 1, 0, 1, 0) },
+            { "Warp Portal", new WarpPortal("Warp Portal", 20, 0, 1, 0, 2, 0)}
         };
 
+        // Initialize research trees
+        // Todo: .ini this
         _militaryResearch = new ResearchTree(5);
         _militaryResearch.AddResearch(1, new FighterResearch(_shipStats["Fighter"]));
         _militaryResearch.AddResearch(2, new TransportResearch(_shipStats["Transport"]));
@@ -65,9 +70,17 @@ public class Player : MonoBehaviour
 
         // create command ship, look at it, control it
         var cmdShip = Resources.Load<GameObject>(COMMAND_SHIP_PREFAB);
-        _commandShip = Instantiate(cmdShip) as GameObject;
+        var commandShip = Instantiate(cmdShip) as GameObject;
+        _commandShip = commandShip.GetComponent<CommandShip>();
 
-        _controlledObject = _commandShip;
+        _squads = new List<Squad>();
+        _squads.Add(_commandShip);
+        
+        _commandShip.Ship = _shipStats["Command Ship"].Copy();
+        _commandShip.AddShip(_commandShip.Ship);
+        _commandShip.AddShip(_shipStats["Base"].Copy());
+
+        _controlledObject = _commandShip.gameObject;
         Camera.main.transform.position = _commandShip.transform.position + CAMERA_OFFSET;
         Camera.main.transform.LookAt(_commandShip.transform);
 	}
@@ -82,12 +95,22 @@ public class Player : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
             {
-                if (hit.collider.tag == TILE_TAG || hit.collider.tag == COMMAND_SHIP_TAG || hit.collider.tag == SQUAD_TAG)
+                switch(hit.collider.tag)
                 {
-                    _controlledObject = hit.collider.gameObject;
-                    transform.position = _controlledObject.transform.position + _currentCameraDistance;
+                    case TILE_TAG:
+                    case COMMAND_SHIP_TAG:
+                    case SQUAD_TAG:
+                        _controlledObject = hit.collider.gameObject;
+                        transform.position = _controlledObject.transform.position + _currentCameraDistance;
+                        break;
                 }
             }
+        }
+        
+        if(Input.GetKey(KeyCode.C))
+        {
+            _controlledObject = _commandShip.gameObject;
+            transform.position = _controlledObject.transform.position + _currentCameraDistance;
         }
 
         var scrollChange = Input.GetAxis(MOUSE_SCROLLWHEEL);
@@ -111,6 +134,10 @@ public class Player : MonoBehaviour
             }
         }
 
+        foreach(var squad in _squads)
+        {
+            //if(squad.e)
+        }
         // only run these at turn start or end
         //_militaryResearch.Advance(_numResearchStations);
         //_scientificResearch.Advance(_numResearchStations);
