@@ -6,6 +6,11 @@ public class CustomButton : Button
 {
     public string data;
 
+    void Start()
+    {
+        GUIManager.Instance.Register(data, this);
+    }
+
     public void ClickUpgrade()
     {
         var split = data.Split('|');
