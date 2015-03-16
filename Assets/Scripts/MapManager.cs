@@ -49,7 +49,16 @@ public class MapManager : MonoBehaviour
     private Rect[] _atlasEntries;
     private Dictionary<int, Dictionary<int, GameObject>> _sectorMap;
 
-    public static MapManager Instance { get { return _instance; } }
+    public static MapManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+                _instance = GameObject.FindObjectOfType<MapManager>();
+            return _instance;
+        }
+    }
+
     public Dictionary<string, float> PlanetTypeSpawnTable { get { return _planetTypeSpawnTable; } }
     public Dictionary<string, TextureAtlasDetails> PlanetTextureTable { get { return _planetTextureTable; } }
     public Dictionary<string, Dictionary<Inhabitance, float>> PlanetInhabitanceSpawnTable { get { return _planetInhabitanceSpawnTable; } }

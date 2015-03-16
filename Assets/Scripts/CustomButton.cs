@@ -6,7 +6,7 @@ public class CustomButton : Button
 {
     public string data;
 
-    void Start()
+    void Awake()
     {
         GUIManager.Instance.Register(data, this);
     }

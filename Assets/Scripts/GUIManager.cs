@@ -6,7 +6,15 @@ public class GUIManager : MonoBehaviour
     private static GUIManager _instance;
     private Dictionary<string, CustomButton> _interface;
 
-    public static GUIManager Instance { get { return _instance; } }
+    public static GUIManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+                _instance = GameObject.FindObjectOfType<GUIManager>();
+            return _instance;
+        }
+    }
 
     void Start()
     {
