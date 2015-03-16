@@ -4,7 +4,7 @@ using System.Collections;
 public class CommandShip : Squad
 {
     private const string TILE_TAG = "Tile";
-    private const string SECTOR_TAG = "Sector";
+    private const string SECTOR_TAG = "SectorCollider";
     private Sector _currentSector;
     private Tile _currentTile;
     private Ship _ship;

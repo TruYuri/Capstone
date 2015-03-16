@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     private const string COMMAND_SHIP_TAG = "CommandShip";
     private const string SQUAD_TAG = "Squad";
     private const string TILE_TAG = "Tile";
+    private const string SECTOR_TAG = "Sector";
     private const string COMMAND_SHIP_PREFAB = "CommandShip";
     private const string SQUAD_PREFAB = "Squad";
     private const string MOUSE_SCROLLWHEEL = "Mouse ScrollWheel";
@@ -85,10 +86,16 @@ public class Player : MonoBehaviour
         Camera.main.transform.LookAt(_commandShip.transform);
 	}
 	
-	
+	private void Control(GameObject gameObject)
+    {
+        _controlledObject = gameObject;
+        transform.position = _controlledObject.transform.position + _currentCameraDistance;
+    }
+
 	// Update is called once per frame
 	void Update () 
     {
+        // right click - control
         if (Input.GetMouseButtonDown(1))
         {
             RaycastHit hit;
@@ -98,20 +105,20 @@ public class Player : MonoBehaviour
                 switch(hit.collider.tag)
                 {
                     case TILE_TAG:
+                        Control(hit.collider.gameObject);
+                        GUIManager.Instance.UpdateTileMenu(hit.collider.GetComponent<Tile>());
+                        break;
                     case COMMAND_SHIP_TAG:
                     case SQUAD_TAG:
-                        _controlledObject = hit.collider.gameObject;
-                        transform.position = _controlledObject.transform.position + _currentCameraDistance;
+                        Control(hit.collider.gameObject);
+                        GUIManager.Instance.UpdateSquadMenu(hit.collider.GetComponent<Squad>());
                         break;
                 }
             }
         }
         
         if(Input.GetKey(KeyCode.C))
-        {
-            _controlledObject = _commandShip.gameObject;
-            transform.position = _controlledObject.transform.position + _currentCameraDistance;
-        }
+            Control(_commandShip.gameObject);
 
         var scrollChange = Input.GetAxis(MOUSE_SCROLLWHEEL);
         Camera.main.transform.position += 10.0f * scrollChange * Camera.main.transform.forward;
@@ -165,14 +172,16 @@ public class Player : MonoBehaviour
                 transform.position = _commandShip.transform.position + _currentCameraDistance;
             }
         }
+
+        UpdateSquad();
     }
 
-    public void UpgradeResearch(string type, string research, string property)
+    public bool UpgradeResearch(string type, string research, string property)
     {
         if(type == "Military")
-            _militaryResearch.GetResearch(research).UpgradeResearch(property, _numResearchStations);
-        else
-            _scientificResearch.GetResearch(research).UpgradeResearch(property, _numResearchStations);
+            return _militaryResearch.GetResearch(research).UpgradeResearch(property, _numResearchStations);
+
+        return _scientificResearch.GetResearch(research).UpgradeResearch(property, _numResearchStations);
     }
 
     private void UpdateSelectedPlanet()
@@ -182,7 +191,23 @@ public class Player : MonoBehaviour
 
     private void UpdateSquad()
     {
-
+        if (Input.GetMouseButton(0))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit))
+            {
+                switch(hit.collider.tag)
+                {
+                    case TILE_TAG:
+                        break;
+                    case SECTOR_TAG: // empty space
+                        break;
+                    case SQUAD_TAG:
+                        break;
+                }
+            }
+        }
     }
 
 	public Ship GetShip(string name)

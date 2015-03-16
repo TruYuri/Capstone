@@ -23,9 +23,12 @@ public class ComplexResearch : Research
         upgrades.Add(CAPACITY, 0);
     }
 
-    public override void UpgradeResearch(string name, int stations)
+    public override bool UpgradeResearch(string name, int stations)
     {
-        base.UpgradeResearch(name, stations);
+        var meetsCriteria = base.UpgradeResearch(name, stations);
+
+        if (!meetsCriteria)
+            return false;
 
         switch (name)
         {
@@ -36,6 +39,8 @@ public class ComplexResearch : Research
                 UpgradeCapacity();
                 break;
         }
+
+        return true;
     }
 
     private void UpgradeDefense()

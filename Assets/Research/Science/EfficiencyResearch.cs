@@ -20,9 +20,12 @@ public class EfficiencyResearch : Research
         upgrades.Add(RESOURCE_TRANSPORT, 0);
     }
 
-    public override void UpgradeResearch(string name, int stations)
+    public override bool UpgradeResearch(string name, int stations)
     {
-        base.UpgradeResearch(name, stations);
+        var meetsCriteria = base.UpgradeResearch(name, stations);
+
+        if (!meetsCriteria)
+            return false;
 
         switch(name)
         {
@@ -39,6 +42,8 @@ public class EfficiencyResearch : Research
                 UpgradeResourceTransport();
                 break;
         }
+
+        return true;
     }
 
     private void UpgradeGathering()

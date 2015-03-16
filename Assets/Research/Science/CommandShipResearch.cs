@@ -21,9 +21,12 @@ public class CommandShipResearch : Research
         upgrades.Add(THRUSTERS, 0);
     }
 
-    public override void UpgradeResearch(string name, int stations)
+    public override bool UpgradeResearch(string name, int stations)
     {
-        base.UpgradeResearch(name, stations);
+        var meetsCriteria = base.UpgradeResearch(name, stations);
+
+        if (!meetsCriteria)
+            return false;
 
         switch (name)
         {
@@ -43,6 +46,8 @@ public class CommandShipResearch : Research
                 UpgradeThrusters();
                 break;
         }
+
+        return true;
     }
 
     private void UpgradeArmor()
@@ -51,13 +56,14 @@ public class CommandShipResearch : Research
         commandShip.Hull += 3.0f;
     }
 
-    private void UpgradePlating()
+    private bool UpgradePlating()
     {
         if (upgrades[ARMOR] < 5)
-            return;
+            return false;
 
         upgrades[PLATING]++;
         commandShip.Protection = upgrades[PLATING] * 0.02f;
+        return true;
     }
 
     private void UpgradePlasmas()
@@ -66,14 +72,15 @@ public class CommandShipResearch : Research
         commandShip.Firepower += 2.0f;
     }
 
-    private void UpgradeTorpedoes()
+    private bool UpgradeTorpedoes()
     {
         if (upgrades[PLASMAS] < 5)
-            return;
+            return false;
 
         commandShip.Firepower -= upgrades[TORPEDOES] * 0.02f;
         upgrades[TORPEDOES]++;
         commandShip.Firepower += upgrades[TORPEDOES] * 0.02f;
+        return true;
     }
 
     private void UpgradeThrusters()

@@ -19,9 +19,12 @@ public class FighterResearch : Research
         upgrades.Add(THRUSTERS, 0);
     }
 
-    public override void UpgradeResearch(string name, int stations) 
+    public override bool UpgradeResearch(string name, int stations) 
     {
-        base.UpgradeResearch(name, stations);
+        var meetsCriteria = base.UpgradeResearch(name, stations);
+
+        if (!meetsCriteria)
+            return false;
 
         switch(name)
         {
@@ -29,8 +32,7 @@ public class FighterResearch : Research
                 UpgradeArmor();
                 break;
             case PLATING:
-                UpgradePlating();
-                break;
+                return UpgradePlating();
             case PLASMAS:
                 UpgradePlasmas();
                 break;
@@ -38,6 +40,8 @@ public class FighterResearch : Research
                 UpgradeThrusters();
                 break;
         }
+
+        return true;
     }
 
     private void UpgradeArmor()
@@ -46,13 +50,14 @@ public class FighterResearch : Research
         fighterShip.Hull += 0.25f;
     }
 
-    private void UpgradePlating()
+    private bool UpgradePlating()
     {
         if (upgrades[ARMOR] < 5)
-            return;
+            return false;
 
         upgrades[PLATING]++;
         fighterShip.Protection = upgrades[PLATING] * 0.02f;
+        return true;
     }
 
     private void UpgradePlasmas()

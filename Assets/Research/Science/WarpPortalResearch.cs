@@ -16,9 +16,12 @@ public class WarpPortalResearch : Research
         upgrades.Add(DEFENSE, 0);
     }
 
-    public override void UpgradeResearch(string name, int stations)
+    public override bool UpgradeResearch(string name, int stations)
     {
-        base.UpgradeResearch(name, stations);
+        var meetsCriteria = base.UpgradeResearch(name, stations);
+
+        if (!meetsCriteria)
+            return false;
 
         switch(name)
         {
@@ -29,6 +32,8 @@ public class WarpPortalResearch : Research
                 UpgradeDefense();
                 break;
         }
+
+        return true;
     }
 
     private void UpgradeRange()

@@ -19,9 +19,12 @@ public class TransportResearch : Research
         upgrades.Add(CAPACITY, 0);
     }
 
-    public override void UpgradeResearch(string name, int stations)
+    public override bool UpgradeResearch(string name, int stations)
     {
-        base.UpgradeResearch(name, stations);
+        var meetsCriteria = base.UpgradeResearch(name, stations);
+
+        if (!meetsCriteria)
+            return false;
 
         switch (name)
         {
@@ -38,6 +41,8 @@ public class TransportResearch : Research
                 UpgradeCapacity();
                 break;
         }
+
+        return true;
     }
 
     private void UpgradeArmor()
@@ -46,13 +51,14 @@ public class TransportResearch : Research
         transportShip.Hull += 2.0f;
     }
 
-    private void UpgradePlating()
+    private bool UpgradePlating()
     {
         if (upgrades[ARMOR] < 5)
-            return;
+            return false;
 
         upgrades[PLATING]++;
         transportShip.Protection = upgrades[PLATING] * 0.02f;
+        return true;
     }
 
     private void UpgradeThrusters()

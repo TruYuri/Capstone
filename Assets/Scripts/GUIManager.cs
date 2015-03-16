@@ -37,4 +37,14 @@ public class GUIManager : MonoBehaviour
         if(!_interface.ContainsKey(name))
             _interface.Add(name, btn);
     }
+
+    public void UpdateSquadMenu(Squad squad)
+    {
+
+    }
+
+    public void UpdateTileMenu(Tile tile)
+    {
+
+    }
 }

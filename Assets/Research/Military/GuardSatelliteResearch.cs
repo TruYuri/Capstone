@@ -19,9 +19,12 @@ public class GuardSatelliteResearch : Research
         upgrades.Add(TORPEDOES, 0);
     }
 
-    public override void UpgradeResearch(string researchName, int stations)
+    public override bool UpgradeResearch(string researchName, int stations)
     {
-        base.UpgradeResearch(researchName, stations);
+        var meetsCriteria = base.UpgradeResearch(name, stations);
+
+        if (!meetsCriteria)
+            return false;
 
         switch (researchName)
         {
@@ -29,8 +32,7 @@ public class GuardSatelliteResearch : Research
                 AdvanceArmor();
                 break;
             case PLATING:
-                AdvancePlating();
-                break;
+                return AdvancePlating();
             case PLASMAS:
                 AdvancePlasmas();
                 break;
@@ -38,6 +40,8 @@ public class GuardSatelliteResearch : Research
                 AdvanceTorpedoes();
                 break;
         }
+
+        return true;
     }
 
     private void AdvanceArmor()
@@ -46,13 +50,14 @@ public class GuardSatelliteResearch : Research
         guardSatelliteShip.Hull += 0.5f;
     }
 
-    private void AdvancePlating()
+    private bool AdvancePlating()
     {
         if (upgrades[ARMOR] < 5)
-            return;
+            return false;
 
         upgrades[PLATING]++;
         guardSatelliteShip.Protection = upgrades[PLATING] * 0.02f;
+        return true;
     }
 
     private void AdvancePlasmas()

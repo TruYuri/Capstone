@@ -16,13 +16,15 @@ public class Research
         this.name = name;
     }
 
-    public virtual void UpgradeResearch(string name, int stations)
+    public virtual bool UpgradeResearch(string name, int stations)
     {
         var invalidLevel = upgrades[name] >= 10;
-        var invalidStations = stations < upgrades[name] * (level + 1);
+        var invalidStations = stations < (upgrades[name] + 1) * (level);
 
         if (invalidLevel || invalidStations)
-            return;
+            return false;
+
+        return true;
     }
 
     public virtual bool Unlock() 

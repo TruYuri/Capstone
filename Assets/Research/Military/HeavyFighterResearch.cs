@@ -23,9 +23,12 @@ public class HeavyFighterResearch : Research
         upgrades.Add(CAPACITY, 0);
     }
 
-    public override void UpgradeResearch(string name, int stations)
+    public override bool UpgradeResearch(string name, int stations)
     {
-        base.UpgradeResearch(name, stations);
+        var meetsCriteria = base.UpgradeResearch(name, stations);
+
+        if (!meetsCriteria)
+            return false;
 
         switch (name)
         {
@@ -33,14 +36,12 @@ public class HeavyFighterResearch : Research
                 UpgradeArmor();
                 break;
             case PLATING:
-                UpgradePlating();
-                break;
+                return UpgradePlating();
             case PLASMAS:
                 UpgradePlasmas();
                 break;
             case TORPEDOES:
-                UpgradeTorpedoes();
-                break;
+                return UpgradeTorpedoes();
             case THRUSTERS:
                 UpgradeThrusters();
                 break;
@@ -48,6 +49,8 @@ public class HeavyFighterResearch : Research
                 UpgradeCapacity();
                 break;
         }
+
+        return true;
     }
 
     private void UpgradeArmor()
@@ -56,13 +59,14 @@ public class HeavyFighterResearch : Research
         heavyFighterShip.Hull += 0.5f;
     }
 
-    private void UpgradePlating()
+    private bool UpgradePlating()
     {
         if (upgrades[ARMOR] < 5)
-            return;
+            return false;
 
         upgrades[PLATING]++;
         heavyFighterShip.Protection = upgrades[PLATING] * 0.02f;
+        return true;
     }
 
     private void UpgradePlasmas()
@@ -71,14 +75,15 @@ public class HeavyFighterResearch : Research
         heavyFighterShip.Firepower += 0.75f;
     }
 
-    private void UpgradeTorpedoes()
+    private bool UpgradeTorpedoes()
     {
         if (upgrades[PLASMAS] < 5)
-            return;
+            return false;
 
         heavyFighterShip.Firepower -= upgrades[TORPEDOES] * 0.02f;
         upgrades[TORPEDOES]++;
         heavyFighterShip.Firepower += upgrades[TORPEDOES] * 0.02f;
+        return true;
     }
 
     private void UpgradeThrusters()

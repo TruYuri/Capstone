@@ -23,9 +23,12 @@ public class BehemothResearch : Research
         upgrades.Add(CAPACITY, 0);
     }
 
-    public override void UpgradeResearch(string name, int stations)
+    public override bool UpgradeResearch(string name, int stations)
     {
-        base.UpgradeResearch(name, stations);
+        var meetsCriteria = base.UpgradeResearch(name, stations);
+
+        if (!meetsCriteria)
+            return false;
 
         switch (name)
         {
@@ -33,14 +36,12 @@ public class BehemothResearch : Research
                 UpgradeArmor();
                 break;
             case PLATING:
-                UpgradePlating();
-                break;
+                return UpgradePlating();
             case PLASMAS:
                 UpgradePlasmas();
                 break;
             case TORPEDOES:
-                UpgradeTorpedoes();
-                break;
+                return UpgradeTorpedoes();
             case THRUSTERS:
                 UpgradeThrusters();
                 break;
@@ -48,6 +49,8 @@ public class BehemothResearch : Research
                 UpgradeCapacity();
                 break;
         }
+
+        return true;
     }
 
     private void UpgradeArmor()
@@ -56,13 +59,14 @@ public class BehemothResearch : Research
         behemothShip.Hull += 3.0f;
     }
 
-    private void UpgradePlating()
+    private bool UpgradePlating()
     {
         if (upgrades[ARMOR] < 5)
-            return;
+            return false;
 
         upgrades[PLATING]++;
         behemothShip.Protection = upgrades[PLATING] * 0.02f;
+        return true;
     }
 
     private void UpgradePlasmas()
@@ -71,14 +75,15 @@ public class BehemothResearch : Research
         behemothShip.Firepower += 2.0f;
     }
 
-    private void UpgradeTorpedoes()
+    private bool UpgradeTorpedoes()
     {
         if (upgrades[PLASMAS] < 5)
-            return;
+            return false;
 
         behemothShip.Firepower -= upgrades[TORPEDOES] * 0.02f;
         upgrades[TORPEDOES]++;
         behemothShip.Firepower += upgrades[TORPEDOES] * 0.02f;
+        return true;
     }
 
     private void UpgradeThrusters()
