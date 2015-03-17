@@ -25,7 +25,6 @@ public class GameManager : MonoBehaviour
         var playerObj = Resources.Load<GameObject>(PLAYER_PREFAB);
         _player = Instantiate(playerObj) as GameObject;
         _instance = this;
-        // create command ship - move this to automatic game functionality later?
 	}
 	
 	// Update is called once per frame

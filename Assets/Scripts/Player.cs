@@ -106,12 +106,12 @@ public class Player : MonoBehaviour
                 {
                     case TILE_TAG:
                         Control(hit.collider.gameObject);
-                        GUIManager.Instance.UpdateTileMenu(hit.collider.GetComponent<Tile>());
+                        GUIManager.Instance.TileSelected(hit.collider.GetComponent<Tile>());
                         break;
                     case COMMAND_SHIP_TAG:
                     case SQUAD_TAG:
                         Control(hit.collider.gameObject);
-                        GUIManager.Instance.UpdateSquadMenu(hit.collider.GetComponent<Squad>());
+                        GUIManager.Instance.SquadSelected(hit.collider.GetComponent<Squad>());
                         break;
                 }
             }
@@ -200,10 +200,13 @@ public class Player : MonoBehaviour
                 switch(hit.collider.tag)
                 {
                     case TILE_TAG:
+                        GUIManager.Instance.SquadToTile(_controlledObject.GetComponent<Squad>(), hit.collider.GetComponent<Tile>());
                         break;
                     case SECTOR_TAG: // empty space
+                        GUIManager.Instance.SquadToSpace(_controlledObject.GetComponent<Squad>(), hit.point);
                         break;
                     case SQUAD_TAG:
+                        GUIManager.Instance.SquadToSquad(_controlledObject.GetComponent<Squad>(), hit.collider.GetComponent<Squad>());
                         break;
                 }
             }

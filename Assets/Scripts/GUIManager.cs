@@ -38,12 +38,35 @@ public class GUIManager : MonoBehaviour
             _interface.Add(name, btn);
     }
 
-    public void UpdateSquadMenu(Squad squad)
+    //
+    // These functions update UI when the object is selected
+    //
+    public void SquadSelected(Squad squad)
+    {
+    }
+
+    public void TileSelected(Tile tile)
     {
 
     }
 
-    public void UpdateTileMenu(Tile tile)
+    //
+    // These functions update and display the menu when a command is given
+    //
+
+    // Notes: Tiles have squads, but they may be empty.
+    // Tiles and squads should check for enemy/friendly before choosing how to make the new menu
+    public void SquadToSpace(Squad squad, Vector3 coords)
+    {
+
+    }
+
+    public void SquadToTile(Squad squad, Tile tile)
+    {
+    }
+
+    // note: "squad2" isn't necessarily hostile. Handle that stuff here.
+    public void SquadToSquad(Squad playerSquad, Squad squad2)
     {
 
     }
