@@ -4,8 +4,6 @@ using System.Collections.Generic;
 
 public class Tile : MonoBehaviour
 {
-    private static System.Random Generator = new System.Random();
-
     private const string PLANET_SMALL_SPAWN_DETAIL = "SmallSizeSpawnRate";
     private const string PLANET_SMALL_RESOURCE_MIN_DETAIL = "ResourceAmountSmallMinimum";
     private const string PLANET_SMALL_RESOURCE_MAX_DETAIL = "ResourceAmountSmallMaximum";
@@ -45,7 +43,7 @@ public class Tile : MonoBehaviour
 
         // Determine tile type
         var mapManager = MapManager.Instance;
-        var chance = (float)Generator.NextDouble();
+        var chance = (float)GameManager.Generator.NextDouble();
         foreach(var planet in mapManager.PlanetTypeSpawnTable)
         {
             if (chance <= planet.Value)
@@ -59,18 +57,18 @@ public class Tile : MonoBehaviour
             return;
 
         // Determine Size, Population, and Resource Amount
-        chance = (float)Generator.NextDouble();
+        chance = (float)GameManager.Generator.NextDouble();
         if (chance < float.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_SPAWN_DETAIL]))
         {
             _tileSize = TileSize.Small;
 
             var minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_POPULATION_MIN_DETAIL]);
             var maximum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_POPULATION_MAX_DETAIL]);
-            _population = Generator.Next(minimum, maximum + 1);
+            _population = GameManager.Generator.Next(minimum, maximum + 1);
 
             minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_RESOURCE_MIN_DETAIL]);
             maximum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_RESOURCE_MAX_DETAIL]);
-            _resourceCount = Generator.Next(minimum, maximum + 1);
+            _resourceCount = GameManager.Generator.Next(minimum, maximum + 1);
         }
         else
         {
@@ -78,15 +76,15 @@ public class Tile : MonoBehaviour
 
             var minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_POPULATION_MIN_DETAIL]);
             var maximum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_POPULATION_MAX_DETAIL]);
-            _population = Generator.Next(minimum, maximum + 1);
+            _population = GameManager.Generator.Next(minimum, maximum + 1);
 
             minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_RESOURCE_MIN_DETAIL]);
             maximum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_RESOURCE_MAX_DETAIL]);
-            _resourceCount = Generator.Next(minimum, maximum + 1);
+            _resourceCount = GameManager.Generator.Next(minimum, maximum + 1);
         }
 
         // Determine Inhabitance
-        chance = (float)Generator.NextDouble();
+        chance = (float)GameManager.Generator.NextDouble();
         foreach(var inhabit in mapManager.PlanetInhabitanceSpawnTable[_planetType])
         {
             if (chance <= inhabit.Value)
@@ -98,7 +96,7 @@ public class Tile : MonoBehaviour
 
         // Determine Resource Type
         _resourceType = Resource.None;
-        chance = (float)Generator.NextDouble();
+        chance = (float)GameManager.Generator.NextDouble();
         foreach (var resource in mapManager.PlanetResourceSpawnTable[_planetType])
         {
             if (chance <= resource.Value)

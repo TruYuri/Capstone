@@ -40,17 +40,7 @@ public class CommandShip : Squad
         }
         else if (other.tag == SECTOR_TAG)
         {
-            var sector = other.transform.parent.GetComponent<Sector>();
-
-            if (_currentSector == null || (sector.transform.position - this.transform.position).sqrMagnitude
-                < (_currentSector.transform.position - this.transform.position).sqrMagnitude)
-            {
-                if (_currentSector != null)
-                    _currentSector.GetComponent<Renderer>().material.color = Color.white;
-                _currentSector = sector;
-                _currentSector.GetComponent<Renderer>().material.color = Color.green;
-                MapManager.Instance.GenerateNewSectors(_currentSector);
-            }
+            CheckSector(other.transform.parent.GetComponent<Sector>());
         }
     }
 
@@ -58,17 +48,7 @@ public class CommandShip : Squad
     {
         if (other.tag == SECTOR_TAG)
         {
-            var sector = other.transform.parent.GetComponent<Sector>();
-
-            if (_currentSector == null || (sector.transform.position - this.transform.position).sqrMagnitude
-                < (_currentSector.transform.position - this.transform.position).sqrMagnitude)
-            {
-                if (_currentSector != null)
-                    _currentSector.GetComponent<Renderer>().material.color = Color.white;
-                _currentSector = sector;
-                _currentSector.GetComponent<Renderer>().material.color = Color.green;
-                MapManager.Instance.GenerateNewSectors(_currentSector);
-            }
+            CheckSector(other.transform.parent.GetComponent<Sector>());
         }
     }
 
@@ -76,6 +56,20 @@ public class CommandShip : Squad
     {
         if (other.tag == TILE_TAG)
         {
+        }
+    }
+
+    private void CheckSector(Sector sector)
+    {
+        if (_currentSector == null || (sector.transform.position - this.transform.position).sqrMagnitude
+            < (_currentSector.transform.position - this.transform.position).sqrMagnitude)
+        {
+            if (_currentSector != null)
+                _currentSector.GetComponent<Renderer>().material.color = Color.white;
+            _currentSector = sector;
+            _currentSector.GetComponent<Renderer>().material.color = Color.green;
+            MapManager.Instance.GenerateNewSectors(_currentSector);
+            GameManager.Instance.EndTurn();
         }
     }
 }

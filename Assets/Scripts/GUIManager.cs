@@ -107,13 +107,16 @@ public class GUIManager : MonoBehaviour
     //
     public void SquadCollideSquad(Squad playerSquad, Squad squad2, bool isTile)
     {
-        if (squad2.Team == Player.Instance.Team) // ask to merge, exchange units, cancel
+        if (squad2.Team == Player.Instance.Team) // ask to merge, exchange units, deploy (if tile), cancel
         {
+            if(isTile)
+            {
 
+            }
         }
         else // enemy - show combat screen
         {
-            if(squad2.Size == 0) // empty fleet around planet
+            if(isTile && squad2.Size == 0) // empty fleet around planet
             {
 
             }

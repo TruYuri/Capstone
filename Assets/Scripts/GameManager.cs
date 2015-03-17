@@ -3,6 +3,7 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour 
 {
+    public static System.Random Generator = new System.Random();
     private const string PLAYER_PREFAB = "Player";
 
     private static GameManager _instance;
@@ -32,4 +33,9 @@ public class GameManager : MonoBehaviour
     {
 	
 	}
+
+    public void EndTurn()
+    {
+
+    }
 }
