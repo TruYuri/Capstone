@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public class Squad : MonoBehaviour 
 {
+    private const string SQUAD_TAG = "Squad";
     private List<Ship> _ships;
     private Team _team;
 
@@ -20,6 +21,14 @@ public class Squad : MonoBehaviour
         if (_ships == null)
             _ships = new List<Ship>();
 	}
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if(collision.collider.tag == SQUAD_TAG)
+        {
+
+        }
+    }
 	
 	// Update is called once per frame
 	void Update () 

@@ -27,7 +27,15 @@ public class Tile : MonoBehaviour
     private int _resourceCount;
     private Team _owner;
     private Structure _structure;
+
     public Bounds Bounds { get { return _bounds; } }
+    public string PlanetType { get { return _planetType; } }
+    public int Population { get { return _population; } }
+    public Inhabitance PlanetInhabitanceLevel { get { return _planetInhabitance; } }
+    public Resource ResourceType { get { return _resourceType; } }
+    public int ResourceCount { get { return _resourceCount; } }
+    public Team Team { get { return _owner; } }
+    public Structure DeployedStructure { get { return _structure; } }
 
 	// Use this for initialization
 	void Start () 

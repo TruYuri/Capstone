@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     private int _numResearchStations;
 
     public static Player Instance { get { return _instance; } }
+    public Team Team { get { return _team; } }
 
 	void Start () 
     {
