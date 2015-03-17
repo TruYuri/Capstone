@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CustomUI : MonoBehaviour {
+public class CustomUI : MonoBehaviour 
+{
+    public string data;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    void Start()
+    {
+        // GUIManager.Instance.Register(data, this);
+    }
+
+    public void ClickUpgrade()
+    {
+        var split = data.Split('|');
+        var upgrade = Player.Instance.UpgradeResearch(split[0], split[1], split[2]);
+    }
 }

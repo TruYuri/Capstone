@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class GUIManager : MonoBehaviour 
 {
     private static GUIManager _instance;
-    private Dictionary<string, CustomButton> _interface;
+    private Dictionary<string, CustomUI> _interface;
 
     public static GUIManager Instance
     {
@@ -21,7 +21,7 @@ public class GUIManager : MonoBehaviour
         _instance = this;
 
         if(_interface == null)
-            _interface = new Dictionary<string, CustomButton>();
+            _interface = new Dictionary<string, CustomUI>();
     }
 
     void Update()
@@ -29,10 +29,10 @@ public class GUIManager : MonoBehaviour
 
     }
 
-    public void Register(string name, CustomButton btn)
+    public void Register(string name, CustomUI btn)
     {
         if (_interface == null)
-            _interface = new Dictionary<string, CustomButton>();
+            _interface = new Dictionary<string, CustomUI>();
 
         if(!_interface.ContainsKey(name))
             _interface.Add(name, btn);
