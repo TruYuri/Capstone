@@ -78,7 +78,7 @@ public class GUIManager : MonoBehaviour
 
     public void SquadToTile(Squad squad, Tile tile)
     {
-        if (squad.Team == Player.Instance.Team) // ask to merge/defend, deploy ships, cancel
+        if (squad.Team == Player.Instance.Team) // ask to confirm, cancel
         {
 
         }
@@ -105,7 +105,7 @@ public class GUIManager : MonoBehaviour
     //
     // These functions update and enable UI when squads collide with the appropriate object
     //
-    public void SquadCollideSquad(Squad playerSquad, Squad squad2)
+    public void SquadCollideSquad(Squad playerSquad, Squad squad2, bool isTile)
     {
         if (squad2.Team == Player.Instance.Team) // ask to merge, exchange units, cancel
         {
@@ -114,6 +114,10 @@ public class GUIManager : MonoBehaviour
         else // enemy - show combat screen
         {
             if(squad2.Size == 0) // empty fleet around planet
+            {
+
+            }
+            else
             {
 
             }

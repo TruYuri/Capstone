@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class Squad : MonoBehaviour 
 {
     private const string SQUAD_TAG = "Squad";
+    private const string TILE_TAG = "Tile";
     private List<Ship> _ships;
     private Team _team;
 
@@ -12,6 +13,8 @@ public class Squad : MonoBehaviour
         get { return _team; }
         set { _team = value; }
     }
+
+    public List<Ship> Ships { get { return _ships; } }
 
     public int Size { get { return _ships.Count; } }
 
@@ -24,9 +27,14 @@ public class Squad : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.collider.tag == SQUAD_TAG)
+        switch(collision.collider.tag)
         {
-
+            case TILE_TAG:
+                GUIManager.Instance.SquadCollideSquad(this, collision.gameObject.GetComponent<Squad>(), true);
+                break;
+            case SQUAD_TAG:
+                GUIManager.Instance.SquadCollideSquad(this, collision.gameObject.GetComponent<Squad>(), false);
+                break;
         }
     }
 	
