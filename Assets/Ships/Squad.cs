@@ -7,7 +7,8 @@ public class Squad : MonoBehaviour
     private const string TILE_TAG = "Tile";
     private List<Ship> _ships;
     private Team _team;
-    private float _power;
+    private float _shipPower;
+    private float _troopPower;
 
     public Team Team
     {
@@ -17,7 +18,8 @@ public class Squad : MonoBehaviour
 
     public List<Ship> Ships { get { return _ships; } }
     public int Size { get { return _ships.Count; } }
-    public float Power { get { return _power; } }
+    public float ShipPower { get { return _shipPower; } }
+    public float TroopPower { get { return _troopPower; } }
 
 	// Use this for initialization
 	void Start () 
@@ -28,18 +30,31 @@ public class Squad : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        // the only colliders are squads, so we can simplify stuff
+
+        var squad = collision.collider.GetComponent<Squad>();
+        if (squad == null)
+            return;
+
+        bool enemy = Player.Instance.Team != squad.Team;
+            
         switch(collision.collider.tag)
         {
             case TILE_TAG:
-                GUIManager.Instance.SquadCollideSquad(this, collision.gameObject.GetComponent<Squad>(), true);
+                if (enemy && _team == Player.Instance.Team)
+                {
+                    GameManager.Instance.AddEvent(new PlanetBattleEvent(this, collision.collider.GetComponent<Tile>()));
+                }
                 break;
             case SQUAD_TAG:
-                GUIManager.Instance.SquadCollideSquad(this, collision.gameObject.GetComponent<Squad>(), false);
+                if (enemy && _team == Player.Instance.Team)
+                {
+                    GameManager.Instance.AddEvent(new SquadBattleEvent(this, squad));
+                }
                 break;
         }
     }
-	
-    
+	   
 	// Update is called once per frame
 	void Update () 
     {
@@ -47,18 +62,21 @@ public class Squad : MonoBehaviour
 
     private void RecalculatePower()
     {
-        float hull = 0;
-        float firepower = 0;
-        float speed = 0;
+        float hull = 0, firepower = 0, speed = 0;
+        float primitive = 0, industrial = 0, spaceAge = 0;
 
         foreach(var ship in _ships)
         {
             hull += ship.Hull;
             firepower += ship.Firepower;
             speed += ship.Speed;
+            primitive += ship.PrimitivePopulation;
+            industrial += ship.IndustrialPopulation;
+            spaceAge += ship.SpaceAgePopulation;
         }
 
-        _power = firepower * 2.0f + speed * 1.5f + hull;
+        _shipPower = firepower * 2.0f + speed * 1.5f + hull;
+        _troopPower = primitive + industrial * 1.5f + spaceAge * 1.75f;
     }
 
     public void AddShip(Ship ship)
@@ -77,7 +95,7 @@ public class Squad : MonoBehaviour
 
     public Team Combat(Squad squad)
     {
-        float winC = (_power - squad.Power) / 100.0f * 0.5f + 0.5f;
+        float winC = (_shipPower - squad.ShipPower) / 100.0f * 0.5f + 0.5f;
         float winP = (float)GameManager.Generator.NextDouble();
 
         var winner = (winP < winC ? this : squad);
@@ -91,26 +109,89 @@ public class Squad : MonoBehaviour
 
         float damage = Mathf.Floor(hull * (1.0f - winC) * ((float)GameManager.Generator.NextDouble() * (1.25f - 0.75f) + 0.75f));
 
-        while(damage > 0.0f)
+        while(damage > 0.0f && Size > 0)
         {
             var randPos = GameManager.Generator.Next(0, Size);
             var ship = _ships[randPos];
 
+            damage -= ship.Hull;
             if (ship.Hull <= damage)
             {
-                damage -= ship.Hull;
-                RemoveShip(ship);
+                float saveChance = (float)GameManager.Generator.NextDouble();
+
+                if (saveChance >= _ships[randPos].Protection)  // add speedy = safer thing here
+                    RemoveShip(ship);
             }
             else
                 damage = 0.0f;
         }
 
+        if (Size == 0)
+            Destroy(winner.gameObject);
         Destroy(loser.gameObject);
         return winner.Team;
     }
 
     public Team Combat(Tile tile) // planet combat
     {
-        return Team.None;
+        float winC = (_troopPower - tile.Power) / 100.0f * 0.5f + 0.5f;
+        float winP = (float)GameManager.Generator.NextDouble();
+
+        var winner = winP < winC;
+
+        if (winner) // remove random soldiers from random ships in the fleet
+        {
+            int nTroops = 0;
+            foreach (var ship in _ships)
+            {
+                nTroops += ship.Population;
+            }
+
+            float damage = Mathf.Floor(nTroops * (1.0f - winC) * ((float)GameManager.Generator.NextDouble() * (1.25f - 0.75f) + 0.75f));
+
+            while (damage >= 1.0f && nTroops > 0)
+            {
+                var randShip = GameManager.Generator.Next(0, Size);
+                // somehow distribute probability around # troops and from which ships
+
+                while(_ships[randShip].Population == 0)
+                    randShip = GameManager.Generator.Next(0, Size);
+
+                damage -= 1.0f;
+                var randSoldier = GameManager.Generator.Next(0, _ships[randShip].Population);
+                float saveChance = (float)GameManager.Generator.NextDouble();
+                if(randSoldier < _ships[randShip].PrimitivePopulation)
+                {
+                    if(saveChance >= 0.2f)
+                    {
+                        _ships[randShip].PrimitivePopulation--;
+                        _ships[randShip].Population--;
+                        nTroops--;
+                    }
+                }
+                else if(randSoldier < _ships[randShip].IndustrialPopulation)
+                {
+                    if (saveChance >= 0.1f)
+                    {
+                        _ships[randShip].IndustrialPopulation--;
+                        _ships[randShip].Population--;
+                        nTroops--;
+                    }
+                }
+                else
+                {
+                    _ships[randShip].SpaceAgePopulation--;
+                    _ships[randShip].Population--;
+                    nTroops--;
+                }
+            }
+
+            tile.DestroyBase();
+            return _team;
+        }
+
+        if (Size == 0)
+            Destroy(this.gameObject);
+        return tile.Team;
     }
 }

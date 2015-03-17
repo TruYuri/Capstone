@@ -41,15 +41,22 @@ public class GUIManager : MonoBehaviour
     //
     // These functions update main UI when the object is selected
     //
+
+    private void SetUIElements(bool squad, bool battle, bool tile)
+    {
+        _interface["SquadMenu"].GetComponent<Canvas>().enabled = squad;
+        _interface["BattleMenu"].GetComponent<Canvas>().enabled = battle;
+    }
+
     public void SquadSelected(Squad squad)
     {
         if(squad.Team == Player.Instance.Team)
         {
-
+            SetUIElements(true, false, false);
         }
         else // enemy
         {
-
+            SetUIElements(false, false, false);
         }
     }
 
@@ -57,11 +64,11 @@ public class GUIManager : MonoBehaviour
     {
         if (tile.Team == Player.Instance.Team)
         {
-
+            SetUIElements(false, false, true);
         }
         else // enemy
         {
-
+            SetUIElements(false, false, true);
         }
     }
 
@@ -78,7 +85,7 @@ public class GUIManager : MonoBehaviour
 
     public void SquadToTile(Squad squad, Tile tile)
     {
-        if (squad.Team == Player.Instance.Team) // ask to confirm, cancel
+        if (tile.Team == Player.Instance.Team) // ask to confirm, cancel
         {
 
         }
@@ -101,29 +108,29 @@ public class GUIManager : MonoBehaviour
         }
     }
 
-
     //
     // These functions update and enable UI when squads collide with the appropriate object
     //
-    public void SquadCollideSquad(Squad playerSquad, Squad squad2, bool isTile)
+    public void SquadCollideSquad(Squad playerSquad, Squad squad2)
     {
         if (squad2.Team == Player.Instance.Team) // ask to merge, exchange units, deploy (if tile), cancel
         {
-            if(isTile)
-            {
-
-            }
         }
         else // enemy - show combat screen
         {
-            if(isTile && squad2.Size == 0) // empty fleet around planet
-            {
+            SetUIElements(false, true, false);
+        }
+    }
 
-            }
-            else
-            {
-
-            }
+    public void SquadCollideTile(Squad playerSquad, Tile tile) // planet defenses assumed empty here
+    {
+        if (tile.Team == Player.Instance.Team) // ask to merge, exchange units, deploy (if tile), cancel
+        {
+            _interface["Merge"].enabled = true;
+        }
+        else // enemy - show combat screen
+        {
+            SetUIElements(false, true, false);
         }
     }
 }

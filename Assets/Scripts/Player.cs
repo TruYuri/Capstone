@@ -39,19 +39,19 @@ public class Player : MonoBehaviour
         // TODO: .ini this
         _shipStats = new Dictionary<string, Ship>()
         {
-            { "Fighter", new Ship("Fighter", 1, 1, 5, 0) },
-            { "Transport", new Ship("Transport", 10, 0, 2, 100) },
-            { "Guard Satellite", new Ship("Guard Satellite", 2, 3, 0, 0) },
-            { "Heavy Fighter", new Ship("Heavy Fighter", 3, 3, 2, 10) },
-            { "Behemoth", new Ship("Behemoth", 20, 10, 1, 50) },
-            { "Command Ship", new Ship("Command Ship", 20, 2, 5, 0) },
-            { "Resource Transport", new Ship("Resource Transport", 50, 0, 1, 0) },
-            { "Gathering Complex", new Structure("Gathering Complex", 50, 0, 1, 0, 50, 50, 100) },
-            { "Research Complex", new Structure("Research Complex", 50, 0, 1, 0, 25, 100, 0) },
-            { "Military Complex", new Structure("Military Complex", 50, 0, 1, 0, 150, 500, 0) },
-            { "Base", new Structure("Base", 50, 0, 1, 0, 200, 1000, 100) },
-            { "Relay", new Relay("Relay", 20, 0, 1, 0, 1, 0) },
-            { "Warp Portal", new WarpPortal("Warp Portal", 20, 0, 1, 0, 2, 0)}
+            { "Fighter", new Ship("Fighter", 1, 1, 5, 0, false) },
+            { "Transport", new Ship("Transport", 10, 0, 2, 100, false) },
+            { "Guard Satellite", new Ship("Guard Satellite", 2, 3, 0, 0, true) },
+            { "Heavy Fighter", new Ship("Heavy Fighter", 3, 3, 2, 10, false) },
+            { "Behemoth", new Ship("Behemoth", 20, 10, 1, 50, false) },
+            { "Command Ship", new Ship("Command Ship", 20, 2, 5, 0, false) },
+            { "Resource Transport", new Ship("Resource Transport", 50, 0, 1, 0, false) },
+            { "Gathering Complex", new Structure("Gathering Complex", 50, 0, 1, 0, 50, 50, 100, false) },
+            { "Research Complex", new Structure("Research Complex", 50, 0, 1, 0, 25, 100, 0, false) },
+            { "Military Complex", new Structure("Military Complex", 50, 0, 1, 0, 150, 500, 0, false) },
+            { "Base", new Structure("Base", 50, 0, 1, 0, 200, 1000, 100, false) },
+            { "Relay", new Relay("Relay", 20, 0, 1, 0, 1, 0, false) },
+            { "Warp Portal", new WarpPortal("Warp Portal", 20, 0, 1, 0, 2, 0, false)}
         };
 
         // Initialize research trees
@@ -74,6 +74,7 @@ public class Player : MonoBehaviour
         var cmdShip = Resources.Load<GameObject>(COMMAND_SHIP_PREFAB);
         var commandShip = Instantiate(cmdShip) as GameObject;
         _commandShip = commandShip.GetComponent<CommandShip>();
+        _commandShip.Team = _team;
 
         _squads = new List<Squad>();
         _squads.Add(_commandShip);
@@ -85,9 +86,10 @@ public class Player : MonoBehaviour
         _controlledObject = _commandShip.gameObject;
         Camera.main.transform.position = _commandShip.transform.position + CAMERA_OFFSET;
         Camera.main.transform.LookAt(_commandShip.transform);
+        GUIManager.Instance.SquadSelected(_commandShip);
 	}
 	
-	private void Control(GameObject gameObject)
+	public void Control(GameObject gameObject)
     {
         _controlledObject = gameObject;
         transform.position = _controlledObject.transform.position + _currentCameraDistance;
@@ -96,6 +98,9 @@ public class Player : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
+        if (GameManager.Instance.Paused)
+            return;
+
         // right click - control
         if (Input.GetMouseButtonDown(1))
         {

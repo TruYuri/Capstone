@@ -18,8 +18,8 @@ public class Relay : Ship
         set { defense = value; }
     }
 
-    public Relay(string name, float hull, float firepower, float speed, int capacity, int range, float defense)
-        : base(name, hull, firepower, speed, capacity)
+    public Relay(string name, float hull, float firepower, float speed, int capacity, int range, float defense, bool isDefense)
+        : base(name, hull, firepower, speed, capacity, isDefense)
     {
         this.range = range;
         this.defense = defense;
@@ -27,7 +27,7 @@ public class Relay : Ship
 
     public override Ship Copy()
     {
-        var ship = new Relay(name, baseHull, baseFirepower, baseSpeed, baseCapacity, range, defense);
+        var ship = new Relay(name, baseHull, baseFirepower, baseSpeed, baseCapacity, range, defense, isDefense);
         ship.Hull = hull;
         ship.Firepower = firepower;
         ship.Speed = speed;

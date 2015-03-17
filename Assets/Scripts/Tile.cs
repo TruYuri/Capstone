@@ -25,6 +25,9 @@ public class Tile : MonoBehaviour
     private int _resourceCount;
     private Team _owner;
     private Structure _structure;
+    private List<Ship> _defenses;
+    private float _power;
+    private Squad _defenseSquad;
 
     public Bounds Bounds { get { return _bounds; } }
     public string PlanetType { get { return _planetType; } }
@@ -34,6 +37,7 @@ public class Tile : MonoBehaviour
     public int ResourceCount { get { return _resourceCount; } }
     public Team Team { get { return _owner; } }
     public Structure DeployedStructure { get { return _structure; } }
+    public float Power { get { return _power; } }
 
 	// Use this for initialization
 	void Start () 
@@ -114,6 +118,9 @@ public class Tile : MonoBehaviour
             if (_tileSize == TileSize.Small)
                 system.startSize *= 0.5f;
 
+            if (_population > 0)
+                _owner = Team.Indigineous;
+
             renderer.material.mainTexture = mapManager.PlanetTextureTable[_planetType].Texture;
             renderer.material.mainTextureOffset = mapManager.PlanetTextureTable[_planetType].TextureOffset;
             renderer.material.mainTextureScale = mapManager.PlanetTextureTable[_planetType].TextureScale;
@@ -122,7 +129,8 @@ public class Tile : MonoBehaviour
             renderer.enabled = true;
 
             this.GetComponent<SphereCollider>().enabled = true;
-            this.GetComponent<Squad>().enabled = true;
+            _defenseSquad = this.GetComponent<Squad>();
+            _defenseSquad.enabled = true;
         }
 	}
 
@@ -133,12 +141,76 @@ public class Tile : MonoBehaviour
         if (this.GetComponent<Renderer>().isVisible)
         {
             this.GetComponent<ParticleSystem>().enableEmission = true;
-            this.GetComponent<Collider>().enabled = true;
+            // this.GetComponent<Collider>().enabled = true;
         }
         else
         {
             this.GetComponent<ParticleSystem>().enableEmission = false;
-            this.GetComponent<Collider>().enabled = false;
+            // this.GetComponent<Collider>().enabled = false;
         }
 	}
+
+    public void AddDefense(Ship defense)
+    {
+        _defenses.Add(defense);
+        RecalculatePower();
+    }
+
+    public void DestroyBase()
+    {
+        _structure = null;
+        _defenses.Clear();
+        RecalculatePower();
+    }
+
+    public void Claim(Team team)
+    {
+        _owner = team;
+    }
+
+    public void Undeploy()
+    {
+        _defenseSquad.AddShip(_structure);
+        _structure = null;
+        RecalculatePower();
+    }
+
+    public void Deploy(Structure ship, Team owner)
+    {
+        _structure = ship;
+        RecalculatePower();
+    }
+
+    private void RecalculatePower()
+    {
+        _power = 0;
+        if (_owner == Team.Indigineous) // use indigineous
+        {
+            switch(_planetInhabitance)
+            {
+                case Inhabitance.Uninhabited:
+                    break;
+                case Inhabitance.Primitive:
+                    _power = _population;
+                    break;
+                case Inhabitance.Industrial:
+                    _power = _population * 1.5f;
+                    break;
+                case Inhabitance.SpaceAge:
+                    _power = _population * 1.75f;
+                    break;
+            }
+        }
+        else // use deployed
+        {
+            if (_structure == null)
+                return;
+
+            float primitive = _structure.PrimitivePopulation;
+            float industrial = _structure.IndustrialPopulation;
+            float spaceAge = _structure.SpaceAgePopulation;
+
+            _power = primitive + industrial * 1.5f + spaceAge * 1.75f + _structure.Defense;
+        }
+    }
 }
