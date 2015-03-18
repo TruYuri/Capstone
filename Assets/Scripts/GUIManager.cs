@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 
 public class GUIManager : MonoBehaviour 
 {
     private static GUIManager _instance;
     private Dictionary<string, CustomUI> _interface;
+
+    private const string LIST_PREFAB = "ShipListing";
 
     public static GUIManager Instance
     {
@@ -44,19 +47,35 @@ public class GUIManager : MonoBehaviour
 
     private void SetUIElements(bool squad, bool battle, bool tile)
     {
-        _interface["SquadMenu"].GetComponent<Canvas>().enabled = squad;
-        _interface["BattleMenu"].GetComponent<Canvas>().enabled = battle;
+        _interface["SquadMenu"].gameObject.SetActive(squad);
+        _interface["BattleMenu"].gameObject.SetActive(battle);
     }
 
     public void SquadSelected(Squad squad)
     {
+        var listEntry = Resources.Load<GameObject>(LIST_PREFAB);
+        foreach (Transform child in _interface["MainShipList"].transform) 
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        foreach(var ship in squad.Ships)
+        {
+            var entry = Instantiate(listEntry) as GameObject;
+            // icon
+            entry.transform.FindChild("Name").GetComponent<Text>().text = ship.Name;
+            // population icon will be static
+            entry.transform.FindChild("Population").GetComponent<Text>().text = ship.Population + " / " + ship.Capacity;
+            entry.transform.parent = _interface["MainShipList"].transform;
+        }
+
         if(squad.Team == Player.Instance.Team)
         {
             SetUIElements(true, false, false);
         }
         else // enemy
         {
-            SetUIElements(false, false, false);
+            SetUIElements(true, false, false);
         }
     }
 

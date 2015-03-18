@@ -43,7 +43,10 @@ public class Squad : MonoBehaviour
             case TILE_TAG:
                 if (enemy && _team == Player.Instance.Team)
                 {
-                    GameManager.Instance.AddEvent(new PlanetBattleEvent(this, collision.collider.GetComponent<Tile>()));
+                    if(squad.Size > 0)
+                        GameManager.Instance.AddEvent(new SquadBattleEvent(this, squad));
+                    else
+                        GameManager.Instance.AddEvent(new PlanetBattleEvent(this, collision.collider.GetComponent<Tile>()));
                 }
                 break;
             case SQUAD_TAG:

@@ -23,7 +23,7 @@ public class Tile : MonoBehaviour
     private TileSize _tileSize;
     private Resource _resourceType;
     private int _resourceCount;
-    private Team _owner;
+    private Team _team;
     private Structure _structure;
     private List<Ship> _defenses;
     private float _power;
@@ -35,7 +35,7 @@ public class Tile : MonoBehaviour
     public Inhabitance PlanetInhabitanceLevel { get { return _planetInhabitance; } }
     public Resource ResourceType { get { return _resourceType; } }
     public int ResourceCount { get { return _resourceCount; } }
-    public Team Team { get { return _owner; } }
+    public Team Team { get { return _team; } }
     public Structure DeployedStructure { get { return _structure; } }
     public float Power { get { return _power; } }
 
@@ -43,7 +43,6 @@ public class Tile : MonoBehaviour
 	void Start () 
     {
         _bounds = new UnityEngine.Bounds(this.transform.position, new Vector3(10, 10, 10));
-        _owner = Team.None;
 
         // Determine tile type
         var mapManager = MapManager.Instance;
@@ -118,9 +117,6 @@ public class Tile : MonoBehaviour
             if (_tileSize == TileSize.Small)
                 system.startSize *= 0.5f;
 
-            if (_population > 0)
-                _owner = Team.Indigineous;
-
             renderer.material.mainTexture = mapManager.PlanetTextureTable[_planetType].Texture;
             renderer.material.mainTextureOffset = mapManager.PlanetTextureTable[_planetType].TextureOffset;
             renderer.material.mainTextureScale = mapManager.PlanetTextureTable[_planetType].TextureScale;
@@ -131,6 +127,17 @@ public class Tile : MonoBehaviour
             this.GetComponent<SphereCollider>().enabled = true;
             _defenseSquad = this.GetComponent<Squad>();
             _defenseSquad.enabled = true;
+
+
+            if (_population > 0)
+            {
+                _team = Team.Indigineous;
+                _defenseSquad.Team = Team.Indigineous;
+            }
+
+            // debug
+            _team = Team.Union;
+            _defenseSquad.Team = Team.Union;
         }
 	}
 
@@ -141,12 +148,10 @@ public class Tile : MonoBehaviour
         if (this.GetComponent<Renderer>().isVisible)
         {
             this.GetComponent<ParticleSystem>().enableEmission = true;
-            // this.GetComponent<Collider>().enabled = true;
         }
         else
         {
             this.GetComponent<ParticleSystem>().enableEmission = false;
-            // this.GetComponent<Collider>().enabled = false;
         }
 	}
 
@@ -165,7 +170,8 @@ public class Tile : MonoBehaviour
 
     public void Claim(Team team)
     {
-        _owner = team;
+        _team = team;
+        _defenseSquad.Team = team;
     }
 
     public void Undeploy()
@@ -184,7 +190,7 @@ public class Tile : MonoBehaviour
     private void RecalculatePower()
     {
         _power = 0;
-        if (_owner == Team.Indigineous) // use indigineous
+        if (_team == Team.Indigineous) // use indigineous
         {
             switch(_planetInhabitance)
             {

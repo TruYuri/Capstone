@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
 public class Player : MonoBehaviour
@@ -161,7 +162,8 @@ public class Player : MonoBehaviour
 
     private void UpdateCommandShip()
     {
-        if (Input.GetMouseButton(0))
+        EventSystem eventSystem = EventSystem.current;
+        if (Input.GetMouseButton(0) && !eventSystem.IsPointerOverGameObject())
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
