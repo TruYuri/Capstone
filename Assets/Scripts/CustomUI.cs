@@ -45,4 +45,14 @@ public class CustomUI : MonoBehaviour
     {
         GUIManager.Instance.ListIndex = int.Parse(data);
     }
+
+	public void ResearchOpen()
+	{
+		GameManager.Instance.Paused = true;
+	}
+
+	public void ResearchClose()
+	{
+		GameManager.Instance.Paused = false;
+	}
 }
