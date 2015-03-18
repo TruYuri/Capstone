@@ -249,6 +249,6 @@ public class Player : MonoBehaviour
             _controlledSquad.Combat(gameEvent.Enemy.GetComponent<Squad>());
         else
             _controlledSquad.Combat(gameEvent.Enemy.GetComponent<Tile>());
-        GameManager.Instance.NextEvent();
+        gameEvent.Progress();
     }
 }

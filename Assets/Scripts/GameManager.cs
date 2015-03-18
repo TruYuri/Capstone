@@ -68,7 +68,7 @@ public class GameManager : MonoBehaviour
 	
 	void Update () 
     {
-       // NextEvent();
+       NextEvent();
 	}
 
     public void AddEvent(GameEvent gameEvent)

@@ -20,7 +20,11 @@ public class GameEvent
 	// Use this for initialization
 	public virtual void Begin () 
     {
+	}
+
+    public virtual void Progress()
+    {
         _remainingTurns--;
         _stage = (_remainingTurns == 0 ? GameEventStage.End : GameEventStage.Continue);
-	}
+    }
 }

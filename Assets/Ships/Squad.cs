@@ -32,12 +32,18 @@ public class Squad : MonoBehaviour
 	// Use this for initialization
 	void Start () 
     {
-        _ships = new List<Ship>();
-        _collidingSquads = new List<Squad>();
+        if(_ships == null)
+            _ships = new List<Ship>();
+        if(_collidingSquads == null)
+            _collidingSquads = new List<Squad>();
 	}
 
     void OnCollisionEnter(Collision collision)
     {
+        if (_ships == null)
+            _ships = new List<Ship>();
+        if (_collidingSquads == null)
+            _collidingSquads = new List<Squad>();
         // the only colliders are squads, so we can simplify stuff
 
         var squad = collision.collider.GetComponent<Squad>();
@@ -187,9 +193,9 @@ public class Squad : MonoBehaviour
             var randPos = GameManager.Generator.Next(0, Size);
             var ship = _ships[randPos];
 
-            damage -= ship.Hull;
             if (ship.Hull <= damage)
             {
+                damage -= ship.Hull;
                 float saveChance = (float)GameManager.Generator.NextDouble();
 
                 if (saveChance >= _ships[randPos].Protection)  // add speedy = safer thing here
