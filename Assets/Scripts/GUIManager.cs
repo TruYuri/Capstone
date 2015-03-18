@@ -61,7 +61,7 @@ public class GUIManager : MonoBehaviour
         if (Player.Instance.Team == squad.Team)
         {
             split.interactable = squad.Size > 0;
-            merge.interactable = squad2 != null || tile != null;
+            merge.interactable = squad2 != null || (squad2 != null && tile.Team == squad.Team);
             deploy.interactable = _listIndex != -1 && squad.Ships[_listIndex].ShipType == ShipType.Structure && tile != null && tile.DeployedStructure == null;
         }
         else
@@ -102,11 +102,13 @@ public class GUIManager : MonoBehaviour
         }
 
         SetUIElements(true, false, false);
+        SetMainListControls(squad, null, null);
     }
 
     public void TileSelected(Tile tile)
     {
-        SquadSelected(tile.gameObject.GetComponent<Squad>());
+        var squad = tile.gameObject.GetComponent<Squad>();
+        SquadSelected(squad);
 
         if (tile.Team == Player.Instance.Team)
         {
@@ -116,6 +118,7 @@ public class GUIManager : MonoBehaviour
         }
 
         SetUIElements(true, false, true);
+        SetMainListControls(squad, null, tile);
     }
 
     //

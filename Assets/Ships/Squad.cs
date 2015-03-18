@@ -5,6 +5,7 @@ public class Squad : MonoBehaviour
 {
     private const string SQUAD_TAG = "Squad";
     private const string TILE_TAG = "Tile";
+    private const string COMMAND_SHIP_TAG = "CommandShip";
     private List<Ship> _ships;
     private Team _team;
     private float _shipPower;
@@ -68,6 +69,7 @@ public class Squad : MonoBehaviour
                     GUIManager.Instance.SetMainListControls(this, squad, _collidingTile);
                 }
                 break;
+            case COMMAND_SHIP_TAG:
             case SQUAD_TAG:
                 _collidingSquads.Add(squad);
                 if (enemy && _team == Player.Instance.Team)
@@ -76,7 +78,7 @@ public class Squad : MonoBehaviour
                 }
                 else if(_isControlled)
                 {
-                    GUIManager.Instance.SetMainListControls(this, squad, null);
+                    GUIManager.Instance.SetMainListControls(this, squad, _collidingTile);
                 }
                 break;
         }
@@ -98,10 +100,11 @@ public class Squad : MonoBehaviour
                     GUIManager.Instance.SetMainListControls(this, squad, _collidingTile);
                 }
                 break;
+            case COMMAND_SHIP_TAG:
             case SQUAD_TAG:
                 if (_isControlled)
                 {
-                    GUIManager.Instance.SetMainListControls(this, squad, null);
+                    GUIManager.Instance.SetMainListControls(this, squad, _collidingTile);
                 }
                 break;
         }
@@ -121,14 +124,15 @@ public class Squad : MonoBehaviour
                 _collidingTile = null;
                 if (_isControlled)
                 {
-                    GUIManager.Instance.SetMainListControls(this, squad, collision.collider.GetComponent<Tile>());
+                    GUIManager.Instance.SetMainListControls(this, null, null);
                 }
                 break;
+            case COMMAND_SHIP_TAG:
             case SQUAD_TAG:
                 _collidingSquads.Remove(squad);
                 if (_isControlled)
                 {
-                    GUIManager.Instance.SetMainListControls(this, squad, null);
+                    GUIManager.Instance.SetMainListControls(this, null, null);
                 }
                 break;
         }
