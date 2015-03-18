@@ -38,6 +38,7 @@ public class Tile : MonoBehaviour
     public Team Team { get { return _team; } }
     public Structure DeployedStructure { get { return _structure; } }
     public float Power { get { return _power; } }
+    public Squad Squad { get { return _defenseSquad; } }
 
 	// Use this for initialization
 	void Start () 
@@ -181,8 +182,9 @@ public class Tile : MonoBehaviour
         RecalculatePower();
     }
 
-    public void Deploy(Structure ship, Team owner)
+    public void Deploy(Structure ship, Team team)
     {
+        Claim(team);
         _structure = ship;
         RecalculatePower();
     }

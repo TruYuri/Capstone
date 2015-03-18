@@ -33,11 +33,16 @@ public class CustomUI : MonoBehaviour
 
     public void ClickDeploy()
     {
-
+        Player.Instance.Deploy(GUIManager.Instance.ListIndex);
     }
 
     public void ClickSplit()
     {
 
+    }
+
+    public void ClickListItem()
+    {
+        GUIManager.Instance.ListIndex = int.Parse(data);
     }
 }

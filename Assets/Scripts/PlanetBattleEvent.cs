@@ -18,7 +18,7 @@ public class PlanetBattleEvent : GameEvent
         base.Begin();
 
         GameManager.Instance.Paused = true;
-        Player.Instance.Control(_playerSquad.gameObject);
+        Player.Instance.Control(_playerSquad);
         GUIManager.Instance.SquadCollideTile(_playerSquad, _enemyPlanet);
     }
 }

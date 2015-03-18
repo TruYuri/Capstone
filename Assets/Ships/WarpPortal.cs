@@ -18,8 +18,8 @@ public class WarpPortal : Ship
         set { defense = value; }
     }
 
-    public WarpPortal(string name, float hull, float firepower, float speed, int capacity, int range, float defense, bool isDefense)
-        : base(name, hull, firepower, speed, capacity, isDefense)
+    public WarpPortal(string name, float hull, float firepower, float speed, int capacity, int range, float defense, ShipType shipType)
+        : base(name, hull, firepower, speed, capacity, shipType)
     {
         this.range = range;
         this.defense = range;
@@ -27,7 +27,7 @@ public class WarpPortal : Ship
 
     public override Ship Copy()
     {
-        var ship = new WarpPortal(name, baseHull, baseFirepower, baseSpeed, baseCapacity, range, defense, isDefense);
+        var ship = new WarpPortal(name, baseHull, baseFirepower, baseSpeed, baseCapacity, range, defense, shipType);
         ship.Hull = hull;
         ship.Firepower = firepower;
         ship.Speed = speed;

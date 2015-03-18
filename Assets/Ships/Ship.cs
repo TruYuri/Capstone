@@ -20,7 +20,7 @@ public class Ship
     protected int industrialPopulation;
     protected int spaceAgePopulation;
 
-    protected bool isDefense;
+    protected ShipType shipType;
 
     public string Name
     {
@@ -71,21 +71,21 @@ public class Ship
         get { return spaceAgePopulation; }
         set { spaceAgePopulation = value; }
     }
-    public bool IsDefense { get { return isDefense; } }
+    public ShipType ShipType { get { return shipType; } }
 
-    public Ship(string name, float hull, float firepower, float speed, int capacity, bool isDefense)
+    public Ship(string name, float hull, float firepower, float speed, int capacity, ShipType shipType)
     {
         this.name = name;
         this.hull = this.baseHull = hull;
         this.firepower = this.baseFirepower = firepower;
         this.speed = this.baseSpeed = speed;
         this.capacity = this.baseCapacity = capacity;
-        this.isDefense = isDefense;
+        this.shipType = shipType;
     }
 
     public virtual Ship Copy()
     {
-        var ship = new Ship(name, baseHull, baseFirepower, baseSpeed, baseCapacity, isDefense);
+        var ship = new Ship(name, baseHull, baseFirepower, baseSpeed, baseCapacity, shipType);
         ship.Hull = hull;
         ship.Firepower = firepower;
         ship.Speed = speed;

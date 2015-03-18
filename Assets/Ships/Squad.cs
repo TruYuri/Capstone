@@ -9,6 +9,9 @@ public class Squad : MonoBehaviour
     private Team _team;
     private float _shipPower;
     private float _troopPower;
+    private bool _isControlled;
+    private Tile _collidingTile;
+    private List<Squad> _collidingSquads;
 
     public Team Team
     {
@@ -20,12 +23,17 @@ public class Squad : MonoBehaviour
     public int Size { get { return _ships.Count; } }
     public float ShipPower { get { return _shipPower; } }
     public float TroopPower { get { return _troopPower; } }
+    public bool IsPlayerControlled 
+    {
+        get { return _isControlled; }
+        set { _isControlled = value; }
+    }
 
 	// Use this for initialization
 	void Start () 
     {
-        if (_ships == null)
-            _ships = new List<Ship>();
+        _ships = new List<Ship>();
+        _collidingSquads = new List<Squad>();
 	}
 
     void OnCollisionEnter(Collision collision)
@@ -41,18 +49,80 @@ public class Squad : MonoBehaviour
         switch(collision.collider.tag)
         {
             case TILE_TAG:
+                _collidingTile = collision.collider.GetComponent<Tile>();
                 if (enemy && _team == Player.Instance.Team)
                 {
                     if(squad.Size > 0)
                         GameManager.Instance.AddEvent(new SquadBattleEvent(this, squad));
                     else
-                        GameManager.Instance.AddEvent(new PlanetBattleEvent(this, collision.collider.GetComponent<Tile>()));
+                        GameManager.Instance.AddEvent(new PlanetBattleEvent(this, _collidingTile));
+                }
+                else if(_isControlled)
+                {
+                    GUIManager.Instance.SetMainListControls(this, squad, _collidingTile);
                 }
                 break;
             case SQUAD_TAG:
+                _collidingSquads.Add(squad);
                 if (enemy && _team == Player.Instance.Team)
                 {
                     GameManager.Instance.AddEvent(new SquadBattleEvent(this, squad));
+                }
+                else if(_isControlled)
+                {
+                    GUIManager.Instance.SetMainListControls(this, squad, null);
+                }
+                break;
+        }
+    }
+
+    void OnCollisionStay(Collision collision)
+    {
+        // the only colliders are squads, so we can simplify stuff
+
+        var squad = collision.collider.GetComponent<Squad>();
+        if (squad == null)
+            return;
+
+        switch (collision.collider.tag)
+        {
+            case TILE_TAG:
+                if (_isControlled)
+                {
+                    GUIManager.Instance.SetMainListControls(this, squad, _collidingTile);
+                }
+                break;
+            case SQUAD_TAG:
+                if (_isControlled)
+                {
+                    GUIManager.Instance.SetMainListControls(this, squad, null);
+                }
+                break;
+        }
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        // the only colliders are squads, so we can simplify stuff
+
+        var squad = collision.collider.GetComponent<Squad>();
+        if (squad == null)
+            return;
+
+        switch (collision.collider.tag)
+        {
+            case TILE_TAG:
+                _collidingTile = null;
+                if (_isControlled)
+                {
+                    GUIManager.Instance.SetMainListControls(this, squad, collision.collider.GetComponent<Tile>());
+                }
+                break;
+            case SQUAD_TAG:
+                _collidingSquads.Remove(squad);
+                if (_isControlled)
+                {
+                    GUIManager.Instance.SetMainListControls(this, squad, null);
                 }
                 break;
         }
@@ -196,5 +266,12 @@ public class Squad : MonoBehaviour
         if (Size == 0)
             Destroy(this.gameObject);
         return tile.Team;
+    }
+
+    public Tile Deploy(int shipIndex)
+    {
+        _collidingTile.Deploy(_ships[shipIndex] as Structure, _team);
+        _ships.RemoveAt(shipIndex);
+        return _collidingTile;
     }
 }

@@ -40,19 +40,19 @@ public class GameManager : MonoBehaviour
 
         _shipStats = new Dictionary<string, Ship>()
         {
-            { "Fighter", new Ship("Fighter", 1, 1, 5, 0, false) },
-            { "Transport", new Ship("Transport", 10, 0, 2, 100, false) },
-            { "Guard Satellite", new Ship("Guard Satellite", 2, 3, 0, 0, true) },
-            { "Heavy Fighter", new Ship("Heavy Fighter", 3, 3, 2, 10, false) },
-            { "Behemoth", new Ship("Behemoth", 20, 10, 1, 50, false) },
-            { "Command Ship", new Ship("Command Ship", 20, 2, 5, 0, false) },
-            { "Resource Transport", new Ship("Resource Transport", 50, 0, 1, 0, false) },
-            { "Gathering Complex", new Structure("Gathering Complex", 50, 0, 1, 0, 50, 50, 100, false) },
-            { "Research Complex", new Structure("Research Complex", 50, 0, 1, 0, 25, 100, 0, false) },
-            { "Military Complex", new Structure("Military Complex", 50, 0, 1, 0, 150, 500, 0, false) },
-            { "Base", new Structure("Base", 50, 0, 1, 0, 200, 1000, 100, false) },
-            { "Relay", new Relay("Relay", 20, 0, 1, 0, 1, 0, false) },
-            { "Warp Portal", new WarpPortal("Warp Portal", 20, 0, 1, 0, 2, 0, false)}
+            { "Fighter", new Ship("Fighter", 1, 1, 5, 0, ShipType.Combat) },
+            { "Transport", new Ship("Transport", 10, 0, 2, 100, ShipType.Combat) },
+            { "Guard Satellite", new Ship("Guard Satellite", 2, 3, 0, 0, ShipType.Defense) },
+            { "Heavy Fighter", new Ship("Heavy Fighter", 3, 3, 2, 10, ShipType.Combat) },
+            { "Behemoth", new Ship("Behemoth", 20, 10, 1, 50, ShipType.Combat) },
+            { "Command Ship", new Ship("Command Ship", 20, 2, 5, 0, ShipType.Combat) },
+            { "Resource Transport", new Ship("Resource Transport", 50, 0, 1, 0, ShipType.ResourceTransport) },
+            { "Gathering Complex", new Structure("Gathering Complex", 50, 0, 1, 0, 50, 50, 100, ShipType.Structure) },
+            { "Research Complex", new Structure("Research Complex", 50, 0, 1, 0, 25, 100, 0, ShipType.Structure) },
+            { "Military Complex", new Structure("Military Complex", 50, 0, 1, 0, 150, 500, 0, ShipType.Structure) },
+            { "Base", new Structure("Base", 50, 0, 1, 0, 200, 1000, 100, ShipType.Structure) },
+            { "Relay", new Relay("Relay", 20, 0, 1, 0, 1, 0, ShipType.Combat) },
+            { "Warp Portal", new WarpPortal("Warp Portal", 20, 0, 1, 0, 2, 0, ShipType.Combat)}
         };
 
         enemy = Instantiate(Resources.Load<GameObject>("Squad"), new Vector3(0, 0, -10), Quaternion.identity) as GameObject;

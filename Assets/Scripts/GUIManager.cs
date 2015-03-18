@@ -6,6 +6,8 @@ public class GUIManager : MonoBehaviour
 {
     private static GUIManager _instance;
     private Dictionary<string, CustomUI> _interface;
+    private int _listIndex;
+    private Squad _selectedSquad;
 
     private const string LIST_PREFAB = "ShipListing";
 
@@ -17,6 +19,11 @@ public class GUIManager : MonoBehaviour
                 _instance = GameObject.FindObjectOfType<GUIManager>();
             return _instance;
         }
+    }
+    public int ListIndex 
+    {
+        get { return _listIndex; }
+        set { _listIndex = value; }
     }
 
     void Start()
@@ -45,7 +52,27 @@ public class GUIManager : MonoBehaviour
     // These functions update main UI when the object is selected
     //
 
-    private void SetUIElements(bool squad, bool battle, bool tile)
+    public void SetMainListControls(Squad squad, Squad squad2, Tile tile)
+    {
+        var merge = _interface["Merge"].gameObject.GetComponent<Button>();
+        var split = _interface["Split"].gameObject.GetComponent<Button>();
+        var deploy = _interface["Deploy"].gameObject.GetComponent<Button>();
+
+        if (Player.Instance.Team == squad.Team)
+        {
+            split.interactable = squad.Size > 0;
+            merge.interactable = squad2 != null || tile != null;
+            deploy.interactable = _listIndex != -1 && squad.Ships[_listIndex].ShipType == ShipType.Structure && tile != null && tile.DeployedStructure == null;
+        }
+        else
+        {
+            split.interactable = false;
+            merge.interactable = false;
+            deploy.interactable = false;
+        }
+    }
+
+    public void SetUIElements(bool squad, bool battle, bool tile)
     {
         _interface["SquadMenu"].gameObject.SetActive(squad);
         _interface["BattleMenu"].gameObject.SetActive(battle);
@@ -53,12 +80,16 @@ public class GUIManager : MonoBehaviour
 
     public void SquadSelected(Squad squad)
     {
+        _selectedSquad = squad;
+        _listIndex = -1;
+
         var listEntry = Resources.Load<GameObject>(LIST_PREFAB);
         foreach (Transform child in _interface["MainShipList"].transform) 
         {
             GameObject.Destroy(child.gameObject);
         }
 
+        int i = 0;
         foreach(var ship in squad.Ships)
         {
             var entry = Instantiate(listEntry) as GameObject;
@@ -66,7 +97,9 @@ public class GUIManager : MonoBehaviour
             entry.transform.FindChild("Name").GetComponent<Text>().text = ship.Name;
             // population icon will be static
             entry.transform.FindChild("Population").GetComponent<Text>().text = ship.Population + " / " + ship.Capacity;
-            entry.transform.parent = _interface["MainShipList"].transform;
+            entry.GetComponent<CustomUI>().data = i.ToString();
+            entry.transform.SetParent(_interface["MainShipList"].transform);
+            i++;
         }
 
         if(squad.Team == Player.Instance.Team)
@@ -81,14 +114,16 @@ public class GUIManager : MonoBehaviour
 
     public void TileSelected(Tile tile)
     {
+        SquadSelected(tile.gameObject.GetComponent<Squad>());
+
         if (tile.Team == Player.Instance.Team)
         {
-            SetUIElements(false, false, true);
         }
         else // enemy
         {
-            SetUIElements(false, false, true);
         }
+
+        SetUIElements(true, false, true);
     }
 
     //
@@ -132,10 +167,11 @@ public class GUIManager : MonoBehaviour
     //
     public void SquadCollideSquad(Squad playerSquad, Squad squad2)
     {
-        if (squad2.Team == Player.Instance.Team) // ask to merge, exchange units, deploy (if tile), cancel
+        if (playerSquad.Team == squad2.Team)
         {
+            SetMainListControls(playerSquad, squad2, null);
         }
-        else // enemy - show combat screen
+        else
         {
             SetUIElements(false, true, false);
         }
@@ -143,11 +179,12 @@ public class GUIManager : MonoBehaviour
 
     public void SquadCollideTile(Squad playerSquad, Tile tile) // planet defenses assumed empty here
     {
-        if (tile.Team == Player.Instance.Team) // ask to merge, exchange units, deploy (if tile), cancel
+        if(tile.Team == playerSquad.Team)
         {
-            _interface["Merge"].enabled = true;
+            SetUIElements(true, false, false);
+            SetMainListControls(playerSquad, tile.Squad, tile);
         }
-        else // enemy - show combat screen
+        else
         {
             SetUIElements(false, true, false);
         }
