@@ -18,7 +18,7 @@ public class CustomUI : MonoBehaviour
 
     public void ClickBattle()
     {
-
+        Player.Instance.Battle();
     }
 
     public void ClickRetreat()
@@ -38,7 +38,7 @@ public class CustomUI : MonoBehaviour
 
     public void ClickSplit()
     {
-
+        // show split list screen
     }
 
     public void ClickListItem()

@@ -5,6 +5,7 @@ public class Squad : MonoBehaviour
 {
     private const string SQUAD_TAG = "Squad";
     private const string TILE_TAG = "Tile";
+    private const string COMMAND_SHIP_TAG = "CommandShip";
     private List<Ship> _ships;
     private Team _team;
     private float _shipPower;
@@ -32,12 +33,18 @@ public class Squad : MonoBehaviour
 	// Use this for initialization
 	void Start () 
     {
-        _ships = new List<Ship>();
-        _collidingSquads = new List<Squad>();
+        if(_ships == null)
+            _ships = new List<Ship>();
+        if(_collidingSquads == null)
+            _collidingSquads = new List<Squad>();
 	}
 
     void OnCollisionEnter(Collision collision)
     {
+        if (_ships == null)
+            _ships = new List<Ship>();
+        if (_collidingSquads == null)
+            _collidingSquads = new List<Squad>();
         // the only colliders are squads, so we can simplify stuff
 
         var squad = collision.collider.GetComponent<Squad>();
@@ -53,24 +60,25 @@ public class Squad : MonoBehaviour
                 if (enemy && _team == Player.Instance.Team)
                 {
                     if(squad.Size > 0)
-                        GameManager.Instance.AddEvent(new SquadBattleEvent(this, squad));
+                        GameManager.Instance.AddEvent(new BattleEvent(this, squad));
                     else
-                        GameManager.Instance.AddEvent(new PlanetBattleEvent(this, _collidingTile));
+                        GameManager.Instance.AddEvent(new BattleEvent(this, _collidingTile));
                 }
                 else if(_isControlled)
                 {
                     GUIManager.Instance.SetMainListControls(this, squad, _collidingTile);
                 }
                 break;
+            case COMMAND_SHIP_TAG:
             case SQUAD_TAG:
                 _collidingSquads.Add(squad);
                 if (enemy && _team == Player.Instance.Team)
                 {
-                    GameManager.Instance.AddEvent(new SquadBattleEvent(this, squad));
+                    GameManager.Instance.AddEvent(new BattleEvent(this, squad));
                 }
                 else if(_isControlled)
                 {
-                    GUIManager.Instance.SetMainListControls(this, squad, null);
+                    GUIManager.Instance.SetMainListControls(this, squad, _collidingTile);
                 }
                 break;
         }
@@ -92,10 +100,11 @@ public class Squad : MonoBehaviour
                     GUIManager.Instance.SetMainListControls(this, squad, _collidingTile);
                 }
                 break;
+            case COMMAND_SHIP_TAG:
             case SQUAD_TAG:
                 if (_isControlled)
                 {
-                    GUIManager.Instance.SetMainListControls(this, squad, null);
+                    GUIManager.Instance.SetMainListControls(this, squad, _collidingTile);
                 }
                 break;
         }
@@ -115,14 +124,15 @@ public class Squad : MonoBehaviour
                 _collidingTile = null;
                 if (_isControlled)
                 {
-                    GUIManager.Instance.SetMainListControls(this, squad, collision.collider.GetComponent<Tile>());
+                    GUIManager.Instance.SetMainListControls(this, null, null);
                 }
                 break;
+            case COMMAND_SHIP_TAG:
             case SQUAD_TAG:
                 _collidingSquads.Remove(squad);
                 if (_isControlled)
                 {
-                    GUIManager.Instance.SetMainListControls(this, squad, null);
+                    GUIManager.Instance.SetMainListControls(this, null, null);
                 }
                 break;
         }
@@ -187,9 +197,9 @@ public class Squad : MonoBehaviour
             var randPos = GameManager.Generator.Next(0, Size);
             var ship = _ships[randPos];
 
-            damage -= ship.Hull;
             if (ship.Hull <= damage)
             {
+                damage -= ship.Hull;
                 float saveChance = (float)GameManager.Generator.NextDouble();
 
                 if (saveChance >= _ships[randPos].Protection)  // add speedy = safer thing here

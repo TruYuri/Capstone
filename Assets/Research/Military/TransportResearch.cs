@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using System.Collections;
 
 public class TransportResearch : Research
@@ -80,5 +81,6 @@ public class TransportResearch : Research
 
     public override void Display()
     {
+
     }
 }
