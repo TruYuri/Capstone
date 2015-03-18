@@ -84,6 +84,12 @@ public class Player : MonoBehaviour
         _commandShip.AddShip(_commandShip.Ship);
         _commandShip.AddShip(_shipStats["Base"].Copy());
         _commandShip.AddShip(_shipStats["Base"].Copy());
+        _commandShip.AddShip(_shipStats["Base"].Copy());
+        _commandShip.AddShip(_shipStats["Base"].Copy());
+        _commandShip.AddShip(_shipStats["Base"].Copy());
+        _commandShip.AddShip(_shipStats["Base"].Copy());
+        _commandShip.AddShip(_shipStats["Base"].Copy());
+        _commandShip.AddShip(_shipStats["Base"].Copy());
 
         _controlledSquad = _commandShip;
         _controlledSquad.IsPlayerControlled = true;
@@ -159,10 +165,6 @@ public class Player : MonoBehaviour
             if (squad.Size < 1)
                 Destroy(squad);
         }
-
-        // only run these at turn start or end
-        //_militaryResearch.Advance(_numResearchStations);
-        //_scientificResearch.Advance(_numResearchStations);
 	}
 
     private void UpdateCommandShip()

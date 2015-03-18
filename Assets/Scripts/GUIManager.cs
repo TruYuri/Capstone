@@ -62,7 +62,8 @@ public class GUIManager : MonoBehaviour
         {
             split.interactable = squad.Size > 0;
             merge.interactable = squad2 != null || (squad2 != null && tile.Team == squad.Team);
-            deploy.interactable = _listIndex != -1 && squad.Ships[_listIndex].ShipType == ShipType.Structure && tile != null && tile.DeployedStructure == null;
+            deploy.interactable = (_listIndex != -1 && squad.Ships[_listIndex].ShipType == ShipType.Structure && tile != null && tile.DeployedStructure == null) || 
+                (squad.GetComponent<Tile>() != null && squad.GetComponent<Tile>().DeployedStructure != null);
         }
         else
         {
@@ -101,6 +102,7 @@ public class GUIManager : MonoBehaviour
             i++;
         }
 
+        _interface["Deploy"].gameObject.transform.FindChild("Text").GetComponent<Text>().text = "Deploy";
         SetUIElements(true, false, false);
         SetMainListControls(squad, null, null);
     }
@@ -117,6 +119,10 @@ public class GUIManager : MonoBehaviour
         {
         }
 
+        if(tile.DeployedStructure != null && tile.Team == Player.Instance.Team)
+        {
+            _interface["Deploy"].gameObject.transform.FindChild("Text").GetComponent<Text>().text = "Undeploy";   
+        }
         SetUIElements(true, false, true);
         SetMainListControls(squad, null, tile);
     }
