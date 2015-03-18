@@ -80,7 +80,6 @@ public class GUIManager : MonoBehaviour
 
     public void SquadSelected(Squad squad)
     {
-        _selectedSquad = squad;
         _listIndex = -1;
 
         var listEntry = Resources.Load<GameObject>(LIST_PREFAB);
@@ -102,14 +101,7 @@ public class GUIManager : MonoBehaviour
             i++;
         }
 
-        if(squad.Team == Player.Instance.Team)
-        {
-            SetUIElements(true, false, false);
-        }
-        else // enemy
-        {
-            SetUIElements(true, false, false);
-        }
+        SetUIElements(true, false, false);
     }
 
     public void TileSelected(Tile tile)

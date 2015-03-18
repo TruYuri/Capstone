@@ -236,5 +236,19 @@ public class Player : MonoBehaviour
         var tile = _controlledSquad.Deploy(shipIndex);
         Control(tile.Squad);
         GUIManager.Instance.TileSelected(tile);
+        GameManager.Instance.EndTurn();
+    }
+
+    // TODO: handle the player being attacked
+    public void Battle()
+    {
+        BattleEvent gameEvent = GameManager.Instance.CurrentEvent() as BattleEvent;       
+        Player.Instance.Control(gameEvent.Player.GetComponent<Squad>());
+
+        if (gameEvent.Type == GameEventType.SquadBattle)
+            _controlledSquad.Combat(gameEvent.Enemy.GetComponent<Squad>());
+        else
+            _controlledSquad.Combat(gameEvent.Enemy.GetComponent<Tile>());
+        GameManager.Instance.NextEvent();
     }
 }

@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     private GameObject _player;
     private bool _paused;
     private Queue<GameEvent> _eventQueue;
+    private Queue<GameEvent> _nextEventQueue;
 
     public static GameManager Instance 
     { 
@@ -34,6 +35,7 @@ public class GameManager : MonoBehaviour
     {
 	    // create player
         _eventQueue = new Queue<GameEvent>();
+        _nextEventQueue = new Queue<GameEvent>();
         var playerObj = Resources.Load<GameObject>(PLAYER_PREFAB);
         _player = Instantiate(playerObj) as GameObject;
         _instance = this;
@@ -64,18 +66,9 @@ public class GameManager : MonoBehaviour
         squad.AddShip(_shipStats["Command Ship"]);
 	}
 	
-	// Update is called once per frame
 	void Update () 
     {
-        if (_eventQueue.Count > 0)
-        {
-            _paused = true;
-
-            if (!_eventQueue.Peek().Started)
-                _eventQueue.Peek().Begin();
-        }
-        else
-            _paused = false;
+       // NextEvent();
 	}
 
     public void AddEvent(GameEvent gameEvent)
@@ -83,13 +76,31 @@ public class GameManager : MonoBehaviour
         _eventQueue.Enqueue(gameEvent);
     }
 
-    public void PopQueue()
+    public void NextEvent()
     {
-        _eventQueue.Dequeue();
+        if (_eventQueue.Count > 0)
+        {
+            _paused = true;
+
+            if (_eventQueue.Peek().Stage == GameEventStage.Begin)
+                _eventQueue.Peek().Begin();
+            else if (_eventQueue.Peek().Stage == GameEventStage.Continue)
+                _nextEventQueue.Enqueue(_eventQueue.Dequeue());
+            else // end
+                _eventQueue.Dequeue();
+        }
+        else
+            _paused = false;
+    }
+
+    public GameEvent CurrentEvent()
+    {
+        return _eventQueue.Peek();
     }
 
     public void EndTurn()
     {
-
+        _eventQueue = _nextEventQueue;
+        _nextEventQueue = new Queue<GameEvent>();
     }
 }

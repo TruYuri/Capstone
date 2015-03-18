@@ -53,9 +53,9 @@ public class Squad : MonoBehaviour
                 if (enemy && _team == Player.Instance.Team)
                 {
                     if(squad.Size > 0)
-                        GameManager.Instance.AddEvent(new SquadBattleEvent(this, squad));
+                        GameManager.Instance.AddEvent(new BattleEvent(this, squad));
                     else
-                        GameManager.Instance.AddEvent(new PlanetBattleEvent(this, _collidingTile));
+                        GameManager.Instance.AddEvent(new BattleEvent(this, _collidingTile));
                 }
                 else if(_isControlled)
                 {
@@ -66,7 +66,7 @@ public class Squad : MonoBehaviour
                 _collidingSquads.Add(squad);
                 if (enemy && _team == Player.Instance.Team)
                 {
-                    GameManager.Instance.AddEvent(new SquadBattleEvent(this, squad));
+                    GameManager.Instance.AddEvent(new BattleEvent(this, squad));
                 }
                 else if(_isControlled)
                 {
