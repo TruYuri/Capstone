@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 public class GameManager : MonoBehaviour 
 {
     public static System.Random Generator = new System.Random();
+    private const string HUMAN_PLAYER_PREFAB = "HumanPlayer";
     private const string PLAYER_PREFAB = "Player";
     private const string INI_PATH = "/Resources/Ships.ini";
     private const string MATERIALS_PATH = "ShipIcons/";
@@ -23,12 +24,12 @@ public class GameManager : MonoBehaviour
     private const string CONSTRUCTABLE_DETAIL = "Constructable";
 
     private static GameManager _instance;
-    private GameObject _player;
     private bool _paused;
     private Queue<GameEvent> _eventQueue;
     private Queue<GameEvent> _nextEventQueue;
     private Dictionary<string, Ship> _shipDefinitions;
     private Texture2D _textureAtlas;
+    private Dictionary<Team, Player> _players;
 
     public static GameManager Instance 
     { 
@@ -46,15 +47,15 @@ public class GameManager : MonoBehaviour
         set { _paused = value; }
     }
 
-    private GameObject enemy;
 	// Use this for initialization
 	void Start () 
     {
 	    // create player
+        _players = new Dictionary<Team, Player>();
         _eventQueue = new Queue<GameEvent>();
         _nextEventQueue = new Queue<GameEvent>();
-        var playerObj = Resources.Load<GameObject>(PLAYER_PREFAB);
-        _player = Instantiate(playerObj) as GameObject;
+        var playerObj = Resources.Load<GameObject>(HUMAN_PLAYER_PREFAB);
+        _players.Add(Team.Union, (Instantiate(playerObj) as GameObject).GetComponent<HumanPlayer>());
         _instance = this;
 
         _shipDefinitions = new Dictionary<string, Ship>();
@@ -116,9 +117,11 @@ public class GameManager : MonoBehaviour
 
         parser.CloseINI();
 
+        // Research.ini
+
         // debug
         var defs = GenerateShipDefs();
-        enemy = Instantiate(Resources.Load<GameObject>("Squad"), new Vector3(0, 0, -10), Quaternion.identity) as GameObject;
+        var enemy = Instantiate(Resources.Load<GameObject>("Squad"), new Vector3(0, 0, -10), Quaternion.identity) as GameObject;
         var squad = enemy.GetComponent<Squad>();
         squad.AddShip(defs["Fighter"]);
         squad.AddShip(defs["Transport"]);

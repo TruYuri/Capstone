@@ -58,7 +58,7 @@ public class GUIManager : MonoBehaviour
         var split = _interface["Split"].gameObject.GetComponent<Button>();
         var deploy = _interface["Deploy"].gameObject.GetComponent<Button>();
 
-        if (Player.Instance.Team == squad.Team)
+        if (HumanPlayer.Instance.Team == squad.Team)
         {
             split.interactable = squad.Size > 0;
             merge.interactable = squad2 != null || (squad2 != null && tile.Team == squad.Team);
@@ -110,14 +110,14 @@ public class GUIManager : MonoBehaviour
         var squad = tile.gameObject.GetComponent<Squad>();
         SquadSelected(squad);
 
-        if (tile.Team == Player.Instance.Team)
+        if (tile.Team == HumanPlayer.Instance.Team)
         {
         }
         else // enemy
         {
         }
 
-        if(tile.DeployedStructure != null && tile.Team == Player.Instance.Team)
+        if(tile.DeployedStructure != null && tile.Team == HumanPlayer.Instance.Team)
         {
             _interface["Deploy"].gameObject.transform.FindChild("Text").GetComponent<Text>().text = "Undeploy";   
         }
@@ -138,7 +138,7 @@ public class GUIManager : MonoBehaviour
 
     public void SquadToTile(Squad squad, Tile tile)
     {
-        if (tile.Team == Player.Instance.Team) // ask to confirm, cancel
+        if (tile.Team == HumanPlayer.Instance.Team) // ask to confirm, cancel
         {
 
         }
@@ -151,7 +151,7 @@ public class GUIManager : MonoBehaviour
     // note: "squad2" isn't necessarily hostile. Handle that stuff here.
     public void SquadToSquad(Squad playerSquad, Squad squad2)
     {
-        if (squad2.Team == Player.Instance.Team) // ask to confirm movement, etc
+        if (squad2.Team == HumanPlayer.Instance.Team) // ask to confirm movement, etc
         {
 
         }

@@ -51,13 +51,13 @@ public class Squad : MonoBehaviour
         if (squad == null)
             return;
 
-        bool enemy = Player.Instance.Team != squad.Team;
+        bool enemy = HumanPlayer.Instance.Team != squad.Team;
             
         switch(collision.collider.tag)
         {
             case TILE_TAG:
                 _collidingTile = collision.collider.GetComponent<Tile>();
-                if (enemy && _team == Player.Instance.Team)
+                if (enemy && _team == HumanPlayer.Instance.Team)
                 {
                     if(squad.Size > 0)
                         GameManager.Instance.AddEvent(new BattleEvent(this, squad));
@@ -72,7 +72,7 @@ public class Squad : MonoBehaviour
             case COMMAND_SHIP_TAG:
             case SQUAD_TAG:
                 _collidingSquads.Add(squad);
-                if (enemy && _team == Player.Instance.Team)
+                if (enemy && _team == HumanPlayer.Instance.Team)
                 {
                     GameManager.Instance.AddEvent(new BattleEvent(this, squad));
                 }
