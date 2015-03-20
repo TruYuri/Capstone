@@ -84,7 +84,7 @@ public class MapManager : MonoBehaviour
 
             // load texture for atlasing
             textures[planetCount] = Resources.Load<Texture2D>(MATERIALS_PATH + spawnTables[planet.Key][PLANET_TEXTURE_DETAIL]);
-            planetNames[planetCount++] = planet.Key; 
+            planetNames[planetCount++] = planet.Key;
 
             // cache per-planet Inhabitance probabilities
             _planetInhabitanceSpawnTable[planet.Key].Add(Inhabitance.Uninhabited, runningTotal = float.Parse(spawnTables[planet.Key][PLANET_UNINHABITED_DETAIL]));
@@ -110,7 +110,7 @@ public class MapManager : MonoBehaviour
             spawnTables[planet.Key].Remove(PLANET_ASTERMINIUM_DETAIL);
         }
 
-        _textureAtlas = new Texture2D(spawnTables.Count * 256, 256);
+        _textureAtlas = new Texture2D(0, 0);
         var atlasEntries = _textureAtlas.PackTextures(textures, 0);
 
         for (int i = 0; i < planetCount; i++)

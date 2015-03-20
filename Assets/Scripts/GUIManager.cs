@@ -89,17 +89,15 @@ public class GUIManager : MonoBehaviour
             GameObject.Destroy(child.gameObject);
         }
 
-        int i = 0;
-        foreach(var ship in squad.Ships)
+        for (int i = 0; i < squad.Ships.Count; i++ )
         {
             var entry = Instantiate(listEntry) as GameObject;
             var icon = entry.transform.FindChild("Icon").GetComponent<Image>();
-            icon.sprite = ship.Icon;
-            entry.transform.FindChild("Name").GetComponent<Text>().text = ship.Name;
-            entry.transform.FindChild("Population").GetComponent<Text>().text = ship.Population + " / " + ship.Capacity;
+            icon.sprite = squad.Ships[i].Icon;
+            entry.transform.FindChild("Name").GetComponent<Text>().text = squad.Ships[i].Name;
+            entry.transform.FindChild("Population").GetComponent<Text>().text = squad.Ships[i].Population + " / " + squad.Ships[i].Capacity;
             entry.GetComponent<CustomUI>().data = i.ToString();
             entry.transform.SetParent(_interface["MainShipList"].transform);
-            i++;
         }
 
         _interface["Deploy"].gameObject.transform.FindChild("Text").GetComponent<Text>().text = "Deploy";

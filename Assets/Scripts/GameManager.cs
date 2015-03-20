@@ -71,12 +71,13 @@ public class GameManager : MonoBehaviour
             shipNames[shipCount++] = ship.Key;
         }
 
-        _textureAtlas = new Texture2D(shipDetails.Count * 256, 256);
+        _textureAtlas = new Texture2D(0, 0);
         var atlasEntries = _textureAtlas.PackTextures(textures, 0);
 
         for (int i = 0; i < shipCount; i++)
         {
-            var icon = Sprite.Create(_textureAtlas, atlasEntries[i], new Vector2(0.5f, 0.5f));
+            var rect = new Rect(atlasEntries[i].xMin * _textureAtlas.width, atlasEntries[i].yMin * _textureAtlas.height, textures[i].width, textures[i].height);
+            var icon = Sprite.Create(_textureAtlas, rect, new Vector2(0.5f, 0.5f));
             var section = "[" + shipNames[i] + "]";
             var type = (ShipType)Enum.Parse(typeof(ShipType), shipDetails[SHIP_SECTION_HEADER][shipNames[i]]);
             var hull = float.Parse(shipDetails[section][HULL_DETAIL]);
@@ -115,15 +116,15 @@ public class GameManager : MonoBehaviour
 
         parser.CloseINI();
 
-        /*
+        // debug
+        var defs = GenerateShipDefs();
         enemy = Instantiate(Resources.Load<GameObject>("Squad"), new Vector3(0, 0, -10), Quaternion.identity) as GameObject;
         var squad = enemy.GetComponent<Squad>();
-        squad.AddShip(defs.Ships["Fighter"]);
-        squad.AddShip(defs.Ships["Transport"]);
-        squad.AddShip(defs.Ships["Heavy Fighter"]);
-        squad.AddShip(defs.Ships["Behemoth"]);
-        squad.AddShip(defs.Ships["Command Ship"]);
-         * */
+        squad.AddShip(defs["Fighter"]);
+        squad.AddShip(defs["Transport"]);
+        squad.AddShip(defs["Heavy Fighter"]);
+        squad.AddShip(defs["Behemoth"]);
+        squad.AddShip(defs["Command Ship"]);
 	}
 
     public Dictionary<string, Ship> GenerateShipDefs()
