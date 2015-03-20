@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class Structure : Ship
 {
+    private List<string> constructables;
     private float defense;
     private int deployedCapacity;
     private int gatherRate;
@@ -18,17 +19,19 @@ public class Structure : Ship
         set { deployedCapacity = value; }
     }
 
-    public Structure(string name, float hull, float firepower, float speed, int capacity, float defense, int deployedCapacity, int gatherRate, ShipType shipType)
-        : base(name, hull, firepower, speed, capacity, shipType)
+    public Structure(Sprite icon, string name, float hull, float firepower, float speed, int capacity, 
+        float defense, int deployedCapacity, int gatherRate, List<string> constructables, ShipType shipType)
+        : base(icon, name, hull, firepower, speed, capacity, shipType)
     {
         this.defense = defense;
         this.deployedCapacity = deployedCapacity;
         this.gatherRate = gatherRate;
+        this.constructables = constructables;
     }
 
     public override Ship Copy()
     {
-        var ship = new Structure(name, baseHull, baseFirepower, baseSpeed, baseCapacity, defense, deployedCapacity, gatherRate, shipType);
+        var ship = new Structure(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, defense, deployedCapacity, gatherRate, constructables, shipType);
         ship.Hull = hull;
         ship.Firepower = firepower;
         ship.Speed = speed;

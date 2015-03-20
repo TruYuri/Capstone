@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Ship
 {
+    protected Sprite icon;
     protected string name;
     protected float hull;
     protected float firepower;
@@ -22,6 +23,7 @@ public class Ship
 
     protected ShipType shipType;
 
+    public Sprite Icon { get { return icon; } }
     public string Name
     {
         get { return name; }
@@ -73,7 +75,7 @@ public class Ship
     }
     public ShipType ShipType { get { return shipType; } }
 
-    public Ship(string name, float hull, float firepower, float speed, int capacity, ShipType shipType)
+    public Ship(Sprite icon, string name, float hull, float firepower, float speed, int capacity, ShipType shipType)
     {
         this.name = name;
         this.hull = this.baseHull = hull;
@@ -81,11 +83,12 @@ public class Ship
         this.speed = this.baseSpeed = speed;
         this.capacity = this.baseCapacity = capacity;
         this.shipType = shipType;
+        this.icon = icon;
     }
 
     public virtual Ship Copy()
     {
-        var ship = new Ship(name, baseHull, baseFirepower, baseSpeed, baseCapacity, shipType);
+        var ship = new Ship(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, shipType);
         ship.Hull = hull;
         ship.Firepower = firepower;
         ship.Speed = speed;

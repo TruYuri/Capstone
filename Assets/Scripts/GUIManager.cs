@@ -6,8 +6,8 @@ public class GUIManager : MonoBehaviour
 {
     private static GUIManager _instance;
     private Dictionary<string, CustomUI> _interface;
-    private int _listIndex;
-    private Squad _selectedSquad;
+
+    private int _listIndex; // find way to phase this out - list.selectedindex?
 
     private const string LIST_PREFAB = "ShipListing";
 
@@ -93,9 +93,9 @@ public class GUIManager : MonoBehaviour
         foreach(var ship in squad.Ships)
         {
             var entry = Instantiate(listEntry) as GameObject;
-            // icon
+            var icon = entry.transform.FindChild("Icon").GetComponent<Image>();
+            icon.sprite = ship.Icon;
             entry.transform.FindChild("Name").GetComponent<Text>().text = ship.Name;
-            // population icon will be static
             entry.transform.FindChild("Population").GetComponent<Text>().text = ship.Population + " / " + ship.Capacity;
             entry.GetComponent<CustomUI>().data = i.ToString();
             entry.transform.SetParent(_interface["MainShipList"].transform);

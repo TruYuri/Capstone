@@ -4,7 +4,6 @@ using System.Collections;
 public class WarpPortal : Ship
 {
     private int range;
-    private float defense;
 
     public int Range
     {
@@ -12,22 +11,15 @@ public class WarpPortal : Ship
         set { range = value; }
     }
 
-    public float Defense
-    {
-        get { return defense; }
-        set { defense = value; }
-    }
-
-    public WarpPortal(string name, float hull, float firepower, float speed, int capacity, int range, float defense, ShipType shipType)
-        : base(name, hull, firepower, speed, capacity, shipType)
+    public WarpPortal(Sprite icon, string name, float hull, float firepower, float speed, int capacity, int range)
+        : base(icon, name, hull, firepower, speed, capacity, ShipType.WarpPortal)
     {
         this.range = range;
-        this.defense = range;
     }
 
     public override Ship Copy()
     {
-        var ship = new WarpPortal(name, baseHull, baseFirepower, baseSpeed, baseCapacity, range, defense, shipType);
+        var ship = new WarpPortal(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, range);
         ship.Hull = hull;
         ship.Firepower = firepower;
         ship.Speed = speed;

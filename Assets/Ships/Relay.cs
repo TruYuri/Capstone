@@ -4,30 +4,22 @@ using System.Collections;
 public class Relay : Ship
 {
     private int range;
-    private float defense;
 
     public int Range
     {
         get { return range; }
         set { range = value; }
     }
-    
-    public float Defense
-    {
-        get { return defense; }
-        set { defense = value; }
-    }
 
-    public Relay(string name, float hull, float firepower, float speed, int capacity, int range, float defense, ShipType shipType)
-        : base(name, hull, firepower, speed, capacity, shipType)
+    public Relay(Sprite icon, string name, float hull, float firepower, float speed, int capacity, int range)
+        : base(icon, name, hull, firepower, speed, capacity, ShipType.Relay)
     {
         this.range = range;
-        this.defense = defense;
     }
 
     public override Ship Copy()
     {
-        var ship = new Relay(name, baseHull, baseFirepower, baseSpeed, baseCapacity, range, defense, shipType);
+        var ship = new Relay(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, range);
         ship.Hull = hull;
         ship.Firepower = firepower;
         ship.Speed = speed;

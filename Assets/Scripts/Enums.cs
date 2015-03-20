@@ -4,4 +4,4 @@ public enum TileSize { Small, Large }
 public enum Team { None, Union, Kharkyr, Plinthen, Indigineous }
 public enum GameEventType { SquadBattle, PlanetBattle, FriendlyEncounter }
 public enum GameEventStage { Begin, End, Continue }
-public enum ShipType { Combat, Defense, Structure, ResourceTransport }
+public enum ShipType { Combat, Defense, Structure, ResourceTransport, Relay, WarpPortal }

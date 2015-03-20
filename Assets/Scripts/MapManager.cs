@@ -2,20 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public struct TextureAtlasDetails
-{
-    public Texture2D Texture;
-    public Vector2 TextureOffset;
-    public Vector2 TextureScale;
-
-    public TextureAtlasDetails(Texture2D texture, Vector2 offset, Vector2 scale)
-    {
-        Texture = texture;
-        TextureOffset = offset;
-        TextureScale = scale;
-    }
-}
-
 public class MapManager : MonoBehaviour
 {
     private readonly Vector3 TOP_RIGHT_OFFSET = new Vector3(98.3f, 0.0f, 149.0f);
@@ -46,7 +32,6 @@ public class MapManager : MonoBehaviour
     private Dictionary<string, Dictionary<Resource, float>> _planetResourceSpawnTable;
     private Dictionary<string, Dictionary<string, string>> _planetSpawnDetails;
     private Texture2D _textureAtlas;
-    private Rect[] _atlasEntries;
     private Dictionary<int, Dictionary<int, GameObject>> _sectorMap;
 
     public static MapManager Instance
@@ -76,10 +61,12 @@ public class MapManager : MonoBehaviour
         _planetSpawnDetails = new Dictionary<string, Dictionary<string, string>>();
         _sectorMap = new Dictionary<int, Dictionary<int, GameObject>>();
 
-        INIParser parser = new INIParser(Application.dataPath + INI_PATH);
+        var parser = new INIParser(Application.dataPath + INI_PATH);
         var spawnTables = parser.ParseINI();
-
-        float runningTotal = 0.0f;
+        var textures = new Texture2D[spawnTables.Count]; // to ensure correct order
+        var planetNames = new string[spawnTables.Count]; // to ensure correct order
+        var planetCount = 0;
+        var runningTotal = 0.0f;
 
         // cache planet spawn probabilities
         foreach (var planet in spawnTables[PLANET_SECTION_HEADER])
@@ -90,19 +77,13 @@ public class MapManager : MonoBehaviour
         }
         spawnTables.Remove(PLANET_SECTION_HEADER);
 
-        // using these to guarantee same order in the texture atlas. Dictionaries don't guarantee order.
-        Texture2D[] textures = new Texture2D[spawnTables.Count];
-        string[] planetNames = new string[spawnTables.Count];
-
-        int planetCount = 0;
         foreach(var planet in spawnTables)
         {
             _planetInhabitanceSpawnTable.Add(planet.Key, new Dictionary<Inhabitance, float>());
             _planetResourceSpawnTable.Add(planet.Key, new Dictionary<Resource, float>());
 
             // load texture for atlasing
-            var tex = Resources.Load<Texture2D>(MATERIALS_PATH + spawnTables[planet.Key][PLANET_TEXTURE_DETAIL]);
-            textures[planetCount] = tex;
+            textures[planetCount] = Resources.Load<Texture2D>(MATERIALS_PATH + spawnTables[planet.Key][PLANET_TEXTURE_DETAIL]);
             planetNames[planetCount++] = planet.Key; 
 
             // cache per-planet Inhabitance probabilities
@@ -130,14 +111,14 @@ public class MapManager : MonoBehaviour
         }
 
         _textureAtlas = new Texture2D(spawnTables.Count * 256, 256);
-        _atlasEntries = _textureAtlas.PackTextures(textures, 0);
+        var atlasEntries = _textureAtlas.PackTextures(textures, 0);
 
         for (int i = 0; i < planetCount; i++)
         {
             _planetTextureTable.Add(planetNames[i], 
-                new TextureAtlasDetails((_atlasEntries[i].width == 0 && _atlasEntries[i].height == 0 ? null : _textureAtlas), 
-                                        new Vector2(_atlasEntries[i].x, _atlasEntries[i].y),
-                                        new Vector2(_atlasEntries[i].width, _atlasEntries[i].height)));
+                new TextureAtlasDetails((atlasEntries[i].width == 0 && atlasEntries[i].height == 0 ? null : _textureAtlas), 
+                                        new Vector2(atlasEntries[i].x, atlasEntries[i].y),
+                                        new Vector2(atlasEntries[i].width, atlasEntries[i].height)));
             spawnTables[planetNames[i]].Remove(PLANET_TEXTURE_DETAIL);
         }
 
