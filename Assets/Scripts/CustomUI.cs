@@ -46,6 +46,11 @@ public class CustomUI : MonoBehaviour
         GUIManager.Instance.ListIndex = int.Parse(data);
     }
 
+    public void ClickConstructable()
+    {
+
+    }
+
 	public void ResearchOpen()
 	{
 		GameManager.Instance.Paused = true;
