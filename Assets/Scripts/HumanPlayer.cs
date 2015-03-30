@@ -39,6 +39,9 @@ public class HumanPlayer : Player
         _commandShip.Ship = _shipDefinitions["Command Ship"].Copy();
         _commandShip.AddShip(_commandShip.Ship);
         _commandShip.AddShip(_shipDefinitions["Base"].Copy());
+        _commandShip.AddShip(_shipDefinitions["Gathering Complex"].Copy());
+        _commandShip.AddShip(_shipDefinitions["Military Complex"].Copy());
+        _commandShip.AddShip(_shipDefinitions["Research Complex"].Copy());
 
         _controlledSquad = _commandShip;
         _controlledSquad.IsPlayerControlled = true;
@@ -113,7 +116,6 @@ public class HumanPlayer : Player
 
     private void UpdateSelectedPlanet()
     {
-        GUIManager.Instance.UpdateSelectedPlanet(_controlledSquad.gameObject.GetComponent<Tile>(), _shipDefinitions);
     }
 
     private void UpdateSquad()

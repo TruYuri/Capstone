@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     private const string HUMAN_PLAYER_PREFAB = "HumanPlayer";
     private const string PLAYER_PREFAB = "Player";
     private const string INI_PATH = "/Resources/Ships.ini";
-    private const string MATERIALS_PATH = "ShipIcons/";
+    private const string SHIP_ICONS_PATH = "ShipIcons/";
     private const string SHIP_SECTION_HEADER = "[Ships]";
     private const string ICON_DETAIL = "IconName";
     private const string HULL_DETAIL = "Hull";
@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     private Queue<GameEvent> _eventQueue;
     private Queue<GameEvent> _nextEventQueue;
     private Dictionary<string, Ship> _shipDefinitions;
-    private Texture2D _textureAtlas;
+    private Texture2D _shipTextureAtlas;
     private Dictionary<Team, Player> _players;
 
     public static GameManager Instance 
@@ -64,21 +64,21 @@ public class GameManager : MonoBehaviour
         var textures = new Texture2D[shipDetails.Count - 1]; // to ensure order
         var shipNames = new string[shipDetails.Count - 1]; // to ensure order
         var shipCount = 0;
-       
+
         foreach (var ship in shipDetails[SHIP_SECTION_HEADER])
         {
             // load texture for atlasing
-            textures[shipCount] = Resources.Load<Texture2D>(MATERIALS_PATH + shipDetails["[" + ship.Key + "]"][ICON_DETAIL]);
+            textures[shipCount] = Resources.Load<Texture2D>(SHIP_ICONS_PATH + shipDetails["[" + ship.Key + "]"][ICON_DETAIL]);
             shipNames[shipCount++] = ship.Key;
         }
 
-        _textureAtlas = new Texture2D(0, 0);
-        var atlasEntries = _textureAtlas.PackTextures(textures, 0);
+        _shipTextureAtlas = new Texture2D(0, 0);
+        var atlasEntries = _shipTextureAtlas.PackTextures(textures, 0);
 
         for (int i = 0; i < shipCount; i++)
         {
-            var rect = new Rect(atlasEntries[i].xMin * _textureAtlas.width, atlasEntries[i].yMin * _textureAtlas.height, textures[i].width, textures[i].height);
-            var icon = Sprite.Create(_textureAtlas, rect, new Vector2(0.5f, 0.5f));
+            var rect = new Rect(atlasEntries[i].xMin * _shipTextureAtlas.width, atlasEntries[i].yMin * _shipTextureAtlas.height, textures[i].width, textures[i].height);
+            var icon = Sprite.Create(_shipTextureAtlas, rect, new Vector2(0.5f, 0.5f));
             var section = "[" + shipNames[i] + "]";
             var type = (ShipType)Enum.Parse(typeof(ShipType), shipDetails[SHIP_SECTION_HEADER][shipNames[i]]);
             var hull = float.Parse(shipDetails[section][HULL_DETAIL]);
@@ -200,5 +200,8 @@ public class GameManager : MonoBehaviour
     {
         _eventQueue = _nextEventQueue;
         _nextEventQueue = new Queue<GameEvent>();
+
+        foreach (var player in _players)
+            player.Value.EndTurn();
     }
 }

@@ -7,11 +7,14 @@ public class GUIManager : MonoBehaviour
 {
     private static GUIManager _instance;
     private Dictionary<string, CustomUI> _interface;
+    private Dictionary<string, Sprite> _icons;
 
     private int _listIndex; // find way to phase this out - list.selectedindex?
 
+    // when done with GUIManager, add a ton more of these
     private const string LIST_PREFAB = "ShipListing";
     private const string CONSTRUCT_PREFAB = "Constructable";
+    private const string UI_ICONS_PATH = "UI Icons/";
 
     public static GUIManager Instance
     {
@@ -34,6 +37,20 @@ public class GUIManager : MonoBehaviour
 
         if(_interface == null)
             _interface = new Dictionary<string, CustomUI>();
+
+        _icons = new Dictionary<string, Sprite>()
+        {
+            { "Oil", Resources.Load<Sprite>(UI_ICONS_PATH + "OilIcon") },
+            { "Asterminium", Resources.Load<Sprite>(UI_ICONS_PATH + "AsterminiumIcon") },
+            { "Ore", Resources.Load<Sprite>(UI_ICONS_PATH + "OreIcon") },
+            { "Forest", Resources.Load<Sprite>(UI_ICONS_PATH + "ForestIcon") },
+            { "NoResource", Resources.Load<Sprite>(UI_ICONS_PATH + "NoResourceIcon") },
+            { "Indigineous", Resources.Load<Sprite>(UI_ICONS_PATH + "IndigineousIcon") },
+            { "Uninhabited", Resources.Load<Sprite>(UI_ICONS_PATH + "UninhabitedIcon") },
+            { "Plinthen", Resources.Load<Sprite>(UI_ICONS_PATH + "PlinthenIcon") },
+            { "Union", Resources.Load<Sprite>(UI_ICONS_PATH + "UnionIcon") },
+            { "Kharkyr", Resources.Load<Sprite>(UI_ICONS_PATH + "KharkyrIcon") }
+        };
     }
 
     void Update()
@@ -56,21 +73,18 @@ public class GUIManager : MonoBehaviour
 
     public void SetMainListControls(Squad squad, Squad squad2, Tile tile)
     {
-        var merge = _interface["Merge"].gameObject.GetComponent<Button>();
-        var split = _interface["Split"].gameObject.GetComponent<Button>();
+        var manage = _interface["Manage"].gameObject.GetComponent<Button>();
         var deploy = _interface["Deploy"].gameObject.GetComponent<Button>();
 
         if (HumanPlayer.Instance.Team == squad.Team)
         {
-            split.interactable = squad.Size > 0;
-            merge.interactable = squad2 != null || (squad2 != null && tile.Team == squad.Team);
+            manage.interactable = squad.Size > 0 || squad2 != null || (squad2 != null && tile.Team == squad.Team);
             deploy.interactable = (_listIndex != -1 && squad.Ships[_listIndex].ShipType == ShipType.Structure && tile != null && tile.DeployedStructure == null) || 
                 (squad.GetComponent<Tile>() != null && squad.GetComponent<Tile>().DeployedStructure != null);
         }
         else
         {
-            split.interactable = false;
-            merge.interactable = false;
+            manage.interactable = false;
             deploy.interactable = false;
         }
     }
@@ -122,10 +136,10 @@ public class GUIManager : MonoBehaviour
                                      tileRenderer.material.mainTextureScale.x,
                                      tileRenderer.material.mainTextureScale.y);
         _interface["PlanetName"].GetComponent<Text>().text = tile.Name;
-        // resource name
         _interface["TeamName"].GetComponent<Text>().text = tile.Team.ToString();
-        // resource icon
+        _interface["TeamIcon"].GetComponent<Image>().sprite = _icons[tile.Team.ToString()];
         _interface["ResourceName"].GetComponent<Text>().text = tile.ResourceType.ToString() + "\n" + tile.ResourceCount.ToString();
+        _interface["ResourceIcon"].GetComponent<Image>().sprite = _icons[tile.ResourceType.ToString()];
         _interface["Population"].GetComponent<Text>().text = tile.Population.ToString();
         // population types
 
@@ -177,13 +191,6 @@ public class GUIManager : MonoBehaviour
 
         SetUIElements(true, false, true);
         SetMainListControls(squad, null, tile);
-    }
-
-    public void UpdateSelectedPlanet(Tile tile, Dictionary<string, Ship> defs)
-    {
-        // probably won't need this if we just call SelectedTile and SelectedSquad again when the turn begins
-        // update planet info itself
-        // use CustomUI data to update from the appropriate research tree
     }
 
     //

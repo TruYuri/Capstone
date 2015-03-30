@@ -7,16 +7,16 @@ public class ComplexResearch : Research
     private const string DEFENSE = "Defense";
     private const string CAPACITY = "Capacity";
 
-    private List<Structure> structureDefinitions; 
+    private Dictionary<string, Structure> structureDefinitions; 
 
     public ComplexResearch(Dictionary<string, Ship> shipDefinitions) : base("Complex", 3)
     {
-        structureDefinitions = new List<Structure>()
+        structureDefinitions = new Dictionary<string, Structure>()
         {
-            { shipDefinitions["Gathering Complex"] as Structure },
-            { shipDefinitions["Research Complex"] as Structure },
-            { shipDefinitions["Military Complex"] as Structure },
-            { shipDefinitions["Base"] as Structure }
+            { "Gathering Complex", shipDefinitions["Gathering Complex"] as Structure },
+            { "Research Complex", shipDefinitions["Research Complex"] as Structure },
+            { "Military Complex", shipDefinitions["Military Complex"] as Structure },
+            { "Base", shipDefinitions["Base"] as Structure }
         };
 
         upgrades.Add(DEFENSE, 0);
@@ -55,7 +55,11 @@ public class ComplexResearch : Research
 
     public override bool Unlock()
     {
-        return false;
+        structureDefinitions["Gathering Complex"].Unlocked = true;
+        structureDefinitions["Research Complex"].Unlocked = true;
+        structureDefinitions["Military Complex"].Unlocked = true;
+        structureDefinitions["Base"].Unlocked = true;
+        return true;
     }
 }
 

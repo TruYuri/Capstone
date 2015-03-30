@@ -26,7 +26,7 @@ public class CustomUI : MonoBehaviour
 
     }
 
-    public void ClickMerge()
+    public void ClickManage()
     {
 
     }
@@ -34,11 +34,6 @@ public class CustomUI : MonoBehaviour
     public void ClickDeploy()
     {
         HumanPlayer.Instance.Deploy(GUIManager.Instance.ListIndex);
-    }
-
-    public void ClickSplit()
-    {
-        // show split list screen
     }
 
     public void ClickListItem()

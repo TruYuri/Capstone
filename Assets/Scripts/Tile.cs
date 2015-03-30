@@ -104,7 +104,7 @@ public class Tile : MonoBehaviour
         }
 
         // Determine Resource Type
-        _resourceType = Resource.None;
+        _resourceType = Resource.NoResource;
         chance = (float)GameManager.Generator.NextDouble();
         foreach (var resource in mapManager.PlanetResourceSpawnTable[_planetType])
         {
