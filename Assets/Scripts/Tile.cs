@@ -120,8 +120,8 @@ public class Tile : MonoBehaviour
             sector.PlanetCounts.Add(_planetType, 0);
 
         _name = MapManager.Instance.PlanetSpawnDetails[_planetType][PLANET_NAME]
-            + (sector.HorizontalGridPosition == 0 ? "-" : "")
-            + sector.HorizontalGridPosition.ToString("+#;-#;0") + Math.Abs(sector.VerticalGridPosition).ToString()
+            + "-"
+            + Math.Abs(sector.HorizontalGridPosition).ToString() + Math.Abs(sector.VerticalGridPosition).ToString()
             + PlanetSuffix(_planetType, sector);
 
         if(mapManager.PlanetTextureTable[_planetType].Texture != null)
@@ -167,6 +167,16 @@ public class Tile : MonoBehaviour
         }
 
         val += (char)('a' + diff);
+
+        if(sector.VerticalGridPosition >= 0 && sector.HorizontalGridPosition >= 0)
+            val += "-q1";
+        else if(sector.VerticalGridPosition < 0 && sector.HorizontalGridPosition >= 0)
+            val += "-q2";
+        else if(sector.VerticalGridPosition < 0 && sector.HorizontalGridPosition < 0)
+            val += "-q3";
+        else
+            val += "-q4";
+
         return val;
     }
 

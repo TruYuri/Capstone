@@ -91,7 +91,7 @@ public class CommandShipResearch : Research
 
     public override bool Unlock()
     {
-        return true;
+        return false;
     }
 
     public override void Display()

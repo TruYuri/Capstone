@@ -28,8 +28,8 @@ public class Research
     }
 
     public virtual bool Unlock() 
-    { 
-        return false; 
+    {
+        return false;
     }
 
     public virtual void Display() 

@@ -100,7 +100,8 @@ public class BehemothResearch : Research
 
     public override bool Unlock()
     {
-        return true;
+        behemothShip.Unlocked = true;
+        return behemothShip.Unlocked;
     }
 
     public override void Display()

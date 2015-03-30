@@ -122,6 +122,12 @@ public class GUIManager : MonoBehaviour
                                      tileRenderer.material.mainTextureScale.x,
                                      tileRenderer.material.mainTextureScale.y);
         _interface["PlanetName"].GetComponent<Text>().text = tile.Name;
+        // resource name
+        _interface["TeamName"].GetComponent<Text>().text = tile.Team.ToString();
+        // resource icon
+        _interface["ResourceName"].GetComponent<Text>().text = tile.ResourceType.ToString() + "\n" + tile.ResourceCount.ToString();
+        _interface["Population"].GetComponent<Text>().text = tile.Population.ToString();
+        // population types
 
         if (tile.Team == HumanPlayer.Instance.Team && tile.DeployedStructure != null)
         {
@@ -131,18 +137,40 @@ public class GUIManager : MonoBehaviour
             _interface["DeployText"].GetComponent<Text>().text = "Undeploy";
 
             // populate structure info
-            // tile.DeployedStructure
+            _interface["StructureIcon"].GetComponent<Image>().sprite = tile.DeployedStructure.Icon;
+            _interface["StructureName"].GetComponent<Text>().text = tile.DeployedStructure.Name;
+            _interface["Capacity"].GetComponent<Text>().text = tile.DeployedStructure.Population.ToString()
+                + " / " + tile.DeployedStructure.DeployedCapacity.ToString();
+            _interface["Defense"].GetComponent<Text>().text = tile.DeployedStructure.Defense.ToString();
+            _interface["GatherRate"].GetComponent<Text>().text = tile.DeployedStructure.GatherRate.ToString();
+
+            var listEntry = Resources.Load<GameObject>(CONSTRUCT_PREFAB);
+            foreach (Transform child in _interface["Constructables"].transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
 
             // populate construction list
             foreach(var construct in tile.DeployedStructure.Constructables)
             {
+                var entry = Instantiate(listEntry) as GameObject;
+                entry.transform.FindChild("Name").GetComponent<Text>().text = defs[construct].Name;
+                entry.transform.FindChild("Icon").GetComponent<Image>().sprite = defs[construct].Icon;
+                entry.transform.FindChild("HullText").GetComponent<Text>().text = defs[construct].Hull.ToString();
+                entry.transform.FindChild("FirepowerText").GetComponent<Text>().text = defs[construct].Firepower.ToString();
+                entry.transform.FindChild("SpeedText").GetComponent<Text>().text = defs[construct].Speed.ToString();
+                entry.transform.FindChild("CapacityText").GetComponent<Text>().text = defs[construct].Capacity.ToString();
+                entry.GetComponent<CustomUI>().data = defs[construct].Name;
+                entry.transform.SetParent(_interface["Constructables"].transform);
 
+                if (defs[construct].Unlocked)
+                    entry.GetComponent<Button>().interactable = true;
             }
         }
         else // enemy or no structure
         {
             _interface["ConstBar"].gameObject.SetActive(false);
-            _interface["Structure"].gameObject.SetActive(true);
+            _interface["Structure"].gameObject.SetActive(false);
             _interface["ConstructionList"].gameObject.SetActive(false);
             _interface["DeployText"].GetComponent<Text>().text = "Undeploy";
         }

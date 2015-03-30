@@ -52,5 +52,10 @@ public class ComplexResearch : Research
     {
         upgrades[CAPACITY]++;
     }
+
+    public override bool Unlock()
+    {
+        return false;
+    }
 }
 

@@ -76,7 +76,8 @@ public class TransportResearch : Research
 
     public override bool Unlock()
     {
-        return true;
+        transportShip.Unlocked = true;
+        return transportShip.Unlocked;
     }
 
     public override void Display()

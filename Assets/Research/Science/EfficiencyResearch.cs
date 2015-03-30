@@ -88,4 +88,10 @@ public class EfficiencyResearch : Research
         shipDefinitions[RESOURCE_TRANSPORT].Hull += 5;
         shipDefinitions[RESOURCE_TRANSPORT].Capacity += 0;
     }
+
+    public override bool Unlock()
+    {
+        shipDefinitions["Resource Transport"].Unlocked = true;
+        return shipDefinitions["Resource Transport"].Unlocked;
+    }
 }

@@ -19,6 +19,12 @@ public class Structure : Ship
         set { deployedCapacity = value; }
     }
 
+    public int GatherRate
+    {
+        get { return gatherRate; }
+        set { gatherRate = value; }
+    }
+
     public List<string> Constructables { get { return constructables; } }
 
     public Structure(Sprite icon, string name, float hull, float firepower, float speed, int capacity, 

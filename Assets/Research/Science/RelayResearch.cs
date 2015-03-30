@@ -47,4 +47,10 @@ public class RelayResearch : Research
         upgrades[DEFENSE]++;
         relay.Hull += 5.0f;
     }
+
+    public override bool Unlock()
+    {
+        relay.Unlocked = true;
+        return relay.Unlocked;
+    }
 }

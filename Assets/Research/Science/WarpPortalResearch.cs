@@ -47,4 +47,10 @@ public class WarpPortalResearch : Research
         upgrades[DEFENSE]++;
         warpPortal.Hull += 5.0f;
     }
+
+    public override bool Unlock()
+    {
+        warpPortal.Unlocked = true;
+        return warpPortal.Unlocked;
+    }
 }

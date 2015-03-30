@@ -73,8 +73,9 @@ public class FighterResearch : Research
     }
 
     public override bool Unlock() 
-    { 
-        return true;
+    {
+        fighterShip.Unlocked = true;
+        return fighterShip.Unlocked;
     }
 
     public override void Display() 

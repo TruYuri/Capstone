@@ -100,7 +100,8 @@ public class HeavyFighterResearch : Research
 
     public override bool Unlock()
     {
-        return true;
+        heavyFighterShip.Unlocked = true;
+        return heavyFighterShip.Unlocked;
     }
 
     public override void Display()

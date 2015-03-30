@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Ship 
 {
+    protected bool unlocked;
     protected Sprite icon;
     protected string name;
     protected float hull;
@@ -73,6 +74,12 @@ public class Ship
         get { return spaceAgePopulation; }
         set { spaceAgePopulation = value; }
     }
+    public bool Unlocked
+    {
+        get { return unlocked; }
+        set { unlocked = value; }
+    }
+
     public ShipType ShipType { get { return shipType; } }
 
     public Ship(Sprite icon, string name, float hull, float firepower, float speed, int capacity, ShipType shipType)

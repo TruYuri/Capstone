@@ -75,7 +75,8 @@ public class GuardSatelliteResearch : Research
 
     public override bool Unlock()
     {
-        return true;
+        guardSatelliteShip.Unlocked = true;
+        return guardSatelliteShip.Unlocked;
     }
 
     public override void Display()

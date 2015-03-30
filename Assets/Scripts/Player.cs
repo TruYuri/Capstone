@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Player : MonoBehaviour
 {
@@ -36,6 +37,13 @@ public class Player : MonoBehaviour
             return;
 	}
 
+    public bool IsUnlocked(string ship)
+    {
+        // check resources
+
+        return _shipDefinitions[ship].Unlocked;
+    }
+
     public bool UpgradeResearch(string type, string research, string property)
     {
         if(type == MILITARY)
@@ -49,6 +57,12 @@ public class Player : MonoBehaviour
     {
         var tile = _controlledSquad.Deploy(shipIndex);
         Control(tile.Squad);
+    }
+
+    public void EndTurn()
+    {
+        _militaryTree.Advance();
+        _scienceTree.Advance();
     }
 
     public virtual void Battle()
