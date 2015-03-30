@@ -157,6 +157,10 @@ public class GUIManager : MonoBehaviour
                 + " / " + tile.DeployedStructure.DeployedCapacity.ToString();
             _interface["Defense"].GetComponent<Text>().text = tile.DeployedStructure.Defense.ToString();
             _interface["GatherRate"].GetComponent<Text>().text = tile.DeployedStructure.GatherRate.ToString();
+            _interface["OilAmount"].GetComponent<Text>().text = tile.DeployedStructure.Resources[Resource.Oil].ToString();
+            _interface["OreAmount"].GetComponent<Text>().text = tile.DeployedStructure.Resources[Resource.Ore].ToString();
+            _interface["AsterminiumAmount"].GetComponent<Text>().text = tile.DeployedStructure.Resources[Resource.Asterminium].ToString();
+            _interface["ForestAmount"].GetComponent<Text>().text = tile.DeployedStructure.Resources[Resource.Forest].ToString();
 
             var listEntry = Resources.Load<GameObject>(CONSTRUCT_PREFAB);
             foreach (Transform child in _interface["Constructables"].transform)
@@ -177,7 +181,7 @@ public class GUIManager : MonoBehaviour
                 entry.GetComponent<CustomUI>().data = defs[construct].Name;
                 entry.transform.SetParent(_interface["Constructables"].transform);
 
-                if (defs[construct].Unlocked)
+                if (HumanPlayer.Instance.CanConstruct(construct))
                     entry.GetComponent<Button>().interactable = true;
             }
         }

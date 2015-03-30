@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     protected Team _team;
     protected Squad _controlledSquad;
     protected Dictionary<string, Ship> _shipDefinitions;
+    protected Dictionary<string, Research> _shipResearchMap;
     protected List<Squad> _squads;
     protected int _numResearchStations;
     protected ResearchTree _militaryTree;
@@ -37,13 +38,6 @@ public class Player : MonoBehaviour
             return;
 	}
 
-    public bool IsUnlocked(string ship)
-    {
-        // check resources
-
-        return _shipDefinitions[ship].Unlocked;
-    }
-
     public bool UpgradeResearch(string type, string research, string property)
     {
         if(type == MILITARY)
@@ -51,6 +45,11 @@ public class Player : MonoBehaviour
         else if(type == SCIENCE)
             return _scienceTree.GetResearch(research).UpgradeResearch(property, _numResearchStations);
         return false;
+    }
+
+    public bool CanConstruct(string ship)
+    {
+        return _shipDefinitions[ship].CanConstruct(_numResearchStations, _controlledSquad.GetComponent<Tile>().DeployedStructure);
     }
 
     public virtual void Deploy(int shipIndex)

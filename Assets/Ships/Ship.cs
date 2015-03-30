@@ -22,6 +22,12 @@ public class Ship
     protected int industrialPopulation;
     protected int spaceAgePopulation;
 
+    protected int requiredOre;
+    protected int requiredAsterminium;
+    protected int requiredOil;
+    protected int requiredForest;
+    protected int requiredStations;
+
     protected ShipType shipType;
 
     public Sprite Icon { get { return icon; } }
@@ -82,7 +88,8 @@ public class Ship
 
     public ShipType ShipType { get { return shipType; } }
 
-    public Ship(Sprite icon, string name, float hull, float firepower, float speed, int capacity, ShipType shipType)
+    public Ship(Sprite icon, string name, float hull, float firepower, float speed, int capacity, ShipType shipType, 
+        int ore, int oil, int asterminium, int forest, int stations)
     {
         this.name = name;
         this.hull = this.baseHull = hull;
@@ -91,11 +98,26 @@ public class Ship
         this.capacity = this.baseCapacity = capacity;
         this.shipType = shipType;
         this.icon = icon;
+        this.requiredOre = ore;
+        this.requiredOil = oil;
+        this.requiredAsterminium = asterminium;
+        this.requiredForest = forest;
+        this.requiredStations = stations;
+    }
+
+    public virtual bool CanConstruct(int stations, Structure structure)
+    {
+        return unlocked && stations >= requiredStations &&
+            structure.Resources[Resource.Ore] >= requiredOre &&
+            structure.Resources[Resource.Oil] >= requiredOil &&
+            structure.Resources[Resource.Asterminium] >= requiredAsterminium &&
+            structure.Resources[Resource.Forest] >= requiredForest;
     }
 
     public virtual Ship Copy()
     {
-        var ship = new Ship(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, shipType);
+        var ship = new Ship(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, shipType, 
+            requiredOre, requiredOil, requiredAsterminium, requiredForest, requiredStations);
         ship.Hull = hull;
         ship.Firepower = firepower;
         ship.Speed = speed;

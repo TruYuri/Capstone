@@ -22,6 +22,11 @@ public class GameManager : MonoBehaviour
     private const string RANGE_DETAIL = "Range";
     private const string N_CONSTRUCTABLES_DETAIL = "nConstructables";
     private const string CONSTRUCTABLE_DETAIL = "Constructable";
+    private const string ORE_DETAIL = "Ore";
+    private const string OIL_DETAIL = "Oil";
+    private const string ASTERMINIUM_DETAIL = "Asterminium";
+    private const string FOREST_DETAIL = "Forest";
+    private const string STATIONS_DETAIL = "Stations";
 
     private static GameManager _instance;
     private bool _paused;
@@ -86,13 +91,19 @@ public class GameManager : MonoBehaviour
             var speed = float.Parse(shipDetails[section][SPEED_DETAIL]);
             var capacity = int.Parse(shipDetails[section][CAPACITY_DETAIL]);
             var name = Regex.Replace(shipNames[i], "([a-z])([A-Z])", "$1 $2");
+            var oil = int.Parse(shipDetails[section][OIL_DETAIL]);
+            var asterminium = int.Parse(shipDetails[section][ASTERMINIUM_DETAIL]);
+            var ore = int.Parse(shipDetails[section][ORE_DETAIL]);
+            var forest = int.Parse(shipDetails[section][FOREST_DETAIL]);
+            var stations = int.Parse(shipDetails[section][STATIONS_DETAIL]);
 
             switch(type)
             {
                 case ShipType.ResourceTransport:
                 case ShipType.Defense:
                 case ShipType.Combat:
-                    _shipDefinitions.Add(name, new Ship(icon, name, hull, firepower, speed, capacity, type));
+                    _shipDefinitions.Add(name, new Ship(icon, name, hull, firepower, speed, capacity, type, 
+                        ore, oil, asterminium, forest, stations));
                     break;
                 case ShipType.Structure:
                     // extract constructables
@@ -104,13 +115,16 @@ public class GameManager : MonoBehaviour
                     var dDefense = float.Parse(shipDetails[section][DEPLOYED_DEFENSE_DETAIL]);
                     var dCapacity = int.Parse(shipDetails[section][DEPLOYED_CAPACITY_DETAIL]);
                     var rate = int.Parse(shipDetails[section][GATHER_RATE_DETAIL]);
-                    _shipDefinitions.Add(name, new Structure(icon, name, hull, firepower, speed, capacity, dDefense, dCapacity, 0, constructables, type));
+                    _shipDefinitions.Add(name, new Structure(icon, name, hull, firepower, speed, capacity, dDefense, dCapacity, 0, constructables, type,
+                        ore, oil, asterminium, forest, stations));
                     break;
                 case ShipType.WarpPortal:
-                    _shipDefinitions.Add(name, new WarpPortal(icon, name, hull, firepower, speed, capacity, int.Parse(shipDetails[section][RANGE_DETAIL])));
+                    _shipDefinitions.Add(name, new WarpPortal(icon, name, hull, firepower, speed, capacity, int.Parse(shipDetails[section][RANGE_DETAIL]),
+                        ore, oil, asterminium, forest, stations));
                     break;
                 case ShipType.Relay:
-                    _shipDefinitions.Add(name, new Relay(icon, name, hull, firepower, speed, capacity, int.Parse(shipDetails[section][RANGE_DETAIL])));
+                    _shipDefinitions.Add(name, new Relay(icon, name, hull, firepower, speed, capacity, int.Parse(shipDetails[section][RANGE_DETAIL]),
+                        ore, oil, asterminium, forest, stations));
                     break;
             }
         }
