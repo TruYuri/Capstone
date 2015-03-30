@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Ship
+public class Ship 
 {
     protected Sprite icon;
     protected string name;

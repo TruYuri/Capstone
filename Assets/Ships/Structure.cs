@@ -19,6 +19,8 @@ public class Structure : Ship
         set { deployedCapacity = value; }
     }
 
+    public List<string> Constructables { get { return constructables; } }
+
     public Structure(Sprite icon, string name, float hull, float firepower, float speed, int capacity, 
         float defense, int deployedCapacity, int gatherRate, List<string> constructables, ShipType shipType)
         : base(icon, name, hull, firepower, speed, capacity, shipType)

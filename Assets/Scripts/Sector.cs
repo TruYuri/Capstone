@@ -1,10 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 [System.Serializable] 
 public class Sector : MonoBehaviour
 {
@@ -15,6 +11,7 @@ public class Sector : MonoBehaviour
     // Adjoining sectors
     public int VerticalGridPosition { get; set; }
     public int HorizontalGridPosition { get; set; }
+    public Dictionary<string, int> PlanetCounts { get; set; }
     private List<GameObject> _tiles;
 
 	// Use this for initialization
@@ -30,6 +27,7 @@ public class Sector : MonoBehaviour
             Tile = Resources.Load<GameObject>(TILE_PREFAB);
 
         GameObject tile;
+        PlanetCounts = new Dictionary<string, int>();
 
         // Generate center columns
         for(int i = -85; i <= 85; i += 10)

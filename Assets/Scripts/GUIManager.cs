@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Linq;
 
 public class GUIManager : MonoBehaviour 
 {
@@ -10,6 +11,7 @@ public class GUIManager : MonoBehaviour
     private int _listIndex; // find way to phase this out - list.selectedindex?
 
     private const string LIST_PREFAB = "ShipListing";
+    private const string CONSTRUCT_PREFAB = "Constructable";
 
     public static GUIManager Instance
     {
@@ -77,6 +79,7 @@ public class GUIManager : MonoBehaviour
     {
         _interface["SquadMenu"].gameObject.SetActive(squad);
         _interface["BattleMenu"].gameObject.SetActive(battle);
+        _interface["PlanetInfo"].gameObject.SetActive(tile);
     }
 
     public void SquadSelected(Squad squad)
@@ -100,29 +103,59 @@ public class GUIManager : MonoBehaviour
             entry.transform.SetParent(_interface["MainShipList"].transform);
         }
 
-        _interface["Deploy"].gameObject.transform.FindChild("Text").GetComponent<Text>().text = "Deploy";
+        _interface["DeployText"].GetComponent<Text>().text = "Deploy";
         SetUIElements(true, false, false);
         SetMainListControls(squad, null, null);
     }
 
-    public void TileSelected(Tile tile)
+    public void TileSelected(Tile tile, Dictionary<string, Ship> defs)
     {
         var squad = tile.gameObject.GetComponent<Squad>();
         SquadSelected(squad);
 
-        if (tile.Team == HumanPlayer.Instance.Team)
+        // general planet stuff here
+        var tileRenderer = tile.GetComponent<ParticleSystem>().GetComponent<Renderer>();
+        var uiRenderer = _interface["PlanetIcon"].GetComponent<RawImage>();
+        uiRenderer.texture = tileRenderer.material.mainTexture;
+        uiRenderer.uvRect = new Rect(tileRenderer.material.mainTextureOffset.x,
+                                     tileRenderer.material.mainTextureOffset.y,
+                                     tileRenderer.material.mainTextureScale.x,
+                                     tileRenderer.material.mainTextureScale.y);
+        _interface["PlanetName"].GetComponent<Text>().text = tile.Name;
+
+        if (tile.Team == HumanPlayer.Instance.Team && tile.DeployedStructure != null)
         {
+            _interface["ConstBar"].gameObject.SetActive(true);
+            _interface["Structure"].gameObject.SetActive(true);
+            _interface["ConstructionList"].gameObject.SetActive(true);
+            _interface["DeployText"].GetComponent<Text>().text = "Undeploy";
+
+            // populate structure info
+            // tile.DeployedStructure
+
+            // populate construction list
+            foreach(var construct in tile.DeployedStructure.Constructables)
+            {
+
+            }
         }
-        else // enemy
+        else // enemy or no structure
         {
+            _interface["ConstBar"].gameObject.SetActive(false);
+            _interface["Structure"].gameObject.SetActive(true);
+            _interface["ConstructionList"].gameObject.SetActive(false);
+            _interface["DeployText"].GetComponent<Text>().text = "Undeploy";
         }
 
-        if(tile.DeployedStructure != null && tile.Team == HumanPlayer.Instance.Team)
-        {
-            _interface["Deploy"].gameObject.transform.FindChild("Text").GetComponent<Text>().text = "Undeploy";   
-        }
         SetUIElements(true, false, true);
         SetMainListControls(squad, null, tile);
+    }
+
+    public void UpdateSelectedPlanet(Tile tile, Dictionary<string, Ship> defs)
+    {
+        // probably won't need this if we just call SelectedTile and SelectedSquad again when the turn begins
+        // update planet info itself
+        // use CustomUI data to update from the appropriate research tree
     }
 
     //

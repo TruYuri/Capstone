@@ -17,7 +17,6 @@ public class HumanPlayer : Player
     private CommandShip _commandShip;
     private Vector3 _currentCameraDistance;
     public static HumanPlayer Instance { get { return _instance; } } // move this to a GameManager registry!
-    //
 
     void Start()
     {
@@ -64,7 +63,7 @@ public class HumanPlayer : Player
                 {
                     case TILE_TAG:
                         Control(hit.collider.gameObject.GetComponent<Squad>());
-                        GUIManager.Instance.TileSelected(hit.collider.GetComponent<Tile>());
+                        GUIManager.Instance.TileSelected(hit.collider.GetComponent<Tile>(), _shipDefinitions);
                         break;
                     case COMMAND_SHIP_TAG:
                     case SQUAD_TAG:
@@ -113,6 +112,7 @@ public class HumanPlayer : Player
 
     private void UpdateSelectedPlanet()
     {
+        GUIManager.Instance.UpdateSelectedPlanet(_controlledSquad.gameObject.GetComponent<Tile>(), _shipDefinitions);
     }
 
     private void UpdateSquad()
@@ -167,7 +167,7 @@ public class HumanPlayer : Player
     {
         var tile = _controlledSquad.Deploy(shipIndex);
         Control(tile.Squad);
-        GUIManager.Instance.TileSelected(tile);
+        GUIManager.Instance.TileSelected(tile, _shipDefinitions);
         GameManager.Instance.EndTurn();
     }
 

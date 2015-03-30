@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -16,6 +17,9 @@ public class Tile : MonoBehaviour
     private const string PLANET_LARGE_POPULATION_MIN_DETAIL = "PopulationAmountLargeMinimum";
     private const string PLANET_LARGE_POPULATION_MAX_DETAIL = "PopulationAmountLargeMaximum";
 
+    private const string PLANET_NAME = "AssignedName";
+
+    private string _name;
     private Bounds _bounds;
     private string _planetType;
     private int _population;
@@ -29,6 +33,7 @@ public class Tile : MonoBehaviour
     private float _power;
     private Squad _defenseSquad;
 
+    public string Name { get { return _name; } }
     public Bounds Bounds { get { return _bounds; } }
     public string PlanetType { get { return _planetType; } }
     public int Population { get { return _population; } }
@@ -110,6 +115,15 @@ public class Tile : MonoBehaviour
             }
         }
 
+        var sector = this.transform.parent.GetComponent<Sector>();
+        if(!sector.PlanetCounts.ContainsKey(_planetType))
+            sector.PlanetCounts.Add(_planetType, 0);
+
+        _name = MapManager.Instance.PlanetSpawnDetails[_planetType][PLANET_NAME]
+            + (sector.HorizontalGridPosition == 0 ? "-" : "")
+            + sector.HorizontalGridPosition.ToString("+#;-#;0") + Math.Abs(sector.VerticalGridPosition).ToString()
+            + PlanetSuffix(_planetType, sector);
+
         if(mapManager.PlanetTextureTable[_planetType].Texture != null)
         {
             var system = GetComponent<ParticleSystem>();
@@ -129,7 +143,6 @@ public class Tile : MonoBehaviour
             _defenseSquad = this.GetComponent<Squad>();
             _defenseSquad.enabled = true;
 
-
             if (_population > 0)
             {
                 _team = Team.Indigineous;
@@ -141,6 +154,21 @@ public class Tile : MonoBehaviour
             _defenseSquad.Team = Team.Union;
         }
 	}
+
+    private string PlanetSuffix(string type, Sector sector)
+    {
+        int diff = sector.PlanetCounts[type]++;
+        string val = string.Empty;
+
+        if(diff > 26)
+        {
+            var n = diff / 26;
+            diff -= 26 * n;
+        }
+
+        val += (char)('a' + diff);
+        return val;
+    }
 
 	// Update is called once per frame
 	void Update () 
