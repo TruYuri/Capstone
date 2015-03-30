@@ -58,6 +58,12 @@ public class Player : MonoBehaviour
         Control(tile.Squad);
     }
 
+    public virtual void Undeploy()
+    {
+        var tile = _controlledSquad.GetComponent<Tile>();
+        tile.Undeploy();
+    }
+
     public void EndTurn()
     {
         _militaryTree.Advance();

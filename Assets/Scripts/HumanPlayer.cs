@@ -166,6 +166,14 @@ public class HumanPlayer : Player
         UpdateSquad();
     }
 
+    public override void Undeploy()
+    {
+        base.Undeploy();
+        var tile = _controlledSquad.GetComponent<Tile>();
+        GUIManager.Instance.TileSelected(tile, _shipDefinitions);
+        GameManager.Instance.EndTurn();
+    }
+
     public override void Deploy(int shipIndex)
     {
         var tile = _controlledSquad.Deploy(shipIndex);

@@ -118,6 +118,7 @@ public class GUIManager : MonoBehaviour
         }
 
         _interface["DeployText"].GetComponent<Text>().text = "Deploy";
+        _interface["Deploy"].GetComponent<CustomUI>().data = "Deploy";
         SetUIElements(true, false, false);
         SetMainListControls(squad, null, null);
     }
@@ -149,6 +150,7 @@ public class GUIManager : MonoBehaviour
             _interface["Structure"].gameObject.SetActive(true);
             _interface["ConstructionList"].gameObject.SetActive(true);
             _interface["DeployText"].GetComponent<Text>().text = "Undeploy";
+            _interface["Deploy"].GetComponent<CustomUI>().data = "Undeploy";
 
             // populate structure info
             _interface["StructureIcon"].GetComponent<Image>().sprite = tile.DeployedStructure.Icon;
@@ -190,7 +192,8 @@ public class GUIManager : MonoBehaviour
             _interface["ConstBar"].gameObject.SetActive(false);
             _interface["Structure"].gameObject.SetActive(false);
             _interface["ConstructionList"].gameObject.SetActive(false);
-            _interface["DeployText"].GetComponent<Text>().text = "Undeploy";
+            _interface["DeployText"].GetComponent<Text>().text = "Deploy";
+            _interface["Deploy"].GetComponent<CustomUI>().data = "Deploy";
         }
 
         SetUIElements(true, false, true);

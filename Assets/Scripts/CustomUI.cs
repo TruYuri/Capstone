@@ -33,7 +33,10 @@ public class CustomUI : MonoBehaviour
 
     public void ClickDeploy()
     {
-        HumanPlayer.Instance.Deploy(GUIManager.Instance.ListIndex);
+        if (data == "Deploy")
+            HumanPlayer.Instance.Deploy(GUIManager.Instance.ListIndex);
+        else
+            HumanPlayer.Instance.Undeploy();
     }
 
     public void ClickListItem()

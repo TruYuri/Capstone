@@ -50,6 +50,9 @@ public class Squad : MonoBehaviour
         var squad = collision.collider.GetComponent<Squad>();
         if (squad == null)
             return;
+        var tile = this.GetComponent<Tile>();
+        if (tile != null)
+            _collidingTile = tile;
 
         bool enemy = HumanPlayer.Instance.Team != squad.Team;
             
@@ -91,6 +94,9 @@ public class Squad : MonoBehaviour
         var squad = collision.collider.GetComponent<Squad>();
         if (squad == null)
             return;
+        var tile = this.GetComponent<Tile>();
+        if (tile != null)
+            _collidingTile = tile;
 
         switch (collision.collider.tag)
         {
