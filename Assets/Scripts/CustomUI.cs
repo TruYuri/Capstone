@@ -28,20 +28,26 @@ public class CustomUI : MonoBehaviour
 
     public void ClickManage()
     {
+        GUIManager.Instance.PopulateManageLists();
+    }
 
+    public void CloseManage()
+    {
+        HumanPlayer.Instance.ReloadGameplayUI();
     }
 
     public void ClickDeploy()
     {
         if (data == "Deploy")
-            HumanPlayer.Instance.Deploy(GUIManager.Instance.ListIndex);
+            HumanPlayer.Instance.Deploy(GUIManager.Instance.ListIndices["MainShipList"]);
         else
             HumanPlayer.Instance.Undeploy();
     }
 
     public void ClickListItem()
     {
-        GUIManager.Instance.ListIndex = int.Parse(data);
+        var split = data.Split('|');
+        GUIManager.Instance.ListIndices[split[0]] = int.Parse(split[1]);
     }
 
     public void ClickConstructable()
@@ -51,11 +57,35 @@ public class CustomUI : MonoBehaviour
 
 	public void ResearchOpen()
 	{
-		GameManager.Instance.Paused = true;
 	}
 
 	public void ResearchClose()
 	{
-		GameManager.Instance.Paused = false;
 	}
+
+    public void TransferToControlledSquad()
+    {
+    }
+
+    public void TransferAllToControlledSquad()
+    {
+    }
+
+    public void TransferToSelectedSquad()
+    {
+    }
+
+    public void TransferAllToSelectedSquad()
+    {
+    }
+
+    public void Pause()
+    {
+        GameManager.Instance.Paused = true;
+    }
+
+    public void Unpause()
+    {
+        GameManager.Instance.Paused = false;
+    }
 }

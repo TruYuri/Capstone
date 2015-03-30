@@ -115,7 +115,7 @@ public class GameManager : MonoBehaviour
                     var dDefense = float.Parse(shipDetails[section][DEPLOYED_DEFENSE_DETAIL]);
                     var dCapacity = int.Parse(shipDetails[section][DEPLOYED_CAPACITY_DETAIL]);
                     var rate = int.Parse(shipDetails[section][GATHER_RATE_DETAIL]);
-                    _shipDefinitions.Add(name, new Structure(icon, name, hull, firepower, speed, capacity, dDefense, dCapacity, 0, constructables, type,
+                    _shipDefinitions.Add(name, new Structure(icon, name, hull, firepower, speed, capacity, dDefense, dCapacity, rate, constructables, type,
                         ore, oil, asterminium, forest, stations));
                     break;
                 case ShipType.WarpPortal:

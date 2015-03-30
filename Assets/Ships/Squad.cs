@@ -21,6 +21,7 @@ public class Squad : MonoBehaviour
     }
 
     public List<Ship> Ships { get { return _ships; } }
+    public List<Squad> Colliders { get { return _collidingSquads; } }
     public int Size { get { return _ships.Count; } }
     public float ShipPower { get { return _shipPower; } }
     public float TroopPower { get { return _troopPower; } }
@@ -37,6 +38,10 @@ public class Squad : MonoBehaviour
             _ships = new List<Ship>();
         if(_collidingSquads == null)
             _collidingSquads = new List<Squad>();
+
+        var tile = this.GetComponent<Tile>();
+        if (tile != null)
+            _collidingTile = tile;
 	}
 
     void OnCollisionEnter(Collision collision)
@@ -50,9 +55,6 @@ public class Squad : MonoBehaviour
         var squad = collision.collider.GetComponent<Squad>();
         if (squad == null)
             return;
-        var tile = this.GetComponent<Tile>();
-        if (tile != null)
-            _collidingTile = tile;
 
         bool enemy = HumanPlayer.Instance.Team != squad.Team;
             
@@ -60,6 +62,7 @@ public class Squad : MonoBehaviour
         {
             case TILE_TAG:
                 _collidingTile = collision.collider.GetComponent<Tile>();
+                _collidingSquads.Add(squad);
                 if (enemy && _team == HumanPlayer.Instance.Team)
                 {
                     if(squad.Size > 0)
@@ -94,9 +97,6 @@ public class Squad : MonoBehaviour
         var squad = collision.collider.GetComponent<Squad>();
         if (squad == null)
             return;
-        var tile = this.GetComponent<Tile>();
-        if (tile != null)
-            _collidingTile = tile;
 
         switch (collision.collider.tag)
         {
@@ -128,6 +128,7 @@ public class Squad : MonoBehaviour
         {
             case TILE_TAG:
                 _collidingTile = null;
+                _collidingSquads.Remove(squad);
                 if (_isControlled)
                 {
                     GUIManager.Instance.SetMainListControls(this, null, null);

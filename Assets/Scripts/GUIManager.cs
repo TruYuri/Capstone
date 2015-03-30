@@ -9,11 +9,12 @@ public class GUIManager : MonoBehaviour
     private Dictionary<string, CustomUI> _interface;
     private Dictionary<string, Sprite> _icons;
 
-    private int _listIndex; // find way to phase this out - list.selectedindex?
+    private Dictionary<string, int> _selectedIndices;
 
     // when done with GUIManager, add a ton more of these
     private const string LIST_PREFAB = "ShipListing";
     private const string CONSTRUCT_PREFAB = "Constructable";
+    private const string SQUAD_LIST_PREFAB = "SquadListing";
     private const string UI_ICONS_PATH = "UI Icons/";
 
     public static GUIManager Instance
@@ -25,10 +26,10 @@ public class GUIManager : MonoBehaviour
             return _instance;
         }
     }
-    public int ListIndex 
+    public Dictionary<string, int> ListIndices
     {
-        get { return _listIndex; }
-        set { _listIndex = value; }
+        get { return _selectedIndices; }
+        set { _selectedIndices = value; }
     }
 
     void Start()
@@ -37,6 +38,14 @@ public class GUIManager : MonoBehaviour
 
         if(_interface == null)
             _interface = new Dictionary<string, CustomUI>();
+
+        _selectedIndices = new Dictionary<string, int>()
+        {
+            { "MainShipList", -1 },
+            { "AltSquadList", -1 },
+            { "AltShipList", -1 },
+            { "SelectedShipList", -1 }
+        };
 
         _icons = new Dictionary<string, Sprite>()
         {
@@ -70,7 +79,6 @@ public class GUIManager : MonoBehaviour
     //
     // These functions update main UI when the object is selected
     //
-
     public void SetMainListControls(Squad squad, Squad squad2, Tile tile)
     {
         var manage = _interface["Manage"].gameObject.GetComponent<Button>();
@@ -79,7 +87,7 @@ public class GUIManager : MonoBehaviour
         if (HumanPlayer.Instance.Team == squad.Team)
         {
             manage.interactable = squad.Size > 0 || squad2 != null || (squad2 != null && tile.Team == squad.Team);
-            deploy.interactable = (_listIndex != -1 && squad.Ships[_listIndex].ShipType == ShipType.Structure && tile != null && tile.DeployedStructure == null) || 
+            deploy.interactable = (_selectedIndices["MainShipList"] != -1 && squad.Ships[_selectedIndices["MainShipList"]].ShipType == ShipType.Structure && tile != null && tile.DeployedStructure == null) || 
                 (squad.GetComponent<Tile>() != null && squad.GetComponent<Tile>().DeployedStructure != null);
         }
         else
@@ -89,22 +97,106 @@ public class GUIManager : MonoBehaviour
         }
     }
 
-    public void SetUIElements(bool squad, bool battle, bool tile)
+    public void SetUIElements(bool squad, bool battle, bool tile, bool manage)
     {
         _interface["SquadMenu"].gameObject.SetActive(squad);
         _interface["BattleMenu"].gameObject.SetActive(battle);
         _interface["PlanetInfo"].gameObject.SetActive(tile);
+        _interface["ManageMenu"].gameObject.SetActive(manage);
+    }
+
+    public void PopulateManageLists()
+    {
+        GUIManager.Instance.SetUIElements(false, false, false, true);
+        PopulateSquadList();
+        PopulateSelectedSquadList();
+        PopulateControlledSquadList();
+    }
+
+    public void PopulateSquadList()
+    {
+        var squadEntry = Resources.Load<GameObject>(SQUAD_LIST_PREFAB);
+        var squad = HumanPlayer.Instance.Squad;
+        var i = 0;
+
+        foreach (Transform child in _interface["AltSquadList"].transform)
+            GameObject.Destroy(child.gameObject);
+
+        foreach (var sq in squad.Colliders)
+        {
+            var entry = Instantiate(squadEntry) as GameObject;
+
+            var tile = sq.GetComponent<Tile>();
+            if (tile != null)
+                entry.transform.FindChild("Text").GetComponent<Text>().text = tile.Name;
+            else
+                entry.transform.FindChild("Text").GetComponent<Text>().text = "Squad " + i.ToString();
+            entry.GetComponent<CustomUI>().data = "AltSquadList|" + i.ToString();
+            entry.transform.SetParent(_interface["AltSquadList"].transform);
+            i++;
+        }
+    }
+
+    public void PopulateSelectedSquadList()
+    {
+        var squad = HumanPlayer.Instance.Squad;
+        var listEntry = Resources.Load<GameObject>(LIST_PREFAB);
+        var i = 0;
+
+        foreach (Transform child in _interface["AltShipList"].transform)
+            GameObject.Destroy(child.gameObject);
+
+        if (squad.Colliders.Count < 1)
+            return;
+        else
+        {
+            _selectedIndices["AltShipList"] = 0;
+        }
+
+        foreach (var ship in squad.Colliders[_selectedIndices["AltShipList"]].Ships)
+        {
+            var entry = Instantiate(listEntry) as GameObject;
+            var icon = entry.transform.FindChild("Icon").GetComponent<Image>();
+            icon.sprite = ship.Icon;
+            entry.transform.FindChild("Name").GetComponent<Text>().text = ship.Name;
+            entry.transform.FindChild("Population").GetComponent<Text>().text = ship.Population + " / " + ship.Capacity;
+            entry.GetComponent<CustomUI>().data = "AltShipList|" + i.ToString();
+            entry.transform.SetParent(_interface["AltShipList"].transform);
+            i++;
+        }
+    }
+
+    public void PopulateControlledSquadList()
+    {
+        var squad = HumanPlayer.Instance.Squad;
+        var listEntry = Resources.Load<GameObject>(LIST_PREFAB);
+        var i = 0;
+
+        foreach (Transform child in _interface["SelectedShipList"].transform)
+            GameObject.Destroy(child.gameObject);
+
+        foreach (var ship in squad.Ships)
+        {
+            var entry = Instantiate(listEntry) as GameObject;
+            var icon = entry.transform.FindChild("Icon").GetComponent<Image>();
+            icon.sprite = ship.Icon;
+            entry.transform.FindChild("Name").GetComponent<Text>().text = ship.Name;
+            entry.transform.FindChild("Population").GetComponent<Text>().text = ship.Population + " / " + ship.Capacity;
+            entry.GetComponent<CustomUI>().data = "SelectedShipList|" + i.ToString();
+            entry.transform.SetParent(_interface["SelectedShipList"].transform);
+            i++;
+        }
     }
 
     public void SquadSelected(Squad squad)
     {
-        _listIndex = -1;
+        var keys = new List<string>(_selectedIndices.Keys);
+        foreach (var index in keys)
+            _selectedIndices[index] = -1;
 
         var listEntry = Resources.Load<GameObject>(LIST_PREFAB);
         foreach (Transform child in _interface["MainShipList"].transform) 
-        {
             GameObject.Destroy(child.gameObject);
-        }
 
         for (int i = 0; i < squad.Ships.Count; i++ )
         {
@@ -113,13 +205,13 @@ public class GUIManager : MonoBehaviour
             icon.sprite = squad.Ships[i].Icon;
             entry.transform.FindChild("Name").GetComponent<Text>().text = squad.Ships[i].Name;
             entry.transform.FindChild("Population").GetComponent<Text>().text = squad.Ships[i].Population + " / " + squad.Ships[i].Capacity;
-            entry.GetComponent<CustomUI>().data = i.ToString();
+            entry.GetComponent<CustomUI>().data = "MainShipList|" + i.ToString();
             entry.transform.SetParent(_interface["MainShipList"].transform);
         }
 
         _interface["DeployText"].GetComponent<Text>().text = "Deploy";
         _interface["Deploy"].GetComponent<CustomUI>().data = "Deploy";
-        SetUIElements(true, false, false);
+        SetUIElements(true, false, false, false);
         SetMainListControls(squad, null, null);
     }
 
@@ -196,7 +288,7 @@ public class GUIManager : MonoBehaviour
             _interface["Deploy"].GetComponent<CustomUI>().data = "Deploy";
         }
 
-        SetUIElements(true, false, true);
+        SetUIElements(true, false, true, false);
         SetMainListControls(squad, null, tile);
     }
 
@@ -247,7 +339,7 @@ public class GUIManager : MonoBehaviour
         }
         else
         {
-            SetUIElements(false, true, false);
+            SetUIElements(false, true, false, false);
         }
     }
 
@@ -255,12 +347,12 @@ public class GUIManager : MonoBehaviour
     {
         if(tile.Team == playerSquad.Team)
         {
-            SetUIElements(true, false, false);
+            SetUIElements(true, false, false, false);
             SetMainListControls(playerSquad, tile.Squad, tile);
         }
         else
         {
-            SetUIElements(false, true, false);
+            SetUIElements(false, true, false, false);
         }
     }
 }

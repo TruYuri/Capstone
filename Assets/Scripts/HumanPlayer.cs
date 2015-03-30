@@ -18,6 +18,7 @@ public class HumanPlayer : Player
     private CommandShip _commandShip;
     private Vector3 _currentCameraDistance;
     public static HumanPlayer Instance { get { return _instance; } } // move this to a GameManager registry!
+    public Squad Squad { get { return _controlledSquad; } }
 
     void Start()
     {
@@ -66,13 +67,10 @@ public class HumanPlayer : Player
                 switch (hit.collider.tag)
                 {
                     case TILE_TAG:
-                        Control(hit.collider.gameObject.GetComponent<Squad>());
-                        GUIManager.Instance.TileSelected(hit.collider.GetComponent<Tile>(), _shipDefinitions);
-                        break;
                     case COMMAND_SHIP_TAG:
                     case SQUAD_TAG:
-                        Control(hit.collider.gameObject.GetComponent<Squad>());
-                        GUIManager.Instance.SquadSelected(hit.collider.GetComponent<Squad>());
+                        Control(hit.collider.gameObject);
+                        ReloadGameplayUI();
                         break;
                 }
             }
@@ -80,7 +78,7 @@ public class HumanPlayer : Player
 
         if (Input.GetKey(KeyCode.C))
         {
-            Control(_commandShip);
+            Control(_commandShip.gameObject);
             GUIManager.Instance.SquadSelected(_commandShip);
         }
 
@@ -106,12 +104,27 @@ public class HumanPlayer : Player
         }
     }
 
-    public override void Control(Squad gameObject)
+    public void ReloadGameplayUI()
+    {
+        switch(_controlledSquad.tag)
+        {
+            case TILE_TAG:
+                GUIManager.Instance.TileSelected(_controlledTile, _shipDefinitions);
+                break;
+            case SQUAD_TAG:
+            case COMMAND_SHIP_TAG:
+                GUIManager.Instance.SquadSelected(_controlledSquad);
+                break;
+        }
+    }
+
+    public override void Control(GameObject gameObject)
     {
         _controlledSquad.IsPlayerControlled = false;
         base.Control(gameObject);
         _controlledSquad.IsPlayerControlled = true;
         transform.position = _controlledSquad.transform.position + _currentCameraDistance;
+        _controlledTile = _controlledSquad.GetComponent<Tile>();
     }
 
     private void UpdateSelectedPlanet()
@@ -177,7 +190,7 @@ public class HumanPlayer : Player
     public override void Deploy(int shipIndex)
     {
         var tile = _controlledSquad.Deploy(shipIndex);
-        Control(tile.Squad);
+        Control(tile.Squad.gameObject);
         GUIManager.Instance.TileSelected(tile, _shipDefinitions);
         GameManager.Instance.EndTurn();
     }
@@ -185,7 +198,7 @@ public class HumanPlayer : Player
     public override void Battle()
     {
         BattleEvent gameEvent = GameManager.Instance.CurrentEvent() as BattleEvent;
-        Control(gameEvent.Player.GetComponent<Squad>());
+        Control(gameEvent.Player);
 
         if (gameEvent.Type == GameEventType.SquadBattle)
             _controlledSquad.Combat(gameEvent.Enemy.GetComponent<Squad>());

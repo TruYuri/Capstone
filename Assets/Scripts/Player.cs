@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
 
     protected Team _team;
     protected Squad _controlledSquad;
+    protected Tile _controlledTile;
     protected Dictionary<string, Ship> _shipDefinitions;
     protected Dictionary<string, Research> _shipResearchMap;
     protected List<Squad> _squads;
@@ -26,9 +27,9 @@ public class Player : MonoBehaviour
         _scienceTree = GameManager.Instance.GenerateScienceTree(_shipDefinitions);
 	}
 	
-	public virtual void Control(Squad gameObject)
+	public virtual void Control(GameObject gameObject)
     {
-        _controlledSquad = gameObject;
+        _controlledSquad = gameObject.GetComponent<Squad>();
     }
 
 	// Update is called once per frame
@@ -55,7 +56,7 @@ public class Player : MonoBehaviour
     public virtual void Deploy(int shipIndex)
     {
         var tile = _controlledSquad.Deploy(shipIndex);
-        Control(tile.Squad);
+        Control(tile.gameObject);
     }
 
     public virtual void Undeploy()
