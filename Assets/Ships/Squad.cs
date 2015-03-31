@@ -305,7 +305,7 @@ public class Squad : MonoBehaviour, ListableObject
         var entry = Instantiate(squadEntry) as GameObject;
         var tile = this.GetComponent<Tile>();
         if (tile != null)
-            entry.transform.FindChild("Text").GetComponent<Text>().text = tile.Name + "Defense Squad";
+            entry.transform.FindChild("Text").GetComponent<Text>().text = tile.Name + " Defense";
         else
             entry.transform.FindChild("Text").GetComponent<Text>().text = _name;
         entry.GetComponent<CustomUI>().data = listName + "|" + index.ToString();

@@ -153,7 +153,7 @@ public class GUIManager : MonoBehaviour
         foreach (var index in keys)
             _selectedIndices[index] = -1;
 
-        PopulateList<Ship>(squad.Ships, "MainShipList", ListingType.Info, null);
+        PopulateList<Ship>(squad.Ships, "MainShipList", ListingType.Info, false);
 
         _interface["DeployText"].GetComponent<Text>().text = "Deploy";
         _interface["Deploy"].GetComponent<CustomUI>().data = "Deploy";
@@ -205,10 +205,10 @@ public class GUIManager : MonoBehaviour
 
     private void UpdateTransferInterface()
     {
-        PopulateList<Squad>(HumanPlayer.Instance.Squad.Colliders, "AltSquadList", ListingType.Info, null);
+        PopulateList<Squad>(HumanPlayer.Instance.Squad.Colliders, "AltSquadList", ListingType.Info, true);
         if (_selectedIndices["AltSquadList"] > -1 && _selectedIndices["AltSquadList"] < HumanPlayer.Instance.Squad.Colliders.Count)
-           PopulateList<Ship>(HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]].Ships, "AltShipList", ListingType.Info, null);
-        PopulateList<Ship>(HumanPlayer.Instance.Squad.Ships, "SelectedShipList", ListingType.Info, null);
+           PopulateList<Ship>(HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]].Ships, "AltShipList", ListingType.Info, true);
+        PopulateList<Ship>(HumanPlayer.Instance.Squad.Ships, "SelectedShipList", ListingType.Info, true);
 
         var right = _interface["Right"].GetComponent<Button>();
         var dright = _interface["DoubleRight"].GetComponent<Button>();
@@ -272,6 +272,7 @@ public class GUIManager : MonoBehaviour
         var squad = HumanPlayer.Instance.Squad.Colliders[index];
         var ship = Transfer(squad, "AltShipList", HumanPlayer.Instance.Squad);
         if (ship != null) squad.AddShip(ship, index);
+        AutoSelectIndex<Ship>("MainShipList", HumanPlayer.Instance.Squad.Ships);
         UpdateTransferInterface();
     }
 
@@ -281,18 +282,21 @@ public class GUIManager : MonoBehaviour
         var squad = HumanPlayer.Instance.Squad;
         var ship = Transfer(squad, "SelectedShipList", HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]]);
         if (ship != null) squad.AddShip(ship, index);
+        AutoSelectIndex<Ship>("MainShipList", HumanPlayer.Instance.Squad.Ships);
         UpdateTransferInterface();
     }
 
     public void TransferAllToControlledSquad()
     {
         TransferAll(HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]], "AltShipList", HumanPlayer.Instance.Squad);
+        AutoSelectIndex<Ship>("MainShipList", HumanPlayer.Instance.Squad.Ships);
         UpdateTransferInterface();
     }
 
     public void TransferAllToSelectedSquad()
     {
         TransferAll(HumanPlayer.Instance.Squad, "SelectedShipList", HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]]);
+        AutoSelectIndex<Ship>("MainShipList", HumanPlayer.Instance.Squad.Ships);
         UpdateTransferInterface();
     }
 

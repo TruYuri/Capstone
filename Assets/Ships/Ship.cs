@@ -132,6 +132,17 @@ public class Ship : ListableObject
         entry.transform.FindChild("Population").GetComponent<Text>().text = totalPopulation + " / " + capacity;
         entry.GetComponent<CustomUI>().data = listName + "|" + index.ToString();
 
+        var transfer = (bool)data;
+
+        if(transfer)
+            switch(shipType)
+            {
+                case ShipType.CommandShip:
+                case ShipType.Defense:
+                    entry.GetComponent<Button>().interactable = false;
+                    break;
+            }
+
         return entry;
     }
 
