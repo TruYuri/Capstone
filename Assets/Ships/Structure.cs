@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 
 public class Structure : Ship
@@ -35,10 +36,8 @@ public class Structure : Ship
     public List<string> Constructables { get { return constructables; } }
 
     public Structure(Sprite icon, string name, float hull, float firepower, float speed, int capacity,
-        float defense, int deployedCapacity, int gatherRate, List<string> constructables, ShipType shipType, 
-        int ore, int oil, int asterminium, int forest, int stations)
-        : base(icon, name, hull, firepower, speed, capacity, shipType, 
-        ore, oil, asterminium, forest, stations)
+        float defense, int deployedCapacity, int gatherRate, List<string> constructables, ShipType shipType, Dictionary<Resource, int> requiredResources)
+        : base(icon, name, hull, firepower, speed, capacity, shipType, requiredResources)
     {
         this.defense = defense;
         this.deployedCapacity = deployedCapacity;
@@ -53,16 +52,15 @@ public class Structure : Ship
         };
     }
 
-    public override bool CanConstruct(int stations, Structure structure)
+    protected override bool CanConstruct(Dictionary<Resource, int> resources)
     {
-        return base.CanConstruct(stations, structure);
+        return base.CanConstruct(resources);
     }
 
     public override Ship Copy()
     {
         var ship = new Structure(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, 
-            defense, deployedCapacity, gatherRate, constructables, shipType,
-            requiredOre, requiredOil, requiredAsterminium, requiredForest, requiredStations);
+            defense, deployedCapacity, gatherRate, constructables, shipType, requiredResources);
         ship.Hull = hull;
         ship.Firepower = firepower;
         ship.Speed = speed;
@@ -70,5 +68,19 @@ public class Structure : Ship
         ship.Protection = protection;
 
         return ship;
+    }
+
+    public void PopulateStructurePanel(GameObject list)
+    {
+        list.transform.FindChild("StructureIcon").GetComponent<Image>().sprite = icon;
+        list.transform.FindChild("StructureName").GetComponent<Text>().text = name;
+        list.transform.FindChild("Capacity").GetComponent<Text>().text = totalPopulation.ToString()
+            + " / " + deployedCapacity.ToString();
+        list.transform.FindChild("Defense").GetComponent<Text>().text = defense.ToString();
+        list.transform.FindChild("GatherRate").GetComponent<Text>().text = gatherRate.ToString();
+        list.transform.FindChild("OilAmount").GetComponent<Text>().text = resources[Resource.Oil].ToString();
+        list.transform.FindChild("OreAmount").GetComponent<Text>().text = resources[Resource.Ore].ToString();
+        list.transform.FindChild("AsterminiumAmount").GetComponent<Text>().text = resources[Resource.Asterminium].ToString();
+        list.transform.FindChild("ForestAmount").GetComponent<Text>().text = resources[Resource.Forest].ToString();
     }
 }

@@ -30,6 +30,7 @@ public class Player : MonoBehaviour
 	public virtual void Control(GameObject gameObject)
     {
         _controlledSquad = gameObject.GetComponent<Squad>();
+        _controlledTile = gameObject.GetComponent<Tile>();
     }
 
 	// Update is called once per frame
@@ -48,21 +49,14 @@ public class Player : MonoBehaviour
         return false;
     }
 
-    public bool CanConstruct(string ship)
-    {
-        return _shipDefinitions[ship].CanConstruct(_numResearchStations, _controlledSquad.GetComponent<Tile>().DeployedStructure);
-    }
-
     public virtual void Deploy(int shipIndex)
     {
-        var tile = _controlledSquad.Deploy(shipIndex);
-        Control(tile.gameObject);
+        Control(_controlledSquad.Deploy(shipIndex).gameObject);
     }
 
     public virtual void Undeploy()
     {
-        var tile = _controlledSquad.GetComponent<Tile>();
-        tile.Undeploy();
+        _controlledTile.Undeploy(false);
     }
 
     public void EndTurn()

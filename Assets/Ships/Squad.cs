@@ -1,18 +1,21 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class Squad : MonoBehaviour 
+public class Squad : MonoBehaviour, ListableObject
 {
+    private const string SQUAD_LIST_PREFAB = "SquadListing";
     private const string SQUAD_TAG = "Squad";
     private const string TILE_TAG = "Tile";
     private const string COMMAND_SHIP_TAG = "CommandShip";
-    private List<Ship> _ships;
+    private List<Ship> _ships = new List<Ship>();
     private Team _team;
     private float _shipPower;
     private float _troopPower;
     private bool _isControlled;
     private Tile _collidingTile;
-    private List<Squad> _collidingSquads;
+    private List<Squad> _collidingSquads = new List<Squad>();
+    private string _name = "Squad";
 
     public Team Team
     {
@@ -34,11 +37,6 @@ public class Squad : MonoBehaviour
 	// Use this for initialization
 	void Start () 
     {
-        if(_ships == null)
-            _ships = new List<Ship>();
-        if(_collidingSquads == null)
-            _collidingSquads = new List<Squad>();
-
         var tile = this.GetComponent<Tile>();
         if (tile != null)
             _collidingTile = tile;
@@ -46,12 +44,7 @@ public class Squad : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (_ships == null)
-            _ships = new List<Ship>();
-        if (_collidingSquads == null)
-            _collidingSquads = new List<Squad>();
         // the only colliders are squads, so we can simplify stuff
-
         var squad = collision.collider.GetComponent<Squad>();
         if (squad == null)
             return;
@@ -150,7 +143,7 @@ public class Squad : MonoBehaviour
     {
 	}
 
-    private void RecalculatePower()
+    public void CalculatePower()
     {
         float hull = 0, firepower = 0, speed = 0;
         float primitive = 0, industrial = 0, spaceAge = 0;
@@ -171,20 +164,31 @@ public class Squad : MonoBehaviour
 
     public void AddShip(Ship ship)
     {
-        if (_ships == null)
-            _ships = new List<Ship>();
         _ships.Add(ship);
-        RecalculatePower();
+    }
+
+    public void AddShip(Ship ship, int index)
+    {
+        _ships.Insert(index, ship);
+    }
+
+    public Ship RemoveShip(int index)
+    {
+        var ship = _ships[index];
+        _ships.Remove(ship);
+        return ship;
     }
 
     public void RemoveShip(Ship ship)
     {
         _ships.Remove(ship);
-        RecalculatePower();
     }
 
     public Team Combat(Squad squad)
     {
+        CalculatePower();
+        squad.CalculatePower();
+
         float winC = (_shipPower - squad.ShipPower) / 100.0f * 0.5f + 0.5f;
         float winP = (float)GameManager.Generator.NextDouble();
 
@@ -224,6 +228,9 @@ public class Squad : MonoBehaviour
 
     public Team Combat(Tile tile) // planet combat
     {
+        CalculatePower();
+        tile.CalculatePower();
+
         float winC = (_troopPower - tile.Power) / 100.0f * 0.5f + 0.5f;
         float winP = (float)GameManager.Generator.NextDouble();
 
@@ -276,7 +283,7 @@ public class Squad : MonoBehaviour
                 }
             }
 
-            tile.DestroyBase();
+            tile.Undeploy(true);
             return _team;
         }
 
@@ -291,4 +298,20 @@ public class Squad : MonoBehaviour
         _ships.RemoveAt(shipIndex);
         return _collidingTile;
     }
+
+    GameObject ListableObject.CreateListEntry(string listName, int index, System.Object data)
+    {
+        var squadEntry = Resources.Load<GameObject>(SQUAD_LIST_PREFAB);
+        var entry = Instantiate(squadEntry) as GameObject;
+        var tile = this.GetComponent<Tile>();
+        if (tile != null)
+            entry.transform.FindChild("Text").GetComponent<Text>().text = tile.Name + "Defense Squad";
+        else
+            entry.transform.FindChild("Text").GetComponent<Text>().text = _name;
+        entry.GetComponent<CustomUI>().data = listName + "|" + index.ToString();
+
+        return entry;
+    }
+
+    GameObject ListableObject.CreateBuildListEntry(string listName, int index, System.Object data) { return null; }
 }

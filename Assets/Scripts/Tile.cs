@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -29,21 +30,15 @@ public class Tile : MonoBehaviour
     private int _resourceCount;
     private Team _team;
     private Structure _structure;
-    private List<Ship> _defenses;
     private float _power;
-    private Squad _defenseSquad;
+    private Squad _squad;
 
     public string Name { get { return _name; } }
     public Bounds Bounds { get { return _bounds; } }
-    public string PlanetType { get { return _planetType; } }
-    public int Population { get { return _population; } }
-    public Inhabitance PlanetInhabitanceLevel { get { return _planetInhabitance; } }
-    public Resource ResourceType { get { return _resourceType; } }
-    public int ResourceCount { get { return _resourceCount; } }
     public Team Team { get { return _team; } }
-    public Structure DeployedStructure { get { return _structure; } }
+    public Structure Structure { get { return _structure; } }
     public float Power { get { return _power; } }
-    public Squad Squad { get { return _defenseSquad; } }
+    public Squad Squad { get { return _squad; } }
 
 	// Use this for initialization
 	void Start () 
@@ -140,18 +135,18 @@ public class Tile : MonoBehaviour
             renderer.enabled = true;
 
             this.GetComponent<SphereCollider>().enabled = true;
-            _defenseSquad = this.GetComponent<Squad>();
-            _defenseSquad.enabled = true;
+            _squad = this.GetComponent<Squad>();
+            _squad.enabled = true;
 
             if (_population > 0)
             {
                 _team = Team.Indigineous;
-                _defenseSquad.Team = Team.Indigineous;
+                _squad.Team = Team.Indigineous;
             }
 
             // debug
             _team = Team.Union;
-            _defenseSquad.Team = Team.Union;
+            _squad.Team = Team.Union;
         }
 	}
 
@@ -194,40 +189,26 @@ public class Tile : MonoBehaviour
         }
 	}
 
-    public void AddDefense(Ship defense)
-    {
-        _defenses.Add(defense);
-        RecalculatePower();
-    }
-
-    public void DestroyBase()
-    {
-        _structure = null;
-        _defenses.Clear();
-        RecalculatePower();
-    }
-
     public void Claim(Team team)
     {
         _team = team;
-        _defenseSquad.Team = team;
+        _squad.Team = team;
     }
 
-    public void Undeploy()
+    public void Undeploy(bool destroy)
     {
-        _defenseSquad.AddShip(_structure);
+        if (!destroy)
+            _squad.AddShip(_structure);
         _structure = null;
-        RecalculatePower();
     }
 
     public void Deploy(Structure ship, Team team)
     {
         Claim(team);
         _structure = ship;
-        RecalculatePower();
     }
 
-    private void RecalculatePower()
+    public void CalculatePower()
     {
         _power = 0;
         if (_team == Team.Indigineous) // use indigineous
@@ -258,5 +239,23 @@ public class Tile : MonoBehaviour
 
             _power = primitive + industrial * 1.5f + spaceAge * 1.75f + _structure.Defense;
         }
+    }
+
+    public void PopulateInfoPanel(GameObject panel)
+    {
+        var tileRenderer = this.GetComponent<ParticleSystem>().GetComponent<Renderer>();
+        var uiRenderer = panel.transform.FindChild("PlanetIcon").GetComponent<RawImage>();
+        uiRenderer.texture = tileRenderer.material.mainTexture;
+        uiRenderer.uvRect = new Rect(tileRenderer.material.mainTextureOffset.x,
+                                     tileRenderer.material.mainTextureOffset.y,
+                                     tileRenderer.material.mainTextureScale.x,
+                                     tileRenderer.material.mainTextureScale.y);
+        panel.transform.FindChild("PlanetName").GetComponent<Text>().text = _name;
+        panel.transform.FindChild("TeamName").GetComponent<Text>().text = _team.ToString();
+        panel.transform.FindChild("TeamIcon").GetComponent<Image>().sprite = GUIManager.Instance.Icons[_team.ToString()];
+        panel.transform.FindChild("ResourceName").GetComponent<Text>().text = _resourceType.ToString() + "\n" + _resourceCount.ToString();
+        panel.transform.FindChild("ResourceIcon").GetComponent<Image>().sprite = GUIManager.Instance.Icons[_resourceType.ToString()];
+        panel.transform.FindChild("TotalPopulation").GetComponent<Text>().text = _population.ToString();
+        // population types
     }
 }

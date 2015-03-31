@@ -12,11 +12,9 @@ public class GUIManager : MonoBehaviour
     private Dictionary<string, int> _selectedIndices;
 
     // when done with GUIManager, add a ton more of these
-    private const string LIST_PREFAB = "ShipListing";
-    private const string CONSTRUCT_PREFAB = "Constructable";
-    private const string SQUAD_LIST_PREFAB = "SquadListing";
     private const string UI_ICONS_PATH = "UI Icons/";
 
+    public Dictionary<string, Sprite> Icons { get { return _icons; } }
     public static GUIManager Instance
     {
         get
@@ -25,11 +23,6 @@ public class GUIManager : MonoBehaviour
                 _instance = GameObject.FindObjectOfType<GUIManager>();
             return _instance;
         }
-    }
-    public Dictionary<string, int> ListIndices
-    {
-        get { return _selectedIndices; }
-        set { _selectedIndices = value; }
     }
 
     void Start()
@@ -42,6 +35,7 @@ public class GUIManager : MonoBehaviour
         _selectedIndices = new Dictionary<string, int>()
         {
             { "MainShipList", -1 },
+            { "Constructables", -1 },
             { "AltSquadList", -1 },
             { "AltShipList", -1 },
             { "SelectedShipList", -1 }
@@ -87,8 +81,8 @@ public class GUIManager : MonoBehaviour
         if (HumanPlayer.Instance.Team == squad.Team)
         {
             manage.interactable = squad.Size > 0 || squad2 != null || (squad2 != null && tile.Team == squad.Team);
-            deploy.interactable = (_selectedIndices["MainShipList"] != -1 && squad.Ships[_selectedIndices["MainShipList"]].ShipType == ShipType.Structure && tile != null && tile.DeployedStructure == null) || 
-                (squad.GetComponent<Tile>() != null && squad.GetComponent<Tile>().DeployedStructure != null);
+            deploy.interactable = (_selectedIndices["MainShipList"] != -1 && squad.Ships[_selectedIndices["MainShipList"]].ShipType == ShipType.Structure && tile != null && tile.Structure == null) || 
+                (squad.GetComponent<Tile>() != null && squad.GetComponent<Tile>().Structure != null);
         }
         else
         {
@@ -105,87 +99,52 @@ public class GUIManager : MonoBehaviour
         _interface["ManageMenu"].gameObject.SetActive(manage);
     }
 
+    public void ItemClicked(string data)
+    {
+        var split = data.Split('|');
+        _selectedIndices[split[0]] = int.Parse(split[1]);
+
+        switch(split[0])
+        {
+            case "MainShipList":
+            case "AltShipList":
+            case "SelectedShipList":
+                break;
+            case "AltSquadList":
+                UpdateTransferInterface();
+                break;
+        }
+    }
+
     public void PopulateManageLists()
     {
         GUIManager.Instance.SetUIElements(false, false, false, true);
-        PopulateSquadList();
-        PopulateSelectedSquadList();
-        PopulateControlledSquadList();
+        UpdateTransferInterface();
     }
 
-    public void PopulateSquadList()
+    public void PopulateList<T>(List<T> source, string indexName, ListingType type, System.Object data) where T : ListableObject
     {
-        var squadEntry = Resources.Load<GameObject>(SQUAD_LIST_PREFAB);
-        var squad = HumanPlayer.Instance.Squad;
-        var i = 0;
-
-        foreach (Transform child in _interface["AltSquadList"].transform)
+        foreach (Transform child in _interface[indexName].transform)
             GameObject.Destroy(child.gameObject);
 
-        foreach (var sq in squad.Colliders)
+        for(var i = 0; i < source.Count; i++)
         {
-            var entry = Instantiate(squadEntry) as GameObject;
+            GameObject entry = null;
+            switch (type)
+            {
+                case ListingType.Info:
+                    entry = source[i].CreateListEntry(indexName, i, data);
+                    break;
+                case ListingType.Build:
+                    entry = source[i].CreateBuildListEntry(indexName, i, data);
+                    break;
+            }
 
-            var tile = sq.GetComponent<Tile>();
-            if (tile != null)
-                entry.transform.FindChild("Text").GetComponent<Text>().text = tile.Name;
-            else
-                entry.transform.FindChild("Text").GetComponent<Text>().text = "Squad " + i.ToString();
-            entry.GetComponent<CustomUI>().data = "AltSquadList|" + i.ToString();
-            entry.transform.SetParent(_interface["AltSquadList"].transform);
-            i++;
-        }
-    }
-
-    public void PopulateSelectedSquadList()
-    {
-        var squad = HumanPlayer.Instance.Squad;
-        var listEntry = Resources.Load<GameObject>(LIST_PREFAB);
-        var i = 0;
-
-        foreach (Transform child in _interface["AltShipList"].transform)
-            GameObject.Destroy(child.gameObject);
-
-        if (squad.Colliders.Count < 1)
-            return;
-        else
-        {
-            _selectedIndices["AltShipList"] = 0;
+            if(entry != null)
+                entry.transform.SetParent(_interface[indexName].transform);
         }
 
-        foreach (var ship in squad.Colliders[_selectedIndices["AltShipList"]].Ships)
-        {
-            var entry = Instantiate(listEntry) as GameObject;
-            var icon = entry.transform.FindChild("Icon").GetComponent<Image>();
-            icon.sprite = ship.Icon;
-            entry.transform.FindChild("Name").GetComponent<Text>().text = ship.Name;
-            entry.transform.FindChild("Population").GetComponent<Text>().text = ship.Population + " / " + ship.Capacity;
-            entry.GetComponent<CustomUI>().data = "AltShipList|" + i.ToString();
-            entry.transform.SetParent(_interface["AltShipList"].transform);
-            i++;
-        }
-    }
-
-    public void PopulateControlledSquadList()
-    {
-        var squad = HumanPlayer.Instance.Squad;
-        var listEntry = Resources.Load<GameObject>(LIST_PREFAB);
-        var i = 0;
-
-        foreach (Transform child in _interface["SelectedShipList"].transform)
-            GameObject.Destroy(child.gameObject);
-
-        foreach (var ship in squad.Ships)
-        {
-            var entry = Instantiate(listEntry) as GameObject;
-            var icon = entry.transform.FindChild("Icon").GetComponent<Image>();
-            icon.sprite = ship.Icon;
-            entry.transform.FindChild("Name").GetComponent<Text>().text = ship.Name;
-            entry.transform.FindChild("Population").GetComponent<Text>().text = ship.Population + " / " + ship.Capacity;
-            entry.GetComponent<CustomUI>().data = "SelectedShipList|" + i.ToString();
-            entry.transform.SetParent(_interface["SelectedShipList"].transform);
-            i++;
-        }
+        AutoSelectIndex<T>(indexName, source);
     }
 
     public void SquadSelected(Squad squad)
@@ -194,20 +153,7 @@ public class GUIManager : MonoBehaviour
         foreach (var index in keys)
             _selectedIndices[index] = -1;
 
-        var listEntry = Resources.Load<GameObject>(LIST_PREFAB);
-        foreach (Transform child in _interface["MainShipList"].transform) 
-            GameObject.Destroy(child.gameObject);
-
-        for (int i = 0; i < squad.Ships.Count; i++ )
-        {
-            var entry = Instantiate(listEntry) as GameObject;
-            var icon = entry.transform.FindChild("Icon").GetComponent<Image>();
-            icon.sprite = squad.Ships[i].Icon;
-            entry.transform.FindChild("Name").GetComponent<Text>().text = squad.Ships[i].Name;
-            entry.transform.FindChild("Population").GetComponent<Text>().text = squad.Ships[i].Population + " / " + squad.Ships[i].Capacity;
-            entry.GetComponent<CustomUI>().data = "MainShipList|" + i.ToString();
-            entry.transform.SetParent(_interface["MainShipList"].transform);
-        }
+        PopulateList<Ship>(squad.Ships, "MainShipList", ListingType.Info, null);
 
         _interface["DeployText"].GetComponent<Text>().text = "Deploy";
         _interface["Deploy"].GetComponent<CustomUI>().data = "Deploy";
@@ -215,81 +161,139 @@ public class GUIManager : MonoBehaviour
         SetMainListControls(squad, null, null);
     }
 
-    public void TileSelected(Tile tile, Dictionary<string, Ship> defs)
+    public void TileSelected(Tile tile, int playerStations, Dictionary<string, Ship> defs)
     {
         var squad = tile.gameObject.GetComponent<Squad>();
         SquadSelected(squad);
 
-        // general planet stuff here
-        var tileRenderer = tile.GetComponent<ParticleSystem>().GetComponent<Renderer>();
-        var uiRenderer = _interface["PlanetIcon"].GetComponent<RawImage>();
-        uiRenderer.texture = tileRenderer.material.mainTexture;
-        uiRenderer.uvRect = new Rect(tileRenderer.material.mainTextureOffset.x,
-                                     tileRenderer.material.mainTextureOffset.y,
-                                     tileRenderer.material.mainTextureScale.x,
-                                     tileRenderer.material.mainTextureScale.y);
-        _interface["PlanetName"].GetComponent<Text>().text = tile.Name;
-        _interface["TeamName"].GetComponent<Text>().text = tile.Team.ToString();
-        _interface["TeamIcon"].GetComponent<Image>().sprite = _icons[tile.Team.ToString()];
-        _interface["ResourceName"].GetComponent<Text>().text = tile.ResourceType.ToString() + "\n" + tile.ResourceCount.ToString();
-        _interface["ResourceIcon"].GetComponent<Image>().sprite = _icons[tile.ResourceType.ToString()];
-        _interface["Population"].GetComponent<Text>().text = tile.Population.ToString();
-        // population types
+        tile.PopulateInfoPanel(_interface["PlanetInfo"].gameObject);
 
-        if (tile.Team == HumanPlayer.Instance.Team && tile.DeployedStructure != null)
+        // move to structure
+        var playerStructure = tile.Team == HumanPlayer.Instance.Team && tile.Structure != null;
+        var deployText = playerStructure ? "Undeploy" : "Deploy";
+
+        _interface["ConstBar"].gameObject.SetActive(playerStructure);
+        _interface["Structure"].gameObject.SetActive(playerStructure);
+        _interface["ConstructionList"].gameObject.SetActive(playerStructure);
+        _interface["DeployText"].GetComponent<Text>().text = deployText;
+        _interface["Deploy"].GetComponent<CustomUI>().data = deployText;
+
+        if (playerStructure)
         {
-            _interface["ConstBar"].gameObject.SetActive(true);
-            _interface["Structure"].gameObject.SetActive(true);
-            _interface["ConstructionList"].gameObject.SetActive(true);
-            _interface["DeployText"].GetComponent<Text>().text = "Undeploy";
-            _interface["Deploy"].GetComponent<CustomUI>().data = "Undeploy";
-
             // populate structure info
-            _interface["StructureIcon"].GetComponent<Image>().sprite = tile.DeployedStructure.Icon;
-            _interface["StructureName"].GetComponent<Text>().text = tile.DeployedStructure.Name;
-            _interface["Capacity"].GetComponent<Text>().text = tile.DeployedStructure.Population.ToString()
-                + " / " + tile.DeployedStructure.DeployedCapacity.ToString();
-            _interface["Defense"].GetComponent<Text>().text = tile.DeployedStructure.Defense.ToString();
-            _interface["GatherRate"].GetComponent<Text>().text = tile.DeployedStructure.GatherRate.ToString();
-            _interface["OilAmount"].GetComponent<Text>().text = tile.DeployedStructure.Resources[Resource.Oil].ToString();
-            _interface["OreAmount"].GetComponent<Text>().text = tile.DeployedStructure.Resources[Resource.Ore].ToString();
-            _interface["AsterminiumAmount"].GetComponent<Text>().text = tile.DeployedStructure.Resources[Resource.Asterminium].ToString();
-            _interface["ForestAmount"].GetComponent<Text>().text = tile.DeployedStructure.Resources[Resource.Forest].ToString();
+            tile.Structure.Resources.Remove(Resource.Stations);
+            tile.Structure.Resources.Add(Resource.Stations, playerStations);
+            tile.Structure.PopulateStructurePanel(_interface["Structure"].gameObject);
 
-            var listEntry = Resources.Load<GameObject>(CONSTRUCT_PREFAB);
-            foreach (Transform child in _interface["Constructables"].transform)
-            {
-                GameObject.Destroy(child.gameObject);
-            }
-
-            // populate construction list
-            foreach(var construct in tile.DeployedStructure.Constructables)
-            {
-                var entry = Instantiate(listEntry) as GameObject;
-                entry.transform.FindChild("Name").GetComponent<Text>().text = defs[construct].Name;
-                entry.transform.FindChild("Icon").GetComponent<Image>().sprite = defs[construct].Icon;
-                entry.transform.FindChild("HullText").GetComponent<Text>().text = defs[construct].Hull.ToString();
-                entry.transform.FindChild("FirepowerText").GetComponent<Text>().text = defs[construct].Firepower.ToString();
-                entry.transform.FindChild("SpeedText").GetComponent<Text>().text = defs[construct].Speed.ToString();
-                entry.transform.FindChild("CapacityText").GetComponent<Text>().text = defs[construct].Capacity.ToString();
-                entry.GetComponent<CustomUI>().data = defs[construct].Name;
-                entry.transform.SetParent(_interface["Constructables"].transform);
-
-                if (HumanPlayer.Instance.CanConstruct(construct))
-                    entry.GetComponent<Button>().interactable = true;
-            }
-        }
-        else // enemy or no structure
-        {
-            _interface["ConstBar"].gameObject.SetActive(false);
-            _interface["Structure"].gameObject.SetActive(false);
-            _interface["ConstructionList"].gameObject.SetActive(false);
-            _interface["DeployText"].GetComponent<Text>().text = "Deploy";
-            _interface["Deploy"].GetComponent<CustomUI>().data = "Deploy";
+            var buildList = new List<Ship>();
+            foreach(var construct in tile.Structure.Constructables)
+                buildList.Add(defs[construct]);
+            PopulateList<Ship>(buildList, "Constructables", ListingType.Build, tile.Structure.Resources);
         }
 
         SetUIElements(true, false, true, false);
         SetMainListControls(squad, null, tile);
+    }
+
+    public void SetStructure(bool remove)
+    {
+        if (remove)
+            HumanPlayer.Instance.Undeploy();
+        else
+            HumanPlayer.Instance.Deploy(_selectedIndices["MainShipList"]);
+    }
+
+    private void UpdateTransferInterface()
+    {
+        PopulateList<Squad>(HumanPlayer.Instance.Squad.Colliders, "AltSquadList", ListingType.Info, null);
+        if (_selectedIndices["AltSquadList"] > -1 && _selectedIndices["AltSquadList"] < HumanPlayer.Instance.Squad.Colliders.Count)
+           PopulateList<Ship>(HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]].Ships, "AltShipList", ListingType.Info, null);
+        PopulateList<Ship>(HumanPlayer.Instance.Squad.Ships, "SelectedShipList", ListingType.Info, null);
+
+        var right = _interface["Right"].GetComponent<Button>();
+        var dright = _interface["DoubleRight"].GetComponent<Button>();
+        var left = _interface["Left"].GetComponent<Button>();
+        var dleft = _interface["DoubleLeft"].GetComponent<Button>();
+
+        if (_selectedIndices["AltSquadList"] == -1)
+            right.interactable = left.interactable = dright.interactable = dleft.interactable = false;
+        else
+        {
+            right.interactable = _selectedIndices["AltShipList"] == -1 ? false : true;
+            left.interactable = _selectedIndices["SelectedShipList"] == -1 ? false : true;
+            dright.interactable = _selectedIndices["AltShipList"] == -1 ? false : true;
+            dleft.interactable = _selectedIndices["SelectedShipList"] == -1 ? false : true;
+        }
+    }
+
+    public Ship Transfer(Squad from, string fromName, Squad to)
+    {
+        var fromIndex = _selectedIndices[fromName];
+        Ship ship = from.RemoveShip(fromIndex);
+
+        switch (ship.ShipType)
+        {
+            case ShipType.CommandShip:
+            case ShipType.Defense:
+                return ship;
+        }
+
+        to.AddShip(ship);
+        AutoSelectIndex<Ship>(fromName, from.Ships);
+        return null;
+    }
+
+    private void AutoSelectIndex<T>(string name, List<T> list)
+    {
+        if (list.Count == 0)
+            _selectedIndices[name] = -1;
+        else if (_selectedIndices[name] > list.Count)
+            _selectedIndices[name] = list.Count - 1;
+        else if (_selectedIndices[name] < 0)
+            _selectedIndices[name] = 0;
+    }
+
+    public void TransferAll(Squad from, string fromName, Squad to)
+    {
+        var untransferables = new List<Ship>();
+        while(from.Ships.Count > 0)
+        {
+            var ship = Transfer(from, fromName, to);
+            if (ship != null)
+                untransferables.Add(ship);
+        }
+
+        from.Ships.AddRange(untransferables);
+    }
+
+    public void TransferToControlledSquad()
+    {
+        var index = _selectedIndices["AltSquadList"];
+        var squad = HumanPlayer.Instance.Squad.Colliders[index];
+        var ship = Transfer(squad, "AltShipList", HumanPlayer.Instance.Squad);
+        if (ship != null) squad.AddShip(ship, index);
+        UpdateTransferInterface();
+    }
+
+    public void TransferToSelectedSquad()
+    {
+        var index = _selectedIndices["SelectedShipList"];
+        var squad = HumanPlayer.Instance.Squad;
+        var ship = Transfer(squad, "SelectedShipList", HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]]);
+        if (ship != null) squad.AddShip(ship, index);
+        UpdateTransferInterface();
+    }
+
+    public void TransferAllToControlledSquad()
+    {
+        TransferAll(HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]], "AltShipList", HumanPlayer.Instance.Squad);
+        UpdateTransferInterface();
+    }
+
+    public void TransferAllToSelectedSquad()
+    {
+        TransferAll(HumanPlayer.Instance.Squad, "SelectedShipList", HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]]);
+        UpdateTransferInterface();
     }
 
     //

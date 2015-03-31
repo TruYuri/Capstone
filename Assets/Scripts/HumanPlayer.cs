@@ -19,6 +19,7 @@ public class HumanPlayer : Player
     private Vector3 _currentCameraDistance;
     public static HumanPlayer Instance { get { return _instance; } } // move this to a GameManager registry!
     public Squad Squad { get { return _controlledSquad; } }
+    public Tile Tile { get { return _controlledTile; } }
 
     void Start()
     {
@@ -39,10 +40,27 @@ public class HumanPlayer : Player
 
         _commandShip.Ship = _shipDefinitions["Command Ship"].Copy();
         _commandShip.AddShip(_commandShip.Ship);
-        _commandShip.AddShip(_shipDefinitions["Base"].Copy());
-        _commandShip.AddShip(_shipDefinitions["Gathering Complex"].Copy());
-        _commandShip.AddShip(_shipDefinitions["Military Complex"].Copy());
-        _commandShip.AddShip(_shipDefinitions["Research Complex"].Copy());
+
+        /* DEBUG */
+        var squadprefab = Instantiate(Resources.Load<GameObject>("Squad"), new Vector3(0, 0, 10.5f), Quaternion.identity) as GameObject;
+        var squad = squadprefab.GetComponent<Squad>();
+        var defs = _shipDefinitions;
+        squad.Team = Team.Union;
+        squad.AddShip(defs["Base"].Copy());
+        squad.AddShip(defs["Gathering Complex"].Copy());
+        squad.AddShip(defs["Military Complex"].Copy());
+        squad.AddShip(defs["Research Complex"].Copy());
+        _squads.Add(squad);
+
+        var squad2prefab = Instantiate(Resources.Load<GameObject>("Squad"), new Vector3(0, 0, 11), Quaternion.identity) as GameObject;
+        var squad2 = squad2prefab.GetComponent<Squad>();
+        squad2.Team = Team.Union;
+        squad2.AddShip(defs["Fighter"].Copy());
+        squad2.AddShip(defs["Transport"].Copy());
+        squad2.AddShip(defs["Heavy Fighter"].Copy());
+        squad2.AddShip(defs["Behemoth"].Copy());
+        _squads.Add(squad2);
+        /* debug */
 
         _controlledSquad = _commandShip;
         _controlledSquad.IsPlayerControlled = true;
@@ -109,7 +127,7 @@ public class HumanPlayer : Player
         switch(_controlledSquad.tag)
         {
             case TILE_TAG:
-                GUIManager.Instance.TileSelected(_controlledTile, _shipDefinitions);
+                GUIManager.Instance.TileSelected(_controlledTile, _numResearchStations, _shipDefinitions);
                 break;
             case SQUAD_TAG:
             case COMMAND_SHIP_TAG:
@@ -124,7 +142,6 @@ public class HumanPlayer : Player
         base.Control(gameObject);
         _controlledSquad.IsPlayerControlled = true;
         transform.position = _controlledSquad.transform.position + _currentCameraDistance;
-        _controlledTile = _controlledSquad.GetComponent<Tile>();
     }
 
     private void UpdateSelectedPlanet()
@@ -182,16 +199,14 @@ public class HumanPlayer : Player
     public override void Undeploy()
     {
         base.Undeploy();
-        var tile = _controlledSquad.GetComponent<Tile>();
-        GUIManager.Instance.TileSelected(tile, _shipDefinitions);
+        GUIManager.Instance.TileSelected(_controlledTile, _numResearchStations, _shipDefinitions);
         GameManager.Instance.EndTurn();
     }
 
     public override void Deploy(int shipIndex)
     {
-        var tile = _controlledSquad.Deploy(shipIndex);
-        Control(tile.Squad.gameObject);
-        GUIManager.Instance.TileSelected(tile, _shipDefinitions);
+        Control(_controlledSquad.Deploy(shipIndex).gameObject);
+        GUIManager.Instance.TileSelected(_controlledTile, _numResearchStations, _shipDefinitions);
         GameManager.Instance.EndTurn();
     }
 

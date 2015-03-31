@@ -1,8 +1,12 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
+using System.Collections.Generic;
 
-public class Ship 
+public class Ship : ListableObject
 {
+    private const string LIST_PREFAB = "ShipListing";
+    private const string CONSTRUCT_PREFAB = "Constructable";
+
     protected bool unlocked;
     protected Sprite icon;
     protected string name;
@@ -22,15 +26,10 @@ public class Ship
     protected int industrialPopulation;
     protected int spaceAgePopulation;
 
-    protected int requiredOre;
-    protected int requiredAsterminium;
-    protected int requiredOil;
-    protected int requiredForest;
-    protected int requiredStations;
+    protected Dictionary<Resource, int> requiredResources;
 
     protected ShipType shipType;
 
-    public Sprite Icon { get { return icon; } }
     public string Name
     {
         get { return name; }
@@ -89,7 +88,7 @@ public class Ship
     public ShipType ShipType { get { return shipType; } }
 
     public Ship(Sprite icon, string name, float hull, float firepower, float speed, int capacity, ShipType shipType, 
-        int ore, int oil, int asterminium, int forest, int stations)
+        Dictionary<Resource, int> requiredResources)
     {
         this.name = name;
         this.hull = this.baseHull = hull;
@@ -98,26 +97,22 @@ public class Ship
         this.capacity = this.baseCapacity = capacity;
         this.shipType = shipType;
         this.icon = icon;
-        this.requiredOre = ore;
-        this.requiredOil = oil;
-        this.requiredAsterminium = asterminium;
-        this.requiredForest = forest;
-        this.requiredStations = stations;
+        this.requiredResources = requiredResources;
     }
 
-    public virtual bool CanConstruct(int stations, Structure structure)
+    protected virtual bool CanConstruct(Dictionary<Resource, int> resources)
     {
-        return unlocked && stations >= requiredStations &&
-            structure.Resources[Resource.Ore] >= requiredOre &&
-            structure.Resources[Resource.Oil] >= requiredOil &&
-            structure.Resources[Resource.Asterminium] >= requiredAsterminium &&
-            structure.Resources[Resource.Forest] >= requiredForest;
+        return unlocked && 
+            resources[Resource.Stations] >= requiredResources[Resource.Stations] &&
+            resources[Resource.Ore] >= requiredResources[Resource.Ore] &&
+            resources[Resource.Oil] >= requiredResources[Resource.Oil] &&
+            resources[Resource.Asterminium] >= requiredResources[Resource.Asterminium] &&
+            resources[Resource.Forest] >= requiredResources[Resource.Forest];
     }
 
     public virtual Ship Copy()
     {
-        var ship = new Ship(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, shipType, 
-            requiredOre, requiredOil, requiredAsterminium, requiredForest, requiredStations);
+        var ship = new Ship(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, shipType, requiredResources);
         ship.Hull = hull;
         ship.Firepower = firepower;
         ship.Speed = speed;
@@ -125,5 +120,37 @@ public class Ship
         ship.Protection = protection;
 
         return ship;
+    }
+
+    GameObject ListableObject.CreateListEntry(string listName, int index, System.Object data)
+    {
+        var shipEntry = Resources.Load<GameObject>(LIST_PREFAB);
+        var entry = GameObject.Instantiate(shipEntry) as GameObject;
+        var icon = entry.transform.FindChild("Icon").GetComponent<Image>();
+        icon.sprite = this.icon;
+        entry.transform.FindChild("Name").GetComponent<Text>().text = name;
+        entry.transform.FindChild("Population").GetComponent<Text>().text = totalPopulation + " / " + capacity;
+        entry.GetComponent<CustomUI>().data = listName + "|" + index.ToString();
+
+        return entry;
+    }
+
+    GameObject ListableObject.CreateBuildListEntry(string listName, int index, System.Object data) 
+    {
+        var buildEntry = Resources.Load<GameObject>(CONSTRUCT_PREFAB);
+        var entry = GameObject.Instantiate(buildEntry) as GameObject;
+        entry.transform.FindChild("Name").GetComponent<Text>().text = name;
+        entry.transform.FindChild("Icon").GetComponent<Image>().sprite = icon;
+        entry.transform.FindChild("HullText").GetComponent<Text>().text = hull.ToString();
+        entry.transform.FindChild("FirepowerText").GetComponent<Text>().text = firepower.ToString();
+        entry.transform.FindChild("SpeedText").GetComponent<Text>().text = speed.ToString();
+        entry.transform.FindChild("CapacityText").GetComponent<Text>().text = capacity.ToString();
+        entry.GetComponent<CustomUI>().data = name;
+
+        var resources = data as Dictionary<Resource, int>;
+        if (CanConstruct(resources))
+            entry.GetComponent<Button>().interactable = true;
+
+        return entry;
     }
 }
