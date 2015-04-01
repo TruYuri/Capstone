@@ -18,8 +18,6 @@ public class Tile : MonoBehaviour, ListableObject
     private const string PLANET_LARGE_POPULATION_MIN_DETAIL = "PopulationAmountLargeMinimum";
     private const string PLANET_LARGE_POPULATION_MAX_DETAIL = "PopulationAmountLargeMaximum";
 
-    private const string PLANET_NAME = "AssignedName";
-
     private string _name;
     private Bounds _bounds;
     private string _planetType;
@@ -41,27 +39,23 @@ public class Tile : MonoBehaviour, ListableObject
     public Squad Squad { get { return _squad; } }
 
 	// Use this for initialization
+    public void Init(string type, string name)
+    {
+        _name = name;
+        _planetType = type;
+    }
+
 	void Start () 
     {
         _bounds = new UnityEngine.Bounds(this.transform.position, new Vector3(10, 10, 10));
 
         // Determine tile type
         var mapManager = MapManager.Instance;
-        var chance = (float)GameManager.Generator.NextDouble();
-        foreach(var planet in mapManager.PlanetTypeSpawnTable)
-        {
-            if (chance <= planet.Value)
-            {
-                _planetType = planet.Key;
-                break;
-            }
-        }
-
         if (mapManager.PlanetTextureTable[_planetType].Texture == null) // crappy way to check if it's empty space, but it works for now
             return;
 
         // Determine Size, Population, and Resource Amount
-        chance = (float)GameManager.Generator.NextDouble();
+        var chance = (float)GameManager.Generator.NextDouble();
         if (chance < float.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_SPAWN_DETAIL]))
         {
             _tileSize = TileSize.Small;
@@ -110,15 +104,6 @@ public class Tile : MonoBehaviour, ListableObject
             }
         }
 
-        var sector = this.transform.parent.GetComponent<Sector>();
-        if(!sector.PlanetCounts.ContainsKey(_planetType))
-            sector.PlanetCounts.Add(_planetType, 0);
-
-        _name = MapManager.Instance.PlanetSpawnDetails[_planetType][PLANET_NAME]
-            + "-"
-            + Math.Abs(sector.HorizontalGridPosition).ToString() + Math.Abs(sector.VerticalGridPosition).ToString()
-            + PlanetSuffix(_planetType, sector);
-
         if(mapManager.PlanetTextureTable[_planetType].Texture != null)
         {
             var system = GetComponent<ParticleSystem>();
@@ -149,31 +134,6 @@ public class Tile : MonoBehaviour, ListableObject
             _squad.Team = Team.Union;
         }
 	}
-
-    private string PlanetSuffix(string type, Sector sector)
-    {
-        int diff = sector.PlanetCounts[type]++;
-        string val = string.Empty;
-
-        if(diff > 26)
-        {
-            var n = diff / 26;
-            diff -= 26 * n;
-        }
-
-        val += (char)('a' + diff);
-
-        if(sector.VerticalGridPosition >= 0 && sector.HorizontalGridPosition >= 0)
-            val += "-q1";
-        else if(sector.VerticalGridPosition < 0 && sector.HorizontalGridPosition >= 0)
-            val += "-q2";
-        else if(sector.VerticalGridPosition < 0 && sector.HorizontalGridPosition < 0)
-            val += "-q3";
-        else
-            val += "-q4";
-
-        return val;
-    }
 
 	// Update is called once per frame
 	void Update () 

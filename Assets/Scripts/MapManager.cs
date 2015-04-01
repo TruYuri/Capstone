@@ -138,8 +138,8 @@ public class MapManager : MonoBehaviour
     public void GenerateNewSectors(Sector origin)
     {
         var position = origin.transform.position;
-        var v = origin.VerticalGridPosition;
-        var h = origin.HorizontalGridPosition;
+        var v = (int)origin.GridPosition.y;
+        var h = (int)origin.GridPosition.x;
 
         if (Mathf.Abs(v) % 2 == 0) // even grid row
         {
@@ -170,8 +170,7 @@ public class MapManager : MonoBehaviour
         {
             var sector = Instantiate(_sectorPrefab, position, Quaternion.identity) as GameObject;
             var component = sector.GetComponent<Sector>();
-            component.VerticalGridPosition = vertical;
-            component.HorizontalGridPosition = horizontal;
+            component.Init(new Vector2(horizontal, vertical));
             _sectorMap[vertical].Add(horizontal, sector);
         }
     }
