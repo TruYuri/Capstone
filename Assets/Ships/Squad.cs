@@ -55,7 +55,9 @@ public class Squad : MonoBehaviour, ListableObject
         {
             case TILE_TAG:
                 _collidingTile = collision.collider.GetComponent<Tile>();
-                _collidingSquads.Add(squad);
+
+                if(!_collidingSquads.Contains(squad))
+                    _collidingSquads.Add(squad);
                 if (enemy && _team == HumanPlayer.Instance.Team)
                 {
                     if(squad.Size > 0)
@@ -70,7 +72,8 @@ public class Squad : MonoBehaviour, ListableObject
                 break;
             case COMMAND_SHIP_TAG:
             case SQUAD_TAG:
-                _collidingSquads.Add(squad);
+                if (!_collidingSquads.Contains(squad))
+                    _collidingSquads.Add(squad);
                 if (enemy && _team == HumanPlayer.Instance.Team)
                 {
                     GameManager.Instance.AddEvent(new BattleEvent(this, squad));
@@ -283,7 +286,6 @@ public class Squad : MonoBehaviour, ListableObject
                 }
             }
 
-            tile.Undeploy(true);
             return _team;
         }
 
@@ -314,4 +316,22 @@ public class Squad : MonoBehaviour, ListableObject
     }
 
     GameObject ListableObject.CreateBuildListEntry(string listName, int index, System.Object data) { return null; }
+
+    public static void CleanSquadsFromList(Player player, List<Squad> squads)
+    {
+        var emptySquads = new List<Squad>();
+        foreach(var squad in squads)
+        {
+            if ((squad == null || squad.gameObject == null || (squad.Size == 0 && squad.GetComponent<Tile>() == null)) && squad.Team == player.Team)
+                emptySquads.Add(squad);
+        }
+
+        foreach (var squad in emptySquads)
+        {
+            squads.Remove(squad);
+            if(squad != null && squad.gameObject != null)
+                GameObject.DestroyImmediate(squad.gameObject);
+            player.Squads.Remove(squad);
+        }
+    }
 }

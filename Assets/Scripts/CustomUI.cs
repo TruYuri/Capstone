@@ -18,9 +18,7 @@ public class CustomUI : MonoBehaviour
 
     public void ClickBattle()
     {
-        //GUIManager.Instance.Battle();
-
-        HumanPlayer.Instance.Battle();
+        GUIManager.Instance.Battle();
     }
 
     public void ClickRetreat()
@@ -35,8 +33,7 @@ public class CustomUI : MonoBehaviour
 
     public void CloseManage()
     {
-        // 
-        HumanPlayer.Instance.ReloadGameplayUI();
+        GUIManager.Instance.ExitManage();
     }
 
     public void ClickDeploy()
@@ -47,6 +44,11 @@ public class CustomUI : MonoBehaviour
     public void ClickListItem()
     {
         GUIManager.Instance.ItemClicked(data);
+    }
+
+    public void ClickNewSquad()
+    {
+        GUIManager.Instance.NewSquad();
     }
 
     public void ClickConstructable()

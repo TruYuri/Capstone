@@ -192,12 +192,12 @@ public class Tile : MonoBehaviour
     public void Claim(Team team)
     {
         _team = team;
-        _squad.Team = team;
+        _squad.Team = _team;
     }
 
     public void Undeploy(bool destroy)
     {
-        if (!destroy)
+        if (!destroy && _structure != null)
             _squad.AddShip(_structure);
         _structure = null;
     }

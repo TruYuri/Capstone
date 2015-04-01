@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -111,7 +112,7 @@ public class GUIManager : MonoBehaviour
             case "SelectedShipList":
                 break;
             case "AltSquadList":
-                UpdateTransferInterface();
+                UpdateTransferInterface(false, true, false);
                 break;
         }
     }
@@ -119,13 +120,20 @@ public class GUIManager : MonoBehaviour
     public void PopulateManageLists()
     {
         GUIManager.Instance.SetUIElements(false, false, false, true);
-        UpdateTransferInterface();
+        _selectedIndices["MainShipList"] = -1;
+        ClearList("MainShipList");
+        UpdateTransferInterface(true, true, true);
     }
 
-    public void PopulateList<T>(List<T> source, string indexName, ListingType type, System.Object data) where T : ListableObject
+    private void ClearList(string indexName)
     {
         foreach (Transform child in _interface[indexName].transform)
             GameObject.Destroy(child.gameObject);
+    }
+
+    private void PopulateList<T>(List<T> source, string indexName, ListingType type, System.Object data) where T : ListableObject
+    {
+        ClearList(indexName);
 
         for(var i = 0; i < source.Count; i++)
         {
@@ -145,6 +153,16 @@ public class GUIManager : MonoBehaviour
         }
 
         AutoSelectIndex<T>(indexName, source);
+    }
+
+    private void AutoSelectIndex<T>(string name, List<T> list)
+    {
+        if (list.Count == 0)
+            _selectedIndices[name] = -1;
+        else if (_selectedIndices[name] > list.Count)
+            _selectedIndices[name] = list.Count - 1;
+        else if (_selectedIndices[name] < 0)
+            _selectedIndices[name] = 0;
     }
 
     public void SquadSelected(Squad squad)
@@ -203,12 +221,14 @@ public class GUIManager : MonoBehaviour
             HumanPlayer.Instance.Deploy(_selectedIndices["MainShipList"]);
     }
 
-    private void UpdateTransferInterface()
+    private void UpdateTransferInterface(bool squads, bool squadShips, bool ships)
     {
-        PopulateList<Squad>(HumanPlayer.Instance.Squad.Colliders, "AltSquadList", ListingType.Info, true);
-        if (_selectedIndices["AltSquadList"] > -1 && _selectedIndices["AltSquadList"] < HumanPlayer.Instance.Squad.Colliders.Count)
+        if(squads)
+            PopulateList<Squad>(HumanPlayer.Instance.Squad.Colliders, "AltSquadList", ListingType.Info, true);
+        if (squadShips && _selectedIndices["AltSquadList"] > -1 && _selectedIndices["AltSquadList"] < HumanPlayer.Instance.Squad.Colliders.Count)
            PopulateList<Ship>(HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]].Ships, "AltShipList", ListingType.Info, true);
-        PopulateList<Ship>(HumanPlayer.Instance.Squad.Ships, "SelectedShipList", ListingType.Info, true);
+        if(ships)
+            PopulateList<Ship>(HumanPlayer.Instance.Squad.Ships, "SelectedShipList", ListingType.Info, true);
 
         var right = _interface["Right"].GetComponent<Button>();
         var dright = _interface["DoubleRight"].GetComponent<Button>();
@@ -243,16 +263,6 @@ public class GUIManager : MonoBehaviour
         return null;
     }
 
-    private void AutoSelectIndex<T>(string name, List<T> list)
-    {
-        if (list.Count == 0)
-            _selectedIndices[name] = -1;
-        else if (_selectedIndices[name] > list.Count)
-            _selectedIndices[name] = list.Count - 1;
-        else if (_selectedIndices[name] < 0)
-            _selectedIndices[name] = 0;
-    }
-
     public void TransferAll(Squad from, string fromName, Squad to)
     {
         var untransferables = new List<Ship>();
@@ -272,8 +282,7 @@ public class GUIManager : MonoBehaviour
         var squad = HumanPlayer.Instance.Squad.Colliders[index];
         var ship = Transfer(squad, "AltShipList", HumanPlayer.Instance.Squad);
         if (ship != null) squad.AddShip(ship, index);
-        AutoSelectIndex<Ship>("MainShipList", HumanPlayer.Instance.Squad.Ships);
-        UpdateTransferInterface();
+        UpdateTransferInterface(false, true, true);
     }
 
     public void TransferToSelectedSquad()
@@ -282,22 +291,42 @@ public class GUIManager : MonoBehaviour
         var squad = HumanPlayer.Instance.Squad;
         var ship = Transfer(squad, "SelectedShipList", HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]]);
         if (ship != null) squad.AddShip(ship, index);
-        AutoSelectIndex<Ship>("MainShipList", HumanPlayer.Instance.Squad.Ships);
-        UpdateTransferInterface();
+        UpdateTransferInterface(false, true, true);
     }
 
     public void TransferAllToControlledSquad()
     {
         TransferAll(HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]], "AltShipList", HumanPlayer.Instance.Squad);
-        AutoSelectIndex<Ship>("MainShipList", HumanPlayer.Instance.Squad.Ships);
-        UpdateTransferInterface();
+        UpdateTransferInterface(false, true, true);
     }
 
     public void TransferAllToSelectedSquad()
     {
         TransferAll(HumanPlayer.Instance.Squad, "SelectedShipList", HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]]);
+        UpdateTransferInterface(false, true, true);
+    }
+
+    public void NewSquad()
+    {
+        var squad = HumanPlayer.Instance.CreateNewSquad();
+        var listing = (ListableObject)squad;
+
+        listing.CreateListEntry("AltSquadList", HumanPlayer.Instance.Squad.Colliders.Count - 1, true).transform.SetParent(_interface["AltSquadList"].transform);
+    }
+
+    public void ExitManage()
+    {
+        HumanPlayer.Instance.CleanSquad(HumanPlayer.Instance.Squad);
+        HumanPlayer.Instance.ReloadGameplayUI();
+        ClearList("AltSquadList");
+        ClearList("AltShipList");
+        ClearList("SelectedShipList");
         AutoSelectIndex<Ship>("MainShipList", HumanPlayer.Instance.Squad.Ships);
-        UpdateTransferInterface();
+    }
+
+    public void Battle()
+    {
+        var winner = HumanPlayer.Instance.Battle();
     }
 
     //

@@ -3,33 +3,35 @@ using System.Collections;
 
 public class BattleEvent : GameEvent
 {
-    private GameObject _playerSquad;
-    private GameObject _enemySquad;
+    private Squad _squad1;
+    private Squad _squad2;
 
-    public GameObject Player { get { return _playerSquad; } }
-    public GameObject Enemy { get { return _enemySquad; } }
+    public Squad Squad1 { get { return _squad1; } }
+    public Squad Squad2 { get { return _squad2; } }
 
-    public BattleEvent(Squad player, Squad enemy) : base(GameEventType.SquadBattle, 1)
+    public BattleEvent(Squad squad1, Squad squad2) : base(GameEventType.SquadBattle, 1)
     {
-        _playerSquad = player.gameObject;
-        _enemySquad = enemy.gameObject;
+        _squad1 = squad1;
+        _squad2 = squad2;
     }
 
-    public BattleEvent(Squad player, Tile enemy) : base(GameEventType.PlanetBattle, 1)
+    public BattleEvent(Squad squad, Tile tile) : base(GameEventType.PlanetBattle, 1)
     {
-        _playerSquad = player.gameObject;
-        _enemySquad = enemy.gameObject;
+        _squad1 = squad;
+        _squad2 = tile.GetComponent<Squad>();
     }
 
     public override void Begin()
     {
         GameManager.Instance.Paused = true;
-        //Player.Instance.Control(_playerSquad);
 
-        if(_type == GameEventType.SquadBattle)
-            GUIManager.Instance.SquadCollideSquad(_playerSquad.GetComponent<Squad>(), _enemySquad.GetComponent<Squad>());
-        else
-            GUIManager.Instance.SquadCollideTile(_playerSquad.GetComponent<Squad>(), _enemySquad.GetComponent<Tile>());
+        if (HumanPlayer.Instance.Team == _squad1.Team || HumanPlayer.Instance.Team == _squad2.Team)
+        {
+            if (_type == GameEventType.SquadBattle)
+                GUIManager.Instance.SquadCollideSquad(_squad1, _squad2);
+            else
+                GUIManager.Instance.SquadCollideTile(_squad1, _squad2.GetComponent<Tile>());
+        }
         base.Begin();
     }
 }

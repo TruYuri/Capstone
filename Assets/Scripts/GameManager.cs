@@ -52,6 +52,8 @@ public class GameManager : MonoBehaviour
         set { _paused = value; }
     }
 
+    public Dictionary<Team, Player> Players { get { return _players; } }
+
 	// Use this for initialization
 	void Start () 
     {
@@ -183,7 +185,8 @@ public class GameManager : MonoBehaviour
 	
 	void Update () 
     {
-       NextEvent();
+        if(!_paused)
+            NextEvent();
 	}
 
     public void AddEvent(GameEvent gameEvent)

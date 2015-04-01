@@ -11,11 +11,9 @@ public class HumanPlayer : Player
     private const string TILE_TAG = "Tile";
     private const string SECTOR_TAG = "Sector";
     private const string COMMAND_SHIP_PREFAB = "CommandShip";
-    private const string SQUAD_PREFAB = "Squad";
     private const string MOUSE_SCROLLWHEEL = "Mouse ScrollWheel";
     private readonly Vector3 CAMERA_OFFSET = new Vector3(0, 20, -13);
 
-    private CommandShip _commandShip;
     private Vector3 _currentCameraDistance;
     public static HumanPlayer Instance { get { return _instance; } } // move this to a GameManager registry!
     public Squad Squad { get { return _controlledSquad; } }
@@ -206,20 +204,16 @@ public class HumanPlayer : Player
     public override void Deploy(int shipIndex)
     {
         Control(_controlledSquad.Deploy(shipIndex).gameObject);
+        CleanSquad(_controlledSquad);
         GUIManager.Instance.TileSelected(_controlledTile, _numResearchStations, _shipDefinitions);
         GameManager.Instance.EndTurn();
     }
 
-    public override void Battle()
+    public override Team Battle()
     {
-        BattleEvent gameEvent = GameManager.Instance.CurrentEvent() as BattleEvent;
-        Control(gameEvent.Player);
+        var winner = base.Battle();
 
-        if (gameEvent.Type == GameEventType.SquadBattle)
-            _controlledSquad.Combat(gameEvent.Enemy.GetComponent<Squad>());
-        else
-            _controlledSquad.Combat(gameEvent.Enemy.GetComponent<Tile>());
-        gameEvent.Progress();
+        return winner;
     }
 }
 

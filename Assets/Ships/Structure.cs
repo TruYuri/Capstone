@@ -27,11 +27,7 @@ public class Structure : Ship
         set { gatherRate = value; }
     }
 
-    public Dictionary<Resource, int> Resources 
-    {
-        get { return resources; }
-        set { resources = value; }
-    }
+    public Dictionary<Resource, int> Resources { get { return resources; } }
 
     public List<string> Constructables { get { return constructables; } }
 
