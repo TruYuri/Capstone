@@ -79,10 +79,12 @@ public class GUIManager : MonoBehaviour
         var manage = _interface["Manage"].gameObject.GetComponent<Button>();
         var deploy = _interface["Deploy"].gameObject.GetComponent<Button>();
 
+        AutoSelectIndex<Ship>("MainShipList", squad.Ships);
         if (HumanPlayer.Instance.Team == squad.Team)
         {
+            var index = _selectedIndices["MainShipList"];
             manage.interactable = squad.Size > 0 || squad2 != null || (squad2 != null && tile.Team == squad.Team);
-            deploy.interactable = (_selectedIndices["MainShipList"] != -1 && squad.Ships[_selectedIndices["MainShipList"]].ShipType == ShipType.Structure && tile != null && tile.Structure == null) || 
+            deploy.interactable = (index != -1 && squad.Ships[index].ShipType == ShipType.Structure && tile != null && tile.Structure == null) || 
                 (squad.GetComponent<Tile>() != null && squad.GetComponent<Tile>().Structure != null);
         }
         else
@@ -216,9 +218,9 @@ public class GUIManager : MonoBehaviour
     public void SetStructure(bool remove)
     {
         if (remove)
-            HumanPlayer.Instance.Undeploy();
+            HumanPlayer.Instance.CreateUndeployEvent();
         else
-            HumanPlayer.Instance.Deploy(_selectedIndices["MainShipList"]);
+            HumanPlayer.Instance.CreateDeployEvent(_selectedIndices["MainShipList"]);
     }
 
     private void UpdateTransferInterface(bool squads, bool squadShips, bool ships)
@@ -312,6 +314,7 @@ public class GUIManager : MonoBehaviour
         var listing = (ListableObject)squad;
 
         listing.CreateListEntry("AltSquadList", HumanPlayer.Instance.Squad.Colliders.Count - 1, true).transform.SetParent(_interface["AltSquadList"].transform);
+        AutoSelectIndex<Squad>("AltSquadList", HumanPlayer.Instance.Squad.Colliders);
     }
 
     public void ExitManage()
@@ -326,7 +329,7 @@ public class GUIManager : MonoBehaviour
 
     public void Battle()
     {
-        var winner = HumanPlayer.Instance.Battle();
+        var winner = HumanPlayer.Instance.Battle(null, null);
     }
 
     //
@@ -368,28 +371,36 @@ public class GUIManager : MonoBehaviour
     //
     // These functions update and enable UI when squads collide with the appropriate object
     //
-    public void SquadCollideSquad(Squad playerSquad, Squad squad2)
-    {
-        if (playerSquad.Team == squad2.Team)
-        {
-            SetMainListControls(playerSquad, squad2, null);
-        }
-        else
-        {
-            SetUIElements(false, true, false, false);
-        }
-    }
 
-    public void SquadCollideTile(Squad playerSquad, Tile tile) // planet defenses assumed empty here
+    public void ConfigureBattleScreen(Squad squad1, Squad squad2)
     {
-        if(tile.Team == playerSquad.Team)
+        var t1 = squad1.Team;
+
+        Squad player = squad2;
+        Squad enemy = squad1;
+
+        if (t1 == HumanPlayer.Instance.Team)
         {
-            SetUIElements(true, false, false, false);
-            SetMainListControls(playerSquad, tile.Squad, tile);
+            player = squad1;
+            enemy = squad2;
         }
-        else
+
+        var pt = player.GetComponent<Tile>();
+        var et = enemy.GetComponent<Tile>();
+
+        if(pt != null)
         {
-            SetUIElements(false, true, false, false);
+            // player tile vs. enemy squad
         }
+        else if(et != null)
+        {
+            // player squad vs. enemy tile
+        }
+        else // squad vs. squad
+        {
+
+        }
+
+        SetUIElements(false, true, false, false);
     }
 }

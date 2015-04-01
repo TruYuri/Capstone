@@ -69,7 +69,7 @@ public class CommandShip : Squad
             _currentSector = sector;
             _currentSector.GetComponent<Renderer>().material.color = Color.green;
             MapManager.Instance.GenerateNewSectors(_currentSector);
-            GameManager.Instance.EndTurn();
+            GameManager.Instance.Players[this.Team].EndTurn();
         }
     }
 }

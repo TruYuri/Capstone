@@ -13,7 +13,7 @@ public class CustomUI : MonoBehaviour
     public void ClickUpgrade()
     {
         var split = data.Split('|');
-        var upgrade = HumanPlayer.Instance.UpgradeResearch(split[0], split[1], split[2]);
+        HumanPlayer.Instance.UpgradeResearch(split[0], split[1], split[2]);
     }
 
     public void ClickBattle()

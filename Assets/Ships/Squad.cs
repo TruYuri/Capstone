@@ -25,6 +25,7 @@ public class Squad : MonoBehaviour, ListableObject
 
     public List<Ship> Ships { get { return _ships; } }
     public List<Squad> Colliders { get { return _collidingSquads; } }
+    public Tile ColliderTile { get { return _collidingTile; } }
     public int Size { get { return _ships.Count; } }
     public float ShipPower { get { return _shipPower; } }
     public float TroopPower { get { return _troopPower; } }
@@ -97,11 +98,6 @@ public class Squad : MonoBehaviour, ListableObject
         switch (collision.collider.tag)
         {
             case TILE_TAG:
-                if (_isControlled)
-                {
-                    GUIManager.Instance.SetMainListControls(this, squad, _collidingTile);
-                }
-                break;
             case COMMAND_SHIP_TAG:
             case SQUAD_TAG:
                 if (_isControlled)
@@ -196,7 +192,6 @@ public class Squad : MonoBehaviour, ListableObject
         float winP = (float)GameManager.Generator.NextDouble();
 
         var winner = (winP < winC ? this : squad);
-        var loser = (winP < winC ? squad : this);
 
         float hull = 0;
         foreach (var ship in _ships)
@@ -223,9 +218,6 @@ public class Squad : MonoBehaviour, ListableObject
                 damage = 0.0f;
         }
 
-        if (Size == 0)
-            Destroy(winner.gameObject);
-        Destroy(loser.gameObject);
         return winner.Team;
     }
 
@@ -289,16 +281,13 @@ public class Squad : MonoBehaviour, ListableObject
             return _team;
         }
 
-        if (Size == 0)
-            Destroy(this.gameObject);
         return tile.Team;
     }
 
-    public Tile Deploy(int shipIndex)
+    public void Deploy(Structure structure, Tile tile)
     {
-        _collidingTile.Deploy(_ships[shipIndex] as Structure, _team);
-        _ships.RemoveAt(shipIndex);
-        return _collidingTile;
+        _collidingTile.Deploy(structure, _team);
+        _ships.Remove(structure);
     }
 
     GameObject ListableObject.CreateListEntry(string listName, int index, System.Object data)

@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     private const string SCIENCE = "Scientific";
     protected const string SQUAD_PREFAB = "Squad";
 
+    protected bool _turnEnded;
     protected Team _team;
     protected Squad _controlledSquad;
     protected Tile _controlledTile;
@@ -22,6 +23,7 @@ public class Player : MonoBehaviour
 
     public Team Team { get { return _team; } }
     public List<Squad> Squads { get { return _squads; } }
+    public bool TurnEnded { get { return _turnEnded; } }
 
 	void Start () 
     {
@@ -52,66 +54,74 @@ public class Player : MonoBehaviour
         return false;
     }
 
-    public virtual void Deploy(int shipIndex)
+    public void CreateDeployEvent(int shipIndex)
     {
-        Control(_controlledSquad.Deploy(shipIndex).gameObject);
-        CleanSquad(_controlledSquad);
+        // calculate turns - this is gonna suck
+        GameManager.Instance.AddEvent(new DeployEvent(_controlledSquad.Ships[shipIndex] as Structure, _controlledSquad, _controlledSquad.ColliderTile, 1));
+        EndTurn();
     }
 
-    public virtual void Undeploy()
+    public void CreateUndeployEvent()
     {
-        _controlledTile.Undeploy(false);
+        GameManager.Instance.AddEvent(new UndeployEvent(_controlledTile, 1));
+        EndTurn();
     }
 
     public void EndTurn()
     {
-        _militaryTree.Advance();
-        _scienceTree.Advance();
+        _turnEnded = true;
     }
 
-    public virtual Team Battle()
+    // DON'T CALL THIS FROM HERE - for GameManager!
+    public void TurnEnd()
     {
-        BattleEvent gameEvent = GameManager.Instance.CurrentEvent() as BattleEvent;
-        Squad player = gameEvent.Squad2;
-        Squad enemy = gameEvent.Squad1;
+        _militaryTree.Advance();
+        _scienceTree.Advance();
+        _turnEnded = false;
+    }
 
-        if(gameEvent.Squad1.Team == _team)
+    public virtual Squad Battle(Squad squad1, Squad squad2)
+    {
+        Squad player = squad2;
+        Squad enemy = squad1;
+
+        if(squad1.Team == _team)
         {
-            player = gameEvent.Squad1;
-            enemy = gameEvent.Squad2;
+            player = squad1;
+            enemy = squad2;
         }
 
         Control(player.gameObject);
 
+        var pt = player.GetComponent<Tile>();
+        var et = enemy.GetComponent<Tile>();
+
+        Squad win = null;
         Team winner;
-        if (gameEvent.Type == GameEventType.SquadBattle)
-            winner = _controlledSquad.Combat(enemy);
-        else
+        if (pt != null) // player tile vs. enemy squad
+            winner = enemy.Combat(pt);
+        else if(et != null) // player squad vs. enemy tile
+            winner = player.Combat(et);
+        else // squad vs. squad
+            winner = player.Combat(enemy);
+
+        // do nothing / undeploy as necessary
+        if (winner == _team && et != null)
         {
-            var playerTile = player.GetComponent<Tile>();
-            var enemyTile = enemy.GetComponent<Tile>();
-
-            if(playerTile == null)
-                winner = _controlledSquad.Combat(enemyTile);
-            else
-                winner = enemy.Combat(playerTile);
-
-            // do nothing / undeploy as necessary
-            if (winner == _team && playerTile == null)
-            {
-                enemyTile.Undeploy(true);
-                enemyTile.Claim(_team);
-            }
-            else
-            {
-                playerTile.Undeploy(true);
-                playerTile.Claim(enemy.Team);
-            }
+            et.Undeploy(true);
+            et.Claim(_team);
+            win = player;
+        }
+        else if (winner == enemy.Team && pt != null)
+        {
+            pt.Undeploy(true);
+            pt.Claim(enemy.Team);
+            win = enemy;
         }
 
-        gameEvent.Progress();
-
-        return winner;
+        GameManager.Instance.Players[player.Team].CleanSquad(player);
+        GameManager.Instance.Players[enemy.Team].CleanSquad(enemy);
+        return win;
     }
 
     public virtual void CleanSquad(Squad squad)

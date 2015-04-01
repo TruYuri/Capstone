@@ -198,30 +198,27 @@ public class GameManager : MonoBehaviour
     {
         if (_eventQueue.Count > 0)
         {
-            _paused = true;
-
             if (_eventQueue.Peek().Stage == GameEventStage.Begin)
-                _eventQueue.Peek().Begin();
-            else if (_eventQueue.Peek().Stage == GameEventStage.Continue)
+                _eventQueue.Peek().Progress();
+
+            if (_eventQueue.Peek().Stage == GameEventStage.Continue)
                 _nextEventQueue.Enqueue(_eventQueue.Dequeue());
             else // end
                 _eventQueue.Dequeue();
         }
-        else
-            _paused = false;
-    }
 
-    public GameEvent CurrentEvent()
-    {
-        return _eventQueue.Peek();
-    }
-
-    public void EndTurn()
-    {
-        _eventQueue = _nextEventQueue;
-        _nextEventQueue = new Queue<GameEvent>();
-
+        int count = 0;
         foreach (var player in _players)
-            player.Value.EndTurn();
+            if (player.Value.TurnEnded)
+                count++;
+        if(count == _players.Count)
+        {
+            _eventQueue = _nextEventQueue;
+            _nextEventQueue = new Queue<GameEvent>();
+
+            foreach (var player in _players)
+                player.Value.TurnEnd();
+        }
+
     }
 }

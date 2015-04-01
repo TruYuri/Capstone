@@ -19,6 +19,9 @@ public class HumanPlayer : Player
     public Squad Squad { get { return _controlledSquad; } }
     public Tile Tile { get { return _controlledTile; } }
 
+    private Squad _battleSquad1;
+    private Squad _battleSquad2;
+
     void Start()
     {
         _instance = this;
@@ -194,26 +197,17 @@ public class HumanPlayer : Player
         UpdateSquad();
     }
 
-    public override void Undeploy()
+    public void PrepareBattleConditions(Squad squad1, Squad squad2)
     {
-        base.Undeploy();
-        GUIManager.Instance.TileSelected(_controlledTile, _numResearchStations, _shipDefinitions);
-        GameManager.Instance.EndTurn();
+        _battleSquad1 = squad1;
+        _battleSquad2 = squad2;
+        Control(squad1.Team == _team ? squad1.gameObject : squad2.gameObject);
+        GUIManager.Instance.ConfigureBattleScreen(squad1, squad2);
     }
 
-    public override void Deploy(int shipIndex)
+    public override Squad Battle(Squad squad1, Squad squad2)
     {
-        Control(_controlledSquad.Deploy(shipIndex).gameObject);
-        CleanSquad(_controlledSquad);
-        GUIManager.Instance.TileSelected(_controlledTile, _numResearchStations, _shipDefinitions);
-        GameManager.Instance.EndTurn();
-    }
-
-    public override Team Battle()
-    {
-        var winner = base.Battle();
-
-        return winner;
+        return base.Battle(_battleSquad1, _battleSquad2);
     }
 }
 
