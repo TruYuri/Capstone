@@ -28,7 +28,7 @@ public class Ship : ListableObject
 
     protected Dictionary<Resource, int> requiredResources;
 
-    protected ShipType shipType;
+    protected ShipProperties shipProperties;
 
     public string Name
     {
@@ -85,9 +85,9 @@ public class Ship : ListableObject
         set { unlocked = value; }
     }
 
-    public ShipType ShipType { get { return shipType; } }
+    public ShipProperties ShipProperties { get { return shipProperties; } }
 
-    public Ship(Sprite icon, string name, float hull, float firepower, float speed, int capacity, ShipType shipType, 
+    public Ship(Sprite icon, string name, float hull, float firepower, float speed, int capacity, ShipProperties shipProperties, 
         Dictionary<Resource, int> requiredResources)
     {
         this.name = name;
@@ -95,7 +95,7 @@ public class Ship : ListableObject
         this.firepower = this.baseFirepower = firepower;
         this.speed = this.baseSpeed = speed;
         this.capacity = this.baseCapacity = capacity;
-        this.shipType = shipType;
+        this.shipProperties = shipProperties;
         this.icon = icon;
         this.requiredResources = requiredResources;
     }
@@ -112,7 +112,7 @@ public class Ship : ListableObject
 
     public virtual Ship Copy()
     {
-        var ship = new Ship(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, shipType, requiredResources);
+        var ship = new Ship(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, shipProperties, requiredResources);
         ship.Hull = hull;
         ship.Firepower = firepower;
         ship.Speed = speed;
@@ -134,14 +134,8 @@ public class Ship : ListableObject
 
         var transfer = (bool)data;
 
-        if(transfer)
-            switch(shipType)
-            {
-                case ShipType.CommandShip:
-                case ShipType.Defense:
-                    entry.GetComponent<Button>().interactable = false;
-                    break;
-            }
+        if(transfer && (shipProperties & ShipProperties.Untransferable) > 0)
+            entry.GetComponent<Button>().interactable = false;
 
         return entry;
     }
@@ -152,10 +146,10 @@ public class Ship : ListableObject
         var entry = GameObject.Instantiate(buildEntry) as GameObject;
         entry.transform.FindChild("Name").GetComponent<Text>().text = name;
         entry.transform.FindChild("Icon").GetComponent<Image>().sprite = icon;
-        entry.transform.FindChild("HullText").GetComponent<Text>().text = hull.ToString();
-        entry.transform.FindChild("FirepowerText").GetComponent<Text>().text = firepower.ToString();
-        entry.transform.FindChild("SpeedText").GetComponent<Text>().text = speed.ToString();
-        entry.transform.FindChild("CapacityText").GetComponent<Text>().text = capacity.ToString();
+        entry.transform.FindChild("OilText").GetComponent<Text>().text = requiredResources[Resource.Oil].ToString();
+        entry.transform.FindChild("OreText").GetComponent<Text>().text = requiredResources[Resource.Ore].ToString();
+        entry.transform.FindChild("ForestText").GetComponent<Text>().text = requiredResources[Resource.Forest].ToString();
+        entry.transform.FindChild("AsterminiumText").GetComponent<Text>().text = requiredResources[Resource.Asterminium].ToString();
         entry.GetComponent<CustomUI>().data = name;
 
         var resources = data as Dictionary<Resource, int>;
@@ -163,5 +157,10 @@ public class Ship : ListableObject
             entry.GetComponent<Button>().interactable = true;
 
         return entry;
+    }
+
+    GameObject ListableObject.CreatePopUpInfo(System.Object data)
+    {
+        return null;
     }
 }

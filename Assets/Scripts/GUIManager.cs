@@ -84,8 +84,13 @@ public class GUIManager : MonoBehaviour
         {
             var index = _selectedIndices["MainShipList"];
             manage.interactable = squad.Size > 0 || squad2 != null || (squad2 != null && tile.Team == squad.Team);
-            deploy.interactable = (index != -1 && squad.Ships[index].ShipType == ShipType.Structure && tile != null && tile.Structure == null) || 
-                (squad.GetComponent<Tile>() != null && squad.GetComponent<Tile>().Structure != null);
+
+            var squadTile = squad.GetComponent<Tile>();
+            // ground deploy
+            deploy.interactable = (index != -1 && (squad.Ships[index].ShipProperties & ShipProperties.GroundStructure) > 0 && 
+                tile != null && tile.Structure == null) || (squadTile != null && squadTile.Structure != null);
+
+            // space deploy
         }
         else
         {
@@ -94,10 +99,12 @@ public class GUIManager : MonoBehaviour
         }
     }
 
-    public void SetUIElements(bool squad, bool battle, bool tile, bool manage)
+    public void SetUIElements(bool squad, bool battle, bool win, bool lose, bool tile, bool manage)
     {
         _interface["SquadMenu"].gameObject.SetActive(squad);
         _interface["BattleMenu"].gameObject.SetActive(battle);
+        _interface["BattleWon"].gameObject.SetActive(win);
+        _interface["BattleLost"].gameObject.SetActive(lose);
         _interface["PlanetInfo"].gameObject.SetActive(tile);
         _interface["ManageMenu"].gameObject.SetActive(manage);
     }
@@ -121,7 +128,7 @@ public class GUIManager : MonoBehaviour
 
     public void PopulateManageLists()
     {
-        GUIManager.Instance.SetUIElements(false, false, false, true);
+        GUIManager.Instance.SetUIElements(false, false, false, false, false, true);
         _selectedIndices["MainShipList"] = -1;
         ClearList("MainShipList");
         UpdateTransferInterface(true, true, true);
@@ -177,7 +184,7 @@ public class GUIManager : MonoBehaviour
 
         _interface["DeployText"].GetComponent<Text>().text = "Deploy";
         _interface["Deploy"].GetComponent<CustomUI>().data = "Deploy";
-        SetUIElements(true, false, false, false);
+        SetUIElements(true, false, false, false, false, false);
         SetMainListControls(squad, null, null);
     }
 
@@ -211,7 +218,7 @@ public class GUIManager : MonoBehaviour
             PopulateList<Ship>(buildList, "Constructables", ListingType.Build, tile.Structure.Resources);
         }
 
-        SetUIElements(true, false, true, false);
+        SetUIElements(true, false, false, false, true, false);
         SetMainListControls(squad, null, tile);
     }
 
@@ -257,12 +264,8 @@ public class GUIManager : MonoBehaviour
         var fromIndex = _selectedIndices[fromName];
         Ship ship = from.RemoveShip(fromIndex);
 
-        switch (ship.ShipType)
-        {
-            case ShipType.CommandShip:
-            case ShipType.Defense:
-                return ship;
-        }
+        if((ship.ShipProperties & ShipProperties.Untransferable) > 0)
+            return ship;
 
         to.AddShip(ship);
         AutoSelectIndex<Ship>(fromName, from.Ships);
@@ -405,6 +408,6 @@ public class GUIManager : MonoBehaviour
 
         }
 
-        SetUIElements(false, true, false, false);
+        SetUIElements(false, true, false, false, false, false);
     }
 }

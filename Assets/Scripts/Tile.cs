@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Tile : MonoBehaviour
+public class Tile : MonoBehaviour, ListableObject
 {
     private const string PLANET_SMALL_SPAWN_DETAIL = "SmallSizeSpawnRate";
     private const string PLANET_SMALL_RESOURCE_MIN_DETAIL = "ResourceAmountSmallMinimum";
@@ -257,5 +257,20 @@ public class Tile : MonoBehaviour
         panel.transform.FindChild("ResourceIcon").GetComponent<Image>().sprite = GUIManager.Instance.Icons[_resourceType.ToString()];
         panel.transform.FindChild("TotalPopulation").GetComponent<Text>().text = _population.ToString();
         // population types
+    }
+
+    GameObject ListableObject.CreateListEntry(string listName, int index, System.Object data)
+    {
+        return null;
+    }
+
+    GameObject ListableObject.CreateBuildListEntry(string listName, int index, System.Object data)
+    {
+        return null;
+    }
+
+    GameObject ListableObject.CreatePopUpInfo(System.Object data)
+    {
+        return null;
     }
 }

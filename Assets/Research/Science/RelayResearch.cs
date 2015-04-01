@@ -7,9 +7,9 @@ public class RelayResearch : Research
     private const string RANGE = "Range";
     private const string DEFENSE = "Defense";
 
-    private Relay relay;
+    private Structure relay;
 
-    public RelayResearch(Relay relay) : base(relay.Name, 3)
+    public RelayResearch(Structure relay) : base(relay.Name, 3)
     {
         this.relay = relay;
         upgrades.Add(RANGE, 0);

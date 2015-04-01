@@ -306,6 +306,11 @@ public class Squad : MonoBehaviour, ListableObject
 
     GameObject ListableObject.CreateBuildListEntry(string listName, int index, System.Object data) { return null; }
 
+    GameObject ListableObject.CreatePopUpInfo(System.Object data)
+    {
+        return null;
+    }
+
     public static void CleanSquadsFromList(Player player, List<Squad> squads)
     {
         var emptySquads = new List<Squad>();

@@ -87,7 +87,10 @@ public class GameManager : MonoBehaviour
             var rect = new Rect(atlasEntries[i].xMin * _shipTextureAtlas.width, atlasEntries[i].yMin * _shipTextureAtlas.height, textures[i].width, textures[i].height);
             var icon = Sprite.Create(_shipTextureAtlas, rect, new Vector2(0.5f, 0.5f));
             var section = "[" + shipNames[i] + "]";
-            var type = (ShipType)Enum.Parse(typeof(ShipType), shipDetails[SHIP_SECTION_HEADER][shipNames[i]]);
+            var typeList = shipDetails[SHIP_SECTION_HEADER][shipNames[i]].Split('|');
+            var type = ShipProperties.None;
+            foreach (var t in typeList)
+                type = type | (ShipProperties)Enum.Parse(typeof(ShipProperties), t);
             var hull = float.Parse(shipDetails[section][HULL_DETAIL]);
             var firepower = float.Parse(shipDetails[section][FIREPOWER_DETAIL]);
             var speed = float.Parse(shipDetails[section][SPEED_DETAIL]);
@@ -102,35 +105,20 @@ public class GameManager : MonoBehaviour
                 { Resource.Stations, int.Parse(shipDetails[section][STATIONS_DETAIL]) },
             };
 
-            switch(type)
+            if ((type & ShipProperties.Structure) > 0)
             {
-                case ShipType.CommandShip:
-                case ShipType.ResourceTransport:
-                case ShipType.Defense:
-                case ShipType.Combat:
-                    _shipDefinitions.Add(name, new Ship(icon, name, hull, firepower, speed, capacity, type, resources));
-                    break;
-                case ShipType.Structure:
-                    // extract constructables
-                    var constructables = new List<string>();
-                    var n = int.Parse(shipDetails[section][N_CONSTRUCTABLES_DETAIL]);
-                    for (int j = 0; j < n; j++)
-                        constructables.Add(Regex.Replace(shipDetails[section][CONSTRUCTABLE_DETAIL + j.ToString()], "([a-z])([A-Z])", "$1 $2"));
-
-                    var dDefense = float.Parse(shipDetails[section][DEPLOYED_DEFENSE_DETAIL]);
-                    var dCapacity = int.Parse(shipDetails[section][DEPLOYED_CAPACITY_DETAIL]);
-                    var rate = int.Parse(shipDetails[section][GATHER_RATE_DETAIL]);
-                    _shipDefinitions.Add(name, new Structure(icon, name, hull, firepower, speed, capacity, dDefense, dCapacity, rate, constructables, type, resources));
-                    break;
-                case ShipType.WarpPortal:
-                    var wrange = int.Parse(shipDetails[section][RANGE_DETAIL]);
-                    _shipDefinitions.Add(name, new WarpPortal(icon, name, hull, firepower, speed, capacity, wrange, resources));
-                    break;
-                case ShipType.Relay:
-                    var rrange = int.Parse(shipDetails[section][RANGE_DETAIL]);
-                    _shipDefinitions.Add(name, new Relay(icon, name, hull, firepower, speed, capacity, rrange, resources));
-                    break;
+                var constructables = new List<string>();
+                var n = int.Parse(shipDetails[section][N_CONSTRUCTABLES_DETAIL]);
+                for (int j = 0; j < n; j++)
+                    constructables.Add(Regex.Replace(shipDetails[section][CONSTRUCTABLE_DETAIL + j.ToString()], "([a-z])([A-Z])", "$1 $2"));
+                var dDefense = float.Parse(shipDetails[section][DEPLOYED_DEFENSE_DETAIL]);
+                var dCapacity = int.Parse(shipDetails[section][DEPLOYED_CAPACITY_DETAIL]);
+                var rate = int.Parse(shipDetails[section][GATHER_RATE_DETAIL]);
+                var range = int.Parse(shipDetails[section][RANGE_DETAIL]);
+                _shipDefinitions.Add(name, new Structure(icon, name, hull, firepower, speed, capacity, dDefense, dCapacity, rate, range, constructables, type, resources));
             }
+            else
+                _shipDefinitions.Add(name, new Ship(icon, name, hull, firepower, speed, capacity, type, resources));
         }
 
         parser.CloseINI();
@@ -177,8 +165,8 @@ public class GameManager : MonoBehaviour
         tree.AddResearch(1, new CommandShipResearch(shipDefs["Command Ship"]));
         tree.AddResearch(2, new EfficiencyResearch(shipDefs));
         tree.AddResearch(3, new ComplexResearch(shipDefs));
-        tree.AddResearch(4, new RelayResearch(shipDefs["Relay"] as Relay));
-        tree.AddResearch(5, new WarpPortalResearch(shipDefs["Warp Portal"] as WarpPortal));
+        tree.AddResearch(4, new RelayResearch(shipDefs["Relay"] as Structure));
+        tree.AddResearch(5, new WarpPortalResearch(shipDefs["Warp Portal"] as Structure));
 
         return tree;
     }

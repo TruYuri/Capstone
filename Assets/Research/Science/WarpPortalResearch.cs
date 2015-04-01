@@ -7,9 +7,9 @@ public class WarpPortalResearch : Research
     private const string RANGE = "Range";
     private const string DEFENSE = "Defense";
 
-    private WarpPortal warpPortal;
+    private Structure warpPortal;
 
-    public WarpPortalResearch(WarpPortal warpPortal) : base(warpPortal.Name, 3)
+    public WarpPortalResearch(Structure warpPortal) : base(warpPortal.Name, 3)
     {
         this.warpPortal = warpPortal;
         upgrades.Add(RANGE, 0);
