@@ -317,7 +317,7 @@ public class GUIManager : MonoBehaviour
 
     public void NewSquad()
     {
-        var squad = HumanPlayer.Instance.CreateNewSquad();
+        var squad = HumanPlayer.Instance.CreateNewSquad<Squad>(HumanPlayer.Instance.Squad);
         var listing = (ListableObject)squad;
 
         listing.CreateListEntry("AltSquadList", HumanPlayer.Instance.Squad.Colliders.Count - 1, true).transform.SetParent(_interface["AltSquadList"].transform);

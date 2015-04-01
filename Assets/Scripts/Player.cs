@@ -143,17 +143,24 @@ public class Player : MonoBehaviour
         }
     }
 
-    public Squad CreateNewSquad()
+    public T CreateNewSquad<T>(Squad fromSquad) where T : Squad
+    {
+        var val = GameManager.Generator.Next(2);
+        var dist = fromSquad.GetComponent<SphereCollider>().radius / 2.0f;
+        var offset = val == 0 ? new Vector3(dist, 0, 0) : new Vector3(0, 0, dist);
+        var squad = CreateNewSquad<T>(fromSquad.transform.position + offset);
+        squad.Colliders.Add(squad);
+        return squad;
+    }
+
+    public T CreateNewSquad<T>(Vector3 position) where T : Squad
     {
         var squadobj = Resources.Load<GameObject>(SQUAD_PREFAB);
-        var val = GameManager.Generator.Next(2);
-        var dist = _controlledSquad.GetComponent<SphereCollider>().radius / 2.0f;
-        var offset = val == 0 ? new Vector3(dist, 0, 0) : new Vector3(0, 0, dist);
-        var squad = Instantiate(squadobj, _controlledSquad.transform.position + offset, Quaternion.identity) as GameObject;
-        var component = squad.GetComponent<Squad>();
+        var squad = Instantiate(squadobj, position, Quaternion.identity) as GameObject;
+        squad.AddComponent<T>();
+        var component = squad.GetComponent<T>();
         component.Team = _team;
         _squads.Add(component);
-        _controlledSquad.Colliders.Add(component);
         return component;
     }
 }

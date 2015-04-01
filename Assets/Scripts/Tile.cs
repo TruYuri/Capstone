@@ -39,10 +39,11 @@ public class Tile : MonoBehaviour, ListableObject
     public Squad Squad { get { return _squad; } }
 
 	// Use this for initialization
-    public void Init(string type, string name)
+    public void Init(string type, string name, Transform parent)
     {
         _name = name;
         _planetType = type;
+        this.transform.SetParent(parent);
     }
 
 	void Start () 
@@ -51,9 +52,6 @@ public class Tile : MonoBehaviour, ListableObject
 
         // Determine tile type
         var mapManager = MapManager.Instance;
-        if (mapManager.PlanetTextureTable[_planetType].Texture == null) // crappy way to check if it's empty space, but it works for now
-            return;
-
         // Determine Size, Population, and Resource Amount
         var chance = (float)GameManager.Generator.NextDouble();
         if (chance < float.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_SPAWN_DETAIL]))

@@ -29,38 +29,25 @@ public class HumanPlayer : Player
         _shipDefinitions = GameManager.Instance.GenerateShipDefs();
         _militaryTree = GameManager.Instance.GenerateMilitaryTree(_shipDefinitions);
         _scienceTree = GameManager.Instance.GenerateScienceTree(_shipDefinitions);
+        _squads = new List<Squad>();
 
         // create command ship, look at it, control it
-        var cmdShip = Resources.Load<GameObject>(COMMAND_SHIP_PREFAB);
-        var commandShip = Instantiate(cmdShip) as GameObject;
-        _commandShip = commandShip.GetComponent<CommandShip>();
-        _commandShip.Team = _team;
-
-        _squads = new List<Squad>();
-        _squads.Add(_commandShip);
-
+        _commandShip = CreateNewSquad<CommandShip>(Vector3.zero);
         _commandShip.Ship = _shipDefinitions["Command Ship"].Copy();
         _commandShip.AddShip(_commandShip.Ship);
 
         /* DEBUG */
-        var squadprefab = Instantiate(Resources.Load<GameObject>("Squad"), new Vector3(0, 0, 10.5f), Quaternion.identity) as GameObject;
-        var squad = squadprefab.GetComponent<Squad>();
-        var defs = _shipDefinitions;
-        squad.Team = Team.Union;
-        squad.AddShip(defs["Base"].Copy());
-        squad.AddShip(defs["Gathering Complex"].Copy());
-        squad.AddShip(defs["Military Complex"].Copy());
-        squad.AddShip(defs["Research Complex"].Copy());
-        _squads.Add(squad);
+        var squad = CreateNewSquad<Squad>(new Vector3(0, 0, 10.5f));
+        squad.AddShip(_shipDefinitions["Base"].Copy());
+        squad.AddShip(_shipDefinitions["Gathering Complex"].Copy());
+        squad.AddShip(_shipDefinitions["Military Complex"].Copy());
+        squad.AddShip(_shipDefinitions["Research Complex"].Copy());
 
-        var squad2prefab = Instantiate(Resources.Load<GameObject>("Squad"), new Vector3(0, 0, 11), Quaternion.identity) as GameObject;
-        var squad2 = squad2prefab.GetComponent<Squad>();
-        squad2.Team = Team.Union;
-        squad2.AddShip(defs["Fighter"].Copy());
-        squad2.AddShip(defs["Transport"].Copy());
-        squad2.AddShip(defs["Heavy Fighter"].Copy());
-        squad2.AddShip(defs["Behemoth"].Copy());
-        _squads.Add(squad2);
+        squad = CreateNewSquad<Squad>(new Vector3(0, 0, 11f));
+        squad.AddShip(_shipDefinitions["Fighter"].Copy());
+        squad.AddShip(_shipDefinitions["Transport"].Copy());
+        squad.AddShip(_shipDefinitions["Heavy Fighter"].Copy());
+        squad.AddShip(_shipDefinitions["Behemoth"].Copy());
         /* debug */
 
         _controlledSquad = _commandShip;
@@ -86,7 +73,6 @@ public class HumanPlayer : Player
                 switch (hit.collider.tag)
                 {
                     case TILE_TAG:
-                    case COMMAND_SHIP_TAG:
                     case SQUAD_TAG:
                         Control(hit.collider.gameObject);
                         ReloadGameplayUI();
@@ -113,11 +99,11 @@ public class HumanPlayer : Player
                 case TILE_TAG:
                     UpdateSelectedPlanet();
                     break;
-                case COMMAND_SHIP_TAG:
-                    UpdateCommandShip();
-                    break;
                 case SQUAD_TAG:
-                    UpdateSquad();
+                    if (_commandShip == _controlledSquad)
+                        UpdateCommandShip();
+                    else
+                        UpdateSquad();
                     break;
             }
         }

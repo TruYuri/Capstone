@@ -62,15 +62,10 @@ public class Sector : MonoBehaviour
                 CreateTile(new Vector2(px2, j + 1), new Vector3(25 + shift, 0, i), planetCounts);
             }
         }
-
-        return;
 	}
 
     private void CreateTile(Vector2 grid, Vector3 offset, Dictionary<string, int> planetCounts)
     {
-        var tileObj = Instantiate(Tile, this.transform.position + offset, Quaternion.identity) as GameObject;
-        this.transform.SetParent(this.transform);
-
         var chance = (float)GameManager.Generator.NextDouble();
         var planetType = string.Empty;
         foreach (var planet in MapManager.Instance.PlanetTypeSpawnTable)
@@ -81,6 +76,12 @@ public class Sector : MonoBehaviour
                 break;
             }
         }
+
+        // crappy way to check if it's empty space, but it works for now
+        if (MapManager.Instance.PlanetTextureTable[planetType].Texture == null)
+            return;
+
+        var tileObj = Instantiate(Tile, this.transform.position + offset, Quaternion.identity) as GameObject;
 
         if (!planetCounts.ContainsKey(planetType))
             planetCounts.Add(planetType, 0);
@@ -93,7 +94,7 @@ public class Sector : MonoBehaviour
         planetCounts[planetType]++;
 
         var tile = tileObj.GetComponent<Tile>();
-        tile.Init(planetType, name);
+        tile.Init(planetType, name, transform);
         _tileGrid[(int)grid.x, (int)grid.y] = tile;
         _tiles.Add(tile);
     }
@@ -122,26 +123,27 @@ public class Sector : MonoBehaviour
         return val;
     }
 
-    // convert position to grid position, based on 5-multiple offsets
+    // convert position to grid position, based on 10-multiple offsets
     // this should work in constant time now.
     // Note: need way to filter off-hex tiles as non-usable.
     // X:
     // 0 to -9.999 = 8, 0 to 9.999 = 9 (handle special + or - there), -10 to -19.999 = 7, ...  
     // Y:
-    // 
+    // Same, actually.
     public Tile GetTileAtPosition(Vector3 point)
     {
         var diff = point - this.transform.position;
         float x = 0, y = 0;
-        // round to nearest multiple of 5
+        // round to nearest multiple of 10
         if(diff.x < 0.0f) // on the left
             x = Mathf.Ceil(diff.x / 10.0f) * 10.0f;
         else
             x = Mathf.Floor(diff.x / 10.0f) * 10.0f;
 
-        //if(diff.z > 0.0f) // 
-        //else // on the right
-            //y = Mathf.Floor(diff.z / 10.0f) * 10.0f;
+        if (diff.z < 0.0f) // on the left
+            y = Mathf.Ceil(diff.z / 10.0f) * 10.0f;
+        else
+            y = Mathf.Floor(diff.z / 10.0f) * 10.0f;
 
         var arrayx = 0;
         var arrayy = 0;
@@ -152,18 +154,12 @@ public class Sector : MonoBehaviour
         else
             arrayx = (diff.x < 0.0f ? 8 : 9) + (int)(x / 10.0f);
 
-        // convert y to array position
-        
-        foreach(var tile in _tiles)
-        {
-            var tileComp = tile.GetComponent<Tile>();
-            if(tileComp.Bounds.Contains(point))
-            {
-                return tileComp;
-            }
-        }
+        if (y == 0.0f)
+            arrayy = diff.z < 0.0f ? 8 : 9;
+        else
+            arrayy = (diff.z < 0.0f ? 8 : 9) + (int)(y / 10.0f);
 
-        return null;
+        return _tileGrid[arrayx, arrayy];
     }
 	
 	// Update is called once per frame
