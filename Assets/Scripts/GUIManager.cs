@@ -215,12 +215,16 @@ public class GUIManager : MonoBehaviour
         SetMainListControls(squad, null, tile);
     }
 
-    public void SetStructure(bool remove)
+    public void Build(string data)
     {
-        if (remove)
-            HumanPlayer.Instance.CreateUndeployEvent();
-        else
+        HumanPlayer.Instance.CreateBuildEvent(data);
+    }
+
+    public void SetStructure(string data)
+    {
+        if (data == "Deploy")
             HumanPlayer.Instance.CreateDeployEvent(_selectedIndices["MainShipList"]);
+        HumanPlayer.Instance.CreateUndeployEvent();
     }
 
     private void UpdateTransferInterface(bool squads, bool squadShips, bool ships)

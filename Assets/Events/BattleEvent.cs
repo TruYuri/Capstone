@@ -6,9 +6,6 @@ public class BattleEvent : GameEvent
     private Squad _squad1;
     private Squad _squad2;
 
-    public Squad Squad1 { get { return _squad1; } }
-    public Squad Squad2 { get { return _squad2; } }
-
     public BattleEvent(Squad squad1, Squad squad2) : base(1)
     {
         _squad1 = squad1;

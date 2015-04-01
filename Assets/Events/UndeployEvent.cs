@@ -5,9 +5,7 @@ public class UndeployEvent : GameEvent
 {
     private Tile _tile;
 
-    public Tile Tile { get { return _tile; } }
-
-    public UndeployEvent(Tile tile, int turns)
+    public UndeployEvent(int turns, Tile tile)
         : base(turns)
     {
         _tile = tile;
@@ -21,7 +19,5 @@ public class UndeployEvent : GameEvent
             return;
 
         _tile.Undeploy(false);
-        if (_tile == HumanPlayer.Instance.Tile)
-            HumanPlayer.Instance.ReloadGameplayUI();
     }
 }

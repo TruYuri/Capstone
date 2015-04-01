@@ -38,7 +38,7 @@ public class CustomUI : MonoBehaviour
 
     public void ClickDeploy()
     {
-        GUIManager.Instance.SetStructure(data == "Deploy" ? false : true);
+        GUIManager.Instance.SetStructure(data);
     }
 
     public void ClickListItem()
@@ -53,7 +53,7 @@ public class CustomUI : MonoBehaviour
 
     public void ClickConstructable()
     {
-
+        GUIManager.Instance.Build(data);
     }
 
     public void TransferToControlledSquad()

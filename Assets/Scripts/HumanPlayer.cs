@@ -73,7 +73,7 @@ public class HumanPlayer : Player
 
     void Update()
     {
-        if (GameManager.Instance.Paused)
+        if (GameManager.Instance.Paused || _turnEnded)
             return;
 
         // right click - control
@@ -121,6 +121,12 @@ public class HumanPlayer : Player
                     break;
             }
         }
+    }
+
+    public override void TurnEnd()
+    {
+        base.TurnEnd();
+        ReloadGameplayUI();
     }
 
     public void ReloadGameplayUI()

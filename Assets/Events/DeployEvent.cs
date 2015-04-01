@@ -7,11 +7,8 @@ public class DeployEvent : GameEvent
     private Squad _squad;
     private Tile _tile;
 
-    public Structure Structure { get { return _structure; } }
-    public Squad Squad { get { return _squad; } }
-    public Tile Tile { get { return _tile; } }
-
-    public DeployEvent(Structure ship, Squad squad, Tile tile, int turns) : base(turns)
+    public DeployEvent(int turns, Structure ship, Squad squad, Tile tile) 
+        : base(turns)
     {
         _structure = ship;
         _squad = squad;
@@ -26,8 +23,6 @@ public class DeployEvent : GameEvent
             return;
 
         _squad.Deploy(_structure, _tile);
-        if (_squad == HumanPlayer.Instance.Squad)
-            HumanPlayer.Instance.ReloadGameplayUI();
         GameManager.Instance.Players[_squad.Team].CleanSquad(_squad);
     }
 }

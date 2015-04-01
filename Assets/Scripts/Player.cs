@@ -41,7 +41,7 @@ public class Player : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-        if (GameManager.Instance.Paused)
+        if (GameManager.Instance.Paused || _turnEnded)
             return;
 	}
 
@@ -54,16 +54,22 @@ public class Player : MonoBehaviour
         return false;
     }
 
+    public void CreateBuildEvent(string shipName)
+    {
+        GameManager.Instance.AddEvent(new BuildEvent(1, _controlledTile, _shipDefinitions[shipName].Copy()));
+        EndTurn();
+    }
+
     public void CreateDeployEvent(int shipIndex)
     {
         // calculate turns - this is gonna suck
-        GameManager.Instance.AddEvent(new DeployEvent(_controlledSquad.Ships[shipIndex] as Structure, _controlledSquad, _controlledSquad.ColliderTile, 1));
+        GameManager.Instance.AddEvent(new DeployEvent(1, _controlledSquad.Ships[shipIndex] as Structure, _controlledSquad, _controlledSquad.ColliderTile));
         EndTurn();
     }
 
     public void CreateUndeployEvent()
     {
-        GameManager.Instance.AddEvent(new UndeployEvent(_controlledTile, 1));
+        GameManager.Instance.AddEvent(new UndeployEvent(1, _controlledTile));
         EndTurn();
     }
 
@@ -73,7 +79,7 @@ public class Player : MonoBehaviour
     }
 
     // DON'T CALL THIS FROM HERE - for GameManager!
-    public void TurnEnd()
+    public virtual void TurnEnd()
     {
         _militaryTree.Advance();
         _scienceTree.Advance();
