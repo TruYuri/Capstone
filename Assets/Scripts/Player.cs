@@ -34,6 +34,8 @@ public class Player : MonoBehaviour
 	
 	public virtual void Control(GameObject gameObject)
     {
+        if (gameObject.GetComponent<Squad>() == null)
+            return;
         _controlledSquad = gameObject.GetComponent<Squad>();
         _controlledTile = gameObject.GetComponent<Tile>();
     }
@@ -67,9 +69,9 @@ public class Player : MonoBehaviour
         EndTurn();
     }
 
-    public void CreateUndeployEvent()
+    public void CreateUndeployEvent(bool destroy)
     {
-        GameManager.Instance.AddEvent(new UndeployEvent(1, _controlledTile));
+        GameManager.Instance.AddEvent(new UndeployEvent(1, _controlledTile, destroy));
         EndTurn();
     }
 

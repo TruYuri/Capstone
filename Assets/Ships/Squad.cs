@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Text.RegularExpressions;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
@@ -11,9 +12,6 @@ public class Squad : MonoBehaviour, ListableObject
 
     private List<Ship> _ships = new List<Ship>();
     private Team _team;
-    private float _shipPower;
-    private float _troopPower;
-    private bool _isControlled;
     private Tile _currentTile;
     private bool _inTileRange;
     private Sector _currentSector;
@@ -30,14 +28,7 @@ public class Squad : MonoBehaviour, ListableObject
     public List<Squad> Colliders { get { return _collidingSquads; } }
     public bool IsInPlanetRange { get { return _inTileRange; } }
     public Tile Tile { get { return _currentTile; } }
-    public int Size { get { return _ships.Count; } }
-    public float ShipPower { get { return _shipPower; } }
-    public float TroopPower { get { return _troopPower; } }
-    public bool IsPlayerControlled 
-    {
-        get { return _isControlled; }
-        set { _isControlled = value; }
-    }
+    public Sector Sector { get { return _currentSector; } }
 
 	// Use this for initialization
 	void Start () 
@@ -50,7 +41,8 @@ public class Squad : MonoBehaviour, ListableObject
     // Update is called once per frame
     void Update()
     {
-        CheckSectorTile(_currentSector);
+        if(this.GetComponent<Tile>() == null)
+            CheckSectorTile(_currentSector);
     }
 
     private void CheckSectorTile(Sector sector)
@@ -60,45 +52,33 @@ public class Squad : MonoBehaviour, ListableObject
         
         var tile = _currentSector.GetTileAtPosition(transform.position);
 
-        if (tile != _currentTile)
+        if(tile != _currentTile && _currentTile != null)
         {
-            if (_currentTile != null)
-            {
-                _collidingSquads.Remove(_currentTile.Squad);
-                _currentTile.Squad.Colliders.Remove(this);
-            }
-            if(tile != null)
-            {
-                if ((transform.position - tile.transform.position).sqrMagnitude <= (tile.Radius * tile.Radius))
-                {
-                    _collidingSquads.Add(tile.Squad);
-                    tile.Squad.Colliders.Add(this);
-                    _inTileRange = true;
-                }
-                else
-                    _inTileRange = false;
-            }
-            _currentTile = tile;
+            _collidingSquads.Remove(_currentTile.Squad);
+            _currentTile.Squad.Colliders.Remove(this);
         }
-        else if(_currentTile != null)
+
+        _currentTile = tile;
+        if (_currentTile == null)
+            return;
+
+        if ((transform.position - _currentTile.transform.position).sqrMagnitude <= 
+            (_currentTile.Radius * _currentTile.Radius))
         {
-            if ((transform.position - tile.transform.position).sqrMagnitude <= (tile.Radius * tile.Radius))
+            if (!_collidingSquads.Contains(_currentTile.Squad))
             {
-                if (!_collidingSquads.Contains(tile.Squad))
-                {
-                    _collidingSquads.Add(tile.Squad);
-                    _inTileRange = true;
-                }
-                if (!tile.Squad.Colliders.Contains(this))
-                    tile.Squad.Colliders.Add(this);
-            }
-            else
-            {
-                _collidingSquads.Remove(tile.Squad);
-                tile.Squad.Colliders.Remove(this);
-                _inTileRange = false;
+                _collidingSquads.Add(_currentTile.Squad);
+                _currentTile.Squad.Colliders.Add(this);
+                _inTileRange = true;
             }
         }
+        else
+        {
+            _collidingSquads.Remove(_currentTile.Squad);
+            _currentTile.Squad.Colliders.Remove(this);
+            _inTileRange = false;
+        }
+
     }
 
     void OnCollisionEnter(Collision collision)
@@ -169,23 +149,32 @@ public class Squad : MonoBehaviour, ListableObject
         }
     }
 
-    public void CalculatePower()
+    public float CalculateTroopPower()
+    {
+        float primitive = 0, industrial = 0, spaceAge = 0;
+
+        foreach (var ship in _ships)
+        {
+            primitive += ship.PrimitivePopulation;
+            industrial += ship.IndustrialPopulation;
+            spaceAge += ship.SpaceAgePopulation;
+        }
+
+        return primitive + industrial * 1.5f + spaceAge * 1.75f;
+    }
+
+    public float CalculateShipPower()
     {
         float hull = 0, firepower = 0, speed = 0;
-        float primitive = 0, industrial = 0, spaceAge = 0;
 
         foreach(var ship in _ships)
         {
             hull += ship.Hull;
             firepower += ship.Firepower;
             speed += ship.Speed;
-            primitive += ship.PrimitivePopulation;
-            industrial += ship.IndustrialPopulation;
-            spaceAge += ship.SpaceAgePopulation;
         }
 
-        _shipPower = firepower * 2.0f + speed * 1.5f + hull;
-        _troopPower = primitive + industrial * 1.5f + spaceAge * 1.75f;
+        return firepower * 2.0f + speed * 1.5f + hull;
     }
 
     public void AddShip(Ship ship)
@@ -212,10 +201,10 @@ public class Squad : MonoBehaviour, ListableObject
 
     public Team Combat(Squad squad)
     {
-        CalculatePower();
-        squad.CalculatePower();
+        var power = CalculateShipPower();
+        var enemyPower = squad.CalculateShipPower();
 
-        float winC = (_shipPower - squad.ShipPower) / 100.0f * 0.5f + 0.5f;
+        float winC = (power - enemyPower) / 100.0f * 0.5f + 0.5f;
         float winP = (float)GameManager.Generator.NextDouble();
 
         var winner = (winP < winC ? this : squad);
@@ -228,9 +217,9 @@ public class Squad : MonoBehaviour, ListableObject
 
         float damage = Mathf.Floor(hull * (1.0f - winC) * ((float)GameManager.Generator.NextDouble() * (1.25f - 0.75f) + 0.75f));
 
-        while(damage > 0.0f && Size > 0)
+        while(damage > 0.0f && _ships.Count > 0)
         {
-            var randPos = GameManager.Generator.Next(0, Size);
+            var randPos = GameManager.Generator.Next(0, _ships.Count);
             var ship = _ships[randPos];
 
             if (ship.Hull <= damage)
@@ -250,10 +239,10 @@ public class Squad : MonoBehaviour, ListableObject
 
     public Team Combat(Tile tile) // planet combat
     {
-        CalculatePower();
-        tile.CalculatePower();
+        var power = CalculateTroopPower();
+        var enemyPower = tile.CalculateDefensivePower();
 
-        float winC = (_troopPower - tile.Power) / 100.0f * 0.5f + 0.5f;
+        float winC = (power - enemyPower) / 100.0f * 0.5f + 0.5f;
         float winP = (float)GameManager.Generator.NextDouble();
 
         var winner = winP < winC;
@@ -270,11 +259,11 @@ public class Squad : MonoBehaviour, ListableObject
 
             while (damage >= 1.0f && nTroops > 0)
             {
-                var randShip = GameManager.Generator.Next(0, Size);
+                var randShip = GameManager.Generator.Next(0, _ships.Count);
                 // somehow distribute probability around # troops and from which ships
 
                 while(_ships[randShip].Population == 0)
-                    randShip = GameManager.Generator.Next(0, Size);
+                    randShip = GameManager.Generator.Next(0, _ships.Count);
 
                 damage -= 1.0f;
                 var randSoldier = GameManager.Generator.Next(0, _ships[randShip].Population);
@@ -313,7 +302,15 @@ public class Squad : MonoBehaviour, ListableObject
 
     public void Deploy(Structure structure, Tile tile)
     {
-        _currentTile.Deploy(structure, _team);
+        if(_currentTile != null) // planetary deploy
+            _currentTile.Deploy(structure, ShipProperties.GroundStructure, _team);
+        else // space deploy
+        {
+            var type = Regex.Replace(structure.Name, @"\s+", "");
+            _currentTile = _currentSector.CreateTileAtPosition("["+type+"]", transform.position);
+            _currentTile.Deploy(structure, ShipProperties.SpaceStructure, _team);
+        }
+
         _ships.Remove(structure);
     }
 
@@ -343,7 +340,7 @@ public class Squad : MonoBehaviour, ListableObject
         var emptySquads = new List<Squad>();
         foreach(var squad in squads)
         {
-            if ((squad == null || squad.gameObject == null || (squad.Size == 0 && squad.GetComponent<Tile>() == null)) && squad.Team == player.Team)
+            if ((squad == null || squad.gameObject == null || (squad.Ships.Count == 0 && squad.GetComponent<Tile>() == null)) && squad.Team == player.Team)
                 emptySquads.Add(squad);
         }
 

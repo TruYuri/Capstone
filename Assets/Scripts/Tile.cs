@@ -23,27 +23,25 @@ public class Tile : MonoBehaviour, ListableObject
     private string _planetType;
     private int _population;
     private Inhabitance _planetInhabitance;
-    private TileSize _tileSize;
     private Resource _resourceType;
     private int _resourceCount;
     private Team _team;
     private Structure _structure;
-    private float _power;
     private Squad _squad;
 
     public string Name { get { return _name; } }
     public Team Team { get { return _team; } }
     public float Radius { get { return _radius; } }
     public Structure Structure { get { return _structure; } }
-    public float Power { get { return _power; } }
     public Squad Squad { get { return _squad; } }
 
 	// Use this for initialization
-    public void Init(string type, string name, Transform parent)
+    public void Init(string type, string name, Sector sector)
     {
         _name = name;
         _planetType = type;
-        this.transform.SetParent(parent);
+        _squad = this.GetComponent<Squad>();
+        this.transform.SetParent(sector.transform);
     }
 
 	void Start () 
@@ -52,9 +50,10 @@ public class Tile : MonoBehaviour, ListableObject
         var mapManager = MapManager.Instance;
         // Determine Size, Population, and Resource Amount
         var chance = (float)GameManager.Generator.NextDouble();
+        var small = true;
         if (chance < float.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_SPAWN_DETAIL]))
         {
-            _tileSize = TileSize.Small;
+            small = true;
 
             var minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_POPULATION_MIN_DETAIL]);
             var maximum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_POPULATION_MAX_DETAIL]);
@@ -66,7 +65,7 @@ public class Tile : MonoBehaviour, ListableObject
         }
         else
         {
-            _tileSize = TileSize.Large;
+            small = false;
 
             var minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_POPULATION_MIN_DETAIL]);
             var maximum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_POPULATION_MAX_DETAIL]);
@@ -105,8 +104,8 @@ public class Tile : MonoBehaviour, ListableObject
             var system = GetComponent<ParticleSystem>();
             var renderer = system.GetComponent<Renderer>();
 
-            _radius = 1.0f;
-            if (_tileSize == TileSize.Small)
+            _radius = 2.0f;
+            if (small)
             {
                 system.startSize *= 0.5f;
                 _radius *= 0.5f;
@@ -121,7 +120,6 @@ public class Tile : MonoBehaviour, ListableObject
 
             this.GetComponent<SphereCollider>().enabled = true;
             _squad = this.GetComponent<Squad>();
-            _squad.enabled = true;
 
             if (_population > 0)
             {
@@ -152,25 +150,28 @@ public class Tile : MonoBehaviour, ListableObject
     public void Claim(Team team)
     {
         _team = team;
-        _squad.Team = _team;
+
+        if(_squad != null)
+            _squad.Team = _team;
     }
 
-    public void Undeploy(bool destroy)
+    public string Undeploy(bool destroy)
     {
         if (!destroy && _structure != null)
             _squad.AddShip(_structure);
         _structure = null;
+        return _planetType;
     }
 
-    public void Deploy(Structure ship, Team team)
+    public void Deploy(Structure ship, ShipProperties structureType, Team team)
     {
         Claim(team);
         _structure = ship;
     }
 
-    public void CalculatePower()
+    public float CalculateDefensivePower()
     {
-        _power = 0;
+        var power = 0f;
         if (_team == Team.Indigineous) // use indigineous
         {
             switch(_planetInhabitance)
@@ -178,27 +179,26 @@ public class Tile : MonoBehaviour, ListableObject
                 case Inhabitance.Uninhabited:
                     break;
                 case Inhabitance.Primitive:
-                    _power = _population;
+                    power = _population;
                     break;
                 case Inhabitance.Industrial:
-                    _power = _population * 1.5f;
+                    power = _population * 1.5f;
                     break;
                 case Inhabitance.SpaceAge:
-                    _power = _population * 1.75f;
+                    power = _population * 1.75f;
                     break;
             }
         }
-        else // use deployed
+        else if (_structure == null)
         {
-            if (_structure == null)
-                return;
+            var primitive = _structure.PrimitivePopulation;
+            var industrial = _structure.IndustrialPopulation;
+            var spaceAge = _structure.SpaceAgePopulation;
 
-            float primitive = _structure.PrimitivePopulation;
-            float industrial = _structure.IndustrialPopulation;
-            float spaceAge = _structure.SpaceAgePopulation;
-
-            _power = primitive + industrial * 1.5f + spaceAge * 1.75f + _structure.Defense;
+            power = primitive + industrial * 1.5f + spaceAge * 1.75f + _structure.Defense;
         }
+
+        return power;
     }
 
     public void PopulateInfoPanel(GameObject panel)

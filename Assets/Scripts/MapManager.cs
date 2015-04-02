@@ -14,6 +14,7 @@ public class MapManager : MonoBehaviour
     private const string INI_PATH = "/Resources/Planets.ini";
     private const string MATERIALS_PATH = "PlanetTextures/";
     private const string PLANET_SECTION_HEADER = "[PlanetSpawnRates]";
+    private const string DEPLOYABLE_SECTION_HEADER = "[DeployablePlanets]";
     private const string PLANET_TEXTURE_DETAIL = "SpriteName";
     private const string PLANET_UNINHABITED_DETAIL = "Uninhabited";
     private const string PLANET_PRIMITIVE_DETAIL = "InhabitedPrimitive";
@@ -27,6 +28,7 @@ public class MapManager : MonoBehaviour
     private static MapManager _instance;
     private Object _sectorPrefab;
     private Dictionary<string, float> _planetTypeSpawnTable;
+    private Dictionary<string, float> _deploySpawnTable;
     private Dictionary<string, TextureAtlasDetails> _planetTextureTable;
     private Dictionary<string, Dictionary<Inhabitance, float>> _planetInhabitanceSpawnTable;
     private Dictionary<string, Dictionary<Resource, float>> _planetResourceSpawnTable;
@@ -45,6 +47,7 @@ public class MapManager : MonoBehaviour
     }
 
     public Dictionary<string, float> PlanetTypeSpawnTable { get { return _planetTypeSpawnTable; } }
+    public Dictionary<string, float> DeploySpawnTable { get { return _deploySpawnTable; } }
     public Dictionary<string, TextureAtlasDetails> PlanetTextureTable { get { return _planetTextureTable; } }
     public Dictionary<string, Dictionary<Inhabitance, float>> PlanetInhabitanceSpawnTable { get { return _planetInhabitanceSpawnTable; } }
     public Dictionary<string, Dictionary<Resource, float>> PlanetResourceSpawnTable { get { return _planetResourceSpawnTable; } }
@@ -55,6 +58,7 @@ public class MapManager : MonoBehaviour
     {
         _sectorPrefab = Resources.Load<GameObject>(SECTOR_PREFAB);
         _planetTypeSpawnTable = new Dictionary<string, float>();
+        _deploySpawnTable = new Dictionary<string, float>();
         _planetTextureTable = new Dictionary<string, TextureAtlasDetails>();
         _planetInhabitanceSpawnTable = new Dictionary<string, Dictionary<Inhabitance, float>>();
         _planetResourceSpawnTable = new Dictionary<string, Dictionary<Resource, float>>();
@@ -75,7 +79,12 @@ public class MapManager : MonoBehaviour
             runningTotal += float.Parse(planet.Value);
             _planetTypeSpawnTable.Add('[' + planet.Key + ']', runningTotal);
         }
+        foreach(var deploy in spawnTables[DEPLOYABLE_SECTION_HEADER])
+        {
+            _deploySpawnTable.Add('[' + deploy.Key + ']', 0);
+        }
         spawnTables.Remove(PLANET_SECTION_HEADER);
+        spawnTables.Remove(DEPLOYABLE_SECTION_HEADER);
 
         foreach(var planet in spawnTables)
         {

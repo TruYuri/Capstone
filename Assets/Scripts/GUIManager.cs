@@ -81,40 +81,30 @@ public class GUIManager : MonoBehaviour
 
         var manage = _interface["Manage"].gameObject.GetComponent<Button>();
         var deploy = _interface["Deploy"].gameObject.GetComponent<Button>();
+        var type = deploy.GetComponent<CustomUI>().data == "Deploy";
         var tile = squad.Tile;
 
         AutoSelectIndex<Ship>("MainShipList", squad.Ships);
         var index = _selectedIndices["MainShipList"];
 
         // note: i fucking hate this bit
+        var click = false;
         if (HumanPlayer.Instance.Team == squad.Team)
         {
-            manage.interactable = squad.Size > 0 || squad.Colliders.Count > 0;
-
-            if ((squad.Ships[index].ShipProperties & ShipProperties.Structure) > 0)
+            if(type && index != -1) // deploy
             {
-                if (squad.IsInPlanetRange && (squad.Ships[index].ShipProperties & ShipProperties.GroundStructure) > 0)
-                {
-                    if (tile.Structure == null && tile.Team == squad.Team)
-                        deploy.interactable = true;
-                    else
-                        deploy.interactable = false;
-                }
-                else if (tile == null && (squad.Ships[index].ShipProperties & ShipProperties.SpaceStructure) > 0)
-                {
-                    deploy.interactable = true;
-                }
-                else
-                    deploy.interactable = false;
+                if (tile != null && (squad.Ships[index].ShipProperties & ShipProperties.GroundStructure) > 0 
+                    && squad.IsInPlanetRange && tile.Team == squad.Team && tile.Structure == null) // existing planet
+                    click = true;
+                else if (tile == null && (squad.Ships[index].ShipProperties & ShipProperties.SpaceStructure) > 0)// empty space
+                    click = true;
             }
-            else
-                deploy.interactable = false;
+            else if(tile != null && squad == tile.Squad && tile.Structure != null)// undeploy
+                click = true;
         }
-        else
-        {
-            manage.interactable = false;
-            deploy.interactable = false;
-        }
+
+        deploy.interactable = click;
+        manage.interactable = squad.Ships.Count > 0 || squad.Colliders.Count > 0;
     }
 
     public void SetUIElements(bool squad, bool battle, bool win, bool lose, bool tile, bool manage)
@@ -249,7 +239,7 @@ public class GUIManager : MonoBehaviour
     {
         if (data == "Deploy")
             HumanPlayer.Instance.CreateDeployEvent(_selectedIndices["MainShipList"]);
-        HumanPlayer.Instance.CreateUndeployEvent();
+        HumanPlayer.Instance.CreateUndeployEvent(false);
     }
 
     private void UpdateTransferInterface(bool squads, bool squadShips, bool ships)

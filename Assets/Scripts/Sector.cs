@@ -12,9 +12,8 @@ public class Sector : MonoBehaviour
 
     // Adjoining sectors
     private Vector2 _gridPos;
-    private List<Tile> _tiles;
     private Tile[,] _tileGrid;
-
+    private Dictionary<string, int> _planetCounts;
     public Vector2 GridPosition { get { return _gridPos; } }
     public Tile[,] TileGrid { get { return _tileGrid; } }
 
@@ -30,19 +29,18 @@ public class Sector : MonoBehaviour
 	void Start () 
     {
         this.transform.parent = MapManager.Instance.transform;
-        _tiles = new List<Tile>();
 
         if(Tile == null)
             Tile = Resources.Load<GameObject>(TILE_PREFAB);
 
         _tileGrid = new Tile[18,18];
-        var planetCounts = new Dictionary<string, int>();
+        _planetCounts = new Dictionary<string, int>();
 
         // Generate center columns
         for(int i = -85, j = 0; i <= 85; i += 10, j++)
         {
-            CreateTile(new Vector2(8, j), new Vector3(-5, 0, i), planetCounts);
-            CreateTile(new Vector2(9, j), new Vector3(5, 0, i), planetCounts);
+            CreateTile(new KeyValuePair<int, int>(8, j), new Vector3(-5, 0, i));
+            CreateTile(new KeyValuePair<int, int>(9, j), new Vector3(5, 0, i));
         }
 
         // Generate middle columns
@@ -56,47 +54,48 @@ public class Sector : MonoBehaviour
 
             for (int i = -75 + n * 10, j = n; i <= 75 - n * 10; i += 10, j++)
             {
-                CreateTile(new Vector2(nx1, j + 1), new Vector3(-15 - shift, 0, i), planetCounts);
-                CreateTile(new Vector2(nx2, j + 1), new Vector3(-25 - shift, 0, i), planetCounts);
-                CreateTile(new Vector2(px1, j + 1), new Vector3(15 + shift, 0, i), planetCounts);
-                CreateTile(new Vector2(px2, j + 1), new Vector3(25 + shift, 0, i), planetCounts);
+                CreateTile(new KeyValuePair<int, int>(nx1, j + 1), new Vector3(-15 - shift, 0, i));
+                CreateTile(new KeyValuePair<int, int>(nx2, j + 1), new Vector3(-25 - shift, 0, i));
+                CreateTile(new KeyValuePair<int, int>(px1, j + 1), new Vector3(15 + shift, 0, i));
+                CreateTile(new KeyValuePair<int, int>(px2, j + 1), new Vector3(25 + shift, 0, i));
             }
         }
 	}
 
-    private void CreateTile(Vector2 grid, Vector3 offset, Dictionary<string, int> planetCounts)
+    private void CreateTile(KeyValuePair<int, int> grid, Vector3 offset, string type = null)
     {
-        var chance = (float)GameManager.Generator.NextDouble();
-        var planetType = string.Empty;
-        foreach (var planet in MapManager.Instance.PlanetTypeSpawnTable)
+        if (type == null)
         {
-            if (chance <= planet.Value)
+            var chance = (float)GameManager.Generator.NextDouble();
+            foreach (var planet in MapManager.Instance.PlanetTypeSpawnTable)
             {
-                planetType = planet.Key;
-                break;
+                if (chance <= planet.Value)
+                {
+                    type = planet.Key;
+                    break;
+                }
             }
         }
 
         // crappy way to check if it's empty space, but it works for now
-        if (MapManager.Instance.PlanetTextureTable[planetType].Texture == null)
+        if (MapManager.Instance.PlanetTextureTable[type].Texture == null)
             return;
 
         var tileObj = Instantiate(Tile, this.transform.position + offset, Quaternion.identity) as GameObject;
 
-        if (!planetCounts.ContainsKey(planetType))
-            planetCounts.Add(planetType, 0);
+        if (!_planetCounts.ContainsKey(type))
+            _planetCounts.Add(type, 0);
 
-        var name = MapManager.Instance.PlanetSpawnDetails[planetType][PLANET_NAME]
+        var name = MapManager.Instance.PlanetSpawnDetails[type][PLANET_NAME]
             + "-"
             + Math.Abs(_gridPos.x).ToString() + Math.Abs(_gridPos.y).ToString()
-            + PlanetSuffix(planetType, planetCounts[planetType]);
+            + PlanetSuffix(type, _planetCounts[type]);
 
-        planetCounts[planetType]++;
+        _planetCounts[type]++;
 
         var tile = tileObj.GetComponent<Tile>();
-        tile.Init(planetType, name, transform);
-        _tileGrid[(int)grid.x, (int)grid.y] = tile;
-        _tiles.Add(tile);
+        tile.Init(type, name, this);
+        _tileGrid[grid.Key, grid.Value] = tile;
     }
   
     private string PlanetSuffix(string type, int count)
@@ -130,12 +129,13 @@ public class Sector : MonoBehaviour
     // 0 to -9.999 = 8, 0 to 9.999 = 9 (handle special + or - there), -10 to -19.999 = 7, ...  
     // Y:
     // Same, actually.
-    public Tile GetTileAtPosition(Vector3 point)
+
+    private Vector2 WorldToGridReal(Vector3 point)
     {
         var diff = point - this.transform.position;
         float x = 0, y = 0;
         // round to nearest multiple of 10
-        if(diff.x < 0.0f) // on the left
+        if (diff.x < 0.0f) // on the left
             x = Mathf.Ceil(diff.x / 10.0f) * 10.0f;
         else
             x = Mathf.Floor(diff.x / 10.0f) * 10.0f;
@@ -145,23 +145,47 @@ public class Sector : MonoBehaviour
         else
             y = Mathf.Floor(diff.z / 10.0f) * 10.0f;
 
-        var arrayx = 0;
-        var arrayy = 0;
+        return new Vector2(x, y);
+    }
+
+    private KeyValuePair<int, int> WorldToGridArray(Vector3 point)
+    {
+        var diffreal = point - this.transform.position;
+        var diff = WorldToGridReal(point);
+        var x = 0;
+        var y = 0;
 
         // convert x to array position
-        if(x == 0.0f)
-            arrayx = diff.x < 0.0f ? 8 : 9;
+        if (diff.x == 0.0f)
+            x = diffreal.x < 0.0f ? 8 : 9;
         else
-            arrayx = (diff.x < 0.0f ? 8 : 9) + (int)(x / 10.0f);
+            x = (diffreal.x < 0.0f ? 8 : 9) + (int)(diff.x / 10.0f);
 
-        if (y == 0.0f)
-            arrayy = diff.z < 0.0f ? 8 : 9;
+        if (diff.y == 0.0f)
+            y = diffreal.z < 0.0f ? 8 : 9;
         else
-            arrayy = (diff.z < 0.0f ? 8 : 9) + (int)(y / 10.0f);
+            y = (diffreal.z < 0.0f ? 8 : 9) + (int)(diff.y / 10.0f);
 
-        return _tileGrid[arrayx, arrayy];
+        return new KeyValuePair<int, int>((int)(x + 0.5f), (int)(y + 0.5f));
+    }
+
+    public Tile GetTileAtPosition(Vector3 point)
+    {
+        var pos = WorldToGridArray(point);
+        return _tileGrid[pos.Key, pos.Value];
     }
 	
+    public Tile CreateTileAtPosition(string type, Vector3 pos)
+    {
+        var relativePos = WorldToGridReal(pos);
+        var gridPos = WorldToGridArray(relativePos);
+        var realPosition = new Vector3(relativePos.x, 0f, relativePos.y)
+            + new Vector3(relativePos.x >= 0 ? 5 : -5, 0.0f, relativePos.y >= 0 ? 5 : -5);
+
+        CreateTile(gridPos, realPosition, type);
+        return _tileGrid[gridPos.Key, gridPos.Value];
+    }
+
 	// Update is called once per frame
 	void Update () 
     {

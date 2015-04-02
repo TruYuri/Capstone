@@ -50,7 +50,6 @@ public class HumanPlayer : Player
         /* debug */
 
         _controlledSquad = _commandShip;
-        _controlledSquad.IsPlayerControlled = true;
         Camera.main.transform.position = _commandShip.transform.position + CAMERA_OFFSET;
         Camera.main.transform.LookAt(_commandShip.transform);
         GUIManager.Instance.SquadSelected(_commandShip);
@@ -67,12 +66,12 @@ public class HumanPlayer : Player
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 1 << 9)) // check for squads
+            if (Physics.Raycast(ray, out hit)) // check for squads
             {
                 Control(hit.collider.gameObject);
                 ReloadGameplayUI();
             }
-            else if (Physics.Raycast(ray, out hit, 1 << 8)) // check for planets
+            else if (Physics.Raycast(ray, out hit)) // check for planets
             {
                 Control(hit.collider.gameObject);
                 ReloadGameplayUI();
@@ -129,9 +128,7 @@ public class HumanPlayer : Player
 
     public override void Control(GameObject gameObject)
     {
-        _controlledSquad.IsPlayerControlled = false;
         base.Control(gameObject);
-        _controlledSquad.IsPlayerControlled = true;
         transform.position = _controlledSquad.transform.position + _currentCameraDistance;
     }
 
@@ -141,6 +138,7 @@ public class HumanPlayer : Player
 
     private void UpdateSquad()
     {
+        /*
         if (Input.GetMouseButton(0))
         {
             RaycastHit hit;
@@ -160,7 +158,9 @@ public class HumanPlayer : Player
                         break;
                 }
             }
+            
         }
+        */
 
         GUIManager.Instance.SetSquadControls(_controlledSquad);
     }
