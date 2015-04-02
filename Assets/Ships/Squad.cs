@@ -5,15 +5,18 @@ using System.Collections.Generic;
 public class Squad : MonoBehaviour, ListableObject
 {
     private const string SQUAD_LIST_PREFAB = "SquadListing";
+    private const string SECTOR_TAG = "SectorCollider";
     private const string SQUAD_TAG = "Squad";
     private const string TILE_TAG = "Tile";
-    private const string COMMAND_SHIP_TAG = "CommandShip";
+
     private List<Ship> _ships = new List<Ship>();
     private Team _team;
     private float _shipPower;
     private float _troopPower;
     private bool _isControlled;
-    private Tile _collidingTile;
+    private Tile _currentTile;
+    private bool _inTileRange;
+    private Sector _currentSector;
     private List<Squad> _collidingSquads = new List<Squad>();
     private string _name = "Squad";
 
@@ -25,7 +28,8 @@ public class Squad : MonoBehaviour, ListableObject
 
     public List<Ship> Ships { get { return _ships; } }
     public List<Squad> Colliders { get { return _collidingSquads; } }
-    public Tile ColliderTile { get { return _collidingTile; } }
+    public bool IsInPlanetRange { get { return _inTileRange; } }
+    public Tile Tile { get { return _currentTile; } }
     public int Size { get { return _ships.Count; } }
     public float ShipPower { get { return _shipPower; } }
     public float TroopPower { get { return _troopPower; } }
@@ -40,8 +44,62 @@ public class Squad : MonoBehaviour, ListableObject
     {
         var tile = this.GetComponent<Tile>();
         if (tile != null)
-            _collidingTile = tile;
+            _currentTile = tile;
 	}
+
+    // Update is called once per frame
+    void Update()
+    {
+        CheckSectorTile(_currentSector);
+    }
+
+    private void CheckSectorTile(Sector sector)
+    {
+        if (sector == null)
+            return;
+        
+        var tile = _currentSector.GetTileAtPosition(transform.position);
+
+        if (tile != _currentTile)
+        {
+            if (_currentTile != null)
+            {
+                _collidingSquads.Remove(_currentTile.Squad);
+                _currentTile.Squad.Colliders.Remove(this);
+            }
+            if(tile != null)
+            {
+                if ((transform.position - tile.transform.position).sqrMagnitude <= (tile.Radius * tile.Radius))
+                {
+                    _collidingSquads.Add(tile.Squad);
+                    tile.Squad.Colliders.Add(this);
+                    _inTileRange = true;
+                }
+                else
+                    _inTileRange = false;
+            }
+            _currentTile = tile;
+        }
+        else if(_currentTile != null)
+        {
+            if ((transform.position - tile.transform.position).sqrMagnitude <= (tile.Radius * tile.Radius))
+            {
+                if (!_collidingSquads.Contains(tile.Squad))
+                {
+                    _collidingSquads.Add(tile.Squad);
+                    _inTileRange = true;
+                }
+                if (!tile.Squad.Colliders.Contains(this))
+                    tile.Squad.Colliders.Add(this);
+            }
+            else
+            {
+                _collidingSquads.Remove(tile.Squad);
+                tile.Squad.Colliders.Remove(this);
+                _inTileRange = false;
+            }
+        }
+    }
 
     void OnCollisionEnter(Collision collision)
     {
@@ -49,63 +107,19 @@ public class Squad : MonoBehaviour, ListableObject
         var squad = collision.collider.GetComponent<Squad>();
         if (squad == null)
             return;
-
-        bool enemy = HumanPlayer.Instance.Team != squad.Team;
             
         switch(collision.collider.tag)
         {
             case TILE_TAG:
-                _collidingTile = collision.collider.GetComponent<Tile>();
-
-                if(!_collidingSquads.Contains(squad))
-                    _collidingSquads.Add(squad);
-                if (enemy && _team == HumanPlayer.Instance.Team)
-                {
-                    if(squad.Size > 0)
-                        GameManager.Instance.AddEvent(new BattleEvent(this, squad));
-                    else
-                        GameManager.Instance.AddEvent(new BattleEvent(this, _collidingTile));
-                }
-                else if(_isControlled)
-                {
-                    GUIManager.Instance.SetMainListControls(this, squad, _collidingTile);
-                }
-                break;
-            case COMMAND_SHIP_TAG:
             case SQUAD_TAG:
                 if (!_collidingSquads.Contains(squad))
                     _collidingSquads.Add(squad);
-                if (enemy && _team == HumanPlayer.Instance.Team)
-                {
-                    GameManager.Instance.AddEvent(new BattleEvent(this, squad));
-                }
-                else if(_isControlled)
-                {
-                    GUIManager.Instance.SetMainListControls(this, squad, _collidingTile);
-                }
                 break;
         }
     }
 
     void OnCollisionStay(Collision collision)
     {
-        // the only colliders are squads, so we can simplify stuff
-
-        var squad = collision.collider.GetComponent<Squad>();
-        if (squad == null)
-            return;
-
-        switch (collision.collider.tag)
-        {
-            case TILE_TAG:
-            case COMMAND_SHIP_TAG:
-            case SQUAD_TAG:
-                if (_isControlled)
-                {
-                    GUIManager.Instance.SetMainListControls(this, squad, _collidingTile);
-                }
-                break;
-        }
     }
 
     void OnCollisionExit(Collision collision)
@@ -118,29 +132,42 @@ public class Squad : MonoBehaviour, ListableObject
 
         switch (collision.collider.tag)
         {
-            case TILE_TAG:
-                _collidingTile = null;
-                _collidingSquads.Remove(squad);
-                if (_isControlled)
-                {
-                    GUIManager.Instance.SetMainListControls(this, null, null);
-                }
-                break;
-            case COMMAND_SHIP_TAG:
             case SQUAD_TAG:
                 _collidingSquads.Remove(squad);
-                if (_isControlled)
-                {
-                    GUIManager.Instance.SetMainListControls(this, null, null);
-                }
                 break;
         }
     }
-	   
-	// Update is called once per frame
-	void Update () 
+
+    void OnTriggerEnter(Collider other)
     {
-	}
+        if (other.tag == SECTOR_TAG)
+            CheckSector(other.transform.parent.GetComponent<Sector>());
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        if (other.tag == SECTOR_TAG)
+            CheckSector(other.transform.parent.GetComponent<Sector>());
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+    }
+
+    private void CheckSector(Sector sector)
+    {
+        if (_currentSector == null || (sector.transform.position - this.transform.position).sqrMagnitude
+            < (_currentSector.transform.position - this.transform.position).sqrMagnitude)
+        {
+            if (_currentSector != null)
+                _currentSector.GetComponent<Renderer>().material.color = Color.white;
+            _currentSector = sector;
+            CheckSectorTile(_currentSector);
+            _currentSector.GetComponent<Renderer>().material.color = Color.green;
+            MapManager.Instance.GenerateNewSectors(_currentSector);
+            // GameManager.Instance.Players[this.Team].EndTurn();
+        }
+    }
 
     public void CalculatePower()
     {
@@ -286,7 +313,7 @@ public class Squad : MonoBehaviour, ListableObject
 
     public void Deploy(Structure structure, Tile tile)
     {
-        _collidingTile.Deploy(structure, _team);
+        _currentTile.Deploy(structure, _team);
         _ships.Remove(structure);
     }
 

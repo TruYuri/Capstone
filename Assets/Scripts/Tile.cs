@@ -18,8 +18,8 @@ public class Tile : MonoBehaviour, ListableObject
     private const string PLANET_LARGE_POPULATION_MIN_DETAIL = "PopulationAmountLargeMinimum";
     private const string PLANET_LARGE_POPULATION_MAX_DETAIL = "PopulationAmountLargeMaximum";
 
+    private float _radius;
     private string _name;
-    private Bounds _bounds;
     private string _planetType;
     private int _population;
     private Inhabitance _planetInhabitance;
@@ -32,8 +32,8 @@ public class Tile : MonoBehaviour, ListableObject
     private Squad _squad;
 
     public string Name { get { return _name; } }
-    public Bounds Bounds { get { return _bounds; } }
     public Team Team { get { return _team; } }
+    public float Radius { get { return _radius; } }
     public Structure Structure { get { return _structure; } }
     public float Power { get { return _power; } }
     public Squad Squad { get { return _squad; } }
@@ -48,8 +48,6 @@ public class Tile : MonoBehaviour, ListableObject
 
 	void Start () 
     {
-        _bounds = new UnityEngine.Bounds(this.transform.position, new Vector3(10, 10, 10));
-
         // Determine tile type
         var mapManager = MapManager.Instance;
         // Determine Size, Population, and Resource Amount
@@ -107,8 +105,12 @@ public class Tile : MonoBehaviour, ListableObject
             var system = GetComponent<ParticleSystem>();
             var renderer = system.GetComponent<Renderer>();
 
+            _radius = 1.0f;
             if (_tileSize == TileSize.Small)
+            {
                 system.startSize *= 0.5f;
+                _radius *= 0.5f;
+            }
 
             renderer.material.mainTexture = mapManager.PlanetTextureTable[_planetType].Texture;
             renderer.material.mainTextureOffset = mapManager.PlanetTextureTable[_planetType].TextureOffset;

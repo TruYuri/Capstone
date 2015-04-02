@@ -32,18 +32,17 @@ public class HumanPlayer : Player
         _squads = new List<Squad>();
 
         // create command ship, look at it, control it
-        _commandShip = CreateNewSquad<CommandShip>(Vector3.zero);
-        _commandShip.Ship = _shipDefinitions["Command Ship"].Copy();
-        _commandShip.AddShip(_commandShip.Ship);
+        _commandShip = CreateNewSquad(Vector3.zero);
+        _commandShip.AddShip(_shipDefinitions["Command Ship"]);
 
         /* DEBUG */
-        var squad = CreateNewSquad<Squad>(new Vector3(0, 0, 10.5f));
+        var squad = CreateNewSquad(new Vector3(0, 0, 10.5f));
         squad.AddShip(_shipDefinitions["Base"].Copy());
         squad.AddShip(_shipDefinitions["Gathering Complex"].Copy());
         squad.AddShip(_shipDefinitions["Military Complex"].Copy());
         squad.AddShip(_shipDefinitions["Research Complex"].Copy());
 
-        squad = CreateNewSquad<Squad>(new Vector3(0, 0, 11f));
+        squad = CreateNewSquad(new Vector3(0, 0, 11f));
         squad.AddShip(_shipDefinitions["Fighter"].Copy());
         squad.AddShip(_shipDefinitions["Transport"].Copy());
         squad.AddShip(_shipDefinitions["Heavy Fighter"].Copy());
@@ -55,7 +54,7 @@ public class HumanPlayer : Player
         Camera.main.transform.position = _commandShip.transform.position + CAMERA_OFFSET;
         Camera.main.transform.LookAt(_commandShip.transform);
         GUIManager.Instance.SquadSelected(_commandShip);
-        GUIManager.Instance.SetMainListControls(_controlledSquad, null, null);
+        GUIManager.Instance.SetSquadControls(_controlledSquad);
     }
 
     void Update()
@@ -68,16 +67,15 @@ public class HumanPlayer : Player
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit, 1 << 9)) // check for squads
             {
-                switch (hit.collider.tag)
-                {
-                    case TILE_TAG:
-                    case SQUAD_TAG:
-                        Control(hit.collider.gameObject);
-                        ReloadGameplayUI();
-                        break;
-                }
+                Control(hit.collider.gameObject);
+                ReloadGameplayUI();
+            }
+            else if (Physics.Raycast(ray, out hit, 1 << 8)) // check for planets
+            {
+                Control(hit.collider.gameObject);
+                ReloadGameplayUI();
             }
         }
 
@@ -163,6 +161,8 @@ public class HumanPlayer : Player
                 }
             }
         }
+
+        GUIManager.Instance.SetSquadControls(_controlledSquad);
     }
 
     private void UpdateCommandShip()

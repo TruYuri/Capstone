@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
     protected Team _team;
     protected Squad _controlledSquad;
     protected Tile _controlledTile;
-    protected CommandShip _commandShip;
+    protected Squad _commandShip;
     protected Dictionary<string, Ship> _shipDefinitions;
     protected Dictionary<string, Research> _shipResearchMap;
     protected List<Squad> _squads;
@@ -63,7 +63,7 @@ public class Player : MonoBehaviour
     public void CreateDeployEvent(int shipIndex)
     {
         // calculate turns - this is gonna suck
-        GameManager.Instance.AddEvent(new DeployEvent(1, _controlledSquad.Ships[shipIndex] as Structure, _controlledSquad, _controlledSquad.ColliderTile));
+        GameManager.Instance.AddEvent(new DeployEvent(1, _controlledSquad.Ships[shipIndex] as Structure, _controlledSquad, _controlledSquad.Tile));
         EndTurn();
     }
 
@@ -143,22 +143,21 @@ public class Player : MonoBehaviour
         }
     }
 
-    public T CreateNewSquad<T>(Squad fromSquad) where T : Squad
+    public Squad CreateNewSquad(Squad fromSquad)
     {
         var val = GameManager.Generator.Next(2);
         var dist = fromSquad.GetComponent<SphereCollider>().radius / 2.0f;
         var offset = val == 0 ? new Vector3(dist, 0, 0) : new Vector3(0, 0, dist);
-        var squad = CreateNewSquad<T>(fromSquad.transform.position + offset);
+        var squad = CreateNewSquad(fromSquad.transform.position + offset);
         squad.Colliders.Add(squad);
         return squad;
     }
 
-    public T CreateNewSquad<T>(Vector3 position) where T : Squad
+    public Squad CreateNewSquad(Vector3 position)
     {
         var squadobj = Resources.Load<GameObject>(SQUAD_PREFAB);
         var squad = Instantiate(squadobj, position, Quaternion.identity) as GameObject;
-        squad.AddComponent<T>();
-        var component = squad.GetComponent<T>();
+        var component = squad.GetComponent<Squad>();
         component.Team = _team;
         _squads.Add(component);
         return component;
