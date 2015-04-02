@@ -74,23 +74,41 @@ public class GUIManager : MonoBehaviour
     //
     // These functions update main UI when the object is selected
     //
-    public void SetMainListControls(Squad squad, Squad squad2, Tile tile)
+    public void SetSquadControls(Squad squad)
     {
+        if (_interface["SquadMenu"].gameObject.activeInHierarchy == false)
+            return;
+
         var manage = _interface["Manage"].gameObject.GetComponent<Button>();
         var deploy = _interface["Deploy"].gameObject.GetComponent<Button>();
+        var tile = squad.Tile;
 
         AutoSelectIndex<Ship>("MainShipList", squad.Ships);
+        var index = _selectedIndices["MainShipList"];
+
+        // note: i fucking hate this bit
         if (HumanPlayer.Instance.Team == squad.Team)
         {
-            var index = _selectedIndices["MainShipList"];
-            manage.interactable = squad.Size > 0 || squad2 != null || (squad2 != null && tile.Team == squad.Team);
+            manage.interactable = squad.Size > 0 || squad.Colliders.Count > 0;
 
-            var squadTile = squad.GetComponent<Tile>();
-            // ground deploy
-            deploy.interactable = (index != -1 && (squad.Ships[index].ShipProperties & ShipProperties.GroundStructure) > 0 && 
-                tile != null && tile.Structure == null) || (squadTile != null && squadTile.Structure != null);
-
-            // space deploy
+            if ((squad.Ships[index].ShipProperties & ShipProperties.Structure) > 0)
+            {
+                if (squad.IsInPlanetRange && (squad.Ships[index].ShipProperties & ShipProperties.GroundStructure) > 0)
+                {
+                    if (tile.Structure == null && tile.Team == squad.Team)
+                        deploy.interactable = true;
+                    else
+                        deploy.interactable = false;
+                }
+                else if (tile == null && (squad.Ships[index].ShipProperties & ShipProperties.SpaceStructure) > 0)
+                {
+                    deploy.interactable = true;
+                }
+                else
+                    deploy.interactable = false;
+            }
+            else
+                deploy.interactable = false;
         }
         else
         {
@@ -185,7 +203,7 @@ public class GUIManager : MonoBehaviour
         _interface["DeployText"].GetComponent<Text>().text = "Deploy";
         _interface["Deploy"].GetComponent<CustomUI>().data = "Deploy";
         SetUIElements(true, false, false, false, false, false);
-        SetMainListControls(squad, null, null);
+        SetSquadControls(squad);
     }
 
     public void TileSelected(Tile tile, int playerStations, Dictionary<string, Ship> defs)
@@ -219,7 +237,7 @@ public class GUIManager : MonoBehaviour
         }
 
         SetUIElements(true, false, false, false, true, false);
-        SetMainListControls(squad, null, tile);
+        SetSquadControls(squad);
     }
 
     public void Build(string data)
@@ -317,7 +335,7 @@ public class GUIManager : MonoBehaviour
 
     public void NewSquad()
     {
-        var squad = HumanPlayer.Instance.CreateNewSquad<Squad>(HumanPlayer.Instance.Squad);
+        var squad = HumanPlayer.Instance.CreateNewSquad(HumanPlayer.Instance.Squad);
         var listing = (ListableObject)squad;
 
         listing.CreateListEntry("AltSquadList", HumanPlayer.Instance.Squad.Colliders.Count - 1, true).transform.SetParent(_interface["AltSquadList"].transform);
