@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System;
+using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -7,6 +9,7 @@ public class GameManager : MonoBehaviour
 {
     public static System.Random Generator = new System.Random();
     private const string HUMAN_PLAYER_PREFAB = "HumanPlayer";
+    private const string AI_PLAYER_PREFAB = "AIPlayer";
     private const string PLAYER_PREFAB = "Player";
     private const string INI_PATH = "/Resources/Ships.ini";
     private const string SHIP_ICONS_PATH = "ShipIcons/";
@@ -35,13 +38,16 @@ public class GameManager : MonoBehaviour
     private Dictionary<string, Ship> _shipDefinitions;
     private Texture2D _shipTextureAtlas;
     private Dictionary<Team, Player> _players;
+    private bool _gameStarted;
 
     public static GameManager Instance 
     { 
         get 
         {
             if (_instance == null)
+            {
                 _instance = GameObject.FindObjectOfType<GameManager>();
+            }
             return _instance; 
         }
     }
@@ -54,16 +60,18 @@ public class GameManager : MonoBehaviour
 
     public Dictionary<Team, Player> Players { get { return _players; } }
 
-	// Use this for initialization
-	void Start () 
+    void Awake()
     {
-	    // create player
-        _players = new Dictionary<Team, Player>();
+        _instance = this;
         _eventQueue = new Queue<GameEvent>();
         _nextEventQueue = new Queue<GameEvent>();
-        var playerObj = Resources.Load<GameObject>(HUMAN_PLAYER_PREFAB);
-        _players.Add(Team.Union, (Instantiate(playerObj) as GameObject).GetComponent<HumanPlayer>());
-        _instance = this;
+        _players = new Dictionary<Team, Player>()
+        {
+            { Team.Union, null },
+            { Team.Kharkyr, null },
+            { Team.Plinthen, null },
+            { Team.Indigineous, null },
+        };
 
         _shipDefinitions = new Dictionary<string, Ship>();
         var parser = new INIParser(Application.dataPath + INI_PATH);
@@ -124,18 +132,25 @@ public class GameManager : MonoBehaviour
         parser.CloseINI();
 
         // Research.ini
-
-        /*
-        // debug
-        var defs = GenerateShipDefs();
-        var enemy = Instantiate(Resources.Load<GameObject>("Squad"), new Vector3(0, 0, -10), Quaternion.identity) as GameObject;
-        var squad = enemy.GetComponent<Squad>();
-        squad.AddShip(defs["Fighter"]);
-        squad.AddShip(defs["Transport"]);
-        squad.AddShip(defs["Heavy Fighter"]);
-        squad.AddShip(defs["Behemoth"]);
-        squad.AddShip(defs["Command Ship"]);*/
+    }
+	// Use this for initialization
+	void Start () 
+    {
 	}
+
+    public void AddHumanPlayer(Team team)
+    {
+        var playerObj = Resources.Load<GameObject>(HUMAN_PLAYER_PREFAB);
+        _players[team] = (Instantiate(playerObj) as GameObject).GetComponent<HumanPlayer>();
+        _players[team].Init(team);
+    }
+
+    public void AddAIPlayer(Team team)
+    {
+        var playerObj = Resources.Load<GameObject>(AI_PLAYER_PREFAB);
+        _players[team] = (Instantiate(playerObj) as GameObject).GetComponent<Player>();
+        _players[team].Init(team);
+    }
 
     public Dictionary<string, Ship> GenerateShipDefs()
     {
@@ -173,6 +188,24 @@ public class GameManager : MonoBehaviour
 	
 	void Update () 
     {
+        if (!_gameStarted)
+        {
+            AddHumanPlayer(Team.Union);
+            AddAIPlayer(Team.Kharkyr);
+            AddAIPlayer(Team.Plinthen);
+            AddAIPlayer(Team.Indigineous);
+
+            // debug
+            var squad = _players[Team.Kharkyr].CreateNewSquad(new Vector3(0, 0, -10));
+            var defs = GenerateShipDefs();
+            squad.AddShip(defs["Fighter"]);
+            squad.AddShip(defs["Transport"]);
+            squad.AddShip(defs["Heavy Fighter"]);
+            squad.AddShip(defs["Behemoth"]);
+            squad.AddShip(defs["Command Ship"]);
+            _gameStarted = true;
+        }
+
         if(!_paused)
             NextEvent();
 	}
