@@ -65,6 +65,11 @@ public class Squad : MonoBehaviour, ListableObject
             case SQUAD_TAG:
                 if (!_collidingSquads.Contains(squad))
                     _collidingSquads.Add(squad);
+
+                if (_team != squad._team)
+                {
+                    GameManager.Instance.AddEvent(new BattleEvent(this, squad));
+                }
                 break;
         }
     }
@@ -115,7 +120,7 @@ public class Squad : MonoBehaviour, ListableObject
             _currentSector = sector;
             CheckSectorTile(_currentSector);
             _currentSector.GetComponent<Renderer>().material.color = Color.green;
-            MapManager.Instance.GenerateNewSectors(_currentSector);
+            _currentSector.GenerateNewSectors();
             // GameManager.Instance.Players[this.Team].EndTurn();
         }
     }
@@ -206,15 +211,27 @@ public class Squad : MonoBehaviour, ListableObject
         _ships.Remove(ship);
     }
 
-    public Team Combat(Squad squad)
+    public float GenerateWinChance(Squad enemy)
     {
         var power = CalculateShipPower();
-        var enemyPower = squad.CalculateShipPower();
+        var enemyPower = enemy.CalculateShipPower();
 
-        float winC = (power - enemyPower) / 100.0f * 0.5f + 0.5f;
+        return (power - enemyPower) / 100.0f * 0.5f + 0.5f;
+    }
+
+    public float GenerateWinChance(Tile enemy)
+    {
+        var power = CalculateTroopPower();
+        var enemyPower = enemy.CalculateDefensivePower();
+
+        return (power - enemyPower) / 100.0f * 0.5f + 0.5f;
+    }
+
+    public Team Combat(Squad enemy, float winChance)
+    {
         float winP = (float)GameManager.Generator.NextDouble();
 
-        var winner = (winP < winC ? this : squad);
+        var winner = (winP < winChance ? this : enemy);
 
         float hull = 0;
         foreach (var ship in _ships)
@@ -222,7 +239,7 @@ public class Squad : MonoBehaviour, ListableObject
             hull += ship.Hull;
         }
 
-        float damage = Mathf.Floor(hull * (1.0f - winC) * ((float)GameManager.Generator.NextDouble() * (1.25f - 0.75f) + 0.75f));
+        float damage = Mathf.Floor(hull * (1.0f - winChance) * ((float)GameManager.Generator.NextDouble() * (1.25f - 0.75f) + 0.75f));
 
         while(damage > 0.0f && _ships.Count > 0)
         {
@@ -244,15 +261,11 @@ public class Squad : MonoBehaviour, ListableObject
         return winner.Team;
     }
 
-    public Team Combat(Tile tile) // planet combat
+    public Team Combat(Tile enemy, float winChance) // planet combat
     {
-        var power = CalculateTroopPower();
-        var enemyPower = tile.CalculateDefensivePower();
-
-        float winC = (power - enemyPower) / 100.0f * 0.5f + 0.5f;
         float winP = (float)GameManager.Generator.NextDouble();
 
-        var winner = winP < winC;
+        var winner = winP < winChance;
 
         if (winner) // remove random soldiers from random ships in the fleet
         {
@@ -262,7 +275,7 @@ public class Squad : MonoBehaviour, ListableObject
                 nTroops += ship.Population;
             }
 
-            float damage = Mathf.Floor(nTroops * (1.0f - winC) * ((float)GameManager.Generator.NextDouble() * (1.25f - 0.75f) + 0.75f));
+            float damage = Mathf.Floor(nTroops * (1.0f - winChance) * ((float)GameManager.Generator.NextDouble() * (1.25f - 0.75f) + 0.75f));
 
             while (damage >= 1.0f && nTroops > 0)
             {
@@ -303,8 +316,81 @@ public class Squad : MonoBehaviour, ListableObject
 
             return _team;
         }
+        else
+        {
+            int primPop = 0, indPop = 0, spacePop = 0;
 
-        return tile.Team;
+            // tile won
+            if(enemy.Team == Team.Indigineous)
+            {
+                switch(enemy.PopulationType)
+                {
+                    case Inhabitance.Primitive:
+                        primPop = enemy.Population;
+                        break;
+                    case Inhabitance.Industrial:
+                        indPop = enemy.Population;
+                        break;
+                    case Inhabitance.SpaceAge:
+                        spacePop = enemy.Population;
+                        break;
+                }
+            }
+            else
+            {
+                primPop = enemy.Structure.PrimitivePopulation;
+                indPop = enemy.Structure.IndustrialPopulation;
+                spacePop = enemy.Structure.SpaceAgePopulation;
+            }
+
+            int nTroops = primPop + indPop + spacePop;
+            float damage = Mathf.Floor(nTroops * (1.0f - winChance) * ((float)GameManager.Generator.NextDouble() * (1.25f - 0.75f) + 0.75f));
+            while (damage >= 1.0f && nTroops > 0)
+            {
+                var randSoldier = GameManager.Generator.Next(0, nTroops);
+                damage -= 1.0f;
+                float saveChance = (float)GameManager.Generator.NextDouble();
+                if(randSoldier < primPop)
+                {
+                    if(saveChance >= 0.2f)
+                    {
+                        nTroops--;
+                        primPop--;
+                    }
+                }
+                else if(randSoldier < indPop)
+                {
+                    if (saveChance >= 0.1f)
+                    {
+                        nTroops--;
+                        indPop--;
+                    }
+                }
+                else
+                {
+                    nTroops--;
+                    spacePop--;
+                }
+            }
+
+            if (enemy.Team == Team.Indigineous)
+            {
+                enemy.Population = nTroops;
+                if (nTroops == 0)
+                    enemy.Relinquish();
+            }
+            else
+            {
+                enemy.Structure.PrimitivePopulation = primPop;
+                enemy.Structure.IndustrialPopulation = indPop;
+                enemy.Structure.SpaceAgePopulation = spacePop;
+                enemy.Structure.Population = nTroops;
+            }
+
+            enemy.Structure.Population = nTroops;
+        }
+
+        return enemy.Team;
     }
 
     public Tile Deploy(Structure structure, Tile tile)

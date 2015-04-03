@@ -32,6 +32,9 @@ public class BattleEvent : GameEvent
             HumanPlayer.Instance.PrepareBattleConditions(_squad1, _squad2);
         }
         else // else let any AI duke it out
-            GameManager.Instance.Players[_squad1.Team].Battle(_squad1, _squad2);
+        {
+            var WC = GameManager.Instance.Players[_squad1.Team].PrepareBattleConditions(_squad1, _squad2);
+            GameManager.Instance.Players[_squad1.Team].Battle(WC, _squad1, _squad2);
+        }
     }
 }

@@ -19,23 +19,16 @@ public class HumanPlayer : Player
     public Squad Squad { get { return _controlledSquad; } }
     public Tile Tile { get { return _controlledTile; } }
 
-    private Squad _battleSquad1;
-    private Squad _battleSquad2;
-
-    void Start()
+    public override void Init(Team team)
     {
-        _instance = this;
-        _team = Team.Union;
-        _shipDefinitions = GameManager.Instance.GenerateShipDefs();
-        _militaryTree = GameManager.Instance.GenerateMilitaryTree(_shipDefinitions);
-        _scienceTree = GameManager.Instance.GenerateScienceTree(_shipDefinitions);
-        _squads = new List<Squad>();
+        base.Init(team);
 
-        // create command ship, look at it, control it
+        _instance = this;
+
+        // create command ship, look at it, control it     
         _commandShip = CreateNewSquad(Vector3.zero);
         _commandShip.AddShip(_shipDefinitions["Command Ship"]);
 
-        /* DEBUG */
         var squad = CreateNewSquad(new Vector3(0, 0, 10.5f));
         squad.AddShip(_shipDefinitions["Base"].Copy());
         squad.AddShip(_shipDefinitions["Gathering Complex"].Copy());
@@ -54,6 +47,10 @@ public class HumanPlayer : Player
         Camera.main.transform.LookAt(_commandShip.transform);
         GUIManager.Instance.SquadSelected(_commandShip);
         GUIManager.Instance.SetSquadControls(_controlledSquad);
+    }
+
+    void Start()
+    {
     }
 
     void Update()
@@ -190,17 +187,17 @@ public class HumanPlayer : Player
         transform.position = _controlledSquad.transform.position + _currentCameraDistance;
     }
 
-    public void PrepareBattleConditions(Squad squad1, Squad squad2)
+    public override float PrepareBattleConditions(Squad squad1, Squad squad2)
     {
-        _battleSquad1 = squad1;
-        _battleSquad2 = squad2;
-        Control(squad1.Team == _team ? squad1.gameObject : squad2.gameObject);
-        GUIManager.Instance.ConfigureBattleScreen(squad1, squad2);
+        _winChance = base.PrepareBattleConditions(squad1, squad2);
+        Control(_playerSquad.gameObject);
+        GUIManager.Instance.ConfigureBattleScreen(_winChance, _playerSquad, _enemySquad);
+        return _winChance;
     }
 
-    public override Squad Battle(Squad squad1, Squad squad2)
+    public override Squad Battle(float playerChance, Squad player, Squad enemy)
     {
-        return base.Battle(_battleSquad1, _battleSquad2);
+        return base.Battle(_winChance, _playerSquad, _enemySquad);
     }
 }
 

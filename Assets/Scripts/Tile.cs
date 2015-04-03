@@ -34,6 +34,12 @@ public class Tile : MonoBehaviour, ListableObject
     public float Radius { get { return _radius; } }
     public Structure Structure { get { return _structure; } }
     public Squad Squad { get { return _squad; } }
+    public int Population 
+    { 
+        get { return _population; }
+        set { _population = value; }
+    }
+    public Inhabitance PopulationType {  get { return _planetInhabitance; } }
 
 	// Use this for initialization
     public void Init(string type, string name, Sector sector)
