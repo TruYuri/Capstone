@@ -126,7 +126,10 @@ public class GUIManager : MonoBehaviour
         {
             case "MainShipList":
             case "AltShipList":
+                UpdateTransferInterface(false, true, false);
+                break;
             case "SelectedShipList":
+                UpdateTransferInterface(false, false, true);
                 break;
             case "AltSquadList":
                 UpdateTransferInterface(false, true, false);
@@ -168,15 +171,13 @@ public class GUIManager : MonoBehaviour
             if(entry != null)
                 entry.transform.SetParent(_interface[indexName].transform);
         }
-
-        AutoSelectIndex<T>(indexName, source);
     }
 
     private void AutoSelectIndex<T>(string name, List<T> list)
     {
         if (list.Count == 0)
             _selectedIndices[name] = -1;
-        else if (_selectedIndices[name] > list.Count)
+        else if (_selectedIndices[name] >= list.Count)
             _selectedIndices[name] = list.Count - 1;
         else if (_selectedIndices[name] < 0)
             _selectedIndices[name] = 0;
@@ -244,30 +245,42 @@ public class GUIManager : MonoBehaviour
 
     private void UpdateTransferInterface(bool squads, bool squadShips, bool ships)
     {
+        var squad = HumanPlayer.Instance.Squad;
+        AutoSelectIndex<Squad>("AltSquadList", squad.Colliders);
+        if (_selectedIndices["AltSquadList"] != -1)
+            AutoSelectIndex<Ship>("AltShipList", squad.Colliders[_selectedIndices["AltSquadList"]].Ships);
+        AutoSelectIndex<Ship>("SelectedShipList", squad.Ships);
+
         if(squads)
-            PopulateList<Squad>(HumanPlayer.Instance.Squad.Colliders, "AltSquadList", ListingType.Info, true);
-        if (squadShips && _selectedIndices["AltSquadList"] > -1 && _selectedIndices["AltSquadList"] < HumanPlayer.Instance.Squad.Colliders.Count)
-           PopulateList<Ship>(HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]].Ships, "AltShipList", ListingType.Info, true);
+            PopulateList<Squad>(squad.Colliders, "AltSquadList", ListingType.Info, true);
+        if (squadShips && _selectedIndices["AltSquadList"] > -1 && _selectedIndices["AltSquadList"] < squad.Colliders.Count)
+            PopulateList<Ship>(squad.Colliders[_selectedIndices["AltSquadList"]].Ships, "AltShipList", ListingType.Info, true);
         if(ships)
-            PopulateList<Ship>(HumanPlayer.Instance.Squad.Ships, "SelectedShipList", ListingType.Info, true);
+            PopulateList<Ship>(squad.Ships, "SelectedShipList", ListingType.Info, true);
 
         var right = _interface["Right"].GetComponent<Button>();
         var dright = _interface["DoubleRight"].GetComponent<Button>();
         var left = _interface["Left"].GetComponent<Button>();
         var dleft = _interface["DoubleLeft"].GetComponent<Button>();
 
-        if (_selectedIndices["AltSquadList"] == -1)
+        var altsquad = _selectedIndices["AltSquadList"];
+        var altships = _selectedIndices["AltShipList"];
+        var selected = _selectedIndices["SelectedShipList"];
+
+        if (altsquad == -1)
             right.interactable = left.interactable = dright.interactable = dleft.interactable = false;
         else
         {
-            right.interactable = _selectedIndices["AltShipList"] == -1 ? false : true;
-            left.interactable = _selectedIndices["SelectedShipList"] == -1 ? false : true;
-            dright.interactable = _selectedIndices["AltShipList"] == -1 ? false : true;
-            dleft.interactable = _selectedIndices["SelectedShipList"] == -1 ? false : true;
+            right.interactable = altships != -1 &&
+                (HumanPlayer.Instance.Squad.Colliders[altsquad].Ships[altships].ShipProperties & ShipProperties.Untransferable) == 0 ? true : false;
+            left.interactable = selected != -1  &&
+                (HumanPlayer.Instance.Squad.Ships[selected].ShipProperties & ShipProperties.Untransferable) == 0 ? true : false;
+            dright.interactable = altships == -1 ? false : true;
+            dleft.interactable = selected == -1 ? false : true;
         }
     }
 
-    public Ship Transfer(Squad from, string fromName, Squad to)
+    public Ship Transfer(Squad from, string fromName, Squad to, string toName)
     {
         var fromIndex = _selectedIndices[fromName];
         Ship ship = from.RemoveShip(fromIndex);
@@ -276,16 +289,16 @@ public class GUIManager : MonoBehaviour
             return ship;
 
         to.AddShip(ship);
-        AutoSelectIndex<Ship>(fromName, from.Ships);
         return null;
     }
 
-    public void TransferAll(Squad from, string fromName, Squad to)
+    public void TransferAll(Squad from, string fromName, Squad to, string toName)
     {
         var untransferables = new List<Ship>();
         while(from.Ships.Count > 0)
         {
-            var ship = Transfer(from, fromName, to);
+            AutoSelectIndex<Ship>(fromName, from.Ships);
+            var ship = Transfer(from, fromName, to, toName);
             if (ship != null)
                 untransferables.Add(ship);
         }
@@ -297,7 +310,7 @@ public class GUIManager : MonoBehaviour
     {
         var index = _selectedIndices["AltSquadList"];
         var squad = HumanPlayer.Instance.Squad.Colliders[index];
-        var ship = Transfer(squad, "AltShipList", HumanPlayer.Instance.Squad);
+        var ship = Transfer(squad, "AltShipList", HumanPlayer.Instance.Squad, "SelectedShipList");
         if (ship != null) squad.AddShip(ship, index);
         UpdateTransferInterface(false, true, true);
     }
@@ -306,20 +319,20 @@ public class GUIManager : MonoBehaviour
     {
         var index = _selectedIndices["SelectedShipList"];
         var squad = HumanPlayer.Instance.Squad;
-        var ship = Transfer(squad, "SelectedShipList", HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]]);
+        var ship = Transfer(squad, "SelectedShipList", HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]], "AltShipList");
         if (ship != null) squad.AddShip(ship, index);
         UpdateTransferInterface(false, true, true);
     }
 
     public void TransferAllToControlledSquad()
     {
-        TransferAll(HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]], "AltShipList", HumanPlayer.Instance.Squad);
+        TransferAll(HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]], "AltShipList", HumanPlayer.Instance.Squad, "SelectedShipList");
         UpdateTransferInterface(false, true, true);
     }
 
     public void TransferAllToSelectedSquad()
     {
-        TransferAll(HumanPlayer.Instance.Squad, "SelectedShipList", HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]]);
+        TransferAll(HumanPlayer.Instance.Squad, "SelectedShipList", HumanPlayer.Instance.Squad.Colliders[_selectedIndices["AltSquadList"]], "AltShipList");
         UpdateTransferInterface(false, true, true);
     }
 
@@ -329,7 +342,7 @@ public class GUIManager : MonoBehaviour
         var listing = (ListableObject)squad;
 
         listing.CreateListEntry("AltSquadList", HumanPlayer.Instance.Squad.Colliders.Count - 1, true).transform.SetParent(_interface["AltSquadList"].transform);
-        AutoSelectIndex<Squad>("AltSquadList", HumanPlayer.Instance.Squad.Colliders);
+        UpdateTransferInterface(true, true, false);
     }
 
     public void ExitManage()

@@ -27,9 +27,11 @@ public class UndeployEvent : GameEvent
             var squad = GameManager.Instance.Players[_tile.Team].CreateNewSquad(_tile.transform.position);
             foreach (var ship in _tile.Squad.Ships)
                 squad.AddShip(ship);
-            if(HumanPlayer.Instance.Squad == _tile.Squad)
+            if (HumanPlayer.Instance.Squad == _tile.Squad)
                 HumanPlayer.Instance.Control(squad.gameObject);
-            GameObject.DestroyImmediate(_tile.gameObject);
+            GameManager.Instance.Players[_tile.Team].DeleteSquad(_tile.Squad);
         }
+        else
+            GameManager.Instance.Players[_tile.Team].Squads.Remove(_tile.Squad);
     }
 }

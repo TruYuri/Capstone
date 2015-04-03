@@ -22,7 +22,13 @@ public class DeployEvent : GameEvent
         if (_remainingTurns != 0)
             return;
 
-        _squad.Deploy(_structure, _tile);
-        GameManager.Instance.Players[_squad.Team].CleanSquad(_squad);
+        _tile = _squad.Deploy(_structure, _tile);
+
+        if(_squad.Ships.Count == 0 && _tile.Squad != _squad)
+        {
+            if (HumanPlayer.Instance.Squad == _squad)
+                HumanPlayer.Instance.Control(_tile.gameObject);
+            GameManager.Instance.Players[_squad.Team].DeleteSquad(_squad);
+        }
     }
 }

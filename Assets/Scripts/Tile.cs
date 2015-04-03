@@ -41,6 +41,7 @@ public class Tile : MonoBehaviour, ListableObject
         _name = name;
         _planetType = type;
         _squad = this.GetComponent<Squad>();
+        _squad.Init();
         this.transform.SetParent(sector.transform);
     }
 
@@ -119,7 +120,6 @@ public class Tile : MonoBehaviour, ListableObject
             renderer.enabled = true;
 
             this.GetComponent<SphereCollider>().enabled = true;
-            _squad = this.GetComponent<Squad>();
 
             if (_population > 0)
             {
@@ -147,12 +147,17 @@ public class Tile : MonoBehaviour, ListableObject
         }
 	}
 
+    public void Relinquish()
+    {
+        GameManager.Instance.Players[_team].Squads.Remove(_squad);
+        _team = Team.Uninhabited;
+    }
+
     public void Claim(Team team)
     {
         _team = team;
-
-        if(_squad != null)
-            _squad.Team = _team;
+        GameManager.Instance.Players[team].Squads.Add(_squad);
+        _squad.Team = _team;
     }
 
     public string Undeploy(bool destroy)

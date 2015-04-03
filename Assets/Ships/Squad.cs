@@ -14,6 +14,7 @@ public class Squad : MonoBehaviour, ListableObject
     private Team _team;
     private Tile _currentTile;
     private bool _inTileRange;
+    private bool _permanentSquad;
     private Sector _currentSector;
     private List<Squad> _collidingSquads = new List<Squad>();
     private string _name = "Squad";
@@ -28,57 +29,27 @@ public class Squad : MonoBehaviour, ListableObject
     public List<Squad> Colliders { get { return _collidingSquads; } }
     public bool IsInPlanetRange { get { return _inTileRange; } }
     public Tile Tile { get { return _currentTile; } }
-    public Sector Sector { get { return _currentSector; } }
 
 	// Use this for initialization
 	void Start () 
     {
+	}
+
+    public void Init()
+    {
         var tile = this.GetComponent<Tile>();
         if (tile != null)
+        {
             _currentTile = tile;
-	}
+            _inTileRange = _permanentSquad = true;
+        }
+    }
 
     // Update is called once per frame
     void Update()
     {
-        if(this.GetComponent<Tile>() == null)
+        if(!_permanentSquad)
             CheckSectorTile(_currentSector);
-    }
-
-    private void CheckSectorTile(Sector sector)
-    {
-        if (sector == null)
-            return;
-        
-        var tile = _currentSector.GetTileAtPosition(transform.position);
-
-        if(tile != _currentTile && _currentTile != null)
-        {
-            _collidingSquads.Remove(_currentTile.Squad);
-            _currentTile.Squad.Colliders.Remove(this);
-        }
-
-        _currentTile = tile;
-        if (_currentTile == null)
-            return;
-
-        if ((transform.position - _currentTile.transform.position).sqrMagnitude <= 
-            (_currentTile.Radius * _currentTile.Radius))
-        {
-            if (!_collidingSquads.Contains(_currentTile.Squad))
-            {
-                _collidingSquads.Add(_currentTile.Squad);
-                _currentTile.Squad.Colliders.Add(this);
-                _inTileRange = true;
-            }
-        }
-        else
-        {
-            _collidingSquads.Remove(_currentTile.Squad);
-            _currentTile.Squad.Colliders.Remove(this);
-            _inTileRange = false;
-        }
-
     }
 
     void OnCollisionEnter(Collision collision)
@@ -147,6 +118,42 @@ public class Squad : MonoBehaviour, ListableObject
             MapManager.Instance.GenerateNewSectors(_currentSector);
             // GameManager.Instance.Players[this.Team].EndTurn();
         }
+    }
+
+    private void CheckSectorTile(Sector sector)
+    {
+        if (sector == null)
+            return;
+
+        var tile = _currentSector.GetTileAtPosition(transform.position);
+
+        if (tile != _currentTile && _currentTile != null)
+        {
+            _collidingSquads.Remove(_currentTile.Squad);
+            _currentTile.Squad.Colliders.Remove(this);
+        }
+
+        _currentTile = tile;
+        if (_currentTile == null)
+            return;
+
+        if ((transform.position - _currentTile.transform.position).sqrMagnitude <=
+            (_currentTile.Radius * _currentTile.Radius))
+        {
+            if (!_collidingSquads.Contains(_currentTile.Squad))
+            {
+                _collidingSquads.Add(_currentTile.Squad);
+                _currentTile.Squad.Colliders.Add(this);
+                _inTileRange = true;
+            }
+        }
+        else
+        {
+            _collidingSquads.Remove(_currentTile.Squad);
+            _currentTile.Squad.Colliders.Remove(this);
+            _inTileRange = false;
+        }
+
     }
 
     public float CalculateTroopPower()
@@ -300,18 +307,20 @@ public class Squad : MonoBehaviour, ListableObject
         return tile.Team;
     }
 
-    public void Deploy(Structure structure, Tile tile)
+    public Tile Deploy(Structure structure, Tile tile)
     {
-        if(_currentTile != null) // planetary deploy
+        _currentTile = tile;
+        if (_currentTile != null) // planetary deploy
             _currentTile.Deploy(structure, ShipProperties.GroundStructure, _team);
         else // space deploy
         {
             var type = Regex.Replace(structure.Name, @"\s+", "");
-            _currentTile = _currentSector.CreateTileAtPosition("["+type+"]", transform.position);
+            _currentTile = _currentSector.CreateTileAtPosition("[" + type + "]", transform.position);
             _currentTile.Deploy(structure, ShipProperties.SpaceStructure, _team);
         }
 
         _ships.Remove(structure);
+        return _currentTile;
     }
 
     GameObject ListableObject.CreateListEntry(string listName, int index, System.Object data)
@@ -347,9 +356,7 @@ public class Squad : MonoBehaviour, ListableObject
         foreach (var squad in emptySquads)
         {
             squads.Remove(squad);
-            if(squad != null && squad.gameObject != null)
-                GameObject.DestroyImmediate(squad.gameObject);
-            player.Squads.Remove(squad);
+            player.DeleteSquad(squad);
         }
     }
 }

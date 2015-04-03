@@ -106,34 +106,9 @@ public class HumanPlayer : Player
         }
     }
 
-    public override void TurnEnd()
-    {
-        base.TurnEnd();
-        ReloadGameplayUI();
-    }
-
-    public void ReloadGameplayUI()
-    {
-        switch(_controlledSquad.tag)
-        {
-            case TILE_TAG:
-                GUIManager.Instance.TileSelected(_controlledTile, _numResearchStations, _shipDefinitions);
-                break;
-            case SQUAD_TAG:
-            case COMMAND_SHIP_TAG:
-                GUIManager.Instance.SquadSelected(_controlledSquad);
-                break;
-        }
-    }
-
-    public override void Control(GameObject gameObject)
-    {
-        base.Control(gameObject);
-        transform.position = _controlledSquad.transform.position + _currentCameraDistance;
-    }
-
     private void UpdateSelectedPlanet()
     {
+        GUIManager.Instance.SetSquadControls(_controlledSquad);
     }
 
     private void UpdateSquad()
@@ -187,6 +162,32 @@ public class HumanPlayer : Player
         }
 
         UpdateSquad();
+    }
+
+    public override void TurnEnd()
+    {
+        base.TurnEnd();
+        ReloadGameplayUI();
+    }
+
+    public void ReloadGameplayUI()
+    {
+        switch(_controlledSquad.tag)
+        {
+            case TILE_TAG:
+                GUIManager.Instance.TileSelected(_controlledTile, _numResearchStations, _shipDefinitions);
+                break;
+            case SQUAD_TAG:
+            case COMMAND_SHIP_TAG:
+                GUIManager.Instance.SquadSelected(_controlledSquad);
+                break;
+        }
+    }
+
+    public override void Control(GameObject gameObject)
+    {
+        base.Control(gameObject);
+        transform.position = _controlledSquad.transform.position + _currentCameraDistance;
     }
 
     public void PrepareBattleConditions(Squad squad1, Squad squad2)

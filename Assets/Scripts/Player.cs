@@ -116,12 +116,14 @@ public class Player : MonoBehaviour
         // do nothing / undeploy as necessary
         if (winner == _team && et != null)
         {
+            et.Relinquish();
             et.Undeploy(true);
             et.Claim(_team);
             win = player;
         }
         else if (winner == enemy.Team && pt != null)
         {
+            pt.Relinquish();
             pt.Undeploy(true);
             pt.Claim(enemy.Team);
             win = enemy;
@@ -139,10 +141,22 @@ public class Player : MonoBehaviour
                 Squad.CleanSquadsFromList(this, sq.Colliders);
         Squad.CleanSquadsFromList(this, squad.Colliders);
 
-        if(_controlledSquad == null || _controlledSquad.gameObject == null)
+        if(_controlledSquad == null || _controlledSquad.gameObject == null || (_controlledSquad.Ships.Count == 0 && _controlledTile != null))
         {
-            // var n = 
+            var colliders = squad.Colliders;
+            if(colliders.Count > 0)
+                Control(colliders[0].gameObject);
+            else
+                Control(_squads[GameManager.Generator.Next(0, _squads.Count)].gameObject);
         }
+    }
+
+    public void DeleteSquad(Squad squad)
+    {
+        _squads.Remove(squad);
+
+        if(squad != null)
+            GameObject.DestroyImmediate(squad.gameObject);
     }
 
     public Squad CreateNewSquad(Squad fromSquad)
@@ -151,7 +165,8 @@ public class Player : MonoBehaviour
         var dist = fromSquad.GetComponent<SphereCollider>().radius / 2.0f;
         var offset = val == 0 ? new Vector3(dist, 0, 0) : new Vector3(0, 0, dist);
         var squad = CreateNewSquad(fromSquad.transform.position + offset);
-        squad.Colliders.Add(squad);
+        fromSquad.Colliders.Add(squad);
+        squad.Colliders.Add(fromSquad);
         return squad;
     }
 
@@ -162,6 +177,7 @@ public class Player : MonoBehaviour
         var component = squad.GetComponent<Squad>();
         component.Team = _team;
         _squads.Add(component);
+        component.Init();
         return component;
     }
 }
