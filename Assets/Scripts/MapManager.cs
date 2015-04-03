@@ -41,9 +41,7 @@ public class MapManager : MonoBehaviour
         get
         {
             if (_instance == null)
-            {
                 _instance = GameObject.FindObjectOfType<MapManager>();
-            }
             return _instance;
         }
     }
@@ -55,9 +53,9 @@ public class MapManager : MonoBehaviour
     public Dictionary<string, Dictionary<Resource, float>> PlanetResourceSpawnTable { get { return _planetResourceSpawnTable; } }
     public Dictionary<string, Dictionary<string, string>> PlanetSpawnDetails { get { return _planetSpawnDetails; } }
 
-    void Awake()
+	// Use this for initialization
+	public void Start()
     {
-        _instance = this;
         _sectorPrefab = Resources.Load<GameObject>(SECTOR_PREFAB);
         _planetTypeSpawnTable = new Dictionary<string, float>();
         _deploySpawnTable = new Dictionary<string, float>();
@@ -81,14 +79,14 @@ public class MapManager : MonoBehaviour
             runningTotal += float.Parse(planet.Value);
             _planetTypeSpawnTable.Add('[' + planet.Key + ']', runningTotal);
         }
-        foreach (var deploy in spawnTables[DEPLOYABLE_SECTION_HEADER])
+        foreach(var deploy in spawnTables[DEPLOYABLE_SECTION_HEADER])
         {
             _deploySpawnTable.Add('[' + deploy.Key + ']', 0);
         }
         spawnTables.Remove(PLANET_SECTION_HEADER);
         spawnTables.Remove(DEPLOYABLE_SECTION_HEADER);
 
-        foreach (var planet in spawnTables)
+        foreach(var planet in spawnTables)
         {
             _planetInhabitanceSpawnTable.Add(planet.Key, new Dictionary<Inhabitance, float>());
             _planetResourceSpawnTable.Add(planet.Key, new Dictionary<Resource, float>());
@@ -126,8 +124,8 @@ public class MapManager : MonoBehaviour
 
         for (int i = 0; i < planetCount; i++)
         {
-            _planetTextureTable.Add(planetNames[i],
-                new TextureAtlasDetails((atlasEntries[i].width == 0 && atlasEntries[i].height == 0 ? null : _textureAtlas),
+            _planetTextureTable.Add(planetNames[i], 
+                new TextureAtlasDetails((atlasEntries[i].width == 0 && atlasEntries[i].height == 0 ? null : _textureAtlas), 
                                         new Vector2(atlasEntries[i].x, atlasEntries[i].y),
                                         new Vector2(atlasEntries[i].width, atlasEntries[i].height)));
             spawnTables[planetNames[i]].Remove(PLANET_TEXTURE_DETAIL);
@@ -135,20 +133,22 @@ public class MapManager : MonoBehaviour
 
         // Store the remaining misc. data
         _planetSpawnDetails = spawnTables;
-        parser.CloseINI();
-        GenerateSector(Vector3.zero, 0, 0);
-    }
 
-	// Use this for initialization
-	public void Start()
-    {     
+        parser.CloseINI();
+
+        // class init should set grid spots to zero.
+        var sector = Instantiate(_sectorPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+        _sectorMap.Add(0, new Dictionary<int, GameObject>());
+        _sectorMap[0].Add(0, sector);
+
+        _instance = this;
 	}
 
-    public void GenerateNewSectors(Vector3 realPosition, Vector2 gridPosition)
+    public void GenerateNewSectors(Sector origin)
     {
-        var position = realPosition;
-        var v = (int)gridPosition.y;
-        var h = (int)gridPosition.x;
+        var position = origin.transform.position;
+        var v = (int)origin.GridPosition.y;
+        var h = (int)origin.GridPosition.x;
 
         if (Mathf.Abs(v) % 2 == 0) // even grid row
         {

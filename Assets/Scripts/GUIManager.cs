@@ -21,18 +21,16 @@ public class GUIManager : MonoBehaviour
         get
         {
             if (_instance == null)
-            {
                 _instance = GameObject.FindObjectOfType<GUIManager>();
-            }
             return _instance;
         }
     }
 
-    void Awake()
+    void Start()
     {
         _instance = this;
 
-        if (_interface == null)
+        if(_interface == null)
             _interface = new Dictionary<string, CustomUI>();
 
         _selectedIndices = new Dictionary<string, int>()
@@ -59,12 +57,9 @@ public class GUIManager : MonoBehaviour
         };
     }
 
-    void Start()
-    {
-    }
-
     void Update()
     {
+
     }
 
     public void Register(string name, CustomUI btn)
@@ -109,7 +104,7 @@ public class GUIManager : MonoBehaviour
         }
 
         deploy.interactable = click;
-        manage.interactable = (squad.Ships.Count > 0 || squad.Colliders.Count > 0) && squad.Team == HumanPlayer.Instance.Team;
+        manage.interactable = squad.Ships.Count > 0 || squad.Colliders.Count > 0;
     }
 
     public void SetUIElements(bool squad, bool battle, bool win, bool lose, bool tile, bool manage)
@@ -360,6 +355,11 @@ public class GUIManager : MonoBehaviour
         AutoSelectIndex<Ship>("MainShipList", HumanPlayer.Instance.Squad.Ships);
     }
 
+    public void Battle()
+    {
+        var winner = HumanPlayer.Instance.Battle(null, null);
+    }
+
     //
     // These functions update and display the menu when a command is given
     //
@@ -400,7 +400,7 @@ public class GUIManager : MonoBehaviour
     // These functions update and enable UI when squads collide with the appropriate object
     //
 
-    public void ConfigureBattleScreen(float WC, Squad squad1, Squad squad2)
+    public void ConfigureBattleScreen(Squad squad1, Squad squad2)
     {
         var t1 = squad1.Team;
 
@@ -416,9 +416,6 @@ public class GUIManager : MonoBehaviour
         var pt = player.GetComponent<Tile>();
         var et = enemy.GetComponent<Tile>();
 
-        _interface["BattlePercentage"].GetComponent<Text>().text = WC.ToString("P");
-
-        // for detailed battle screen - current blows
         if(pt != null)
         {
             // player tile vs. enemy squad
@@ -433,19 +430,5 @@ public class GUIManager : MonoBehaviour
         }
 
         SetUIElements(false, true, false, false, false, false);
-    }
-
-    public void Battle()
-    {
-        var winner = HumanPlayer.Instance.Battle(0f, null, null);
-
-        if(winner.Team == HumanPlayer.Instance.Team)
-        {
-            SetUIElements(false, false, true, false, false, false);
-        }
-        else
-        {
-            SetUIElements(false, false, false, true, false, false);
-        }
     }
 }

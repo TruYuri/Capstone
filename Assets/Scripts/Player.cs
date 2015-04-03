@@ -25,21 +25,11 @@ public class Player : MonoBehaviour
     public List<Squad> Squads { get { return _squads; } }
     public bool TurnEnded { get { return _turnEnded; } }
 
-    protected Squad _playerSquad;
-    protected Squad _enemySquad;
-    protected float _winChance;
-
-    public virtual void Init(Team team)
+	void Start () 
     {
-        _team = team;
-        _squads = new List<Squad>();
         _shipDefinitions = GameManager.Instance.GenerateShipDefs();
         _militaryTree = GameManager.Instance.GenerateMilitaryTree(_shipDefinitions);
         _scienceTree = GameManager.Instance.GenerateScienceTree(_shipDefinitions);
-    }
-
-	void Start () 
-    {
 	}
 	
 	public virtual void Control(GameObject gameObject)
@@ -64,11 +54,6 @@ public class Player : MonoBehaviour
         else if(type == SCIENCE)
             return _scienceTree.GetResearch(research).UpgradeResearch(property, _numResearchStations);
         return false;
-    }
-
-    public void CreateBattleEvent(Squad squad1, Squad squad2)
-    {
-        GameManager.Instance.AddEvent(new BattleEvent(squad1, squad1));
     }
 
     public void CreateBuildEvent(string shipName)
@@ -103,44 +88,30 @@ public class Player : MonoBehaviour
         _turnEnded = false;
     }
 
-    public virtual float PrepareBattleConditions(Squad squad1, Squad squad2)
+    public virtual Squad Battle(Squad squad1, Squad squad2)
     {
-        _playerSquad = squad2;
-        _enemySquad = squad1;
+        Squad player = squad2;
+        Squad enemy = squad1;
 
-        if (squad1.Team == _team)
+        if(squad1.Team == _team)
         {
-            _playerSquad = squad1;
-            _enemySquad = squad2;
+            player = squad1;
+            enemy = squad2;
         }
 
-        var pt = _playerSquad.GetComponent<Tile>();
-        var et = _enemySquad.GetComponent<Tile>();
+        Control(player.gameObject);
 
-        float WC = 0f;
-        if (pt == null && et == null)
-            WC = _playerSquad.GenerateWinChance(_enemySquad);
-        else if (pt != null && et == null)
-            WC = 1.0f - _enemySquad.GenerateWinChance(pt);
-        else if (pt == null && pt != null)
-            WC = _playerSquad.GenerateWinChance(et);
-
-        return WC;
-    }
-
-    public virtual Squad Battle(float playerChance, Squad player, Squad enemy)
-    {
         var pt = player.GetComponent<Tile>();
         var et = enemy.GetComponent<Tile>();
 
         Squad win = null;
         Team winner;
         if (pt != null) // player tile vs. enemy squad
-            winner = enemy.Combat(pt, 1.0f - playerChance);
+            winner = enemy.Combat(pt);
         else if(et != null) // player squad vs. enemy tile
-            winner = player.Combat(et, playerChance);
+            winner = player.Combat(et);
         else // squad vs. squad
-            winner = player.Combat(enemy, playerChance);
+            winner = player.Combat(enemy);
 
         // do nothing / undeploy as necessary
         if (winner == _team && et != null)
@@ -157,8 +128,6 @@ public class Player : MonoBehaviour
             pt.Claim(enemy.Team);
             win = enemy;
         }
-        else
-            win = winner == player.Team ? player : enemy;
 
         GameManager.Instance.Players[player.Team].CleanSquad(player);
         GameManager.Instance.Players[enemy.Team].CleanSquad(enemy);

@@ -14,6 +14,8 @@ public class Sector : MonoBehaviour
     private Vector2 _gridPos;
     private Tile[,] _tileGrid;
     private Dictionary<string, int> _planetCounts;
+    public Vector2 GridPosition { get { return _gridPos; } }
+    public Tile[,] TileGrid { get { return _tileGrid; } }
 
 	// Use this for initialization
 
@@ -22,8 +24,6 @@ public class Sector : MonoBehaviour
     public void Init(Vector2 gridPos)
     {
         _gridPos = gridPos;
-        _tileGrid = new Tile[18, 18];
-        _planetCounts = new Dictionary<string, int>();
     }
 
 	void Start () 
@@ -32,6 +32,9 @@ public class Sector : MonoBehaviour
 
         if(Tile == null)
             Tile = Resources.Load<GameObject>(TILE_PREFAB);
+
+        _tileGrid = new Tile[18,18];
+        _planetCounts = new Dictionary<string, int>();
 
         // Generate center columns
         for(int i = -85, j = 0; i <= 85; i += 10, j++)
@@ -93,11 +96,6 @@ public class Sector : MonoBehaviour
         var tile = tileObj.GetComponent<Tile>();
         tile.Init(type, name, this);
         _tileGrid[grid.Key, grid.Value] = tile;
-    }
-
-    public void GenerateNewSectors()
-    {
-        MapManager.Instance.GenerateNewSectors(transform.position, _gridPos);
     }
   
     private string PlanetSuffix(string type, int count)
