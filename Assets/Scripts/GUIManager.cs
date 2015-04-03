@@ -67,13 +67,16 @@ public class GUIManager : MonoBehaviour
     {
     }
 
-    public void Register(string name, CustomUI btn)
+    public void Register(string name, CustomUI btn, bool disable)
     {
         if (_interface == null)
             _interface = new Dictionary<string, CustomUI>();
 
-        if(!_interface.ContainsKey(name))
+        if (!_interface.ContainsKey(name) && btn != null && btn.gameObject != null)
+        {
             _interface.Add(name, btn);
+            _interface[name].gameObject.SetActive(!disable);
+        }
     }
 
     //
@@ -112,12 +115,10 @@ public class GUIManager : MonoBehaviour
         manage.interactable = (squad.Ships.Count > 0 || squad.Colliders.Count > 0) && squad.Team == HumanPlayer.Instance.Team;
     }
 
-    public void SetUIElements(bool squad, bool battle, bool win, bool lose, bool tile, bool manage)
+    public void SetUIElements(bool squad, bool battle, bool tile, bool manage)
     {
         _interface["SquadMenu"].gameObject.SetActive(squad);
         _interface["BattleMenu"].gameObject.SetActive(battle);
-        _interface["BattleWon"].gameObject.SetActive(win);
-        _interface["BattleLost"].gameObject.SetActive(lose);
         _interface["PlanetInfo"].gameObject.SetActive(tile);
         _interface["ManageMenu"].gameObject.SetActive(manage);
     }
@@ -145,7 +146,6 @@ public class GUIManager : MonoBehaviour
                 break;
         }
     }
-
     
     public void UIHighlighted(string data)
     {
@@ -160,13 +160,34 @@ public class GUIManager : MonoBehaviour
             case "AltSquadList":
                 break;
             case "Constructables":
+                _interface["ConstructionInfo"].gameObject.SetActive(true);
+                _interface["ConstructionInfo"].transform.position = 
+                    _interface[data].transform.position; //new Vector3(_interface[data].transform.position)
+                break;
+        }
+    }
+
+    public void UIDehighlighted(string data)
+    {
+        var split = data.Split('|');
+        switch (split[0])
+        {
+            case "MainShipList":
+            case "AltShipList":
+                break;
+            case "SelectedShipList":
+                break;
+            case "AltSquadList":
+                break;
+            case "Constructables":
+                _interface["ConstructionInfo"].gameObject.SetActive(false);
                 break;
         }
     }
 
     public void PopulateManageLists()
     {
-        GUIManager.Instance.SetUIElements(false, false, false, false, false, true);
+        GUIManager.Instance.SetUIElements(false, false, false, true);
         _selectedIndices["MainShipList"] = -1;
         ClearList("MainShipList");
         UpdateTransferInterface(true, true, true);
@@ -220,7 +241,7 @@ public class GUIManager : MonoBehaviour
 
         _interface["DeployText"].GetComponent<Text>().text = "Deploy";
         _interface["Deploy"].GetComponent<CustomUI>().data = "Deploy";
-        SetUIElements(true, false, false, false, false, false);
+        SetUIElements(true, false, false, false);
         SetSquadControls(squad);
     }
 
@@ -254,7 +275,7 @@ public class GUIManager : MonoBehaviour
             PopulateList<Ship>(buildList, "Constructables", ListingType.Build, tile.Structure.Resources);
         }
 
-        SetUIElements(true, false, false, false, true, false);
+        SetUIElements(true, false, true, false);
         SetSquadControls(squad);
     }
 
@@ -434,7 +455,7 @@ public class GUIManager : MonoBehaviour
         var pt = player.GetComponent<Tile>();
         var et = enemy.GetComponent<Tile>();
 
-        _interface["BattlePercentage"].GetComponent<Text>().text = WC.ToString("P");
+        _interface["BattleChance"].GetComponent<Text>().text = WC.ToString("P");
 
         // for detailed battle screen - current blows
         if(pt != null)
@@ -450,7 +471,7 @@ public class GUIManager : MonoBehaviour
 
         }
 
-        SetUIElements(false, true, false, false, false, false);
+        SetUIElements(false, true, false, false);
     }
 
     public void Battle()
@@ -459,11 +480,13 @@ public class GUIManager : MonoBehaviour
 
         if(winner.Team == HumanPlayer.Instance.Team)
         {
-            SetUIElements(false, false, true, false, false, false);
+            _interface["BattleWon"].gameObject.SetActive(true);
         }
         else
         {
-            SetUIElements(false, false, false, true, false, false);
+            _interface["BattleLost"].gameObject.SetActive(true);
         }
+
+        SetUIElements(false, false, false, false);
     }
 }

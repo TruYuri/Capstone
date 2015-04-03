@@ -5,18 +5,21 @@ using System.Collections;
 public class CustomUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public string data;
+    public bool disableAtStart;
 
     void Start()
     {
-        GUIManager.Instance.Register(data, this);
+        GUIManager.Instance.Register(data, this, disableAtStart);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
-    { 
+    {
+        GUIManager.Instance.UIHighlighted(data);
     }
 
     public void OnPointerExit(PointerEventData eventData)
-    { 
+    {
+        GUIManager.Instance.UIDehighlighted(data);
     }
 
     public void ClickUpgrade()
