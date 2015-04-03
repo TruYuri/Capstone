@@ -125,7 +125,7 @@ public class Player : MonoBehaviour
         else if (pt == null && pt != null)
             WC = _playerSquad.GenerateWinChance(et);
 
-        return WC;
+        return Mathf.Clamp01(WC);
     }
 
     public virtual Squad Battle(float playerChance, Squad player, Squad enemy)
