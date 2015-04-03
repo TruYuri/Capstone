@@ -150,7 +150,7 @@ public class Ship : ListableObject
         entry.transform.FindChild("OreText").GetComponent<Text>().text = requiredResources[Resource.Ore].ToString();
         entry.transform.FindChild("ForestText").GetComponent<Text>().text = requiredResources[Resource.Forest].ToString();
         entry.transform.FindChild("AsterminiumText").GetComponent<Text>().text = requiredResources[Resource.Asterminium].ToString();
-        entry.GetComponent<CustomUI>().data = name;
+        entry.GetComponent<CustomUI>().data = listName + "|" + name;
 
         var resources = data as Dictionary<Resource, int>;
         if (CanConstruct(resources))

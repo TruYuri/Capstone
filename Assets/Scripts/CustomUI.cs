@@ -1,13 +1,22 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 
-public class CustomUI : MonoBehaviour 
+public class CustomUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public string data;
 
     void Start()
     {
         GUIManager.Instance.Register(data, this);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    { 
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    { 
     }
 
     public void ClickUpgrade()
@@ -49,11 +58,6 @@ public class CustomUI : MonoBehaviour
     public void ClickNewSquad()
     {
         GUIManager.Instance.NewSquad();
-    }
-
-    public void ClickConstructable()
-    {
-        GUIManager.Instance.Build(data);
     }
 
     public void TransferToControlledSquad()

@@ -125,19 +125,41 @@ public class GUIManager : MonoBehaviour
     public void ItemClicked(string data)
     {
         var split = data.Split('|');
-        _selectedIndices[split[0]] = int.Parse(split[1]);
-
         switch(split[0])
         {
             case "MainShipList":
             case "AltShipList":
+                _selectedIndices[split[0]] = int.Parse(split[1]);
                 UpdateTransferInterface(false, true, false);
                 break;
             case "SelectedShipList":
+                _selectedIndices[split[0]] = int.Parse(split[1]);
                 UpdateTransferInterface(false, false, true);
                 break;
             case "AltSquadList":
+                _selectedIndices[split[0]] = int.Parse(split[1]);
                 UpdateTransferInterface(false, true, false);
+                break;
+            case "Constructables":
+                HumanPlayer.Instance.CreateBuildEvent(split[1]);
+                break;
+        }
+    }
+
+    
+    public void UIHighlighted(string data)
+    {
+        var split = data.Split('|');
+        switch (split[0])
+        {
+            case "MainShipList":
+            case "AltShipList":
+                break;
+            case "SelectedShipList":
+                break;
+            case "AltSquadList":
+                break;
+            case "Constructables":
                 break;
         }
     }
@@ -236,16 +258,12 @@ public class GUIManager : MonoBehaviour
         SetSquadControls(squad);
     }
 
-    public void Build(string data)
-    {
-        HumanPlayer.Instance.CreateBuildEvent(data);
-    }
-
     public void SetStructure(string data)
     {
         if (data == "Deploy")
             HumanPlayer.Instance.CreateDeployEvent(_selectedIndices["MainShipList"]);
-        HumanPlayer.Instance.CreateUndeployEvent(false);
+        else
+            HumanPlayer.Instance.CreateUndeployEvent(false);
     }
 
     private void UpdateTransferInterface(bool squads, bool squadShips, bool ships)

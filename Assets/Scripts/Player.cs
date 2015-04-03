@@ -55,6 +55,8 @@ public class Player : MonoBehaviour
     {
         if (GameManager.Instance.Paused || _turnEnded)
             return;
+
+        EndTurn();
 	}
 
     public bool UpgradeResearch(string type, string research, string property)
