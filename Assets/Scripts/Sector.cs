@@ -61,6 +61,7 @@ public class Sector : MonoBehaviour
 
     private void CreateTile(KeyValuePair<int, int> grid, Vector3 offset, string type = null)
     {
+        var suffix = string.Empty;
         if (type == null)
         {
             var chance = (float)GameManager.Generator.NextDouble();
@@ -72,23 +73,22 @@ public class Sector : MonoBehaviour
                     break;
                 }
             }
+
+            if (!_planetCounts.ContainsKey(type))
+                _planetCounts.Add(type, 0);
+            _planetCounts[type]++;
+
+            suffix = "-"
+            + Math.Abs(_gridPos.x).ToString() + Math.Abs(_gridPos.y).ToString()
+            + PlanetSuffix(type, _planetCounts[type]);
         }
 
         // crappy way to check if it's empty space, but it works for now
         if (MapManager.Instance.PlanetTextureTable[type].Texture == null)
             return;
 
+        var name = MapManager.Instance.PlanetSpawnDetails[type][PLANET_NAME] + suffix;
         var tileObj = Instantiate(Tile, this.transform.position + offset, Quaternion.identity) as GameObject;
-
-        if (!_planetCounts.ContainsKey(type))
-            _planetCounts.Add(type, 0);
-
-        var name = MapManager.Instance.PlanetSpawnDetails[type][PLANET_NAME]
-            + "-"
-            + Math.Abs(_gridPos.x).ToString() + Math.Abs(_gridPos.y).ToString()
-            + PlanetSuffix(type, _planetCounts[type]);
-
-        _planetCounts[type]++;
 
         var tile = tileObj.GetComponent<Tile>();
         tile.Init(type, name, this);

@@ -88,8 +88,23 @@ public class Structure : Ship, ListableObject
         list.transform.FindChild("ForestAmount").GetComponent<Text>().text = resources[Resource.Forest].ToString();
     }
 
-    GameObject ListableObject.CreatePopUpInfo(System.Object data)
+    void ListableObject.PopulateBuildInfo(GameObject popUp, System.Object data)
     {
-        return null;
+        var go = popUp; // construction info only
+        go.transform.FindChild("HullText").GetComponent<Text>().text = hull.ToString();
+        go.transform.FindChild("FirepowerText").GetComponent<Text>().text = firepower.ToString();
+        go.transform.FindChild("SpeedText").GetComponent<Text>().text = speed.ToString();
+        go.transform.FindChild("CapacityText").GetComponent<Text>().text = capacity.ToString();
+        go.transform.FindChild("Description").GetComponent<Text>().text = (string)data;
+        go.transform.FindChild("DefenseText").GetComponent<Text>().text = defense.ToString();
+        go.transform.FindChild("DeployedCapacityText").GetComponent<Text>().text = deployedCapacity.ToString();
+        go.transform.FindChild("GatherRateText").GetComponent<Text>().text = gatherRate.ToString();
+
+        go.transform.FindChild("DefenseIcon").gameObject.SetActive(true);
+        go.transform.FindChild("DefenseText").gameObject.SetActive(true);
+        go.transform.FindChild("DeployedCapacityIcon").gameObject.SetActive(true);
+        go.transform.FindChild("DeployedCapacityText").gameObject.SetActive(true);
+        go.transform.FindChild("GatherRateIcon").gameObject.SetActive(true);
+        go.transform.FindChild("GatherRateText").gameObject.SetActive(true);
     }
 }

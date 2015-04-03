@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 public class GameManager : MonoBehaviour 
 {
@@ -30,6 +29,7 @@ public class GameManager : MonoBehaviour
     private const string ASTERMINIUM_DETAIL = "Asterminium";
     private const string FOREST_DETAIL = "Forest";
     private const string STATIONS_DETAIL = "Stations";
+    private const string DESCRIPTION_DETAIL = "Description";
 
     private static GameManager _instance;
     private bool _paused;
@@ -74,6 +74,7 @@ public class GameManager : MonoBehaviour
         };
 
         _shipDefinitions = new Dictionary<string, Ship>();
+        var descriptions = new Dictionary<string, string>();
         var parser = new INIParser(Application.dataPath + INI_PATH);
         var shipDetails = parser.ParseINI();
         var textures = new Texture2D[shipDetails.Count - 1]; // to ensure order
@@ -103,7 +104,7 @@ public class GameManager : MonoBehaviour
             var firepower = float.Parse(shipDetails[section][FIREPOWER_DETAIL]);
             var speed = float.Parse(shipDetails[section][SPEED_DETAIL]);
             var capacity = int.Parse(shipDetails[section][CAPACITY_DETAIL]);
-            var name = Regex.Replace(shipNames[i], "([a-z])([A-Z])", "$1 $2");
+            var name = shipNames[i];
             var resources = new Dictionary<Resource, int>()
             {
                 { Resource.Oil, int.Parse(shipDetails[section][OIL_DETAIL]) },
@@ -118,7 +119,7 @@ public class GameManager : MonoBehaviour
                 var constructables = new List<string>();
                 var n = int.Parse(shipDetails[section][N_CONSTRUCTABLES_DETAIL]);
                 for (int j = 0; j < n; j++)
-                    constructables.Add(Regex.Replace(shipDetails[section][CONSTRUCTABLE_DETAIL + j.ToString()], "([a-z])([A-Z])", "$1 $2"));
+                    constructables.Add(shipDetails[section][CONSTRUCTABLE_DETAIL + j.ToString()]);
                 var dDefense = float.Parse(shipDetails[section][DEPLOYED_DEFENSE_DETAIL]);
                 var dCapacity = int.Parse(shipDetails[section][DEPLOYED_CAPACITY_DETAIL]);
                 var rate = int.Parse(shipDetails[section][GATHER_RATE_DETAIL]);
@@ -127,9 +128,12 @@ public class GameManager : MonoBehaviour
             }
             else
                 _shipDefinitions.Add(name, new Ship(icon, name, hull, firepower, speed, capacity, type, resources));
+
+            descriptions.Add(name, shipDetails[section][DESCRIPTION_DETAIL]);
         }
 
         parser.CloseINI();
+        GUIManager.Instance.Init(descriptions);
 
         // Research.ini
     }

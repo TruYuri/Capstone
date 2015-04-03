@@ -161,6 +161,11 @@ public class HumanPlayer : Player
         UpdateSquad();
     }
 
+    public Ship GetShipDefinition(string name)
+    {
+        return _shipDefinitions[name];
+    }
+
     public override void TurnEnd()
     {
         base.TurnEnd();

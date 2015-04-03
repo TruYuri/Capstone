@@ -130,7 +130,7 @@ public class Ship : ListableObject
         icon.sprite = this.icon;
         entry.transform.FindChild("Name").GetComponent<Text>().text = name;
         entry.transform.FindChild("Population").GetComponent<Text>().text = totalPopulation + " / " + capacity;
-        entry.GetComponent<CustomUI>().data = listName + "|" + index.ToString();
+        entry.GetComponent<CustomUIAdvanced>().data = listName + "|" + index.ToString();
 
         var transfer = (bool)data;
 
@@ -150,7 +150,7 @@ public class Ship : ListableObject
         entry.transform.FindChild("OreText").GetComponent<Text>().text = requiredResources[Resource.Ore].ToString();
         entry.transform.FindChild("ForestText").GetComponent<Text>().text = requiredResources[Resource.Forest].ToString();
         entry.transform.FindChild("AsterminiumText").GetComponent<Text>().text = requiredResources[Resource.Asterminium].ToString();
-        entry.GetComponent<CustomUI>().data = listName + "|" + name;
+        entry.GetComponent<CustomUIAdvanced>().data = listName + "|" + name;
 
         var resources = data as Dictionary<Resource, int>;
         if (CanConstruct(resources))
@@ -159,8 +159,33 @@ public class Ship : ListableObject
         return entry;
     }
 
-    GameObject ListableObject.CreatePopUpInfo(System.Object data)
+    void ListableObject.PopulateBuildInfo(GameObject popUp, System.Object data)
     {
-        return null;
+        var go = popUp; // construction info only
+        go.transform.FindChild("HullText").GetComponent<Text>().text = hull.ToString();
+        go.transform.FindChild("FirepowerText").GetComponent<Text>().text = firepower.ToString();
+        go.transform.FindChild("SpeedText").GetComponent<Text>().text = speed.ToString();
+        go.transform.FindChild("CapacityText").GetComponent<Text>().text = capacity.ToString();
+        go.transform.FindChild("Description").GetComponent<Text>().text = (string)data;
+
+        go.transform.FindChild("DefenseIcon").gameObject.SetActive(false);
+        go.transform.FindChild("DefenseText").gameObject.SetActive(false);
+        go.transform.FindChild("DeployedCapacityIcon").gameObject.SetActive(false);
+        go.transform.FindChild("DeployedCapacityText").gameObject.SetActive(false);
+        go.transform.FindChild("GatherRateIcon").gameObject.SetActive(false);
+        go.transform.FindChild("GatherRateText").gameObject.SetActive(false);
+    }
+
+    void ListableObject.PopulateGeneralInfo(GameObject popUp, System.Object data)
+    {
+        var go = popUp;
+        go.transform.FindChild("HullText").GetComponent<Text>().text = hull.ToString();
+        go.transform.FindChild("FirepowerText").GetComponent<Text>().text = firepower.ToString();
+        go.transform.FindChild("SpeedText").GetComponent<Text>().text = speed.ToString();
+        go.transform.FindChild("CapacityText").GetComponent<Text>().text = capacity.ToString();
+        go.transform.FindChild("PopulationText").GetComponent<Text>().text = totalPopulation.ToString();
+        go.transform.FindChild("PrimitiveText").GetComponent<Text>().text = primitivePopulation.ToString();
+        go.transform.FindChild("IndustrialText").GetComponent<Text>().text = industrialPopulation.ToString();
+        go.transform.FindChild("SpaceAgeText").GetComponent<Text>().text = spaceAgePopulation.ToString();
     }
 }

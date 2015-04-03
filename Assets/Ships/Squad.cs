@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
@@ -400,13 +399,28 @@ public class Squad : MonoBehaviour, ListableObject
             _currentTile.Deploy(structure, ShipProperties.GroundStructure, _team);
         else // space deploy
         {
-            var type = Regex.Replace(structure.Name, @"\s+", "");
-            _currentTile = _currentSector.CreateTileAtPosition("[" + type + "]", transform.position);
+            _currentTile = _currentSector.CreateTileAtPosition(structure.Name, transform.position);
             _currentTile.Deploy(structure, ShipProperties.SpaceStructure, _team);
         }
 
         _ships.Remove(structure);
         return _currentTile;
+    }
+
+    public static void CleanSquadsFromList(Player player, List<Squad> squads)
+    {
+        var emptySquads = new List<Squad>();
+        foreach (var squad in squads)
+        {
+            if ((squad == null || squad.gameObject == null || (squad.Ships.Count == 0 && squad.GetComponent<Tile>() == null)) && squad.Team == player.Team)
+                emptySquads.Add(squad);
+        }
+
+        foreach (var squad in emptySquads)
+        {
+            squads.Remove(squad);
+            player.DeleteSquad(squad);
+        }
     }
 
     GameObject ListableObject.CreateListEntry(string listName, int index, System.Object data)
@@ -418,31 +432,18 @@ public class Squad : MonoBehaviour, ListableObject
             entry.transform.FindChild("Text").GetComponent<Text>().text = tile.Name + " Defense";
         else
             entry.transform.FindChild("Text").GetComponent<Text>().text = _name;
-        entry.GetComponent<CustomUI>().data = listName + "|" + index.ToString();
+        entry.GetComponent<CustomUIAdvanced>().data = listName + "|" + index.ToString();
 
         return entry;
     }
 
     GameObject ListableObject.CreateBuildListEntry(string listName, int index, System.Object data) { return null; }
 
-    GameObject ListableObject.CreatePopUpInfo(System.Object data)
+    void ListableObject.PopulateBuildInfo(GameObject popUp, System.Object data)
     {
-        return null;
     }
 
-    public static void CleanSquadsFromList(Player player, List<Squad> squads)
+    void ListableObject.PopulateGeneralInfo(GameObject popUp, System.Object data)
     {
-        var emptySquads = new List<Squad>();
-        foreach(var squad in squads)
-        {
-            if ((squad == null || squad.gameObject == null || (squad.Ships.Count == 0 && squad.GetComponent<Tile>() == null)) && squad.Team == player.Team)
-                emptySquads.Add(squad);
-        }
-
-        foreach (var squad in emptySquads)
-        {
-            squads.Remove(squad);
-            player.DeleteSquad(squad);
-        }
     }
 }

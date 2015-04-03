@@ -230,18 +230,9 @@ public class Tile : MonoBehaviour, ListableObject
         // population types
     }
 
-    GameObject ListableObject.CreateListEntry(string listName, int index, System.Object data)
-    {
-        return null;
-    }
-
-    GameObject ListableObject.CreateBuildListEntry(string listName, int index, System.Object data)
-    {
-        return null;
-    }
-
-    GameObject ListableObject.CreatePopUpInfo(System.Object data)
-    {
-        return null;
-    }
+    // for info lists later
+    GameObject ListableObject.CreateListEntry(string listName, int index, System.Object data) { return null; }
+    GameObject ListableObject.CreateBuildListEntry(string listName, int index, System.Object data) { return null; }
+    void ListableObject.PopulateBuildInfo(GameObject popUp, System.Object data) { }
+    void ListableObject.PopulateGeneralInfo(GameObject popUp, System.Object data) { }
 }

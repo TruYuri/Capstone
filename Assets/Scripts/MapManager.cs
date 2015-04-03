@@ -13,8 +13,8 @@ public class MapManager : MonoBehaviour
     private const string SECTOR_PREFAB = "Sector";
     private const string INI_PATH = "/Resources/Planets.ini";
     private const string MATERIALS_PATH = "PlanetTextures/";
-    private const string PLANET_SECTION_HEADER = "[PlanetSpawnRates]";
-    private const string DEPLOYABLE_SECTION_HEADER = "[DeployablePlanets]";
+    private const string PLANET_SECTION_HEADER = "[Planet Spawn Rates]";
+    private const string DEPLOYABLE_SECTION_HEADER = "[Deployable Planets]";
     private const string PLANET_TEXTURE_DETAIL = "SpriteName";
     private const string PLANET_UNINHABITED_DETAIL = "Uninhabited";
     private const string PLANET_PRIMITIVE_DETAIL = "InhabitedPrimitive";
@@ -66,6 +66,7 @@ public class MapManager : MonoBehaviour
         _planetResourceSpawnTable = new Dictionary<string, Dictionary<Resource, float>>();
         _planetSpawnDetails = new Dictionary<string, Dictionary<string, string>>();
         _sectorMap = new Dictionary<int, Dictionary<int, GameObject>>();
+        _planetSpawnDetails = new Dictionary<string, Dictionary<string, string>>();
 
         var parser = new INIParser(Application.dataPath + INI_PATH);
         var spawnTables = parser.ParseINI();
@@ -79,35 +80,37 @@ public class MapManager : MonoBehaviour
         {
             // Generate upper limit in 0.0 - 1.0 spectrum for planet
             runningTotal += float.Parse(planet.Value);
-            _planetTypeSpawnTable.Add('[' + planet.Key + ']', runningTotal);
+            _planetTypeSpawnTable.Add(planet.Key, runningTotal);
         }
         foreach (var deploy in spawnTables[DEPLOYABLE_SECTION_HEADER])
         {
-            _deploySpawnTable.Add('[' + deploy.Key + ']', 0);
+            _deploySpawnTable.Add(deploy.Key, 0);
         }
         spawnTables.Remove(PLANET_SECTION_HEADER);
         spawnTables.Remove(DEPLOYABLE_SECTION_HEADER);
 
         foreach (var planet in spawnTables)
         {
-            _planetInhabitanceSpawnTable.Add(planet.Key, new Dictionary<Inhabitance, float>());
-            _planetResourceSpawnTable.Add(planet.Key, new Dictionary<Resource, float>());
+            var key = planet.Key.TrimStart('[');
+            key = key.TrimEnd(']');
+            _planetInhabitanceSpawnTable.Add(key, new Dictionary<Inhabitance, float>());
+            _planetResourceSpawnTable.Add(key, new Dictionary<Resource, float>());
 
             // load texture for atlasing
             textures[planetCount] = Resources.Load<Texture2D>(MATERIALS_PATH + spawnTables[planet.Key][PLANET_TEXTURE_DETAIL]);
-            planetNames[planetCount++] = planet.Key;
+            planetNames[planetCount++] = key;
 
             // cache per-planet Inhabitance probabilities
-            _planetInhabitanceSpawnTable[planet.Key].Add(Inhabitance.Uninhabited, runningTotal = float.Parse(spawnTables[planet.Key][PLANET_UNINHABITED_DETAIL]));
-            _planetInhabitanceSpawnTable[planet.Key].Add(Inhabitance.Primitive, runningTotal += float.Parse(spawnTables[planet.Key][PLANET_PRIMITIVE_DETAIL]));
-            _planetInhabitanceSpawnTable[planet.Key].Add(Inhabitance.Industrial, runningTotal += float.Parse(spawnTables[planet.Key][PLANET_INDUSTRIAL_DETAIL]));
-            _planetInhabitanceSpawnTable[planet.Key].Add(Inhabitance.SpaceAge, runningTotal += float.Parse(spawnTables[planet.Key][PLANET_SPACEAGE_DETAIL]));
+            _planetInhabitanceSpawnTable[key].Add(Inhabitance.Uninhabited, runningTotal = float.Parse(spawnTables[planet.Key][PLANET_UNINHABITED_DETAIL]));
+            _planetInhabitanceSpawnTable[key].Add(Inhabitance.Primitive, runningTotal += float.Parse(spawnTables[planet.Key][PLANET_PRIMITIVE_DETAIL]));
+            _planetInhabitanceSpawnTable[key].Add(Inhabitance.Industrial, runningTotal += float.Parse(spawnTables[planet.Key][PLANET_INDUSTRIAL_DETAIL]));
+            _planetInhabitanceSpawnTable[key].Add(Inhabitance.SpaceAge, runningTotal += float.Parse(spawnTables[planet.Key][PLANET_SPACEAGE_DETAIL]));
 
             // cache per-planet Resource probabilities
-            _planetResourceSpawnTable[planet.Key].Add(Resource.Forest, runningTotal = float.Parse(spawnTables[planet.Key][PLANET_FOREST_DETAIL]));
-            _planetResourceSpawnTable[planet.Key].Add(Resource.Ore, runningTotal += float.Parse(spawnTables[planet.Key][PLANET_ORE_DETAIL]));
-            _planetResourceSpawnTable[planet.Key].Add(Resource.Oil, runningTotal += float.Parse(spawnTables[planet.Key][PLANET_OIL_DETAIL]));
-            _planetResourceSpawnTable[planet.Key].Add(Resource.Asterminium, runningTotal += float.Parse(spawnTables[planet.Key][PLANET_ASTERMINIUM_DETAIL]));
+            _planetResourceSpawnTable[key].Add(Resource.Forest, runningTotal = float.Parse(spawnTables[planet.Key][PLANET_FOREST_DETAIL]));
+            _planetResourceSpawnTable[key].Add(Resource.Ore, runningTotal += float.Parse(spawnTables[planet.Key][PLANET_ORE_DETAIL]));
+            _planetResourceSpawnTable[key].Add(Resource.Oil, runningTotal += float.Parse(spawnTables[planet.Key][PLANET_OIL_DETAIL]));
+            _planetResourceSpawnTable[key].Add(Resource.Asterminium, runningTotal += float.Parse(spawnTables[planet.Key][PLANET_ASTERMINIUM_DETAIL]));
 
             // remove used data from the table
             spawnTables[planet.Key].Remove(PLANET_UNINHABITED_DETAIL);
@@ -119,6 +122,8 @@ public class MapManager : MonoBehaviour
             spawnTables[planet.Key].Remove(PLANET_ORE_DETAIL);
             spawnTables[planet.Key].Remove(PLANET_OIL_DETAIL);
             spawnTables[planet.Key].Remove(PLANET_ASTERMINIUM_DETAIL);
+
+            _planetSpawnDetails.Add(key, spawnTables[planet.Key]);
         }
 
         _textureAtlas = new Texture2D(0, 0);
@@ -130,11 +135,9 @@ public class MapManager : MonoBehaviour
                 new TextureAtlasDetails((atlasEntries[i].width == 0 && atlasEntries[i].height == 0 ? null : _textureAtlas),
                                         new Vector2(atlasEntries[i].x, atlasEntries[i].y),
                                         new Vector2(atlasEntries[i].width, atlasEntries[i].height)));
-            spawnTables[planetNames[i]].Remove(PLANET_TEXTURE_DETAIL);
+            spawnTables["[" + planetNames[i]+ "]"].Remove(PLANET_TEXTURE_DETAIL);
         }
 
-        // Store the remaining misc. data
-        _planetSpawnDetails = spawnTables;
         parser.CloseINI();
         GenerateSector(Vector3.zero, 0, 0);
     }

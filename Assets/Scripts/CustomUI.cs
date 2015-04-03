@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 using System.Collections;
 
-public class CustomUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class CustomUI : MonoBehaviour
 {
     public string data;
     public bool disableAtStart;
@@ -10,16 +9,6 @@ public class CustomUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     void Start()
     {
         GUIManager.Instance.Register(data, this, disableAtStart);
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        GUIManager.Instance.UIHighlighted(data);
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        GUIManager.Instance.UIDehighlighted(data);
     }
 
     public void ClickUpgrade()
