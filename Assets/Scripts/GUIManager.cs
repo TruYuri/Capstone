@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -140,15 +141,15 @@ public class GUIManager : MonoBehaviour
             case "MainShipList":
             case "AltShipList":
                 _indices[split[0]] = int.Parse(split[1]);
-                UpdateTransferInterface(false, true, false);
+                UpdateTransferInterface(false, true, false, true);
                 break;
             case "SelectedShipList":
                 _indices[split[0]] = int.Parse(split[1]);
-                UpdateTransferInterface(false, false, true);
+                UpdateTransferInterface(false, false, true, true);
                 break;
             case "AltSquadList":
                 _indices[split[0]] = int.Parse(split[1]);
-                UpdateTransferInterface(false, true, false);
+                UpdateTransferInterface(false, true, false, true);
                 break;
             case "Constructables":
                 HumanPlayer.Instance.CreateBuildEvent(split[1]);
@@ -238,7 +239,16 @@ public class GUIManager : MonoBehaviour
         GUIManager.Instance.SetUIElements(false, false, false, true);
         _indices["MainShipList"] = -1;
         ClearList("MainShipList");
-        UpdateTransferInterface(true, true, true);
+
+        var squad = HumanPlayer.Instance.Squad;
+        // temporarily add itself to colliders
+        squad.Colliders.Add(HumanPlayer.Instance.Squad);
+
+        // add deployed structures to the nearby tile if necessary
+        if (squad.Tile != null && squad.Tile.Structure != null && squad.Tile.IsInRange(squad))
+            squad.Tile.Squad.Ships.Add(squad.Tile.Structure);
+
+        UpdateTransferInterface(true, true, true, true);
     }
 
     private void ClearList(string indexName)
@@ -335,7 +345,14 @@ public class GUIManager : MonoBehaviour
             HumanPlayer.Instance.CreateUndeployEvent(false);
     }
 
-    private void UpdateTransferInterface(bool squads, bool squadShips, bool ships)
+    private void UpdateTransferInterface(bool squads, bool squadShips, bool ships, bool soldiers)
+    {
+        UpdateTransferShipInterface(squads, squadShips, ships);
+        if (soldiers)
+            UpdateTransferSoldierInterface();
+    }
+
+    private void UpdateTransferShipInterface(bool squads, bool squadShips, bool ships)
     {
         var squad = HumanPlayer.Instance.Squad;
         AutoSelectIndex<Squad>("AltSquadList", squad.Colliders);
@@ -343,11 +360,11 @@ public class GUIManager : MonoBehaviour
             AutoSelectIndex<Ship>("AltShipList", squad.Colliders[_indices["AltSquadList"]].Ships);
         AutoSelectIndex<Ship>("SelectedShipList", squad.Ships);
 
-        if(squads)
+        if (squads)
             PopulateList<Squad>(squad.Colliders, "AltSquadList", ListingType.Info, true);
         if (squadShips && _indices["AltSquadList"] > -1 && _indices["AltSquadList"] < squad.Colliders.Count)
             PopulateList<Ship>(squad.Colliders[_indices["AltSquadList"]].Ships, "AltShipList", ListingType.Info, true);
-        if(ships)
+        if (ships)
             PopulateList<Ship>(squad.Ships, "SelectedShipList", ListingType.Info, true);
 
         var right = _interface["Right"].GetComponent<Button>();
@@ -359,28 +376,104 @@ public class GUIManager : MonoBehaviour
         var altships = _indices["AltShipList"];
         var selected = _indices["SelectedShipList"];
 
-        if (altsquad == -1)
+        if (altsquad == -1 || squad == squad.Colliders[altsquad])
+        {
             right.interactable = left.interactable = dright.interactable = dleft.interactable = false;
+        }
         else
         {
-            right.interactable = altships != -1 &&
-                (HumanPlayer.Instance.Squad.Colliders[altsquad].Ships[altships].ShipProperties & ShipProperties.Untransferable) == 0 ? true : false;
-            left.interactable = selected != -1  &&
-                (HumanPlayer.Instance.Squad.Ships[selected].ShipProperties & ShipProperties.Untransferable) == 0 ? true : false;
-            dright.interactable = altships == -1 ? false : true;
-            dleft.interactable = selected == -1 ? false : true;
+            if (altships != -1)
+            {
+                var ship = HumanPlayer.Instance.Squad.Colliders[altsquad].Ships[altships];
+                right.interactable = (ship.ShipProperties & ShipProperties.Untransferable) == 0 ? true : false;
+                dright.interactable = true;
+            }
+
+            if (selected != -1)
+            {
+                var ship = HumanPlayer.Instance.Squad.Ships[selected];
+                left.interactable = (ship.ShipProperties & ShipProperties.Untransferable) == 0 ? true : false;
+                dleft.interactable = true;
+            }
+        }
+    }
+
+    private void UpdateTransferSoldierInterface()
+    {
+        var pright = _interface["PrimRight"].GetComponent<Button>();
+        var iright = _interface["IndRight"].GetComponent<Button>();
+        var sright = _interface["SpaceRight"].GetComponent<Button>();
+        var pleft = _interface["PrimLeft"].GetComponent<Button>();
+        var ileft = _interface["IndLeft"].GetComponent<Button>();
+        var sleft = _interface["SpaceLeft"].GetComponent<Button>();
+
+        var pdright = _interface["PrimRightAll"].GetComponent<Button>();
+        var idright = _interface["IndRightAll"].GetComponent<Button>();
+        var sdright = _interface["SpaceRightAll"].GetComponent<Button>();
+        var pdleft = _interface["PrimLeftAll"].GetComponent<Button>();
+        var idleft = _interface["IndLeftAll"].GetComponent<Button>();
+        var sdleft = _interface["SpaceLeftAll"].GetComponent<Button>();
+
+        var plCount = _interface["PrimLeftCount"].GetComponent<Text>();
+        var ilCount = _interface["IndLeftCount"].GetComponent<Text>();
+        var slCount = _interface["SpaceLeftCount"].GetComponent<Text>();
+        var prCount = _interface["PrimRightCount"].GetComponent<Text>();
+        var irCount = _interface["IndRightCount"].GetComponent<Text>();
+        var srCount = _interface["SpaceRightCount"].GetComponent<Text>();
+
+        var altsquad = _indices["AltSquadList"];
+        var altships = _indices["AltShipList"];
+        var selected = _indices["SelectedShipList"];
+
+        if (selected != -1 && altships != -1) // manage soldiers!
+        {
+            var aship = HumanPlayer.Instance.Squad.Colliders[altsquad].Ships[altships];
+            var sship = HumanPlayer.Instance.Squad.Ships[selected];
+            var aShipTotal = aship.PrimitivePopulation + aship.IndustrialPopulation + aship.SpaceAgePopulation;
+            var sShipTotal = sship.PrimitivePopulation + sship.IndustrialPopulation + sship.SpaceAgePopulation;
+            var aShipFull = aShipTotal == aship.Capacity;
+            var sShipFull = sShipTotal == sship.Capacity;
+            var same = aship == sship;
+
+            plCount.text = aship.PrimitivePopulation.ToString();
+            ilCount.text = aship.IndustrialPopulation.ToString();
+            slCount.text = aship.SpaceAgePopulation.ToString();
+            prCount.text = sship.PrimitivePopulation.ToString();
+            irCount.text = sship.IndustrialPopulation.ToString();
+            srCount.text = sship.SpaceAgePopulation.ToString();
+
+            pright.interactable = pdright.interactable = aship.PrimitivePopulation > 0 && !sShipFull && !same;
+            iright.interactable = idright.interactable = aship.IndustrialPopulation > 0 && !sShipFull && !same;
+            sright.interactable = sdright.interactable = aship.SpaceAgePopulation > 0 && !sShipFull && !same;
+            pleft.interactable = pdleft.interactable = sship.PrimitivePopulation > 0 && !aShipFull && !same;
+            ileft.interactable = idleft.interactable = sship.IndustrialPopulation > 0 && !aShipFull && !same;
+            sleft.interactable = sdleft.interactable = sship.SpaceAgePopulation > 0 && !aShipFull && !same;
+        }
+        else
+        {
+            pdright.interactable = idright.interactable = sdright.interactable = pdleft.interactable = idleft.interactable = sdleft.interactable = false;
+            pright.interactable = iright.interactable = sright.interactable = pleft.interactable = ileft.interactable = sleft.interactable = false;
+            plCount.text = ilCount.text = slCount.text = prCount.text = irCount.text = srCount.text = Convert.ToString(0);
+
+            pright.interactable = pdright.interactable = false;
+            iright.interactable = idright.interactable = false;
+            sright.interactable = sdright.interactable = false;
+            pleft.interactable = pdleft.interactable = false;
+            ileft.interactable = idleft.interactable = false;
+            sleft.interactable = sdleft.interactable = false;
         }
     }
 
     public Ship Transfer(Squad from, string fromName, Squad to, string toName)
     {
         var fromIndex = _indices[fromName];
-        Ship ship = from.RemoveShip(fromIndex);
+        var ship = from.Ships[fromIndex];
+        from.Ships.RemoveAt(fromIndex);
 
         if((ship.ShipProperties & ShipProperties.Untransferable) > 0)
             return ship;
 
-        to.AddShip(ship);
+        to.Ships.Add(ship);
         return null;
     }
 
@@ -403,8 +496,8 @@ public class GUIManager : MonoBehaviour
         var index = _indices["AltSquadList"];
         var squad = HumanPlayer.Instance.Squad.Colliders[index];
         var ship = Transfer(squad, "AltShipList", HumanPlayer.Instance.Squad, "SelectedShipList");
-        if (ship != null) squad.AddShip(ship, index);
-        UpdateTransferInterface(false, true, true);
+        if (ship != null) squad.Ships.Insert(index, ship);
+        UpdateTransferInterface(false, true, true, true);
     }
 
     public void TransferToSelectedSquad()
@@ -412,20 +505,20 @@ public class GUIManager : MonoBehaviour
         var index = _indices["SelectedShipList"];
         var squad = HumanPlayer.Instance.Squad;
         var ship = Transfer(squad, "SelectedShipList", HumanPlayer.Instance.Squad.Colliders[_indices["AltSquadList"]], "AltShipList");
-        if (ship != null) squad.AddShip(ship, index);
-        UpdateTransferInterface(false, true, true);
+        if (ship != null) squad.Ships.Insert(index, ship);
+        UpdateTransferInterface(false, true, true, true);
     }
 
     public void TransferAllToControlledSquad()
     {
         TransferAll(HumanPlayer.Instance.Squad.Colliders[_indices["AltSquadList"]], "AltShipList", HumanPlayer.Instance.Squad, "SelectedShipList");
-        UpdateTransferInterface(false, true, true);
+        UpdateTransferInterface(false, true, true, true);
     }
 
     public void TransferAllToSelectedSquad()
     {
         TransferAll(HumanPlayer.Instance.Squad, "SelectedShipList", HumanPlayer.Instance.Squad.Colliders[_indices["AltSquadList"]], "AltShipList");
-        UpdateTransferInterface(false, true, true);
+        UpdateTransferInterface(false, true, true, true);
     }
 
     public void NewSquad()
@@ -434,11 +527,102 @@ public class GUIManager : MonoBehaviour
         var listing = (ListableObject)squad;
 
         listing.CreateListEntry("AltSquadList", HumanPlayer.Instance.Squad.Colliders.Count - 1, true).transform.SetParent(_interface["AltSquadList"].transform);
-        UpdateTransferInterface(true, true, false);
+        UpdateTransferInterface(true, true, false, true);
+    }
+
+    private void TransferSoldier(string type, Ship from, Ship to)
+    {
+        switch(type)
+        {
+            case "Primitive":
+                from.PrimitivePopulation--;
+                to.PrimitivePopulation++;
+                break;
+            case "Industrial":
+                from.IndustrialPopulation--;
+                to.IndustrialPopulation++;
+                break;
+            case "SpaceAge":
+                from.SpaceAgePopulation--;
+                to.SpaceAgePopulation++;
+                break;
+        }
+    }
+
+    private void TransferAllSoldiers(string type, Ship from, Ship to)
+    {
+        switch (type)
+        {
+            case "Primitive":
+                while (from.PrimitivePopulation > 0 && to.PrimitivePopulation + to.IndustrialPopulation + to.SpaceAgePopulation < to.Capacity)
+                    TransferSoldier(type, from, to);
+                break;
+            case "Industrial":
+                while (from.IndustrialPopulation > 0 && to.PrimitivePopulation + to.IndustrialPopulation + to.SpaceAgePopulation < to.Capacity)
+                    TransferSoldier(type, from, to);
+                break;
+            case "SpaceAge":
+                while (from.SpaceAgePopulation > 0 && to.PrimitivePopulation + to.IndustrialPopulation + to.SpaceAgePopulation < to.Capacity)
+                    TransferSoldier(type, from, to);
+                break;
+        }
+    }
+
+    public void SoldierTransfer(string data)
+    {
+        var aship = HumanPlayer.Instance.Squad.Colliders[_indices["AltSquadList"]].Ships[_indices["AltShipList"]];
+        var sship = HumanPlayer.Instance.Squad.Ships[_indices["SelectedShipList"]];
+
+        switch(data)
+        {
+            case "PrimRight":
+                TransferSoldier("Primitive", aship, sship);
+                break;
+            case "IndRight":
+                TransferSoldier("Industrial", aship, sship);
+                break;
+            case "SpaceRight":
+                TransferSoldier("SpaceAge", aship, sship);
+                break;
+            case "PrimLeft":
+                TransferSoldier("Primitive", sship, aship);
+                break;
+            case "IndLeft":
+                TransferSoldier("Industrial", sship, aship);
+                break;
+            case "SpaceLeft":
+                TransferSoldier("SpaceAge", sship, aship);
+                break;
+            case "PrimRightAll":
+                TransferAllSoldiers("Primitive", aship, sship);
+                break;
+            case "IndRightAll":
+                TransferAllSoldiers("Industrial", aship, sship);
+                break;
+            case "SpaceRightAll":
+                TransferAllSoldiers("SpaceAge", aship, sship);
+                break;
+            case "PrimLeftAll":
+                TransferAllSoldiers("Primitive", sship, aship);
+                break;
+            case "IndLeftAll":
+                TransferAllSoldiers("Industrial", sship, aship);
+                break;
+            case "SpaceLeftAll":
+                TransferAllSoldiers("SpaceAge", sship, aship);
+                break;
+        }
+
+        UpdateTransferInterface(false, true, true, true);
     }
 
     public void ExitManage()
     {
+        var squad = HumanPlayer.Instance.Squad;
+        squad.Colliders.Remove(squad); // remove self
+        if (squad.Tile != null && squad.Tile.IsInRange(squad)) // remove any deployed structures
+            squad.Tile.Squad.Ships.Remove(squad.Tile.Structure);
+
         HumanPlayer.Instance.CleanSquad(HumanPlayer.Instance.Squad);
         HumanPlayer.Instance.ReloadGameplayUI();
         ClearList("AltSquadList");

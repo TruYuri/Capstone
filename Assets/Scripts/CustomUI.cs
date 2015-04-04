@@ -72,6 +72,11 @@ public class CustomUI : MonoBehaviour
         GUIManager.Instance.TransferAllToSelectedSquad();
     }
 
+    public void ClickSoldierTransfer()
+    {
+        GUIManager.Instance.SoldierTransfer(data);
+    }
+
     public void Pause()
     {
         GameManager.Instance.Paused = true;

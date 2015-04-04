@@ -141,8 +141,7 @@ public class Squad : MonoBehaviour, ListableObject
         if (_currentTile == null)
             return;
 
-        if ((transform.position - _currentTile.transform.position).sqrMagnitude <=
-            (_currentTile.Radius * _currentTile.Radius))
+        if (_currentTile.IsInRange(this))
         {
             if (!_collidingSquads.Contains(_currentTile.Squad))
             {
@@ -188,28 +187,6 @@ public class Squad : MonoBehaviour, ListableObject
         return firepower * 2.0f + speed * 1.5f + hull;
     }
 
-    public void AddShip(Ship ship)
-    {
-        _ships.Add(ship);
-    }
-
-    public void AddShip(Ship ship, int index)
-    {
-        _ships.Insert(index, ship);
-    }
-
-    public Ship RemoveShip(int index)
-    {
-        var ship = _ships[index];
-        _ships.Remove(ship);
-        return ship;
-    }
-
-    public void RemoveShip(Ship ship)
-    {
-        _ships.Remove(ship);
-    }
-
     public float GenerateWinChance(Squad enemy)
     {
         var power = CalculateShipPower();
@@ -251,7 +228,7 @@ public class Squad : MonoBehaviour, ListableObject
                 float saveChance = (float)GameManager.Generator.NextDouble();
 
                 if (saveChance >= _ships[randPos].Protection)  // add speedy = safer thing here
-                    RemoveShip(ship);
+                    _ships.Remove(ship);
             }
             else
                 damage = 0.0f;
@@ -271,7 +248,7 @@ public class Squad : MonoBehaviour, ListableObject
             int nTroops = 0;
             foreach (var ship in _ships)
             {
-                nTroops += ship.Population;
+                nTroops += ship.PrimitivePopulation + ship.SpaceAgePopulation + ship.IndustrialPopulation;
             }
 
             float damage = Mathf.Floor(nTroops * (1.0f - winChance) * ((float)GameManager.Generator.NextDouble() * (1.25f - 0.75f) + 0.75f));
@@ -281,18 +258,18 @@ public class Squad : MonoBehaviour, ListableObject
                 var randShip = GameManager.Generator.Next(0, _ships.Count);
                 // somehow distribute probability around # troops and from which ships
 
-                while(_ships[randShip].Population == 0)
+                while (_ships[randShip].PrimitivePopulation + _ships[randShip].IndustrialPopulation + _ships[randShip].SpaceAgePopulation == 0)
                     randShip = GameManager.Generator.Next(0, _ships.Count);
 
                 damage -= 1.0f;
-                var randSoldier = GameManager.Generator.Next(0, _ships[randShip].Population);
+                var randSoldier = GameManager.Generator.Next(0, _ships[randShip].PrimitivePopulation + 
+                    _ships[randShip].IndustrialPopulation + _ships[randShip].SpaceAgePopulation);
                 float saveChance = (float)GameManager.Generator.NextDouble();
                 if(randSoldier < _ships[randShip].PrimitivePopulation)
                 {
                     if(saveChance >= 0.2f)
                     {
                         _ships[randShip].PrimitivePopulation--;
-                        _ships[randShip].Population--;
                         nTroops--;
                     }
                 }
@@ -301,14 +278,12 @@ public class Squad : MonoBehaviour, ListableObject
                     if (saveChance >= 0.1f)
                     {
                         _ships[randShip].IndustrialPopulation--;
-                        _ships[randShip].Population--;
                         nTroops--;
                     }
                 }
                 else
                 {
                     _ships[randShip].SpaceAgePopulation--;
-                    _ships[randShip].Population--;
                     nTroops--;
                 }
             }
@@ -383,10 +358,7 @@ public class Squad : MonoBehaviour, ListableObject
                 enemy.Structure.PrimitivePopulation = primPop;
                 enemy.Structure.IndustrialPopulation = indPop;
                 enemy.Structure.SpaceAgePopulation = spacePop;
-                enemy.Structure.Population = nTroops;
             }
-
-            enemy.Structure.Population = nTroops;
         }
 
         return enemy.Team;
@@ -428,10 +400,16 @@ public class Squad : MonoBehaviour, ListableObject
         var squadEntry = Resources.Load<GameObject>(SQUAD_LIST_PREFAB);
         var entry = Instantiate(squadEntry) as GameObject;
         var tile = this.GetComponent<Tile>();
+
+        var name = _name;
+
         if (tile != null)
-            entry.transform.FindChild("Text").GetComponent<Text>().text = tile.Name + " Defense";
-        else
-            entry.transform.FindChild("Text").GetComponent<Text>().text = _name;
+            name = tile.Name;
+
+        if (this == HumanPlayer.Instance.Squad)
+            name = "(Self) " + name;
+
+        entry.transform.FindChild("Text").GetComponent<Text>().text = name;
         entry.GetComponent<CustomUIAdvanced>().data = listName + "|" + index.ToString();
 
         return entry;

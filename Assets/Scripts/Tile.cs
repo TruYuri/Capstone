@@ -32,8 +32,6 @@ public class Tile : MonoBehaviour, ListableObject
 
     public string Name { get { return _name; } }
     public Team Team { get { return _team; } }
-    public float ClickRadius { get { return _clickRadius; } }
-    public float Radius { get { return _radius; } }
     public Structure Structure { get { return _structure; } }
     public Squad Squad { get { return _squad; } }
     public int Population 
@@ -118,8 +116,8 @@ public class Tile : MonoBehaviour, ListableObject
             if (small)
             {
                 system.startSize *= 0.5f;
-                _radius *= 0.5f;
-                _clickRadius = 0.75f;
+                _radius = 1.0f;
+                _clickRadius = 1.0f;
             }
 
             renderer.material.mainTexture = mapManager.PlanetTextureTable[_planetType].Texture;
@@ -133,6 +131,8 @@ public class Tile : MonoBehaviour, ListableObject
             {
                 _team = Team.Indigineous;
                 _squad.Team = Team.Indigineous;
+
+                // generate random defenses if space age
             }
 
             // debug
@@ -171,7 +171,8 @@ public class Tile : MonoBehaviour, ListableObject
     public string Undeploy(bool destroy)
     {
         if (!destroy && _structure != null)
-            _squad.AddShip(_structure);
+            _squad.Ships.Add(_structure);
+        _structure.Undeploy(this);
         _structure = null;
         return _planetType;
     }
@@ -180,6 +181,7 @@ public class Tile : MonoBehaviour, ListableObject
     {
         Claim(team);
         _structure = ship;
+        _structure.Deploy(this);
     }
 
     public float CalculateDefensivePower()
@@ -226,10 +228,75 @@ public class Tile : MonoBehaviour, ListableObject
         panel.transform.FindChild("PlanetName").GetComponent<Text>().text = _name;
         panel.transform.FindChild("TeamName").GetComponent<Text>().text = _team.ToString();
         panel.transform.FindChild("TeamIcon").GetComponent<Image>().sprite = GUIManager.Instance.Icons[_team.ToString()];
-        panel.transform.FindChild("ResourceName").GetComponent<Text>().text = _resourceType.ToString() + "\n" + _resourceCount.ToString();
-        panel.transform.FindChild("ResourceIcon").GetComponent<Image>().sprite = GUIManager.Instance.Icons[_resourceType.ToString()];
-        panel.transform.FindChild("TotalPopulation").GetComponent<Text>().text = _population.ToString();
-        // population types
+
+        if (_resourceType != Resource.NoResource)
+        {
+            var name = panel.transform.FindChild("ResourceName");
+            var icon = panel.transform.FindChild("ResourceIcon");
+            name.gameObject.SetActive(true);
+            icon.gameObject.SetActive(true);
+            name.GetComponent<Text>().text = _resourceType.ToString() + "\n" + _resourceCount.ToString();
+            icon.GetComponent<Image>().sprite = GUIManager.Instance.Icons[_resourceType.ToString()];
+        }
+        else
+        {
+            panel.transform.FindChild("ResourceName").gameObject.SetActive(false);
+            panel.transform.FindChild("ResourceIcon").gameObject.SetActive(false);
+        }
+
+        var total = panel.transform.FindChild("TotalPopulation").GetComponent<Text>();
+        var primitive = panel.transform.FindChild("PrimitivePopulation").GetComponent<Text>();
+        var industrial = panel.transform.FindChild("IndustrialPopulation").GetComponent<Text>();
+        var spaceAge = panel.transform.FindChild("SpaceAgePopulation").GetComponent<Text>();
+        var zero = Convert.ToString(0);
+
+        if(_team == Team.Indigineous)
+        {
+            total.text = _population.ToString();
+
+            switch(_planetInhabitance)
+            {
+                case Inhabitance.Primitive:
+                    primitive.text = _population.ToString();
+                    industrial.text = zero;
+                    spaceAge.text = zero;
+                    break;
+                case Inhabitance.Industrial:
+                    primitive.text = zero;
+                    industrial.text = _population.ToString();
+                    spaceAge.text = zero;
+                    break;
+                case Inhabitance.SpaceAge:
+                    primitive.text = zero;
+                    industrial.text = zero;
+                    spaceAge.text = _population.ToString();
+                    break;
+            }
+        }
+        else if(_structure != null)
+        {
+            total.text = (_structure.PrimitivePopulation + _structure.IndustrialPopulation + _structure.SpaceAgePopulation).ToString();
+            primitive.text = _structure.PrimitivePopulation.ToString();
+            industrial.text = _structure.IndustrialPopulation.ToString();
+            spaceAge.text = _structure.SpaceAgePopulation.ToString();
+        }
+        else
+        {
+            total.text = zero;
+            primitive.text = zero;
+            industrial.text = zero;
+            spaceAge.text = zero;
+        }
+    }
+
+    public bool IsInRange(Squad squad)
+    {
+        return (squad.transform.position - transform.position).sqrMagnitude <= (_radius * _radius);
+    }
+
+    public bool IsInClickRange(Vector3 click)
+    {
+        return (click - transform.position).sqrMagnitude <= (_clickRadius * _clickRadius);
     }
 
     // for info lists later

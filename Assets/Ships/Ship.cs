@@ -21,7 +21,6 @@ public class Ship : ListableObject
     protected float baseSpeed;
     protected int baseCapacity;
 
-    protected int totalPopulation;
     protected int primitivePopulation;
     protected int industrialPopulation;
     protected int spaceAgePopulation;
@@ -58,11 +57,6 @@ public class Ship : ListableObject
     { 
         get { return protection; }
         set { protection = value; }
-    }
-    public int Population
-    {
-        get { return totalPopulation; }
-        set { totalPopulation = value; }
     }
     public int PrimitivePopulation
     {
@@ -129,13 +123,8 @@ public class Ship : ListableObject
         var icon = entry.transform.FindChild("Icon").GetComponent<Image>();
         icon.sprite = this.icon;
         entry.transform.FindChild("Name").GetComponent<Text>().text = name;
-        entry.transform.FindChild("Population").GetComponent<Text>().text = totalPopulation + " / " + capacity;
+        entry.transform.FindChild("Population").GetComponent<Text>().text = primitivePopulation + industrialPopulation + spaceAgePopulation + " / " + capacity;
         entry.GetComponent<CustomUIAdvanced>().data = listName + "|" + index.ToString();
-
-        var transfer = (bool)data;
-
-        if(transfer && (shipProperties & ShipProperties.Untransferable) > 0)
-            entry.GetComponent<Button>().interactable = false;
 
         return entry;
     }
@@ -183,7 +172,7 @@ public class Ship : ListableObject
         go.transform.FindChild("FirepowerText").GetComponent<Text>().text = firepower.ToString();
         go.transform.FindChild("SpeedText").GetComponent<Text>().text = speed.ToString();
         go.transform.FindChild("CapacityText").GetComponent<Text>().text = capacity.ToString();
-        go.transform.FindChild("PopulationText").GetComponent<Text>().text = totalPopulation.ToString();
+        go.transform.FindChild("PopulationText").GetComponent<Text>().text = (primitivePopulation + industrialPopulation + spaceAgePopulation).ToString();
         go.transform.FindChild("PrimitiveText").GetComponent<Text>().text = primitivePopulation.ToString();
         go.transform.FindChild("IndustrialText").GetComponent<Text>().text = industrialPopulation.ToString();
         go.transform.FindChild("SpaceAgeText").GetComponent<Text>().text = spaceAgePopulation.ToString();

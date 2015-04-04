@@ -202,11 +202,11 @@ public class GameManager : MonoBehaviour
             // debug
             var squad = _players[Team.Kharkyr].CreateNewSquad(new Vector3(0, 0, -10));
             var defs = GenerateShipDefs();
-            squad.AddShip(defs["Fighter"]);
-            squad.AddShip(defs["Transport"]);
-            squad.AddShip(defs["Heavy Fighter"]);
-            squad.AddShip(defs["Behemoth"]);
-            squad.AddShip(defs["Command Ship"]);
+            squad.Ships.Add(defs["Fighter"]);
+            squad.Ships.Add(defs["Transport"]);
+            squad.Ships.Add(defs["Heavy Fighter"]);
+            squad.Ships.Add(defs["Behemoth"]);
+            squad.Ships.Add(defs["Command Ship"]);
             _gameStarted = true;
         }
 

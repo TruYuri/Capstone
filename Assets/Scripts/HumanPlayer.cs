@@ -27,19 +27,25 @@ public class HumanPlayer : Player
 
         // create command ship, look at it, control it     
         _commandShip = CreateNewSquad(Vector3.zero);
-        _commandShip.AddShip(_shipDefinitions["Command Ship"]);
+        _commandShip.Ships.Add(_shipDefinitions["Command Ship"]);
 
         var squad = CreateNewSquad(new Vector3(0, 0, 10.5f));
-        squad.AddShip(_shipDefinitions["Base"].Copy());
-        squad.AddShip(_shipDefinitions["Gathering Complex"].Copy());
-        squad.AddShip(_shipDefinitions["Military Complex"].Copy());
-        squad.AddShip(_shipDefinitions["Research Complex"].Copy());
+        squad.Ships.Add(_shipDefinitions["Base"].Copy());
+        squad.Ships.Add(_shipDefinitions["Gathering Complex"].Copy());
+        squad.Ships.Add(_shipDefinitions["Military Complex"].Copy());
+        squad.Ships.Add(_shipDefinitions["Research Complex"].Copy());
 
+        Ship b, t, f;
         squad = CreateNewSquad(new Vector3(0, 0, 11f));
-        squad.AddShip(_shipDefinitions["Fighter"].Copy());
-        squad.AddShip(_shipDefinitions["Transport"].Copy());
-        squad.AddShip(_shipDefinitions["Heavy Fighter"].Copy());
-        squad.AddShip(_shipDefinitions["Behemoth"].Copy());
+        squad.Ships.Add(_shipDefinitions["Fighter"].Copy());
+        squad.Ships.Add(t = _shipDefinitions["Transport"].Copy());
+        squad.Ships.Add(f = _shipDefinitions["Heavy Fighter"].Copy());
+        squad.Ships.Add(b = _shipDefinitions["Behemoth"].Copy());
+        b.PrimitivePopulation = 25;
+        b.IndustrialPopulation = 15;
+        b.SpaceAgePopulation = 10;
+        f.SpaceAgePopulation = 3;
+        t.PrimitivePopulation = 50;
         /* debug */
 
         _controlledSquad = _commandShip;
@@ -73,7 +79,7 @@ public class HumanPlayer : Player
                     case SECTOR_TAG:
                         var sector = hit.collider.gameObject.GetComponent<Sector>();
                         var tile = sector.GetTileAtPosition(hit.point);
-                        if (tile != null && (hit.point - tile.transform.position).sqrMagnitude <= (tile.ClickRadius * tile.ClickRadius))
+                        if (tile != null && tile.IsInClickRange(hit.point))
                             Control(tile.gameObject);
                         break;
                 }

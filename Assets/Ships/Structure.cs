@@ -4,12 +4,14 @@ using System.Collections.Generic;
 
 public class Structure : Ship, ListableObject
 {
+    private const string LIST_PREFAB = "ShipListing";
     private List<string> constructables;
     private Dictionary<Resource, int> resources;
     private float defense;
     private int deployedCapacity;
     private int gatherRate;
     private int range;
+    private int swapPopulation;
 
     public float Defense 
     { 
@@ -47,6 +49,7 @@ public class Structure : Ship, ListableObject
         this.gatherRate = gatherRate;
         this.constructables = constructables;
         this.range = range;
+        this.swapPopulation = deployedCapacity;
         this.resources = new Dictionary<Resource, int>()
         {
             { Resource.Asterminium, 0 },
@@ -74,11 +77,27 @@ public class Structure : Ship, ListableObject
         return ship;
     }
 
+    public void Deploy(Tile tile)
+    {
+        swapPopulation = capacity;
+        capacity = deployedCapacity;
+        shipProperties |= ShipProperties.Untransferable;
+    }
+
+    public void Undeploy(Tile tile)
+    {
+        capacity = swapPopulation;
+        swapPopulation = deployedCapacity;
+        shipProperties = shipProperties & (~ShipProperties.Untransferable);
+
+        // distribute remaining population to the planet?
+    }
+
     public void PopulateStructurePanel(GameObject list)
     {
         list.transform.FindChild("StructureIcon").GetComponent<Image>().sprite = icon;
         list.transform.FindChild("StructureName").GetComponent<Text>().text = name;
-        list.transform.FindChild("Capacity").GetComponent<Text>().text = totalPopulation.ToString()
+        list.transform.FindChild("Capacity").GetComponent<Text>().text = (primitivePopulation + industrialPopulation + spaceAgePopulation).ToString()
             + " / " + deployedCapacity.ToString();
         list.transform.FindChild("Defense").GetComponent<Text>().text = defense.ToString();
         list.transform.FindChild("GatherRate").GetComponent<Text>().text = gatherRate.ToString();
@@ -86,6 +105,23 @@ public class Structure : Ship, ListableObject
         list.transform.FindChild("OreAmount").GetComponent<Text>().text = resources[Resource.Ore].ToString();
         list.transform.FindChild("AsterminiumAmount").GetComponent<Text>().text = resources[Resource.Asterminium].ToString();
         list.transform.FindChild("ForestAmount").GetComponent<Text>().text = resources[Resource.Forest].ToString();
+    }
+
+    GameObject ListableObject.CreateListEntry(string listName, int index, System.Object data)
+    {
+        var shipEntry = UnityEngine.Resources.Load<GameObject>(LIST_PREFAB);
+        var entry = GameObject.Instantiate(shipEntry) as GameObject;
+        var icon = entry.transform.FindChild("Icon").GetComponent<Image>();
+        icon.sprite = this.icon;
+
+        var name = this.name;
+        if (HumanPlayer.Instance.Squad.Tile != null && this == HumanPlayer.Instance.Squad.Tile.Structure)
+            name = "(Deployed) " + name;
+        entry.transform.FindChild("Name").GetComponent<Text>().text = name;
+        entry.transform.FindChild("Population").GetComponent<Text>().text = primitivePopulation + industrialPopulation + spaceAgePopulation + " / " + capacity;
+        entry.GetComponent<CustomUIAdvanced>().data = listName + "|" + index.ToString();
+
+        return entry;
     }
 
     void ListableObject.PopulateBuildInfo(GameObject popUp, System.Object data)
