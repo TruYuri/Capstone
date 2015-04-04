@@ -65,12 +65,19 @@ public class HumanPlayer : Player
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit)) // check for squads
             {
-                Control(hit.collider.gameObject);
-                ReloadGameplayUI();
-            }
-            else if (Physics.Raycast(ray, out hit)) // check for planets
-            {
-                Control(hit.collider.gameObject);
+                switch(hit.collider.tag)
+                {
+                    case SQUAD_TAG:
+                        Control(hit.collider.gameObject);
+                        break;
+                    case SECTOR_TAG:
+                        var sector = hit.collider.gameObject.GetComponent<Sector>();
+                        var tile = sector.GetTileAtPosition(hit.point);
+                        if (tile != null && (hit.point - tile.transform.position).sqrMagnitude <= (tile.ClickRadius * tile.ClickRadius))
+                            Control(tile.gameObject);
+                        break;
+                }
+
                 ReloadGameplayUI();
             }
         }

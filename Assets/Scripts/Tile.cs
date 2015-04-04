@@ -19,6 +19,7 @@ public class Tile : MonoBehaviour, ListableObject
     private const string PLANET_LARGE_POPULATION_MAX_DETAIL = "PopulationAmountLargeMaximum";
 
     private float _radius;
+    private float _clickRadius;
     private string _name;
     private string _planetType;
     private int _population;
@@ -31,6 +32,7 @@ public class Tile : MonoBehaviour, ListableObject
 
     public string Name { get { return _name; } }
     public Team Team { get { return _team; } }
+    public float ClickRadius { get { return _clickRadius; } }
     public float Radius { get { return _radius; } }
     public Structure Structure { get { return _structure; } }
     public Squad Squad { get { return _squad; } }
@@ -112,10 +114,12 @@ public class Tile : MonoBehaviour, ListableObject
             var renderer = system.GetComponent<Renderer>();
 
             _radius = 2.0f;
+            _clickRadius = 1.5f;
             if (small)
             {
                 system.startSize *= 0.5f;
                 _radius *= 0.5f;
+                _clickRadius = 0.75f;
             }
 
             renderer.material.mainTexture = mapManager.PlanetTextureTable[_planetType].Texture;
@@ -124,8 +128,6 @@ public class Tile : MonoBehaviour, ListableObject
 
             system.enableEmission = true;
             renderer.enabled = true;
-
-            this.GetComponent<SphereCollider>().enabled = true;
 
             if (_population > 0)
             {
