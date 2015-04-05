@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 public class MapManager : MonoBehaviour
 {
-    private readonly Vector3 TOP_RIGHT_OFFSET = new Vector3(98.3f, 0.0f, 149.0f);
-    private readonly Vector3 RIGHT_OFFSET = new Vector3(196.5f, 0, 0.0f);
-    private readonly Vector3 BOTTOM_RIGHT_OFFSET = new Vector3(98.3f, 0.0f, -149.0f);
-    private readonly Vector3 BOTTOM_LEFT_OFFSET = new Vector3(-98.3f, 0.0f, -149.0f);
-    private readonly Vector3 LEFT_OFFSET = new Vector3(-196.5f, 0, 0);
-    private readonly Vector3 TOP_LEFT_OFFSET = new Vector3(-98.3f, 0.0f, 149.0f);
+    private readonly Vector3 TOP_RIGHT_OFFSET = new Vector3(93.1f, 0.0f, 140.6f);
+    private readonly Vector3 RIGHT_OFFSET = new Vector3(186.2f, 0, 0.0f);
+    private readonly Vector3 BOTTOM_RIGHT_OFFSET = new Vector3(93.1f, 0.0f, -140.6f);
+    private readonly Vector3 BOTTOM_LEFT_OFFSET = new Vector3(-93.1f, 0.0f, -140.6f);
+    private readonly Vector3 LEFT_OFFSET = new Vector3(-186.2f, 0, 0);
+    private readonly Vector3 TOP_LEFT_OFFSET = new Vector3(-93.1f, 0.0f, 140.6f);
     private const string SECTOR_PREFAB = "Sector";
     private const string INI_PATH = "/Resources/Planets.ini";
     private const string MATERIALS_PATH = "PlanetTextures/";
@@ -58,7 +58,6 @@ public class MapManager : MonoBehaviour
     void Awake()
     {
         _instance = this;
-        _sectorPrefab = Resources.Load<GameObject>(SECTOR_PREFAB);
         _planetTypeSpawnTable = new Dictionary<string, float>();
         _deploySpawnTable = new Dictionary<string, float>();
         _planetTextureTable = new Dictionary<string, TextureAtlasDetails>();
@@ -180,10 +179,22 @@ public class MapManager : MonoBehaviour
 
         if(!_sectorMap[vertical].ContainsKey(horizontal))
         {
-            var sector = Instantiate(_sectorPrefab, position, Quaternion.identity) as GameObject;
+            var sectorPrefab = Resources.Load<Object>(SECTOR_PREFAB);
+            var sector = Instantiate(sectorPrefab, position, Quaternion.Euler(-90f, 0, 0)) as GameObject;
             var component = sector.GetComponent<Sector>();
             component.Init(new Vector2(horizontal, vertical));
             _sectorMap[vertical].Add(horizontal, sector);
         }
     }
+
+    /*
+    public KeyValuePair<int, int> WorldToSector(Vector3 point)
+    {
+        
+    }
+
+    private List<Sector> FindRoute()
+    {
+
+    }*/
 }

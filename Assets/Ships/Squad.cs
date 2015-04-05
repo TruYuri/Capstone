@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Squad : MonoBehaviour, ListableObject
 {
     private const string SQUAD_LIST_PREFAB = "SquadListing";
-    private const string SECTOR_TAG = "SectorCollider";
+    private const string SECTOR_TAG = "Sector";
     private const string SQUAD_TAG = "Squad";
     private const string TILE_TAG = "Tile";
 
@@ -97,13 +97,13 @@ public class Squad : MonoBehaviour, ListableObject
     void OnTriggerEnter(Collider other)
     {
         if (other.tag == SECTOR_TAG)
-            CheckSector(other.transform.parent.GetComponent<Sector>());
+            CheckSector(other.transform.GetComponent<Sector>());
     }
 
     void OnTriggerStay(Collider other)
     {
         if (other.tag == SECTOR_TAG)
-            CheckSector(other.transform.parent.GetComponent<Sector>());
+            CheckSector(other.transform.GetComponent<Sector>());
     }
 
     void OnTriggerExit(Collider other)

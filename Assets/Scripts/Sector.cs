@@ -12,16 +12,16 @@ public class Sector : MonoBehaviour
 
     // Adjoining sectors
     private Vector2 _gridPos;
-    private Tile[,] _tileGrid;
-    private Dictionary<string, int> _planetCounts;
+    private Tile[,] _tileGrid = new Tile[18, 18];
+    private Dictionary<string, int> _planetCounts = new Dictionary<string, int>();
 
     public Vector2 GridPosition { get { return _gridPos; } }
 
     public void Init(Vector2 gridPos)
     {
         _gridPos = gridPos;
-        _tileGrid = new Tile[18, 18];
-        _planetCounts = new Dictionary<string, int>();
+        //_tileGrid = new Tile[18, 18];
+        //_planetCounts = new Dictionary<string, int>();
     }
 
 	void Start () 

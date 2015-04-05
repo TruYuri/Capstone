@@ -14,13 +14,17 @@ public class TravelEvent : GameEvent
     private Vector3 _destination;
     private float _velocity;
     private List<Vector3> _turnDestinations;
+    private int _travelTurns;
 
+    // turn parameter = turns until command begins. 
+    // calculate travel turns - 1 turn per sector, swap out remaining turns when initial == 0
     public TravelEvent(int turns, Squad squad, Vector3 destination, float velocity) : base(turns)
     {
         _squad = squad;
         _destination = destination;
         _velocity = velocity;
         _squad.OnMission = true;
+
         // calculate turns = 
     }
 
@@ -31,7 +35,15 @@ public class TravelEvent : GameEvent
     {
         base.Progress();
 
-        if(_remainingTurns == 0)
+        if (_remainingTurns > 0 && _travelTurns > 0) // waiting for command to reach the squad
+            return;
+
+        if(_remainingTurns == 0 && _travelTurns > 0) // swap to travelling
+        {
+            _remainingTurns = _travelTurns;
+            _travelTurns = 0;
+        }
+        else if(_remainingTurns == 0)
         {
             _squad.transform.position = _destination;
             _squad.OnMission = false;
