@@ -72,7 +72,8 @@ public class HumanPlayer : Player
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit)) // check for squads
+            EventSystem eventSystem = EventSystem.current;
+            if (Physics.Raycast(ray, out hit) && !eventSystem.IsPointerOverGameObject())
             {
                 switch(hit.collider.tag)
                 {
@@ -80,18 +81,10 @@ public class HumanPlayer : Player
                         Control(hit.collider.gameObject);
                         break;
                     case SECTOR_TAG:
-                        var hits = Physics.RaycastAll(transform.position, transform.forward, 100.0F);
-                        foreach (var sec in hits)
-                        {
-                            var sector = sec.collider.gameObject.GetComponent<Sector>();
-                            if (sector == null)
-                                continue;
-                            var tile = sector.GetTileAtPosition(hit.point);
-                            if (tile != null && tile.IsInClickRange(hit.point))
-                            {
-                                Control(tile.gameObject);
-                            }
-                        }
+                        var sector = hit.collider.gameObject.GetComponent<Sector>();
+                        var tile = sector.GetTileAtPosition(hit.point);
+                        if(tile != null)
+                            Control(tile.gameObject);
                         break;
                 }
 

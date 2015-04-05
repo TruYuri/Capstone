@@ -49,7 +49,7 @@ public class Squad : MonoBehaviour, ListableObject
     void Update()
     {
         if(!_permanentSquad)
-            CheckSectorTile(_currentSector);
+            CheckSectorTile();
     }
 
     void OnCollisionEnter(Collision collision)
@@ -94,22 +94,6 @@ public class Squad : MonoBehaviour, ListableObject
         }
     }
 
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == SECTOR_TAG)
-            CheckSector(other.transform.GetComponent<Sector>());
-    }
-
-    void OnTriggerStay(Collider other)
-    {
-        if (other.tag == SECTOR_TAG)
-            CheckSector(other.transform.GetComponent<Sector>());
-    }
-
-    void OnTriggerExit(Collider other)
-    {
-    }
-
     private void CheckSector(Sector sector)
     {
         if (_currentSector == null || (sector.transform.position - this.transform.position).sqrMagnitude
@@ -118,16 +102,28 @@ public class Squad : MonoBehaviour, ListableObject
             if (_currentSector != null)
                 _currentSector.GetComponent<Renderer>().material.color = Color.white;
             _currentSector = sector;
-            CheckSectorTile(_currentSector);
+            CheckSectorTile();
             _currentSector.GetComponent<Renderer>().material.color = Color.green;
             _currentSector.GenerateNewSectors();
             // GameManager.Instance.Players[this.Team].EndTurn();
         }
     }
 
-    private void CheckSectorTile(Sector sector)
+    private void CheckSectorTile()
     {
-        if (sector == null)
+        // raycast down to find sector
+        var hits = Physics.RaycastAll(new Ray(this.transform.position + Vector3.up * 50f, Vector3.down));
+        foreach(var col in hits)
+        {
+            var sector = col.collider.GetComponent<Sector>();
+            if (sector != null && _currentSector != sector)
+            {
+                _currentSector = col.collider.gameObject.GetComponent<Sector>();
+                _currentSector.GenerateNewSectors();
+            }
+        }
+
+        if (_currentSector == null)
             return;
 
         var tile = _currentSector.GetTileAtPosition(transform.position);
