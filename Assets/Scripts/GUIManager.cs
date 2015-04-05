@@ -109,7 +109,7 @@ public class GUIManager : MonoBehaviour
         var click = false;
         if (HumanPlayer.Instance.Team == squad.Team)
         {
-            if(type && index != -1) // deploy
+            if(type && index != -1 && squad.OnMission == false) // deploy
             {
                 if (tile != null && (squad.Ships[index].ShipProperties & ShipProperties.GroundStructure) > 0 
                     && squad.IsInPlanetRange && tile.Team == squad.Team && tile.Structure == null) // existing planet

@@ -210,6 +210,11 @@ public class GameManager : MonoBehaviour
             _gameStarted = true;
         }
 
+        // debug
+        _players[Team.Kharkyr].EndTurn();
+        _players[Team.Plinthen].EndTurn();
+        _players[Team.Indigineous].EndTurn();
+
         if(!_paused)
             NextEvent();
 	}
@@ -221,16 +226,20 @@ public class GameManager : MonoBehaviour
 
     public void NextEvent()
     {
-        if (_eventQueue.Count > 0)
+        while (_eventQueue.Count > 0)
         {
-            if (_eventQueue.Peek().Stage == GameEventStage.Begin)
-                _eventQueue.Peek().Progress();
+            _eventQueue.Peek().Progress();
+            _eventQueue.Peek().Update();
 
             if (_eventQueue.Peek().Stage == GameEventStage.Continue)
                 _nextEventQueue.Enqueue(_eventQueue.Dequeue());
             else // end
                 _eventQueue.Dequeue();
         }
+
+
+        foreach (var item in _nextEventQueue)
+            item.Update();
 
         int count = 0;
         foreach (var player in _players)

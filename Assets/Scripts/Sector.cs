@@ -15,10 +15,8 @@ public class Sector : MonoBehaviour
     private Tile[,] _tileGrid;
     private Dictionary<string, int> _planetCounts;
 
-	// Use this for initialization
+    public Vector2 GridPosition { get { return _gridPos; } }
 
-    // note: ONLY RUN THIS ONCE, AT LOAD.
-    // copy the first generated sector and just change values - faster
     public void Init(Vector2 gridPos)
     {
         _gridPos = gridPos;
@@ -174,7 +172,11 @@ public class Sector : MonoBehaviour
     public Tile GetTileAtPosition(Vector3 point)
     {
         var pos = WorldToGridArray(point);
-        return _tileGrid[pos.Key, pos.Value];
+
+        if(pos.Key >= 0 && pos.Value >= 0 &&
+            pos.Key <= 17 && pos.Value <= 17)
+            return _tileGrid[pos.Key, pos.Value];
+        return null;
     }
 	
     public Tile CreateTileAtPosition(string type, Vector3 pos)

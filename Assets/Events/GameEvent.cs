@@ -20,4 +20,10 @@ public class GameEvent
         _remainingTurns--;
         _stage = (_remainingTurns == 0 ? GameEventStage.End : GameEventStage.Continue);
 	}
+
+    // progress() runs first, then Update should run without ever progressing anything. This is for, say, cosmetic stuff.
+    public virtual void Update()
+    {
+
+    }
 }

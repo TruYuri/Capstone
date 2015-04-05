@@ -19,7 +19,6 @@ public class BuildEvent : GameEvent
 
         if (_remainingTurns != 0)
             return;
-
         _tile.Squad.Ships.Add(_ship);
     }
 }

@@ -53,6 +53,7 @@ public class HumanPlayer : Player
         Camera.main.transform.LookAt(_commandShip.transform);
         GUIManager.Instance.SquadSelected(_commandShip);
         GUIManager.Instance.SetSquadControls(_controlledSquad);
+        _currentCameraDistance = Camera.main.transform.position - _commandShip.transform.position;
     }
 
     void Start()
@@ -63,6 +64,8 @@ public class HumanPlayer : Player
     {
         if (GameManager.Instance.Paused || _turnEnded)
             return;
+
+        // Control(_controlledSquad.gameObject);
 
         // right click - control
         if (Input.GetMouseButtonDown(1))
@@ -77,10 +80,18 @@ public class HumanPlayer : Player
                         Control(hit.collider.gameObject);
                         break;
                     case SECTOR_TAG:
-                        var sector = hit.collider.gameObject.GetComponent<Sector>();
-                        var tile = sector.GetTileAtPosition(hit.point);
-                        if (tile != null && tile.IsInClickRange(hit.point))
-                            Control(tile.gameObject);
+                        var hits = Physics.RaycastAll(transform.position, transform.forward, 100.0F);
+                        foreach (var sec in hits)
+                        {
+                            var sector = sec.collider.gameObject.GetComponent<Sector>();
+                            if (sector == null)
+                                continue;
+                            var tile = sector.GetTileAtPosition(hit.point);
+                            if (tile != null && tile.IsInClickRange(hit.point))
+                            {
+                                Control(tile.gameObject);
+                            }
+                        }
                         break;
                 }
 
@@ -95,12 +106,13 @@ public class HumanPlayer : Player
         }
 
         var scrollChange = Input.GetAxis(MOUSE_SCROLLWHEEL);
-        Camera.main.transform.position += 10.0f * scrollChange * Camera.main.transform.forward;
+        var change = 10.0f * scrollChange * Camera.main.transform.forward;
+        Camera.main.transform.position += change;
+        _currentCameraDistance += change;
 
         if (_controlledSquad != null)
         {
-            _currentCameraDistance = this.transform.position - _controlledSquad.transform.position;
-
+            transform.position = _controlledSquad.transform.position + _currentCameraDistance;
             switch (_controlledSquad.tag)
             {
                 case TILE_TAG:
@@ -123,29 +135,28 @@ public class HumanPlayer : Player
 
     private void UpdateSquad()
     {
-        /*
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit))
+            EventSystem eventSystem = EventSystem.current;
+            if (Physics.Raycast(ray, out hit) && !eventSystem.IsPointerOverGameObject()
+                && _controlledSquad.Team == _team && _controlledSquad.OnMission == false)
             {
+                GameManager.Instance.AddEvent(new TravelEvent(2, _controlledSquad, hit.point, 10.0f));
+                /*
                 switch (hit.collider.tag)
                 {
-                    case TILE_TAG:
-                        GUIManager.Instance.SquadToTile(_controlledSquad.GetComponent<Squad>(), hit.collider.GetComponent<Tile>());
-                        break;
                     case SECTOR_TAG: // empty space
                         GUIManager.Instance.SquadToSpace(_controlledSquad.GetComponent<Squad>(), hit.point);
                         break;
                     case SQUAD_TAG:
                         GUIManager.Instance.SquadToSquad(_controlledSquad.GetComponent<Squad>(), hit.collider.GetComponent<Squad>());
                         break;
-                }
+                }*/
             }
             
         }
-        */
 
         GUIManager.Instance.SetSquadControls(_controlledSquad);
     }
@@ -171,7 +182,7 @@ public class HumanPlayer : Player
             }
         }
 
-        UpdateSquad();
+        GUIManager.Instance.SetSquadControls(_controlledSquad);
     }
 
     public Ship GetShipDefinition(string name)

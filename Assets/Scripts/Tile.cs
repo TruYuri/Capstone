@@ -34,6 +34,7 @@ public class Tile : MonoBehaviour, ListableObject
     public Team Team { get { return _team; } }
     public Structure Structure { get { return _structure; } }
     public Squad Squad { get { return _squad; } }
+    public float Radius { get { return _radius; } }
     public int Population 
     { 
         get { return _population; }

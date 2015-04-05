@@ -195,7 +195,13 @@ public class Player : MonoBehaviour
     public Squad CreateNewSquad(Squad fromSquad)
     {
         var val = GameManager.Generator.Next(2);
-        var dist = fromSquad.GetComponent<SphereCollider>().radius / 2.0f;
+
+        float dist;
+        var tile = fromSquad.GetComponent<Tile>();
+        if (tile != null)
+            dist = tile.Radius / 2.0f;
+        else
+            dist = fromSquad.GetComponent<SphereCollider>().radius / 2.0f;
         var offset = val == 0 ? new Vector3(dist, 0, 0) : new Vector3(0, 0, dist);
         var squad = CreateNewSquad(fromSquad.transform.position + offset);
         fromSquad.Colliders.Add(squad);

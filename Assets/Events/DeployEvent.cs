@@ -13,6 +13,7 @@ public class DeployEvent : GameEvent
         _structure = ship;
         _squad = squad;
         _tile = tile;
+        _squad.OnMission = true;
     }
 
     public override void Progress()
@@ -23,12 +24,14 @@ public class DeployEvent : GameEvent
             return;
 
         _tile = _squad.Deploy(_structure, _tile);
-
+        _squad.OnMission = false;
         if(_squad.Ships.Count == 0 && _tile.Squad != _squad)
         {
             if (HumanPlayer.Instance.Squad == _squad)
                 HumanPlayer.Instance.Control(_tile.gameObject);
-            GameManager.Instance.Players[_squad.Team].DeleteSquad(_squad);
+            var team = _squad.Team;
+            GameManager.Instance.Players[_squad.Team].CleanSquad(_squad);
+            GameManager.Instance.Players[team].DeleteSquad(_squad);
         }
     }
 }

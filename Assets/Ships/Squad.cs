@@ -28,6 +28,7 @@ public class Squad : MonoBehaviour, ListableObject
     public List<Squad> Colliders { get { return _collidingSquads; } }
     public bool IsInPlanetRange { get { return _inTileRange; } }
     public Tile Tile { get { return _currentTile; } }
+    public bool OnMission;
 
 	// Use this for initialization
 	void Start () 
