@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 
 public class CustomUI : MonoBehaviour
@@ -8,8 +9,6 @@ public class CustomUI : MonoBehaviour
 
     void Start()
     {
-        if (data == "SpaceRight")
-            data = data;
         GUIManager.Instance.Register(data, this, disableAtStart);
     }
 
@@ -77,6 +76,28 @@ public class CustomUI : MonoBehaviour
     public void ClickSoldierTransfer()
     {
         GUIManager.Instance.SoldierTransfer(data);
+    }
+
+    public void ClickSquadsList()
+    {
+        var split = data.Split('|');
+        GUIManager.Instance.SetSquadList(Convert.ToBoolean(split[1]));
+
+        if(split[1] == "true")
+            data = split[0] + "|false";
+        else
+            data = split[0] + "|true";
+    }
+
+    public void ClickTileList()
+    {
+        var split = data.Split('|');
+        GUIManager.Instance.SetTileList(Convert.ToBoolean(split[1]));
+
+        if (split[1] == "true")
+            data = split[0] + "|false";
+        else
+            data = split[0] + "|true";
     }
 
     public void Pause()

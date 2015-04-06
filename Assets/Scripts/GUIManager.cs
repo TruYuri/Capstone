@@ -51,7 +51,9 @@ public class GUIManager : MonoBehaviour
             { "Constructables", -1 },
             { "AltSquadList", -1 },
             { "AltShipList", -1 },
-            { "SelectedShipList", -1 }
+            { "SelectedShipList", -1 },
+            { "SquadList", -1 },
+            { "TileList", -1 }
         };
 
         _icons = new Dictionary<string, Sprite>()
@@ -126,12 +128,39 @@ public class GUIManager : MonoBehaviour
         manage.interactable = (squad.Ships.Count > 0 || squad.Colliders.Count > 0) && squad.Team == HumanPlayer.Instance.Team;
     }
 
-    public void SetUIElements(bool squad, bool battle, bool tile, bool manage)
+    public void SetSquadList(bool set)
+    {
+        _interface["SquadListControl"].gameObject.SetActive(set);
+
+        if (set)
+            ReloadSquadList();
+    }
+
+    public void SetTileList(bool set)
+    {
+        _interface["TileListControl"].gameObject.SetActive(set);
+
+        if (set)
+            ReloadTileList();
+    }
+
+    private void ReloadSquadList()
+    {
+        PopulateList<Squad>(HumanPlayer.Instance.Squads, "SquadList", ListingType.Info, null);
+    }
+
+    private void ReloadTileList()
+    {
+        PopulateList<Tile>(HumanPlayer.Instance.Tiles, "TileList", ListingType.Info, null);
+    }
+
+    public void SetUIElements(bool squad, bool battle, bool tile, bool manage, bool lists)
     {
         _interface["SquadMenu"].gameObject.SetActive(squad);
         _interface["BattleMenu"].gameObject.SetActive(battle);
         _interface["PlanetInfo"].gameObject.SetActive(tile);
         _interface["ManageMenu"].gameObject.SetActive(manage);
+        _interface["MenuControl"].gameObject.SetActive(lists);
     }
 
     public void ItemClicked(string data)
@@ -156,6 +185,14 @@ public class GUIManager : MonoBehaviour
                 break;
             case "Constructables":
                 HumanPlayer.Instance.CreateBuildEvent(split[1]);
+                break;
+            case "SquadList":
+                _indices[split[0]] = int.Parse(split[1]);
+                HumanPlayer.Instance.Control(HumanPlayer.Instance.Squads[_indices[split[0]]].gameObject);
+                break;
+            case "TileList":
+                _indices[split[0]] = int.Parse(split[1]);
+                HumanPlayer.Instance.Control(HumanPlayer.Instance.Tiles[_indices[split[0]]].gameObject);
                 break;
         }
     }
@@ -199,6 +236,10 @@ public class GUIManager : MonoBehaviour
                         _interface["ConstructionInfo"].gameObject, _descriptions[split[1]]);
                     _interface["ConstructionInfo"].gameObject.SetActive(true);
                     break;
+                case "SquadList":
+                    break;
+                case "TileList":
+                    break;
             }
         }
 
@@ -213,6 +254,10 @@ public class GUIManager : MonoBehaviour
                 break;
             case "Constructables":
                 _interface["ConstructionInfo"].transform.position = Input.mousePosition;
+                break;
+            case "SquadList":
+                break;
+            case "TileList":
                 break;
         }
     }
@@ -232,6 +277,10 @@ public class GUIManager : MonoBehaviour
             case "Constructables":
                 _interface["ConstructionInfo"].gameObject.SetActive(false);
                 break;
+            case "SquadList":
+                break;
+            case "TileList":
+                break;
         }
 
         _popUpTimer = 1.0f;
@@ -239,7 +288,7 @@ public class GUIManager : MonoBehaviour
 
     public void PopulateManageLists()
     {
-        GUIManager.Instance.SetUIElements(false, false, false, true);
+        SetUIElements(false, false, false, true, false);
         _indices["MainShipList"] = -1;
         ClearList("MainShipList");
 
@@ -302,8 +351,11 @@ public class GUIManager : MonoBehaviour
 
         _interface["DeployText"].GetComponent<Text>().text = "Deploy";
         _interface["Deploy"].GetComponent<CustomUI>().data = "Deploy";
-        SetUIElements(true, false, false, false);
+        SetUIElements(true, false, false, false, true);
         SetSquadControls(squad);
+
+        ReloadSquadList();
+        ReloadTileList();
     }
 
     public void TileSelected(Tile tile, int playerStations, Dictionary<string, Ship> defs)
@@ -336,7 +388,7 @@ public class GUIManager : MonoBehaviour
             PopulateList<Ship>(buildList, "Constructables", ListingType.Build, tile.Structure.Resources);
         }
 
-        SetUIElements(true, false, true, false);
+        SetUIElements(true, false, true, false, true);
         SetSquadControls(squad);
     }
 
@@ -706,7 +758,7 @@ public class GUIManager : MonoBehaviour
 
         }
 
-        SetUIElements(false, true, false, false);
+        SetUIElements(false, true, false, false, false);
     }
 
     public void Battle()
@@ -722,6 +774,6 @@ public class GUIManager : MonoBehaviour
             _interface["BattleLost"].gameObject.SetActive(true);
         }
 
-        SetUIElements(false, false, false, false);
+        SetUIElements(false, false, false, false, false);
     }
 }

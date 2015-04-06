@@ -55,6 +55,8 @@ public class HumanPlayer : Player
         GUIManager.Instance.SquadSelected(_commandShip);
         GUIManager.Instance.SetSquadControls(_controlledSquad);
         _currentCameraDistance = Camera.main.transform.position - _commandShip.transform.position;
+        GUIManager.Instance.SetSquadList(false);
+        GUIManager.Instance.SetTileList(false);
     }
 
     void Start()
@@ -208,6 +210,7 @@ public class HumanPlayer : Player
     {
         base.Control(gameObject);
         transform.position = _controlledSquad.transform.position + _currentCameraDistance;
+        ReloadGameplayUI();
     }
 
     public override float PrepareBattleConditions(Squad squad1, Squad squad2)

@@ -18,6 +18,8 @@ public class Tile : MonoBehaviour, ListableObject
     private const string PLANET_LARGE_POPULATION_MIN_DETAIL = "PopulationAmountLargeMinimum";
     private const string PLANET_LARGE_POPULATION_MAX_DETAIL = "PopulationAmountLargeMaximum";
 
+    private const string TILE_LISTING_PREFAB = "TileListing";
+
     private float _radius;
     private float _clickRadius;
     private string _name;
@@ -158,14 +160,14 @@ public class Tile : MonoBehaviour, ListableObject
 
     public void Relinquish()
     {
-        GameManager.Instance.Players[_team].Squads.Remove(_squad);
+        GameManager.Instance.Players[_team].Tiles.Remove(this);
         _team = Team.Uninhabited;
     }
 
     public void Claim(Team team)
     {
         _team = team;
-        GameManager.Instance.Players[team].Squads.Add(_squad);
+        GameManager.Instance.Players[_team].Tiles.Add(this);
         _squad.Team = _team;
     }
 
@@ -301,7 +303,24 @@ public class Tile : MonoBehaviour, ListableObject
     }
 
     // for info lists later
-    GameObject ListableObject.CreateListEntry(string listName, int index, System.Object data) { return null; }
+    GameObject ListableObject.CreateListEntry(string listName, int index, System.Object data) 
+    {
+        var tileEntry = Resources.Load<GameObject>(TILE_LISTING_PREFAB);
+        var entry = Instantiate(tileEntry) as GameObject;
+
+        entry.transform.FindChild("Name").GetComponent<Text>().text = _name;
+        var tileRenderer = this.GetComponent<ParticleSystem>().GetComponent<Renderer>();
+        var uiRenderer = entry.transform.FindChild("Icon").GetComponent<RawImage>();
+        uiRenderer.texture = tileRenderer.material.mainTexture;
+        uiRenderer.uvRect = new Rect(tileRenderer.material.mainTextureOffset.x,
+                                     tileRenderer.material.mainTextureOffset.y,
+                                     tileRenderer.material.mainTextureScale.x,
+                                     tileRenderer.material.mainTextureScale.y);
+        entry.GetComponent<CustomUIAdvanced>().data = listName + "|" + index;
+
+        return entry;
+    }
+
     GameObject ListableObject.CreateBuildListEntry(string listName, int index, System.Object data) { return null; }
     void ListableObject.PopulateBuildInfo(GameObject popUp, System.Object data) { }
     void ListableObject.PopulateGeneralInfo(GameObject popUp, System.Object data) { }

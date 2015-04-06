@@ -404,7 +404,7 @@ public class Squad : MonoBehaviour, ListableObject
         if (tile != null)
             name = tile.Name;
 
-        if (this == HumanPlayer.Instance.Squad)
+        if (this == HumanPlayer.Instance.Squad && listName == "AltSquadList")
             name = "(Self) " + name;
 
         entry.transform.FindChild("Text").GetComponent<Text>().text = name;

@@ -17,11 +17,13 @@ public class Player : MonoBehaviour
     protected Dictionary<string, Ship> _shipDefinitions;
     protected Dictionary<string, Research> _shipResearchMap;
     protected List<Squad> _squads;
+    protected List<Tile> _tiles;
     protected int _numResearchStations;
     protected ResearchTree _militaryTree;
     protected ResearchTree _scienceTree;
 
     public Team Team { get { return _team; } }
+    public List<Tile> Tiles { get { return _tiles; } }
     public List<Squad> Squads { get { return _squads; } }
     public bool TurnEnded { get { return _turnEnded; } }
 
@@ -33,6 +35,7 @@ public class Player : MonoBehaviour
     {
         _team = team;
         _squads = new List<Squad>();
+        _tiles = new List<Tile>();
         _shipDefinitions = GameManager.Instance.GenerateShipDefs();
         _militaryTree = GameManager.Instance.GenerateMilitaryTree(_shipDefinitions);
         _scienceTree = GameManager.Instance.GenerateScienceTree(_shipDefinitions);
