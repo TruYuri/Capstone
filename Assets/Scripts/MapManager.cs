@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -26,7 +28,6 @@ public class MapManager : MonoBehaviour
     private const string PLANET_ASTERMINIUM_DETAIL = "Asterminium";
 
     private static MapManager _instance;
-    private Object _sectorPrefab;
     private Dictionary<string, float> _planetTypeSpawnTable;
     private Dictionary<string, float> _deploySpawnTable;
     private Dictionary<string, TextureAtlasDetails> _planetTextureTable;
@@ -54,6 +55,7 @@ public class MapManager : MonoBehaviour
     public Dictionary<string, Dictionary<Inhabitance, float>> PlanetInhabitanceSpawnTable { get { return _planetInhabitanceSpawnTable; } }
     public Dictionary<string, Dictionary<Resource, float>> PlanetResourceSpawnTable { get { return _planetResourceSpawnTable; } }
     public Dictionary<string, Dictionary<string, string>> PlanetSpawnDetails { get { return _planetSpawnDetails; } }
+    public Dictionary<int, Dictionary<int, GameObject>> SectorMap { get { return _sectorMap; } }
 
     void Awake()
     {
@@ -179,7 +181,7 @@ public class MapManager : MonoBehaviour
 
         if(!_sectorMap[vertical].ContainsKey(horizontal))
         {
-            var sectorPrefab = Resources.Load<Object>(SECTOR_PREFAB);
+            var sectorPrefab = Resources.Load<UnityEngine.Object>(SECTOR_PREFAB);
             var sector = Instantiate(sectorPrefab, position, Quaternion.Euler(-90f, 0, 0)) as GameObject;
             var component = sector.GetComponent<Sector>();
             component.Init(new Vector2(horizontal, vertical));
@@ -187,14 +189,114 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    /*
-    public KeyValuePair<int, int> WorldToSector(Vector3 point)
+    private class AStarSectorNode
     {
-        
+        public List<KeyValuePair<int, int>> sectorPath;
+        public int g;
+        public int h;
+        public string path;
+
+        public AStarSectorNode(List<KeyValuePair<int, int>> path, string val, int gf)
+        {
+            this.sectorPath = path;
+            this.g = gf;
+            this.h = path.Count; // heuristic = size of path.
+            // alternative: h = sum of sqrt dist from goal
+            this.path = val;
+        }
+
+        public List<AStarSectorNode> succ()
+        {
+            List<AStarSectorNode> children = new List<AStarSectorNode>();
+            
+            var v = sectorPath[sectorPath.Count - 1].Key;
+            var h = sectorPath[sectorPath.Count - 1].Value;
+            if(Mathf.Abs(v) % 2 == 0)
+            {
+                children.Add(New(v + 1, h, 'N'));
+                children.Add(New(v, h + 1, 'R'));
+                children.Add(New(v - 1, h, 'E'));
+                children.Add(New(v - 1, h - 1, 'W'));
+                children.Add(New(v, h - 1, 'L'));
+                children.Add(New(v + 1, h - 1, 'S'));
+            }
+            else
+            {
+                children.Add(New(v + 1, h + 1, 'N'));
+                children.Add(New(v, h + 1, 'R'));
+                children.Add(New(v - 1, h + 1, 'E'));
+                children.Add(New(v - 1, h, 'W'));
+                children.Add(New(v, h - 1, 'L'));
+                children.Add(New(v + 1, h, 'S'));
+            }
+
+            return children;
+        }
+
+        private AStarSectorNode New(int x, int y, char c)
+        {
+            var list = new List<KeyValuePair<int, int>>(sectorPath);
+            list.Add(new KeyValuePair<int,int>(x, y));
+            return new AStarSectorNode(list, path + c, g + 1);
+        }
     }
 
-    private List<Sector> FindRoute()
+    public List<KeyValuePair<int, int>> AStarSearch(Sector start, Sector goal)
     {
+        var fringe = new List<AStarSectorNode>();
+        var fringeSet = new Dictionary<string, AStarSectorNode>();
+        var explored = new HashSet<string>();
 
-    }*/
+        var startPos = new KeyValuePair<int, int>((int)start.GridPosition.x, (int)start.GridPosition.y);
+        var endpos = new KeyValuePair<int, int>((int)goal.GridPosition.x, (int)goal.GridPosition.y);
+
+        var initList = new List<KeyValuePair<int, int>>();
+        initList.Add(startPos);
+
+        AStarSectorNode init = new AStarSectorNode(initList, string.Empty, 0);
+        fringe.Add(init);
+        fringeSet.Add(init.path, init);
+
+        while(fringe.Count > 0)
+        {
+            AStarSectorNode cur = fringe[0];
+
+            var last = cur.sectorPath[cur.sectorPath.Count - 1];
+            if (last.Key == endpos.Key && last.Value == endpos.Value)
+                return cur.sectorPath;
+
+            fringe.RemoveAt(0);
+            fringeSet.Remove(cur.path);
+            explored.Add(cur.path);
+
+            List<AStarSectorNode> exp = cur.succ();
+
+            for(int i = 0; i < 6; i++) // 6 possible movements
+            {
+                if(explored.Contains(exp[i].path))
+                    continue;
+
+                bool inFringe = fringeSet.ContainsKey(exp[i].path);
+                if(!inFringe)
+                {
+                    fringe.Add(exp[i]);
+                    fringe = fringe.OrderBy(o => o.h + o.g).ToList();
+                    fringeSet.Add(exp[i].path, exp[i]);
+                }
+                else
+                {
+                    var val = fringeSet[exp[i].path];
+
+                    if(exp[i].g + exp[i].h < val.g + val.h)
+                    {
+                        val.g = exp[i].g;
+                        val.h = exp[i].h;
+                        val.sectorPath = exp[i].sectorPath;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
 }

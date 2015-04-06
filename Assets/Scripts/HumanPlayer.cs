@@ -136,7 +136,7 @@ public class HumanPlayer : Player
             if (Physics.Raycast(ray, out hit) && !eventSystem.IsPointerOverGameObject()
                 && _controlledSquad.Team == _team && _controlledSquad.OnMission == false)
             {
-                GameManager.Instance.AddEvent(new TravelEvent(2, _controlledSquad, hit.point, 10.0f));
+                GameManager.Instance.AddEvent(new TravelEvent(2, _controlledSquad, hit.collider.gameObject.GetComponent<Sector>(), hit.point, 10.0f));
                 /*
                 switch (hit.collider.tag)
                 {

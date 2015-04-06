@@ -13,19 +13,22 @@ public class TravelEvent : GameEvent
     private Squad _squad;
     private Vector3 _destination;
     private float _velocity;
+    private Sector _destinationSector;
+    private List<KeyValuePair<int, int>> _destinationSectors;
     private List<Vector3> _turnDestinations;
     private int _travelTurns;
 
     // turn parameter = turns until command begins. 
     // calculate travel turns - 1 turn per sector, swap out remaining turns when initial == 0
-    public TravelEvent(int turns, Squad squad, Vector3 destination, float velocity) : base(turns)
+    public TravelEvent(int turns, Squad squad, Sector destinationSector, Vector3 destination, float velocity) : base(turns)
     {
         _squad = squad;
         _destination = destination;
         _velocity = velocity;
         _squad.OnMission = true;
-
-        // calculate turns = 
+        _destinationSector = destinationSector;
+        _destinationSectors = MapManager.Instance.AStarSearch(squad.Sector, destinationSector);
+        _travelTurns = _destinationSectors.Count;
     }
 
     // when travelling, travel between planets (x = 10x, y = 10y)
@@ -34,6 +37,7 @@ public class TravelEvent : GameEvent
     public override void Progress()
     {
         base.Progress();
+        _turnDestinations = new List<Vector3>();
 
         if (_remainingTurns > 0 && _travelTurns > 0) // waiting for command to reach the squad
             return;
@@ -49,12 +53,12 @@ public class TravelEvent : GameEvent
             _squad.OnMission = false;
             return;
         }
-        
-        // force to last waypoint, if applicable
+
+        _destinationSectors.RemoveAt(0);
 
         // calculate new waypoints
-        _turnDestinations = new List<Vector3>();
-        _turnDestinations.Add(_destination);
+        var next = _destinationSectors[0];
+        _turnDestinations.Add(MapManager.Instance.SectorMap[next.Key][next.Value].transform.position);
 
         var diff = _squad.transform.position - _destination;
         if (diff.magnitude < 0.1f)

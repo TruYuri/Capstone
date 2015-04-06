@@ -8,6 +8,8 @@ public class CustomUI : MonoBehaviour
 
     void Start()
     {
+        if (data == "SpaceRight")
+            data = data;
         GUIManager.Instance.Register(data, this, disableAtStart);
     }
 
