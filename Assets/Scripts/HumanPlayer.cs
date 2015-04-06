@@ -28,6 +28,7 @@ public class HumanPlayer : Player
         // create command ship, look at it, control it     
         _commandShip = CreateNewSquad(Vector3.zero);
         _commandShip.Ships.Add(_shipDefinitions["Command Ship"]);
+        _commandShip.Ships.Add(_shipDefinitions["Research Complex"]);
 
         var squad = CreateNewSquad(new Vector3(0, 0, 10.5f));
         squad.Ships.Add(_shipDefinitions["Base"].Copy());
@@ -99,7 +100,7 @@ public class HumanPlayer : Player
         }
 
         var scrollChange = Input.GetAxis(MOUSE_SCROLLWHEEL);
-        var change = 10.0f * scrollChange * Camera.main.transform.forward;
+        var change = 50.0f * scrollChange * Camera.main.transform.forward;
         Camera.main.transform.position += change;
         _currentCameraDistance += change;
 
@@ -136,7 +137,7 @@ public class HumanPlayer : Player
             if (Physics.Raycast(ray, out hit) && !eventSystem.IsPointerOverGameObject()
                 && _controlledSquad.Team == _team && _controlledSquad.OnMission == false)
             {
-                GameManager.Instance.AddEvent(new TravelEvent(2, _controlledSquad, hit.collider.gameObject.GetComponent<Sector>(), hit.point, 10.0f));
+                GameManager.Instance.AddEvent(new TravelEvent(1, _controlledSquad, hit.collider.gameObject.GetComponent<Sector>(), hit.point, 10.0f));
                 /*
                 switch (hit.collider.tag)
                 {

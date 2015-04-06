@@ -37,15 +37,15 @@ public class TravelEvent : GameEvent
     public override void Progress()
     {
         base.Progress();
-        _turnDestinations = new List<Vector3>();
 
         if (_remainingTurns > 0 && _travelTurns > 0) // waiting for command to reach the squad
             return;
 
         if(_remainingTurns == 0 && _travelTurns > 0) // swap to travelling
         {
-            _remainingTurns = _travelTurns;
+            _remainingTurns = _travelTurns - 1;
             _travelTurns = 0;
+            _stage = GameEventStage.Continue;
         }
         else if(_remainingTurns == 0)
         {
@@ -54,23 +54,26 @@ public class TravelEvent : GameEvent
             return;
         }
 
-        _destinationSectors.RemoveAt(0);
+        if (_turnDestinations != null && _turnDestinations.Count > 0)
+            _squad.transform.position = _turnDestinations[_turnDestinations.Count - 1];
 
-        // calculate new waypoints
-        var next = _destinationSectors[0];
-        _turnDestinations.Add(MapManager.Instance.SectorMap[next.Key][next.Value].transform.position);
+        _turnDestinations = new List<Vector3>();
 
-        var diff = _squad.transform.position - _destination;
-        if (diff.magnitude < 0.1f)
+        if(_destinationSectors.Count > 1)
+            _destinationSectors.RemoveAt(0);
+
+        if (_destinationSectors.Count > 1)
         {
-            _turnDestinations.RemoveAt(0);
-            _squad.OnMission = false;
+            var next = _destinationSectors[0];
+            _turnDestinations.Add(MapManager.Instance.SectorMap[next.Key][next.Value].transform.position);
         }
+        else
+            _turnDestinations.Add(_destination);
     }
 
     public override void Update()
     {
-        if (_turnDestinations.Count == 0)
+        if (_travelTurns > 0 || _turnDestinations == null || _turnDestinations.Count == 0)
             return;
 
         var dir = _turnDestinations[0] - _squad.transform.position;

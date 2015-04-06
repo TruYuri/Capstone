@@ -114,7 +114,8 @@ public class GUIManager : MonoBehaviour
                 if (tile != null && (squad.Ships[index].ShipProperties & ShipProperties.GroundStructure) > 0 
                     && squad.IsInPlanetRange && tile.Team == squad.Team && tile.Structure == null) // existing planet
                     click = true;
-                else if (tile == null && (squad.Ships[index].ShipProperties & ShipProperties.SpaceStructure) > 0)// empty space
+                else if (tile == null && (squad.Ships[index].ShipProperties & ShipProperties.SpaceStructure) > 0 && 
+                    squad.Sector.IsValidLocation(squad.transform.position))// empty space
                     click = true;
             }
             else if(tile != null && squad == tile.Squad && tile.Structure != null)// undeploy
@@ -139,6 +140,8 @@ public class GUIManager : MonoBehaviour
         switch(split[0])
         {
             case "MainShipList":
+                _indices[split[0]] = int.Parse(split[1]);
+                break;
             case "AltShipList":
                 _indices[split[0]] = int.Parse(split[1]);
                 UpdateTransferInterface(false, true, false, true);

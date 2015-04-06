@@ -148,6 +148,21 @@ public class Sector : MonoBehaviour
         return new Vector2(x, y);
     }
 
+    public bool IsValidLocation(Vector3 pos)
+    {
+        var gridPos = WorldToGridArray(pos);
+        
+        var x = gridPos.Key;
+        if(gridPos.Key > 9)
+            x = 17 - gridPos.Key;
+
+        var offset = (18 - (10 + (x / 2) * 2)) / 2;
+        if (gridPos.Value < 18 - offset && gridPos.Value > -1 + offset)
+            return true;
+   
+        return false;
+    }
+
     private KeyValuePair<int, int> WorldToGridArray(Vector3 point)
     {
         var diffreal = point - this.transform.position;
@@ -173,16 +188,18 @@ public class Sector : MonoBehaviour
     {
         var pos = WorldToGridArray(point);
 
-        if(pos.Key >= 0 && pos.Value >= 0 &&
+        if (pos.Key >= 0 && pos.Value >= 0 &&
             pos.Key <= 17 && pos.Value <= 17)
+        {
             return _tileGrid[pos.Key, pos.Value];
+        }
         return null;
     }
 	
     public Tile CreateTileAtPosition(string type, Vector3 pos)
     {
         var relativePos = WorldToGridReal(pos);
-        var gridPos = WorldToGridArray(relativePos);
+        var gridPos = WorldToGridArray(pos);
         var realPosition = new Vector3(relativePos.x, 0f, relativePos.y)
             + new Vector3(relativePos.x >= 0 ? 5 : -5, 0.0f, relativePos.y >= 0 ? 5 : -5);
 

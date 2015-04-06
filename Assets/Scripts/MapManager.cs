@@ -151,8 +151,8 @@ public class MapManager : MonoBehaviour
     public void GenerateNewSectors(Vector3 realPosition, Vector2 gridPosition)
     {
         var position = realPosition;
-        var v = (int)gridPosition.y;
-        var h = (int)gridPosition.x;
+        var v = (int)gridPosition.x;
+        var h = (int)gridPosition.y;
 
         if (Mathf.Abs(v) % 2 == 0) // even grid row
         {
@@ -184,7 +184,7 @@ public class MapManager : MonoBehaviour
             var sectorPrefab = Resources.Load<UnityEngine.Object>(SECTOR_PREFAB);
             var sector = Instantiate(sectorPrefab, position, Quaternion.Euler(-90f, 0, 0)) as GameObject;
             var component = sector.GetComponent<Sector>();
-            component.Init(new Vector2(horizontal, vertical));
+            component.Init(new Vector2(vertical, horizontal));
             _sectorMap[vertical].Add(horizontal, sector);
         }
     }
