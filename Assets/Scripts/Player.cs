@@ -30,6 +30,7 @@ public class Player : MonoBehaviour
     protected Squad _playerSquad;
     protected Squad _enemySquad;
     protected float _winChance;
+    protected BattleType _currentBattleType;
 
     public virtual void Init(Team team)
     {
@@ -71,14 +72,19 @@ public class Player : MonoBehaviour
         return false;
     }
 
+    public void CreateBattleEvent(Squad squad1, Tile tile)
+    {
+        GameManager.Instance.AddEvent(new BattleEvent(squad1, tile));
+    }
+
     public void CreateBattleEvent(Squad squad1, Squad squad2)
     {
-        GameManager.Instance.AddEvent(new BattleEvent(squad1, squad1));
+        GameManager.Instance.AddEvent(new BattleEvent(squad1, squad2));
     }
 
     public void CreateBuildEvent(string shipName)
     {
-        GameManager.Instance.AddEvent(new BuildEvent(1, _controlledTile, _shipDefinitions[shipName].Copy()));
+        GameManager.Instance.AddEvent(new BuildEvent(1, _team, _controlledTile, _shipDefinitions[shipName].Copy()));
         EndTurn();
     }
 
@@ -91,7 +97,7 @@ public class Player : MonoBehaviour
 
     public void CreateUndeployEvent(bool destroy)
     {
-        GameManager.Instance.AddEvent(new UndeployEvent(1, _controlledTile, destroy));
+        GameManager.Instance.AddEvent(new UndeployEvent(1, _team, _controlledTile, destroy));
         EndTurn();
     }
 
@@ -108,10 +114,11 @@ public class Player : MonoBehaviour
         _turnEnded = false;
     }
 
-    public virtual float PrepareBattleConditions(Squad squad1, Squad squad2)
+    public virtual float PrepareBattleConditions(Squad squad1, Squad squad2, BattleType battleType)
     {
         _playerSquad = squad2;
         _enemySquad = squad1;
+        _currentBattleType = battleType;
 
         if (squad1.Team == _team)
         {
@@ -127,47 +134,78 @@ public class Player : MonoBehaviour
             WC = _playerSquad.GenerateWinChance(_enemySquad);
         else if (pt != null && et == null)
             WC = 1.0f - _enemySquad.GenerateWinChance(pt);
-        else if (pt == null && pt != null)
+        else if (pt == null && et != null)
             WC = _playerSquad.GenerateWinChance(et);
 
         return Mathf.Clamp01(WC);
     }
 
-    public virtual Squad Battle(float playerChance, Squad player, Squad enemy)
+    public virtual KeyValuePair<KeyValuePair<Team, BattleType>, Dictionary<string, int>> Battle(float playerChance, BattleType battleType, Squad player, Squad enemy)
     {
-        var pt = player.GetComponent<Tile>();
-        var et = enemy.GetComponent<Tile>();
-
-        Squad win = null;
-        Team winner;
-        if (pt != null) // player tile vs. enemy squad
-            winner = enemy.Combat(pt, 1.0f - playerChance);
-        else if(et != null) // player squad vs. enemy tile
-            winner = player.Combat(et, playerChance);
-        else // squad vs. squad
-            winner = player.Combat(enemy, playerChance);
-
-        // do nothing / undeploy as necessary
-        if (winner == _team && et != null)
+        KeyValuePair<KeyValuePair<Team, BattleType>, Dictionary<string, int>> winner = new KeyValuePair<KeyValuePair<Team, BattleType>, Dictionary<string, int>>();
+        if (battleType == BattleType.Space)
         {
-            et.Relinquish();
-            et.Undeploy(true);
-            et.Claim(_team);
-            win = player;
+            var win = player.Combat(enemy, playerChance);
+            winner = new KeyValuePair<KeyValuePair<Team, BattleType>, Dictionary<string, int>>
+                (new KeyValuePair<Team, BattleType>(win.Key, battleType), win.Value);
         }
-        else if (winner == enemy.Team && pt != null)
+        else if (battleType == BattleType.Invasion)
         {
-            pt.Relinquish();
-            pt.Undeploy(true);
-            pt.Claim(enemy.Team);
-            win = enemy;
+            var pt = player.GetComponent<Tile>();
+            var et = enemy.GetComponent<Tile>();
+
+            var win = new KeyValuePair<Team, Dictionary<string, int>>();
+            if (pt != null) // player tile vs. enemy squad
+                win = enemy.Combat(pt, 1.0f - playerChance);
+            else if (et != null) // player squad vs. enemy tile
+                win = player.Combat(et, playerChance);
+
+            // do nothing / undeploy as necessary
+            if (win.Key == _team && et != null)
+            {
+                et.Relinquish();
+                et.Undeploy(true);
+                et.Claim(_team);
+            }
+            else if (win.Key == enemy.Team && pt != null)
+            {
+                pt.Relinquish();
+                pt.Undeploy(true);
+                pt.Claim(enemy.Team);
+            }
+
+            winner = new KeyValuePair<KeyValuePair<Team, BattleType>, Dictionary<string, int>>
+                (new KeyValuePair<Team, BattleType>(win.Key, battleType), win.Value);
         }
-        else
-            win = winner == player.Team ? player : enemy;
 
         GameManager.Instance.Players[player.Team].CleanSquad(player);
         GameManager.Instance.Players[enemy.Team].CleanSquad(enemy);
-        return win;
+        return winner;
+    }
+
+    public void EndBattleConditions(bool win)
+    {
+        if(win)
+        {
+            if (_currentBattleType == BattleType.Space)
+            {
+                _enemySquad.Ships.Clear();
+                GameManager.Instance.Players[_enemySquad.Team].CleanSquad(_enemySquad);
+            }
+        }
+        else
+        {
+            if (_currentBattleType == BattleType.Space)
+            {
+                _playerSquad.Ships.Clear();
+                CleanSquad(_playerSquad);
+            }
+        }
+
+        GameManager.Instance.Paused = false;
+
+        _playerSquad = null;
+        _enemySquad = null;
     }
 
     public virtual void CleanSquad(Squad squad)
@@ -181,8 +219,13 @@ public class Player : MonoBehaviour
         {
             var colliders = squad.Colliders;
             if(colliders.Count > 0)
-                Control(colliders[0].gameObject);
-            else
+            {
+                for(int i = 0; i < colliders.Count; i++)
+                    if(colliders[i].Team == _team)
+                        Control(colliders[0].gameObject);
+            }
+            
+            if(_squads.Count > 0 && (_controlledSquad == null || _controlledSquad.gameObject == null))
                 Control(_squads[GameManager.Generator.Next(0, _squads.Count)].gameObject);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Linq;
+using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ public class INIParser
                 if(data[i] == ']')
                     sectEnd = i;
 
-                if(sectStart != -1 && sectEnd != -1)
+                if (sectStart != -1 && sectEnd != -1)
                 {
                     section = data.Substring(sectStart, sectEnd - sectStart + 1);
                     _tables.Add(section, new Dictionary<string, string>());

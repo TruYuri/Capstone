@@ -78,6 +78,7 @@ public class Ship : ListableObject
         get { return unlocked; }
         set { unlocked = value; }
     }
+    public Sprite Icon { get { return icon; } }
 
     public ShipProperties ShipProperties { get { return shipProperties; } }
 

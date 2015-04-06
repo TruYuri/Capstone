@@ -84,4 +84,11 @@ public class TravelEvent : GameEvent
         if (diff.magnitude < 0.1f)
             _turnDestinations.RemoveAt(0);
     }
+
+    public override bool AssertValid()
+    {
+        if (_squad != null && _squad.gameObject != null)
+            return true;
+        return false;
+    }
 }

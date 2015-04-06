@@ -26,4 +26,9 @@ public class GameEvent
     {
 
     }
+
+    public virtual bool AssertValid()
+    {
+        return true;
+    }
 }

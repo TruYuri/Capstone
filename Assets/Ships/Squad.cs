@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class Squad : MonoBehaviour, ListableObject
 {
     private const string SQUAD_LIST_PREFAB = "SquadListing";
+    private const string SQUAD_COUNT_PREFAB = "ShipCountListing";
     private const string SECTOR_TAG = "Sector";
     private const string SQUAD_TAG = "Squad";
     private const string TILE_TAG = "Tile";
@@ -17,18 +18,22 @@ public class Squad : MonoBehaviour, ListableObject
     private Sector _currentSector;
     private List<Squad> _collidingSquads = new List<Squad>();
     private string _name = "Squad";
+    private bool _onMission;
 
     public Team Team
     {
         get { return _team; }
         set { _team = value; }
     }
+    public bool OnMission 
+    { 
+        get { return _onMission; }
+        set { _onMission = value; }
+    }
 
     public List<Ship> Ships { get { return _ships; } }
     public List<Squad> Colliders { get { return _collidingSquads; } }
-    public bool IsInPlanetRange { get { return _inTileRange; } }
     public Tile Tile { get { return _currentTile; } }
-    public bool OnMission;
     public Sector Sector { get { return _currentSector; } }
 
 	// Use this for initialization
@@ -141,11 +146,17 @@ public class Squad : MonoBehaviour, ListableObject
 
         if (_currentTile.IsInRange(this))
         {
+            _inTileRange = true;
+
             if (!_collidingSquads.Contains(_currentTile.Squad))
             {
                 _collidingSquads.Add(_currentTile.Squad);
                 _currentTile.Squad.Colliders.Add(this);
-                _inTileRange = true;
+
+                if (_currentTile.Squad.Team != _team && _currentTile.Squad.Ships.Count > 0)
+                    GameManager.Instance.Players[_team].CreateBattleEvent(this, _currentTile.Squad);
+                else if (this == HumanPlayer.Instance.Squad || _currentTile.Squad == HumanPlayer.Instance.Squad)
+                    HumanPlayer.Instance.ReloadGameplayUI();
             }
         }
         else
@@ -154,7 +165,6 @@ public class Squad : MonoBehaviour, ListableObject
             _currentTile.Squad.Colliders.Remove(this);
             _inTileRange = false;
         }
-
     }
 
     public float CalculateTroopPower()
@@ -201,11 +211,12 @@ public class Squad : MonoBehaviour, ListableObject
         return (power - enemyPower) / 100.0f * 0.5f + 0.5f;
     }
 
-    public Team Combat(Squad enemy, float winChance)
+    public KeyValuePair<Team, Dictionary<string, int>> Combat(Squad enemy, float winChance)
     {
         float winP = (float)GameManager.Generator.NextDouble();
 
         var winner = (winP < winChance ? this : enemy);
+        var lost = new KeyValuePair<Team, Dictionary<string, int>>(winner.Team, new Dictionary<string,int>());
 
         float hull = 0;
         foreach (var ship in _ships)
@@ -215,6 +226,7 @@ public class Squad : MonoBehaviour, ListableObject
 
         float damage = Mathf.Floor(hull * (1.0f - winChance) * ((float)GameManager.Generator.NextDouble() * (1.25f - 0.75f) + 0.75f));
 
+        int prim = 0, ind = 0, space = 0;
         while(damage > 0.0f && _ships.Count > 0)
         {
             var randPos = GameManager.Generator.Next(0, _ships.Count);
@@ -226,20 +238,39 @@ public class Squad : MonoBehaviour, ListableObject
                 float saveChance = (float)GameManager.Generator.NextDouble();
 
                 if (saveChance >= _ships[randPos].Protection)  // add speedy = safer thing here
+                {
+                    if (!lost.Value.ContainsKey(ship.Name))
+                        lost.Value.Add(ship.Name, 0);
                     _ships.Remove(ship);
+                    lost.Value[ship.Name]++;
+                    prim += ship.PrimitivePopulation;
+                    ind += ship.IndustrialPopulation;
+                    space += ship.SpaceAgePopulation;
+                }
             }
             else
                 damage = 0.0f;
         }
 
-        return winner.Team;
+        if (prim > 0)
+            lost.Value.Add("Primitive", prim);
+        if (ind > 0)
+            lost.Value.Add("Industrial", ind);
+        if (space > 0)
+            lost.Value.Add("Space Age", space);
+
+        return lost;
     }
 
-    public Team Combat(Tile enemy, float winChance) // planet combat
+    public KeyValuePair<Team, Dictionary<string, int>> Combat(Tile enemy, float winChance) // planet combat
     {
         float winP = (float)GameManager.Generator.NextDouble();
 
         var winner = winP < winChance;
+        var lost = new KeyValuePair<Team, Dictionary<string, int>>(winner ? _team : enemy.Team, new Dictionary<string,int>());
+        lost.Value.Add("Primitive", 0);
+        lost.Value.Add("Industrial", 0);
+        lost.Value.Add("Space Age", 0);
 
         if (winner) // remove random soldiers from random ships in the fleet
         {
@@ -268,6 +299,7 @@ public class Squad : MonoBehaviour, ListableObject
                     if(saveChance >= 0.2f)
                     {
                         _ships[randShip].PrimitivePopulation--;
+                        lost.Value["Primitive"]++;
                         nTroops--;
                     }
                 }
@@ -276,23 +308,29 @@ public class Squad : MonoBehaviour, ListableObject
                     if (saveChance >= 0.1f)
                     {
                         _ships[randShip].IndustrialPopulation--;
+                        lost.Value["Industrial"]++;
                         nTroops--;
                     }
                 }
                 else
                 {
                     _ships[randShip].SpaceAgePopulation--;
+                    lost.Value["Space Age"]++;
                     nTroops--;
                 }
             }
-
-            return _team;
         }
-        else
+        else // tile won.
         {
+            // before changing local population, kill all the soldiers in the fleet that lost
+            foreach (var ship in _ships)
+            {
+                ship.PrimitivePopulation = ship.SpaceAgePopulation = ship.IndustrialPopulation = 0;
+            }
+
             int primPop = 0, indPop = 0, spacePop = 0;
 
-            // tile won
+            // tile won, kill off soldiers lost in battle
             if(enemy.Team == Team.Indigineous)
             {
                 switch(enemy.PopulationType)
@@ -308,7 +346,7 @@ public class Squad : MonoBehaviour, ListableObject
                         break;
                 }
             }
-            else
+            else if(enemy.Structure != null)
             {
                 primPop = enemy.Structure.PrimitivePopulation;
                 indPop = enemy.Structure.IndustrialPopulation;
@@ -328,6 +366,7 @@ public class Squad : MonoBehaviour, ListableObject
                     {
                         nTroops--;
                         primPop--;
+                        lost.Value["Primitive"]++;
                     }
                 }
                 else if(randSoldier < indPop)
@@ -336,12 +375,14 @@ public class Squad : MonoBehaviour, ListableObject
                     {
                         nTroops--;
                         indPop--;
+                        lost.Value["Industrial"]++;
                     }
                 }
                 else
                 {
                     nTroops--;
                     spacePop--;
+                    lost.Value["Space Age"]++;
                 }
             }
 
@@ -359,7 +400,14 @@ public class Squad : MonoBehaviour, ListableObject
             }
         }
 
-        return enemy.Team;
+        if (lost.Value["Primitive"] == 0)
+            lost.Value.Remove("Primitive");
+        if (lost.Value["Industrial"] == 0)
+            lost.Value.Remove("Industrial");
+        if (lost.Value["Space Age"] == 0)
+            lost.Value.Remove("Space Age");
+
+        return lost;
     }
 
     public Tile Deploy(Structure structure, Tile tile)
@@ -421,5 +469,34 @@ public class Squad : MonoBehaviour, ListableObject
 
     void ListableObject.PopulateGeneralInfo(GameObject popUp, System.Object data)
     {
+        PopulateCountList(popUp.transform.FindChild("ShipCounts").FindChild("ShipCountsList").gameObject);
+    }
+
+    public Dictionary<string, int> CountShips()
+    {
+        var counts = new Dictionary<string, int>();
+        foreach (var ship in _ships)
+        {
+            if (!counts.ContainsKey(ship.Name))
+                counts.Add(ship.Name, 0);
+            counts[ship.Name]++;
+        }
+
+        return counts;
+    }
+
+    public void PopulateCountList(GameObject list)
+    {
+        var squadEntry = Resources.Load<GameObject>(SQUAD_COUNT_PREFAB);
+        var counts = CountShips();
+
+        foreach (var count in counts)
+        {
+            var entry = Instantiate(squadEntry) as GameObject;
+            entry.transform.FindChild("Name").GetComponent<Text>().text = count.Key;
+            entry.transform.FindChild("Icon").GetComponent<Image>().sprite = HumanPlayer.Instance.GetShipDefinition(count.Key).Icon;
+            entry.transform.FindChild("Count").FindChild("Number").GetComponent<Text>().text = count.Value.ToString();
+            entry.transform.SetParent(list.transform);
+        }
     }
 }

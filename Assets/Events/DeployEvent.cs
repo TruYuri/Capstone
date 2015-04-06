@@ -34,4 +34,13 @@ public class DeployEvent : GameEvent
             GameManager.Instance.Players[team].DeleteSquad(_squad);
         }
     }
+
+    public override bool AssertValid()
+    {
+        if (_squad != null && _squad.gameObject != null &&
+            _tile.Team == _squad.Team && _squad.Ships.Contains(_structure) &&
+            _tile.Structure == null)
+            return true;
+        return false;
+    }
 }

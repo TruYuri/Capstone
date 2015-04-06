@@ -5,12 +5,15 @@ public class BuildEvent : GameEvent
 {
     private Tile _tile;
     private Ship _ship;
+    private Team _team;
+    private Structure _structure;
 
-    public BuildEvent(int turns, Tile tile, Ship ship)
+    public BuildEvent(int turns, Team team, Tile tile, Ship ship)
         : base(turns)
     {
         _tile = tile;
         _ship = ship;
+        _structure = tile.Structure;
     }
 
     public override void Progress()
@@ -20,5 +23,12 @@ public class BuildEvent : GameEvent
         if (_remainingTurns != 0)
             return;
         _tile.Squad.Ships.Add(_ship);
+    }
+
+    public override bool AssertValid()
+    {
+        if (_tile.Team == _team && _tile.Structure == _structure)
+            return true;
+        return false;
     }
 }

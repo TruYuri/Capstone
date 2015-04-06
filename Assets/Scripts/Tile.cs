@@ -51,7 +51,7 @@ public class Tile : MonoBehaviour, ListableObject
         _planetType = type;
         _squad = this.GetComponent<Squad>();
         _squad.Init();
-        this.transform.SetParent(sector.transform);
+        transform.SetParent(sector.transform);
     }
 
 	void Start () 
@@ -59,15 +59,31 @@ public class Tile : MonoBehaviour, ListableObject
         // Determine tile type
         var mapManager = MapManager.Instance;
         // Determine Size, Population, and Resource Amount
+
+        // Determine Inhabitance
         var chance = (float)GameManager.Generator.NextDouble();
+        foreach (var inhabit in mapManager.PlanetInhabitanceSpawnTable[_planetType])
+        {
+            if (chance <= inhabit.Value)
+            {
+                _planetInhabitance = inhabit.Key;
+                break;
+            }
+        }
+
+        chance = (float)GameManager.Generator.NextDouble();
         var small = true;
         if (chance < float.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_SPAWN_DETAIL]))
         {
             small = true;
 
-            var minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_POPULATION_MIN_DETAIL]);
-            var maximum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_POPULATION_MAX_DETAIL]);
-            _population = GameManager.Generator.Next(minimum, maximum + 1);
+            int minimum, maximum;
+            if (_planetInhabitance != Inhabitance.Uninhabited)
+            {
+                minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_POPULATION_MIN_DETAIL]);
+                maximum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_POPULATION_MAX_DETAIL]);
+                _population = GameManager.Generator.Next(minimum, maximum + 1);
+            }
 
             minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_RESOURCE_MIN_DETAIL]);
             maximum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_RESOURCE_MAX_DETAIL]);
@@ -77,24 +93,17 @@ public class Tile : MonoBehaviour, ListableObject
         {
             small = false;
 
-            var minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_POPULATION_MIN_DETAIL]);
-            var maximum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_POPULATION_MAX_DETAIL]);
-            _population = GameManager.Generator.Next(minimum, maximum + 1);
+            int minimum, maximum;
+            if (_planetInhabitance != Inhabitance.Uninhabited)
+            {
+                minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_POPULATION_MIN_DETAIL]);
+                maximum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_POPULATION_MAX_DETAIL]);
+                _population = GameManager.Generator.Next(minimum, maximum + 1);
+            }
 
             minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_RESOURCE_MIN_DETAIL]);
             maximum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_RESOURCE_MAX_DETAIL]);
             _resourceCount = GameManager.Generator.Next(minimum, maximum + 1);
-        }
-
-        // Determine Inhabitance
-        chance = (float)GameManager.Generator.NextDouble();
-        foreach(var inhabit in mapManager.PlanetInhabitanceSpawnTable[_planetType])
-        {
-            if (chance <= inhabit.Value)
-            {
-                _planetInhabitance = inhabit.Key;
-                break;
-            }
         }
 
         // Determine Resource Type
@@ -138,9 +147,7 @@ public class Tile : MonoBehaviour, ListableObject
                 // generate random defenses if space age
             }
 
-            // debug
-            _team = Team.Union;
-            _squad.Team = Team.Union;
+            _squad.Init();
         }
 	}
 
@@ -173,6 +180,9 @@ public class Tile : MonoBehaviour, ListableObject
 
     public string Undeploy(bool destroy)
     {
+        if (_structure == null)
+            return "";
+
         if (!destroy && _structure != null)
             _squad.Ships.Add(_structure);
         _structure.Undeploy(this);

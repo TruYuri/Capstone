@@ -231,13 +231,13 @@ public class GameManager : MonoBehaviour
             _eventQueue.Peek().Progress();
             _eventQueue.Peek().Update();
 
-            if (_eventQueue.Peek().Stage == GameEventStage.Continue)
+            if (_eventQueue.Peek().Stage == GameEventStage.Continue && _eventQueue.Peek().AssertValid())
                 _nextEventQueue.Enqueue(_eventQueue.Dequeue());
             else // end
                 _eventQueue.Dequeue();
         }
 
-
+        var invalid = new List<GameEvent>();
         foreach (var item in _nextEventQueue)
             item.Update();
 

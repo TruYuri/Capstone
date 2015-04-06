@@ -28,6 +28,11 @@ public class CustomUI : MonoBehaviour
 
     }
 
+    public void ClickContinue()
+    {
+        GUIManager.Instance.ContinueAfterBattle(Convert.ToBoolean(data));
+    }
+
     public void ClickManage()
     {
         GUIManager.Instance.PopulateManageLists();
@@ -40,7 +45,7 @@ public class CustomUI : MonoBehaviour
 
     public void ClickDeploy()
     {
-        GUIManager.Instance.SetStructure(data);
+        GUIManager.Instance.SquadGroundAction(data);
     }
 
     public void ClickListItem()

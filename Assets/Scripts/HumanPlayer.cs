@@ -36,17 +36,21 @@ public class HumanPlayer : Player
         squad.Ships.Add(_shipDefinitions["Military Complex"].Copy());
         squad.Ships.Add(_shipDefinitions["Research Complex"].Copy());
 
-        Ship b, t, f;
+        Ship b, t, t1, t2, t3, t4, f;
         squad = CreateNewSquad(new Vector3(0, 0, 11f));
         squad.Ships.Add(_shipDefinitions["Fighter"].Copy());
         squad.Ships.Add(t = _shipDefinitions["Transport"].Copy());
+        squad.Ships.Add(t1 = _shipDefinitions["Transport"].Copy());
+        squad.Ships.Add(t2 = _shipDefinitions["Transport"].Copy());
+        squad.Ships.Add(t3 = _shipDefinitions["Transport"].Copy());
+        squad.Ships.Add(t4 = _shipDefinitions["Transport"].Copy());
         squad.Ships.Add(f = _shipDefinitions["Heavy Fighter"].Copy());
         squad.Ships.Add(b = _shipDefinitions["Behemoth"].Copy());
         b.PrimitivePopulation = 25;
         b.IndustrialPopulation = 15;
         b.SpaceAgePopulation = 10;
         f.SpaceAgePopulation = 3;
-        t.PrimitivePopulation = 50;
+        t.PrimitivePopulation = t1.PrimitivePopulation = t2.PrimitivePopulation = t3.PrimitivePopulation = t4.PrimitivePopulation = 50;
         /* debug */
 
         _controlledSquad = _commandShip;
@@ -98,7 +102,7 @@ public class HumanPlayer : Player
         if (Input.GetKey(KeyCode.C))
         {
             Control(_commandShip.gameObject);
-            GUIManager.Instance.SquadSelected(_commandShip);
+            ReloadGameplayUI();
         }
 
         var scrollChange = Input.GetAxis(MOUSE_SCROLLWHEEL);
@@ -213,17 +217,17 @@ public class HumanPlayer : Player
         ReloadGameplayUI();
     }
 
-    public override float PrepareBattleConditions(Squad squad1, Squad squad2)
+    public override float PrepareBattleConditions(Squad squad1, Squad squad2, BattleType battleType)
     {
-        _winChance = base.PrepareBattleConditions(squad1, squad2);
+        _winChance = base.PrepareBattleConditions(squad1, squad2, battleType);
         Control(_playerSquad.gameObject);
         GUIManager.Instance.ConfigureBattleScreen(_winChance, _playerSquad, _enemySquad);
         return _winChance;
     }
 
-    public override Squad Battle(float playerChance, Squad player, Squad enemy)
+    public override KeyValuePair<KeyValuePair<Team, BattleType>, Dictionary<string, int>> Battle(float playerChance, BattleType battleType, Squad player, Squad enemy)
     {
-        return base.Battle(_winChance, _playerSquad, _enemySquad);
+        return base.Battle(_winChance, _currentBattleType, _playerSquad, _enemySquad);
     }
 }
 

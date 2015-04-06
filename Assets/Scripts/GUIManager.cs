@@ -9,6 +9,7 @@ public class GUIManager : MonoBehaviour
 {
     private const string INI_PATH = "/Resources/Ships.ini";
     private const string SHIP_SECTION_HEADER = "[Ships]";
+    private const string SQUAD_COUNT_PREFAB = "ShipCountListing";
 
     private static GUIManager _instance;
     private Dictionary<string, CustomUI> _interface;
@@ -67,7 +68,10 @@ public class GUIManager : MonoBehaviour
             { "Uninhabited", Resources.Load<Sprite>(UI_ICONS_PATH + "UninhabitedIcon") },
             { "Plinthen", Resources.Load<Sprite>(UI_ICONS_PATH + "PlinthenIcon") },
             { "Union", Resources.Load<Sprite>(UI_ICONS_PATH + "UnionIcon") },
-            { "Kharkyr", Resources.Load<Sprite>(UI_ICONS_PATH + "KharkyrIcon") }
+            { "Kharkyr", Resources.Load<Sprite>(UI_ICONS_PATH + "KharkyrIcon") },
+            { "Primitive", Resources.Load<Sprite>(UI_ICONS_PATH + "PrimitivePopulationIcon") },
+            { "Industrial", Resources.Load<Sprite>(UI_ICONS_PATH + "IndustrialPopulationIcon") },
+            { "Space Age", Resources.Load<Sprite>(UI_ICONS_PATH + "SpaceAgePopulationIcon") }
         };
     }
 
@@ -101,7 +105,7 @@ public class GUIManager : MonoBehaviour
 
         var manage = _interface["Manage"].gameObject.GetComponent<Button>();
         var deploy = _interface["Deploy"].gameObject.GetComponent<Button>();
-        var type = deploy.GetComponent<CustomUI>().data == "Deploy";
+        var type = deploy.GetComponent<CustomUI>().data;
         var tile = squad.Tile;
 
         AutoSelectIndex<Ship>("MainShipList", squad.Ships);
@@ -111,16 +115,18 @@ public class GUIManager : MonoBehaviour
         var click = false;
         if (HumanPlayer.Instance.Team == squad.Team)
         {
-            if(type && index != -1 && squad.OnMission == false) // deploy
+            if (type == "Deploy" && index != -1 && squad.OnMission == false) // deploy
             {
-                if (tile != null && (squad.Ships[index].ShipProperties & ShipProperties.GroundStructure) > 0 
-                    && squad.IsInPlanetRange && tile.Team == squad.Team && tile.Structure == null) // existing planet
+                if (tile != null && (squad.Ships[index].ShipProperties & ShipProperties.GroundStructure) > 0
+                    && squad.Tile.IsInRange(squad) && (tile.Team == squad.Team || tile.Team == Team.Uninhabited) && tile.Structure == null) // existing planet
                     click = true;
-                else if (tile == null && (squad.Ships[index].ShipProperties & ShipProperties.SpaceStructure) > 0 && 
+                else if (tile == null && (squad.Ships[index].ShipProperties & ShipProperties.SpaceStructure) > 0 &&
                     squad.Sector.IsValidLocation(squad.transform.position))// empty space
                     click = true;
             }
-            else if(tile != null && squad == tile.Squad && tile.Structure != null)// undeploy
+            else if (type == "Undeploy" && tile != null && squad == tile.Squad && tile.Structure != null)// undeploy
+                click = true;
+            else if (type == "Invade" && squad.CalculateTroopPower() > 0f)
                 click = true;
         }
 
@@ -229,14 +235,18 @@ public class GUIManager : MonoBehaviour
                         _interface["ShipInfo"].gameObject, _descriptions[ship2.Name]);
                     _interface["ShipInfo"].gameObject.SetActive(true);
                     break;
-                case "AltSquadList":
-                    break;
                 case "Constructables":
                     (HumanPlayer.Instance.GetShipDefinition(split[1]) as ListableObject).PopulateBuildInfo(
                         _interface["ConstructionInfo"].gameObject, _descriptions[split[1]]);
                     _interface["ConstructionInfo"].gameObject.SetActive(true);
                     break;
+                case "AltSquadList":
                 case "SquadList":
+                    var k = int.Parse(split[1]);
+                    ClearList("SquadInfoList");
+                    (HumanPlayer.Instance.Squads[k] as ListableObject).PopulateGeneralInfo(
+                        _interface["SquadInfo"].gameObject, null);
+                    _interface["SquadInfo"].gameObject.SetActive(true);
                     break;
                 case "TileList":
                     break;
@@ -250,12 +260,12 @@ public class GUIManager : MonoBehaviour
             case "AltShipList":
                 _interface["ShipInfo"].transform.position = Input.mousePosition;
                 break;
-            case "AltSquadList":
-                break;
             case "Constructables":
                 _interface["ConstructionInfo"].transform.position = Input.mousePosition;
                 break;
+            case "AltSquadList":
             case "SquadList":
+                _interface["SquadInfo"].transform.position = Input.mousePosition;
                 break;
             case "TileList":
                 break;
@@ -272,12 +282,12 @@ public class GUIManager : MonoBehaviour
             case "AltShipList":
                 _interface["ShipInfo"].gameObject.SetActive(false);
                 break;
-            case "AltSquadList":
-                break;
             case "Constructables":
                 _interface["ConstructionInfo"].gameObject.SetActive(false);
                 break;
+            case "AltSquadList":
             case "SquadList":
+                _interface["SquadInfo"].gameObject.SetActive(false);
                 break;
             case "TileList":
                 break;
@@ -349,8 +359,17 @@ public class GUIManager : MonoBehaviour
 
         PopulateList<Ship>(squad.Ships, "MainShipList", ListingType.Info, false);
 
-        _interface["DeployText"].GetComponent<Text>().text = "Deploy";
-        _interface["Deploy"].GetComponent<CustomUI>().data = "Deploy";
+        if (squad.Tile != null && squad.Tile.IsInRange(squad) && squad.Tile.Team != squad.Team && squad.Tile.Team != Team.Uninhabited)
+        {
+            _interface["DeployText"].GetComponent<Text>().text = "Invade";
+            _interface["Deploy"].GetComponent<CustomUI>().data = "Invade";
+        }
+        else
+        {
+            _interface["DeployText"].GetComponent<Text>().text = "Deploy";
+            _interface["Deploy"].GetComponent<CustomUI>().data = "Deploy";
+        }
+
         SetUIElements(true, false, false, false, true);
         SetSquadControls(squad);
 
@@ -392,12 +411,20 @@ public class GUIManager : MonoBehaviour
         SetSquadControls(squad);
     }
 
-    public void SetStructure(string data)
+    public void SquadGroundAction(string data)
     {
-        if (data == "Deploy")
-            HumanPlayer.Instance.CreateDeployEvent(_indices["MainShipList"]);
-        else
-            HumanPlayer.Instance.CreateUndeployEvent(false);
+        switch(data)
+        {
+            case "Deploy":
+                HumanPlayer.Instance.CreateDeployEvent(_indices["MainShipList"]);
+                break;
+            case "Undeploy":
+                HumanPlayer.Instance.CreateUndeployEvent(false);
+                break;
+            case "Invade":
+                HumanPlayer.Instance.CreateBattleEvent(HumanPlayer.Instance.Squad, HumanPlayer.Instance.Squad.Tile);
+                break;
+        }
     }
 
     private void UpdateTransferInterface(bool squads, bool squadShips, bool ships, bool soldiers)
@@ -744,6 +771,11 @@ public class GUIManager : MonoBehaviour
 
         _interface["BattleChance"].GetComponent<Text>().text = WC.ToString("P");
 
+        ClearList("PlayerSquadInfoList");
+        player.PopulateCountList(_interface["PlayerSquadInfoList"].gameObject);
+        ClearList("EnemySquadInfoList");
+        enemy.PopulateCountList(_interface["EnemySquadInfoList"].gameObject);
+
         // for detailed battle screen - current blows
         if(pt != null)
         {
@@ -763,17 +795,75 @@ public class GUIManager : MonoBehaviour
 
     public void Battle()
     {
-        var winner = HumanPlayer.Instance.Battle(0f, null, null);
+        var winner = HumanPlayer.Instance.Battle(0f, BattleType.Invasion, null, null);
 
-        if(winner.Team == HumanPlayer.Instance.Team)
+        if(winner.Key.Key == HumanPlayer.Instance.Team)
         {
+            if(winner.Key.Value == BattleType.Invasion)
+            {
+
+            }
+            else if(winner.Key.Value == BattleType.Space)
+            {
+
+            }
+
             _interface["BattleWon"].gameObject.SetActive(true);
+            ClearList("ShipsLostList");
+            var squadEntry = Resources.Load<GameObject>(SQUAD_COUNT_PREFAB);
+            foreach(var lost in winner.Value)
+            {
+                var entry = Instantiate(squadEntry) as GameObject;
+                entry.transform.FindChild("Name").GetComponent<Text>().text = lost.Key;
+                switch(lost.Key)
+                {
+                    case "Primitive":
+                        entry.transform.FindChild("Icon").GetComponent<Image>().sprite = _icons["Primitive"];
+                        break;
+                    case "Industrial":
+                        entry.transform.FindChild("Icon").GetComponent<Image>().sprite = _icons["Industrial"];
+                        break;
+                    case "Space Age":
+                        entry.transform.FindChild("Icon").GetComponent<Image>().sprite = _icons["Space Age"];
+                        break;
+                    default:
+                        entry.transform.FindChild("Icon").GetComponent<Image>().sprite = HumanPlayer.Instance.GetShipDefinition(lost.Key).Icon;
+                        break;
+                }
+                entry.transform.FindChild("Count").FindChild("Number").GetComponent<Text>().text = lost.Value.ToString();
+                entry.transform.SetParent(_interface["ShipsLostList"].transform);
+            }
+        }
+        else if(winner.Key.Key == Team.Uninhabited) // draw
+        {
+
         }
         else
         {
             _interface["BattleLost"].gameObject.SetActive(true);
+
+            if(winner.Key.Value == BattleType.Space)
+            {
+                _interface["ShipsText"].gameObject.SetActive(true);
+                _interface["SoldiersText"].gameObject.SetActive(false);
+            }
+            else
+            {
+                _interface["ShipsText"].gameObject.SetActive(false);
+                _interface["SoldiersText"].gameObject.SetActive(true);
+            }
         }
 
         SetUIElements(false, false, false, false, false);
+    }
+
+    public void ContinueAfterBattle(bool win)
+    {
+        if(win)
+            _interface["BattleWon"].gameObject.SetActive(false);
+        else
+            _interface["BattleLost"].gameObject.SetActive(false);
+        HumanPlayer.Instance.EndBattleConditions(win);
+        HumanPlayer.Instance.ReloadGameplayUI();
     }
 }

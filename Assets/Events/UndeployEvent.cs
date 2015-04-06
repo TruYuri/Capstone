@@ -4,13 +4,15 @@ using System.Collections;
 public class UndeployEvent : GameEvent
 {
     private Tile _tile;
+    private Team _team;
     private bool _destroy;
 
-    public UndeployEvent(int turns, Tile tile, bool destroy)
+    public UndeployEvent(int turns, Team team, Tile tile, bool destroy)
         : base(turns)
     {
         _tile = tile;
         _destroy = destroy;
+        _team = team;
     }
 
     public override void Progress()
@@ -33,5 +35,12 @@ public class UndeployEvent : GameEvent
         }
         else
             GameManager.Instance.Players[_tile.Team].Squads.Remove(_tile.Squad);
+    }
+
+    public override bool AssertValid()
+    {
+        if (_tile != null && _tile.Team == _team && _tile.Structure != null)
+            return true;
+        return false;
     }
 }
