@@ -54,6 +54,7 @@ public class HumanPlayer : Player
         /* debug */
 
         _controlledSquad = _commandShip;
+        _controlledIsWithinRange = true;
         Camera.main.transform.position = _commandShip.transform.position + CAMERA_OFFSET;
         Camera.main.transform.LookAt(_commandShip.transform);
         GUIManager.Instance.SquadSelected(_commandShip);
@@ -65,14 +66,13 @@ public class HumanPlayer : Player
 
     void Start()
     {
+        ReloadGameplayUI();
     }
 
     void Update()
     {
         if (GameManager.Instance.Paused || _turnEnded)
             return;
-
-        // Control(_controlledSquad.gameObject);
 
         // right click - control
         if (Input.GetMouseButtonDown(1))
@@ -143,17 +143,7 @@ public class HumanPlayer : Player
             if (Physics.Raycast(ray, out hit) && !eventSystem.IsPointerOverGameObject()
                 && _controlledSquad.Team == _team && _controlledSquad.OnMission == false)
             {
-                GameManager.Instance.AddEvent(new TravelEvent(1, _controlledSquad, hit.collider.gameObject.GetComponent<Sector>(), hit.point, 10.0f));
-                /*
-                switch (hit.collider.tag)
-                {
-                    case SECTOR_TAG: // empty space
-                        GUIManager.Instance.SquadToSpace(_controlledSquad.GetComponent<Squad>(), hit.point);
-                        break;
-                    case SQUAD_TAG:
-                        GUIManager.Instance.SquadToSquad(_controlledSquad.GetComponent<Squad>(), hit.collider.GetComponent<Squad>());
-                        break;
-                }*/
+                CreateTravelEvent(_controlledSquad, hit.collider.gameObject.GetComponent<Sector>(), hit.point, 10.0f);
             }
             
         }
@@ -170,7 +160,7 @@ public class HumanPlayer : Player
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
             {
-                float speed = 10.0f;
+                float speed = 50.0f;
 
                 var dir = hit.point - _commandShip.transform.position;
                 dir.Normalize();

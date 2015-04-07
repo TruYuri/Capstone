@@ -14,14 +14,14 @@ public class Sector : MonoBehaviour
     private Vector2 _gridPos;
     private Tile[,] _tileGrid = new Tile[18, 18];
     private Dictionary<string, int> _planetCounts = new Dictionary<string, int>();
+    private Dictionary<Team, Dictionary<string, List<Structure>>> _deployedSpaceStructures;
 
     public Vector2 GridPosition { get { return _gridPos; } }
 
     public void Init(Vector2 gridPos)
     {
         _gridPos = gridPos;
-        //_tileGrid = new Tile[18, 18];
-        //_planetCounts = new Dictionary<string, int>();
+        _deployedSpaceStructures = new Dictionary<Team, Dictionary<string, List<Structure>>>();
     }
 
 	void Start () 
@@ -122,6 +122,37 @@ public class Sector : MonoBehaviour
         return val;
     }
 
+    public void RegisterSpaceStructure(Team team, Structure structure)
+    {
+        if (!_deployedSpaceStructures.ContainsKey(team))
+            _deployedSpaceStructures.Add(team, new Dictionary<string, List<Structure>>());
+
+        if (!_deployedSpaceStructures[team].ContainsKey(structure.Name))
+            _deployedSpaceStructures[team].Add(structure.Name, new List<Structure>());
+
+        _deployedSpaceStructures[team][structure.Name].Add(structure);
+        _deployedSpaceStructures[team][structure.Name].Sort(delegate(Structure a, Structure b)
+        {
+            if (a.Range == b.Range) return 0;
+            if (a.Range < b.Range) return -1;
+            return 1;
+        });
+    }
+
+    public void UnregisterSpaceStructure(Team team, Structure structure)
+    {
+        _deployedSpaceStructures[team][structure.Name].Remove(structure);
+    }
+
+    public int GetRangeExtension(Team team, string type)
+    {
+        if(_deployedSpaceStructures.ContainsKey(team) && _deployedSpaceStructures[team].ContainsKey(type) && _deployedSpaceStructures[team][type].Count > 0)
+        {
+            return _deployedSpaceStructures[team][type][0].Range;
+        }
+
+        return 0;
+    }
     // convert position to grid position, based on 10-multiple offsets
     // this should work in constant time now.
     // Note: need way to filter off-hex tiles as non-usable.

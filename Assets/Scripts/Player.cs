@@ -47,8 +47,8 @@ public class Player : MonoBehaviour
 	void Start () 
     {
 	}
-	
-	public virtual void Control(GameObject gameObject)
+
+    public virtual void Control(GameObject gameObject)
     {
         if (gameObject.GetComponent<Squad>() == null)
             return;
@@ -56,9 +56,8 @@ public class Player : MonoBehaviour
         _controlledTile = gameObject.GetComponent<Tile>();
 
         // check range here
-
-
-
+        var path = MapManager.Instance.AStarSearch(_commandShip.Sector, _controlledSquad.Sector, 5, _team, "Relay");
+        _controlledIsWithinRange = path != null;
     }
 
 	// Update is called once per frame
@@ -91,27 +90,41 @@ public class Player : MonoBehaviour
 
     public void CreateBuildEvent(string shipName)
     {
+        if (!_controlledIsWithinRange)
+            return;
         GameManager.Instance.AddEvent(new BuildEvent(1, _team, _controlledTile, _shipDefinitions[shipName].Copy()));
         EndTurn();
     }
 
     public void CreateDeployEvent(int shipIndex)
     {
-        // calculate turns - this is gonna suck
+        if (!_controlledIsWithinRange)
+            return;
         GameManager.Instance.AddEvent(new DeployEvent(1, _controlledSquad.Ships[shipIndex] as Structure, _controlledSquad, _controlledSquad.Tile));
         EndTurn();
     }
 
     public void CreateUndeployEvent(bool destroy)
     {
+        if (!_controlledIsWithinRange)
+            return;
         GameManager.Instance.AddEvent(new UndeployEvent(1, _team, _controlledTile, destroy));
         EndTurn();
     }
 
     public void CreateDiplomacyEvent()
     {
+        if (!_controlledIsWithinRange)
+            return;
         GameManager.Instance.AddEvent(new DiplomacyEvent(1, _team, _controlledTile));
         EndTurn();
+    }
+
+    public void CreateTravelEvent(Squad squad, Sector toSector, Vector3 dest, float speed)
+    {
+        if (!_controlledIsWithinRange)
+            return;
+        GameManager.Instance.AddEvent(new TravelEvent(1, squad, toSector, dest, speed));
     }
 
     public void EndTurn()
@@ -343,7 +356,7 @@ public class Player : MonoBehaviour
         var component = squad.GetComponent<Squad>();
         component.Team = _team;
         _squads.Add(component);
-        component.Init();
+        component.Init(null);
         return component;
     }
 }

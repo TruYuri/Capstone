@@ -35,7 +35,7 @@ public class MapManager : MonoBehaviour
     private Dictionary<string, Dictionary<Resource, float>> _planetResourceSpawnTable;
     private Dictionary<string, Dictionary<string, string>> _planetSpawnDetails;
     private Texture2D _textureAtlas;
-    private Dictionary<int, Dictionary<int, GameObject>> _sectorMap;
+    private Dictionary<int, Dictionary<int, Sector>> _sectorMap;
 
     public static MapManager Instance
     {
@@ -55,7 +55,7 @@ public class MapManager : MonoBehaviour
     public Dictionary<string, Dictionary<Inhabitance, float>> PlanetInhabitanceSpawnTable { get { return _planetInhabitanceSpawnTable; } }
     public Dictionary<string, Dictionary<Resource, float>> PlanetResourceSpawnTable { get { return _planetResourceSpawnTable; } }
     public Dictionary<string, Dictionary<string, string>> PlanetSpawnDetails { get { return _planetSpawnDetails; } }
-    public Dictionary<int, Dictionary<int, GameObject>> SectorMap { get { return _sectorMap; } }
+    public Dictionary<int, Dictionary<int, Sector>> SectorMap { get { return _sectorMap; } }
 
     void Awake()
     {
@@ -66,7 +66,7 @@ public class MapManager : MonoBehaviour
         _planetInhabitanceSpawnTable = new Dictionary<string, Dictionary<Inhabitance, float>>();
         _planetResourceSpawnTable = new Dictionary<string, Dictionary<Resource, float>>();
         _planetSpawnDetails = new Dictionary<string, Dictionary<string, string>>();
-        _sectorMap = new Dictionary<int, Dictionary<int, GameObject>>();
+        _sectorMap = new Dictionary<int, Dictionary<int, Sector>>();
         _planetSpawnDetails = new Dictionary<string, Dictionary<string, string>>();
 
         var parser = new INIParser(Application.dataPath + INI_PATH);
@@ -136,17 +136,17 @@ public class MapManager : MonoBehaviour
                 new TextureAtlasDetails((atlasEntries[i].width == 0 && atlasEntries[i].height == 0 ? null : _textureAtlas),
                                         new Vector2(atlasEntries[i].x, atlasEntries[i].y),
                                         new Vector2(atlasEntries[i].width, atlasEntries[i].height)));
-            spawnTables["[" + planetNames[i]+ "]"].Remove(PLANET_TEXTURE_DETAIL);
+            spawnTables["[" + planetNames[i] + "]"].Remove(PLANET_TEXTURE_DETAIL);
         }
 
         parser.CloseINI();
         GenerateSector(Vector3.zero, 0, 0);
     }
 
-	// Use this for initialization
-	public void Start()
-    {     
-	}
+    // Use this for initialization
+    public void Start()
+    {
+    }
 
     public void GenerateNewSectors(Vector3 realPosition, Vector2 gridPosition)
     {
@@ -177,15 +177,15 @@ public class MapManager : MonoBehaviour
     private void GenerateSector(Vector3 position, int vertical, int horizontal)
     {
         if (!_sectorMap.ContainsKey(vertical))
-            _sectorMap.Add(vertical, new Dictionary<int, GameObject>());
+            _sectorMap.Add(vertical, new Dictionary<int, Sector>());
 
-        if(!_sectorMap[vertical].ContainsKey(horizontal))
+        if (!_sectorMap[vertical].ContainsKey(horizontal))
         {
             var sectorPrefab = Resources.Load<UnityEngine.Object>(SECTOR_PREFAB);
             var sector = Instantiate(sectorPrefab, position, Quaternion.Euler(-90f, 0, 0)) as GameObject;
             var component = sector.GetComponent<Sector>();
             component.Init(new Vector2(vertical, horizontal));
-            _sectorMap[vertical].Add(horizontal, sector);
+            _sectorMap[vertical].Add(horizontal, component);
         }
     }
 
@@ -194,22 +194,31 @@ public class MapManager : MonoBehaviour
         public List<KeyValuePair<int, int>> sectorPath;
         public int g;
         public int h;
+        public int r;
+        public string type;
+        public Team team;
 
-        public AStarSectorNode(List<KeyValuePair<int, int>> path, int gf)
+        public AStarSectorNode(List<KeyValuePair<int, int>> path, int gf, int startRange, Team team, string type)
         {
             this.sectorPath = path;
             this.g = gf;
             this.h = path.Count; // heuristic = size of path.
+            this.r = startRange;
+            this.team = team;
+            this.type = type;
             // alternative: h = sum of sqrt dist from goal
         }
 
         public List<AStarSectorNode> succ()
         {
             List<AStarSectorNode> children = new List<AStarSectorNode>();
-            
+
+            if (type != "" && r - 1 < 0) // don't consider any more nodes if they are out of range
+                return children;
+
             var v = sectorPath[sectorPath.Count - 1].Key;
             var h = sectorPath[sectorPath.Count - 1].Value;
-            if(Mathf.Abs(v) % 2 == 0)
+            if (Mathf.Abs(v) % 2 == 0)
             {
                 children.Add(New(v + 1, h));
                 children.Add(New(v, h + 1));
@@ -234,8 +243,12 @@ public class MapManager : MonoBehaviour
         private AStarSectorNode New(int x, int y)
         {
             var list = new List<KeyValuePair<int, int>>(sectorPath);
-            list.Add(new KeyValuePair<int,int>(x, y));
-            return new AStarSectorNode(list, g + 1);
+            list.Add(new KeyValuePair<int, int>(x, y));
+
+            var extension = 0;
+            if (type != "" && MapManager.Instance.SectorMap.ContainsKey(x) && MapManager.Instance.SectorMap[x].ContainsKey(y))
+                extension = MapManager.Instance.SectorMap[x][y].GetRangeExtension(team, "Relay"); // if sector has a relay, extend range;
+            return new AStarSectorNode(list, g + 1, r - 1 + extension, team, type);
         }
     }
 
@@ -244,7 +257,7 @@ public class MapManager : MonoBehaviour
         return new KeyValuePair<int, int>((int)sector.GridPosition.x, (int)sector.GridPosition.y);
     }
 
-    public List<KeyValuePair<int, int>> AStarSearch(Sector start, Sector goal)
+    public List<KeyValuePair<int, int>> AStarSearch(Sector start, Sector goal, int startRange = 0, Team team = Team.Uninhabited, string type = "")
     {
         var fringe = new List<AStarSectorNode>();
         var fringeSet = new Dictionary<KeyValuePair<int, int>, AStarSectorNode>();
@@ -256,11 +269,11 @@ public class MapManager : MonoBehaviour
         var initList = new List<KeyValuePair<int, int>>();
         initList.Add(startPos);
 
-        AStarSectorNode init = new AStarSectorNode(initList, 0);
+        AStarSectorNode init = new AStarSectorNode(initList, 0, startRange, team, type);
         fringe.Add(init);
         fringeSet.Add(startPos, init);
 
-        while(fringe.Count > 0)
+        while (fringe.Count > 0)
         {
             AStarSectorNode cur = fringe[0];
 
@@ -274,14 +287,14 @@ public class MapManager : MonoBehaviour
 
             List<AStarSectorNode> exp = cur.succ();
 
-            for(int i = 0; i < 6; i++) // 6 possible movements
+            for (int i = 0; i < exp.Count; i++) // 6 possible movements
             {
                 last = exp[i].sectorPath[exp[i].sectorPath.Count - 1];
-                if(explored.Contains(last))
+                if (explored.Contains(last))
                     continue;
 
                 bool inFringe = fringeSet.ContainsKey(last);
-                if(!inFringe)
+                if (!inFringe)
                 {
                     fringe.Add(exp[i]);
                     fringe = fringe.OrderBy(o => o.h + o.g).ToList();
@@ -291,7 +304,7 @@ public class MapManager : MonoBehaviour
                 {
                     var val = fringeSet[last];
 
-                    if(exp[i].g + exp[i].h < val.g + val.h)
+                    if (exp[i].g + exp[i].h < val.g + val.h)
                     {
                         val.g = exp[i].g;
                         val.h = exp[i].h;

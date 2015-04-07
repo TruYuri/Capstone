@@ -41,7 +41,7 @@ public class Squad : MonoBehaviour, ListableObject
     {
 	}
 
-    public void Init()
+    public void Init(Sector sector)
     {
         var tile = this.GetComponent<Tile>();
         if (tile != null)
@@ -49,6 +49,8 @@ public class Squad : MonoBehaviour, ListableObject
             _currentTile = tile;
             _inTileRange = _permanentSquad = true;
         }
+
+        _currentSector = sector;
     }
 
     // Update is called once per frame
@@ -425,6 +427,7 @@ public class Squad : MonoBehaviour, ListableObject
         {
             _currentTile = _currentSector.CreateTileAtPosition(structure.Name, transform.position);
             _currentTile.Deploy(structure, ShipProperties.SpaceStructure, _team);
+            _currentSector.RegisterSpaceStructure(_team, structure);
         }
 
         _ships.Remove(structure);

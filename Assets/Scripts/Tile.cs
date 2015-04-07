@@ -52,7 +52,7 @@ public class Tile : MonoBehaviour, ListableObject
         _name = name;
         _planetType = type;
         _squad = this.GetComponent<Squad>();
-        _squad.Init();
+        _squad.Init(sector);
         _diplomacy = new Dictionary<global::Team, bool>();
         transform.SetParent(sector.transform);
     }
@@ -149,8 +149,6 @@ public class Tile : MonoBehaviour, ListableObject
 
                 // generate random defenses if space age
             }
-
-            _squad.Init();
         }
 	}
 
@@ -194,6 +192,7 @@ public class Tile : MonoBehaviour, ListableObject
         if (!destroy && _structure != null)
             _squad.Ships.Add(_structure);
         _structure.Undeploy(this);
+        _squad.Sector.UnregisterSpaceStructure(_team, _structure);
         _structure = null;
         return _planetType;
     }

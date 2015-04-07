@@ -113,7 +113,7 @@ public class GUIManager : MonoBehaviour
 
         // note: i fucking hate this bit
         var click = false;
-        if (HumanPlayer.Instance.Team == squad.Team)
+        if (HumanPlayer.Instance.Team == squad.Team && HumanPlayer.Instance.ControlledIsWithinRange)
         {
             if (type == "Deploy" && index != -1 && squad.OnMission == false) // deploy
             {
@@ -128,10 +128,15 @@ public class GUIManager : MonoBehaviour
                 click = true;
             else if (type == "Invade" && squad.CalculateTroopPower() > 0f)
                 click = true;
-        }
 
-        deploy.interactable = click;
-        manage.interactable = (squad.Ships.Count > 0 || squad.Colliders.Count > 0) && squad.Team == HumanPlayer.Instance.Team;
+            deploy.interactable = click;
+            manage.interactable = squad.Ships.Count > 0 || squad.Colliders.Count > 0;
+        }
+        else
+        {
+            deploy.interactable = false;
+            manage.interactable = false;
+        }
     }
 
     public void SetSquadList(bool set)
