@@ -21,11 +21,13 @@ public class Player : MonoBehaviour
     protected int _numResearchStations;
     protected ResearchTree _militaryTree;
     protected ResearchTree _scienceTree;
+    protected bool _controlledIsWithinRange;
 
     public Team Team { get { return _team; } }
     public List<Tile> Tiles { get { return _tiles; } }
     public List<Squad> Squads { get { return _squads; } }
     public bool TurnEnded { get { return _turnEnded; } }
+    public bool ControlledIsWithinRange { get { return _controlledIsWithinRange; } }
 
     protected Squad _playerSquad;
     protected Squad _enemySquad;
@@ -52,6 +54,11 @@ public class Player : MonoBehaviour
             return;
         _controlledSquad = gameObject.GetComponent<Squad>();
         _controlledTile = gameObject.GetComponent<Tile>();
+
+        // check range here
+
+
+
     }
 
 	// Update is called once per frame

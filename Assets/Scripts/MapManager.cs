@@ -194,15 +194,13 @@ public class MapManager : MonoBehaviour
         public List<KeyValuePair<int, int>> sectorPath;
         public int g;
         public int h;
-        public string path;
 
-        public AStarSectorNode(List<KeyValuePair<int, int>> path, string val, int gf)
+        public AStarSectorNode(List<KeyValuePair<int, int>> path, int gf)
         {
             this.sectorPath = path;
             this.g = gf;
             this.h = path.Count; // heuristic = size of path.
             // alternative: h = sum of sqrt dist from goal
-            this.path = val;
         }
 
         public List<AStarSectorNode> succ()
@@ -213,49 +211,54 @@ public class MapManager : MonoBehaviour
             var h = sectorPath[sectorPath.Count - 1].Value;
             if(Mathf.Abs(v) % 2 == 0)
             {
-                children.Add(New(v + 1, h, 'N'));
-                children.Add(New(v, h + 1, 'R'));
-                children.Add(New(v - 1, h, 'E'));
-                children.Add(New(v - 1, h - 1, 'W'));
-                children.Add(New(v, h - 1, 'L'));
-                children.Add(New(v + 1, h - 1, 'S'));
+                children.Add(New(v + 1, h));
+                children.Add(New(v, h + 1));
+                children.Add(New(v - 1, h));
+                children.Add(New(v - 1, h - 1));
+                children.Add(New(v, h - 1));
+                children.Add(New(v + 1, h - 1));
             }
             else
             {
-                children.Add(New(v + 1, h + 1, 'N'));
-                children.Add(New(v, h + 1, 'R'));
-                children.Add(New(v - 1, h + 1, 'E'));
-                children.Add(New(v - 1, h, 'W'));
-                children.Add(New(v, h - 1, 'L'));
-                children.Add(New(v + 1, h, 'S'));
+                children.Add(New(v + 1, h + 1));
+                children.Add(New(v, h + 1));
+                children.Add(New(v - 1, h + 1));
+                children.Add(New(v - 1, h));
+                children.Add(New(v, h - 1));
+                children.Add(New(v + 1, h));
             }
 
             return children;
         }
 
-        private AStarSectorNode New(int x, int y, char c)
+        private AStarSectorNode New(int x, int y)
         {
             var list = new List<KeyValuePair<int, int>>(sectorPath);
             list.Add(new KeyValuePair<int,int>(x, y));
-            return new AStarSectorNode(list, path + c, g + 1);
+            return new AStarSectorNode(list, g + 1);
         }
+    }
+
+    private KeyValuePair<int, int> SectorGridToKVP(Sector sector)
+    {
+        return new KeyValuePair<int, int>((int)sector.GridPosition.x, (int)sector.GridPosition.y);
     }
 
     public List<KeyValuePair<int, int>> AStarSearch(Sector start, Sector goal)
     {
         var fringe = new List<AStarSectorNode>();
-        var fringeSet = new Dictionary<string, AStarSectorNode>();
-        var explored = new HashSet<string>();
+        var fringeSet = new Dictionary<KeyValuePair<int, int>, AStarSectorNode>();
+        var explored = new HashSet<KeyValuePair<int, int>>();
 
-        var startPos = new KeyValuePair<int, int>((int)start.GridPosition.x, (int)start.GridPosition.y);
-        var endpos = new KeyValuePair<int, int>((int)goal.GridPosition.x, (int)goal.GridPosition.y);
+        var startPos = SectorGridToKVP(start);
+        var endpos = SectorGridToKVP(goal);
 
         var initList = new List<KeyValuePair<int, int>>();
         initList.Add(startPos);
 
-        AStarSectorNode init = new AStarSectorNode(initList, string.Empty, 0);
+        AStarSectorNode init = new AStarSectorNode(initList, 0);
         fringe.Add(init);
-        fringeSet.Add(init.path, init);
+        fringeSet.Add(startPos, init);
 
         while(fringe.Count > 0)
         {
@@ -266,26 +269,27 @@ public class MapManager : MonoBehaviour
                 return cur.sectorPath;
 
             fringe.RemoveAt(0);
-            fringeSet.Remove(cur.path);
-            explored.Add(cur.path);
+            fringeSet.Remove(last);
+            explored.Add(last);
 
             List<AStarSectorNode> exp = cur.succ();
 
             for(int i = 0; i < 6; i++) // 6 possible movements
             {
-                if(explored.Contains(exp[i].path))
+                last = exp[i].sectorPath[exp[i].sectorPath.Count - 1];
+                if(explored.Contains(last))
                     continue;
 
-                bool inFringe = fringeSet.ContainsKey(exp[i].path);
+                bool inFringe = fringeSet.ContainsKey(last);
                 if(!inFringe)
                 {
                     fringe.Add(exp[i]);
                     fringe = fringe.OrderBy(o => o.h + o.g).ToList();
-                    fringeSet.Add(exp[i].path, exp[i]);
+                    fringeSet.Add(last, exp[i]);
                 }
                 else
                 {
-                    var val = fringeSet[exp[i].path];
+                    var val = fringeSet[last];
 
                     if(exp[i].g + exp[i].h < val.g + val.h)
                     {
