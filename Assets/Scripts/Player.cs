@@ -101,6 +101,12 @@ public class Player : MonoBehaviour
         EndTurn();
     }
 
+    public void CreateDiplomacyEvent()
+    {
+        GameManager.Instance.AddEvent(new DiplomacyEvent(1, _team, _controlledTile));
+        EndTurn();
+    }
+
     public void EndTurn()
     {
         _turnEnded = true;
@@ -142,6 +148,70 @@ public class Player : MonoBehaviour
             WC = _playerSquad.GenerateWinChance(et);
 
         return Mathf.Clamp01(WC);
+    }
+
+    public bool DiplomaticEffort(Tile tile)
+    {
+        var IP = tile.Population * 2;
+
+        int prim = 0, ind = 0, space = 0;
+        for(int i = 0; i < _squads.Count; i++)
+        {
+            for(int j = 0; j < _squads[i].Ships.Count; j++)
+            {
+                prim += _squads[i].Ships[j].PrimitivePopulation;
+                ind += _squads[i].Ships[j].IndustrialPopulation;
+                space += _squads[i].Ships[j].SpaceAgePopulation;
+            }
+        }
+
+        for(int i = 0; i < _tiles.Count; i++)
+        {
+            switch(_tiles[i].PopulationType)
+            {
+                case Inhabitance.Primitive:
+                    prim += _tiles[i].Population;
+                    break;
+                case Inhabitance.Industrial:
+                    ind += _tiles[i].Population;
+                    break;
+                case Inhabitance.SpaceAge:
+                    space += _tiles[i].Population;
+                    break;
+            }
+
+            if(tile.Structure != null)
+            {
+                prim += _tiles[i].Structure.PrimitivePopulation;
+                ind += _tiles[i].Structure.IndustrialPopulation;
+                space += _tiles[i].Structure.SpaceAgePopulation;
+            }
+        }
+
+        int PP = 0;
+        switch(tile.PopulationType)
+        {
+            case Inhabitance.Primitive:
+                PP = prim * 2 + ind + space;
+                break;
+            case Inhabitance.Industrial:
+                PP = prim + ind * 2 + space;
+                break;
+            case Inhabitance.SpaceAge:
+                PP = prim + ind + space * 2;
+                break;
+        }
+
+        var DC = (PP - IP) / 100.0f * 0.5f + 0.5f;
+        var DP = GameManager.Generator.NextDouble();
+
+        if (DP < DC) // we won!
+        {
+            tile.Claim(_team);
+            tile.Population += Mathf.FloorToInt(IP * DC * ((float)GameManager.Generator.NextDouble() * (0.75f - 0.25f) + 0.25f));
+            return true;
+        }
+        return false;
     }
 
     public virtual KeyValuePair<KeyValuePair<Team, BattleType>, Dictionary<string, int>> Battle(float playerChance, BattleType battleType, Squad player, Squad enemy)

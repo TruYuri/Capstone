@@ -337,7 +337,7 @@ public class Squad : MonoBehaviour, ListableObject
             int primPop = 0, indPop = 0, spacePop = 0;
 
             // tile won, kill off soldiers lost in battle
-            if(enemy.Team == Team.Indigineous)
+            if(enemy.Team == Team.Indigenous)
             {
                 switch(enemy.PopulationType)
                 {
@@ -392,7 +392,7 @@ public class Squad : MonoBehaviour, ListableObject
                 }
             }
 
-            if (enemy.Team == Team.Indigineous)
+            if (enemy.Team == Team.Indigenous)
             {
                 enemy.Population = nTroops;
                 if (nTroops == 0)

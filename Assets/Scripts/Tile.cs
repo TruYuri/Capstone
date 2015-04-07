@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
@@ -31,6 +32,7 @@ public class Tile : MonoBehaviour, ListableObject
     private Team _team;
     private Structure _structure;
     private Squad _squad;
+    private Dictionary<Team, bool> _diplomacy;
 
     public string Name { get { return _name; } }
     public Team Team { get { return _team; } }
@@ -51,6 +53,7 @@ public class Tile : MonoBehaviour, ListableObject
         _planetType = type;
         _squad = this.GetComponent<Squad>();
         _squad.Init();
+        _diplomacy = new Dictionary<global::Team, bool>();
         transform.SetParent(sector.transform);
     }
 
@@ -141,8 +144,8 @@ public class Tile : MonoBehaviour, ListableObject
 
             if (_population > 0)
             {
-                _team = Team.Indigineous;
-                _squad.Team = Team.Indigineous;
+                _team = Team.Indigenous;
+                _squad.Team = Team.Indigenous;
 
                 // generate random defenses if space age
             }
@@ -175,6 +178,12 @@ public class Tile : MonoBehaviour, ListableObject
         _team = team;
         GameManager.Instance.Players[_team].Tiles.Add(this);
         _squad.Team = _team;
+
+        var teams = _diplomacy.Keys.ToList();
+        foreach(var t in teams)
+        {
+            _diplomacy[t] = false;
+        }
     }
 
     public string Undeploy(bool destroy)
@@ -224,7 +233,7 @@ public class Tile : MonoBehaviour, ListableObject
     public float CalculateDefensivePower()
     {
         var power = 0f;
-        if (_team == Team.Indigineous) // use indigineous
+        if (_team == Team.Indigenous) // use Indigenous
         {
             switch(_planetInhabitance)
             {
@@ -253,6 +262,19 @@ public class Tile : MonoBehaviour, ListableObject
         return power;
     }
 
+    public void SetDiplomaticEffort(Team team)
+    {
+        if (!_diplomacy.ContainsKey(team))
+            _diplomacy.Add(team, true);
+        else
+            _diplomacy[team] = true;
+    }
+
+    public void EndDiplomaticEffort(Team team)
+    {
+        _diplomacy[team] = false;
+    }
+
     public void PopulateInfoPanel(GameObject panel)
     {
         var tileRenderer = this.GetComponent<ParticleSystem>().GetComponent<Renderer>();
@@ -266,13 +288,34 @@ public class Tile : MonoBehaviour, ListableObject
         panel.transform.FindChild("TeamName").GetComponent<Text>().text = _team.ToString();
         panel.transform.FindChild("TeamIcon").GetComponent<Image>().sprite = GUIManager.Instance.Icons[_team.ToString()];
 
+        if(_team == global::Team.Indigenous)
+        {
+            if(_diplomacy.ContainsKey(HumanPlayer.Instance.Team) && _diplomacy[HumanPlayer.Instance.Team])
+            {
+                panel.transform.FindChild("Diplomacy").gameObject.SetActive(false);
+                panel.transform.FindChild("DiplomacyInProgress").gameObject.SetActive(true);
+            }
+            else
+            {
+                panel.transform.FindChild("Diplomacy").gameObject.SetActive(true);
+                panel.transform.FindChild("DiplomacyInProgress").gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            panel.transform.FindChild("Diplomacy").gameObject.SetActive(false);
+            panel.transform.FindChild("DiplomacyInProgress").gameObject.SetActive(false);
+        }
+
         if (_resourceType != Resource.NoResource)
         {
             var name = panel.transform.FindChild("ResourceName");
             var icon = panel.transform.FindChild("ResourceIcon");
+            var amount = panel.transform.FindChild("ResourceCount");
             name.gameObject.SetActive(true);
             icon.gameObject.SetActive(true);
-            name.GetComponent<Text>().text = _resourceType.ToString() + "\n" + _resourceCount.ToString();
+            name.GetComponent<Text>().text = _resourceType.ToString();
+            amount.GetComponent<Text>().text = _resourceCount.ToString();
             icon.GetComponent<Image>().sprite = GUIManager.Instance.Icons[_resourceType.ToString()];
         }
         else

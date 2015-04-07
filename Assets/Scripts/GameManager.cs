@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
             { Team.Union, null },
             { Team.Kharkyr, null },
             { Team.Plinthen, null },
-            { Team.Indigineous, null },
+            { Team.Indigenous, null },
         };
 
         _shipDefinitions = new Dictionary<string, Ship>();
@@ -202,7 +202,7 @@ public class GameManager : MonoBehaviour
             AddHumanPlayer(Team.Union);
             AddAIPlayer(Team.Kharkyr);
             AddAIPlayer(Team.Plinthen);
-            AddAIPlayer(Team.Indigineous);
+            AddAIPlayer(Team.Indigenous);
 
             // debug
             var squad = _players[Team.Kharkyr].CreateNewSquad(new Vector3(0, 0, -10));
@@ -218,7 +218,7 @@ public class GameManager : MonoBehaviour
         // debug
         _players[Team.Kharkyr].EndTurn();
         _players[Team.Plinthen].EndTurn();
-        _players[Team.Indigineous].EndTurn();
+        _players[Team.Indigenous].EndTurn();
 
         if(!_paused)
             NextEvent();

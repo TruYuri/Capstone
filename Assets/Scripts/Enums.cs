@@ -8,7 +8,7 @@ public enum ResourceGatherType
     Natural = 1 << 2 
 }
 public enum TileSize { Small, Large }
-public enum Team { Uninhabited, Union, Kharkyr, Plinthen, Indigineous }
+public enum Team { Uninhabited, Union, Kharkyr, Plinthen, Indigenous }
 public enum GameEventStage { Begin, End, Continue }
 public enum ShipProperties 
 {

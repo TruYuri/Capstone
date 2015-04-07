@@ -64,7 +64,7 @@ public class GUIManager : MonoBehaviour
             { "Ore", Resources.Load<Sprite>(UI_ICONS_PATH + "OreIcon") },
             { "Forest", Resources.Load<Sprite>(UI_ICONS_PATH + "ForestIcon") },
             { "NoResource", Resources.Load<Sprite>(UI_ICONS_PATH + "NoResourceIcon") },
-            { "Indigineous", Resources.Load<Sprite>(UI_ICONS_PATH + "IndigineousIcon") },
+            { "Indigenous", Resources.Load<Sprite>(UI_ICONS_PATH + "IndigenousIcon") },
             { "Uninhabited", Resources.Load<Sprite>(UI_ICONS_PATH + "UninhabitedIcon") },
             { "Plinthen", Resources.Load<Sprite>(UI_ICONS_PATH + "PlinthenIcon") },
             { "Union", Resources.Load<Sprite>(UI_ICONS_PATH + "UnionIcon") },

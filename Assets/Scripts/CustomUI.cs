@@ -28,6 +28,11 @@ public class CustomUI : MonoBehaviour
 
     }
 
+    public void ClickDiplomacy()
+    {
+        HumanPlayer.Instance.CreateDiplomacyEvent();
+    }
+
     public void ClickContinue()
     {
         GUIManager.Instance.ContinueAfterBattle(Convert.ToBoolean(data));
