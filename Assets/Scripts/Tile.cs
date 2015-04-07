@@ -192,9 +192,32 @@ public class Tile : MonoBehaviour, ListableObject
 
     public void Deploy(Structure ship, ShipProperties structureType, Team team)
     {
-        Claim(team);
+        if(_team != team)
+            Claim(team);
         _structure = ship;
         _structure.Deploy(this);
+    }
+
+    public void Gather()
+    {
+        if (_structure == null)
+            return;
+
+        var gathered = _structure.Gather(_resourceType, _planetInhabitance, _resourceCount);
+
+        foreach (var resource in gathered)
+        {
+            switch (resource.Key)
+            {
+                case ResourceGatherType.None:
+                case ResourceGatherType.Soldiers:
+                case ResourceGatherType.Research:
+                    break;
+                case ResourceGatherType.Natural:
+                    _resourceCount -= resource.Value;
+                    break;
+            }
+        }
     }
 
     public float CalculateDefensivePower()

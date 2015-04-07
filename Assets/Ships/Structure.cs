@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Collections.Generic;
 
 public class Structure : Ship, ListableObject
@@ -12,6 +13,7 @@ public class Structure : Ship, ListableObject
     private int gatherRate;
     private int range;
     private int swapPopulation;
+    private ResourceGatherType types;
 
     public float Defense 
     { 
@@ -41,7 +43,7 @@ public class Structure : Ship, ListableObject
     public List<string> Constructables { get { return constructables; } }
 
     public Structure(Sprite icon, string name, float hull, float firepower, float speed, int capacity,
-        float defense, int deployedCapacity, int gatherRate, int range, List<string> constructables, ShipProperties shipProperties, Dictionary<Resource, int> requiredResources)
+        float defense, int deployedCapacity, int gatherRate, int range, List<string> constructables, ShipProperties shipProperties, ResourceGatherType type, Dictionary<Resource, int> requiredResources)
         : base(icon, name, hull, firepower, speed, capacity, shipProperties, requiredResources)
     {
         this.defense = defense;
@@ -50,12 +52,14 @@ public class Structure : Ship, ListableObject
         this.constructables = constructables;
         this.range = range;
         this.swapPopulation = deployedCapacity;
+        this.types = type;
         this.resources = new Dictionary<Resource, int>()
         {
             { Resource.Asterminium, 0 },
             { Resource.Forest, 0 },
             { Resource.Oil, 0 },
-            { Resource.Ore, 0 }
+            { Resource.Ore, 0 },
+            { Resource.NoResource, 0 }
         };
     }
 
@@ -67,7 +71,7 @@ public class Structure : Ship, ListableObject
     public override Ship Copy()
     {
         var ship = new Structure(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, 
-            defense, deployedCapacity, gatherRate, range, constructables, shipProperties, requiredResources);
+            defense, deployedCapacity, gatherRate, range, constructables, shipProperties, types, requiredResources);
         ship.Hull = hull;
         ship.Firepower = firepower;
         ship.Speed = speed;
@@ -75,6 +79,45 @@ public class Structure : Ship, ListableObject
         ship.Protection = protection;
 
         return ship;
+    }
+
+    public List<KeyValuePair<ResourceGatherType, int>> Gather(Resource rType, Inhabitance pType, int resources)
+    {
+        var gathertypes = new List<KeyValuePair<ResourceGatherType, int>>();
+        int min;
+
+        if((types & ResourceGatherType.Natural) > 0)
+        {
+            min = Math.Min(gatherRate, resources);
+            this.resources[rType] += min;
+            gathertypes.Add(new KeyValuePair<ResourceGatherType, int>(ResourceGatherType.Natural, min));
+        }
+        if((types & ResourceGatherType.Research) > 0)
+        {
+            gathertypes.Add(new KeyValuePair<ResourceGatherType, int>(ResourceGatherType.Research, gatherRate));
+        }
+        if((types & ResourceGatherType.Soldiers) > 0)
+        {
+            min = Math.Min(gatherRate, capacity - (primitivePopulation + industrialPopulation + spaceAgePopulation));
+            switch(pType)
+            {
+                case Inhabitance.Uninhabited:
+                    break;
+                case Inhabitance.Primitive:
+                    primitivePopulation += min;
+                    break;
+                case Inhabitance.Industrial:
+                    industrialPopulation += min;
+                    break;
+                case Inhabitance.SpaceAge:
+                    industrialPopulation += min;
+                    break;
+            }
+
+            gathertypes.Add(new KeyValuePair<ResourceGatherType, int>(ResourceGatherType.Soldiers, min));
+        }
+
+        return gathertypes;
     }
 
     public void Deploy(Tile tile)

@@ -111,6 +111,10 @@ public class Player : MonoBehaviour
     {
         _militaryTree.Advance();
         _scienceTree.Advance();
+
+        foreach (var tile in _tiles)
+            tile.Gather();
+
         _turnEnded = false;
     }
 

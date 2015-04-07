@@ -241,10 +241,16 @@ public class GUIManager : MonoBehaviour
                     _interface["ConstructionInfo"].gameObject.SetActive(true);
                     break;
                 case "AltSquadList":
-                case "SquadList":
                     var k = int.Parse(split[1]);
                     ClearList("SquadInfoList");
-                    (HumanPlayer.Instance.Squads[k] as ListableObject).PopulateGeneralInfo(
+                    (HumanPlayer.Instance.Squad.Colliders[k] as ListableObject).PopulateGeneralInfo(
+                        _interface["SquadInfo"].gameObject, null);
+                    _interface["SquadInfo"].gameObject.SetActive(true);
+                    break;
+                case "SquadList":
+                    var l = int.Parse(split[1]);
+                    ClearList("SquadInfoList");
+                    (HumanPlayer.Instance.Squads[l] as ListableObject).PopulateGeneralInfo(
                         _interface["SquadInfo"].gameObject, null);
                     _interface["SquadInfo"].gameObject.SetActive(true);
                     break;

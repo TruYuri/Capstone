@@ -1,5 +1,12 @@
 ﻿public enum Inhabitance { Uninhabited, Primitive, Industrial, SpaceAge }
 public enum Resource { NoResource, Forest, Ore, Oil, Asterminium, Stations }
+public enum ResourceGatherType 
+{ 
+    None = 0, 
+    Research = 1 << 0, 
+    Soldiers = 1 << 1, 
+    Natural = 1 << 2 
+}
 public enum TileSize { Small, Large }
 public enum Team { Uninhabited, Union, Kharkyr, Plinthen, Indigineous }
 public enum GameEventStage { Begin, End, Continue }

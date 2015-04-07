@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     private const string RANGE_DETAIL = "Range";
     private const string N_CONSTRUCTABLES_DETAIL = "nConstructables";
     private const string CONSTRUCTABLE_DETAIL = "Constructable";
+    private const string RESOURCE_TYPE_DETAIL = "ResourceGatherType";
     private const string ORE_DETAIL = "Ore";
     private const string OIL_DETAIL = "Oil";
     private const string ASTERMINIUM_DETAIL = "Asterminium";
@@ -124,7 +125,11 @@ public class GameManager : MonoBehaviour
                 var dCapacity = int.Parse(shipDetails[section][DEPLOYED_CAPACITY_DETAIL]);
                 var rate = int.Parse(shipDetails[section][GATHER_RATE_DETAIL]);
                 var range = int.Parse(shipDetails[section][RANGE_DETAIL]);
-                _shipDefinitions.Add(name, new Structure(icon, name, hull, firepower, speed, capacity, dDefense, dCapacity, rate, range, constructables, type, resources));
+                var gatherList = shipDetails[section][RESOURCE_TYPE_DETAIL].Split('|');
+                var gatherType = ResourceGatherType.None;
+                foreach(var t in gatherList)
+                    gatherType = gatherType | (ResourceGatherType)Enum.Parse(typeof(ResourceGatherType), t);
+                _shipDefinitions.Add(name, new Structure(icon, name, hull, firepower, speed, capacity, dDefense, dCapacity, rate, range, constructables, type, gatherType, resources));
             }
             else
                 _shipDefinitions.Add(name, new Ship(icon, name, hull, firepower, speed, capacity, type, resources));
