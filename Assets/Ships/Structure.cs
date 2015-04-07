@@ -81,7 +81,7 @@ public class Structure : Ship, ListableObject
         return ship;
     }
 
-    public List<KeyValuePair<ResourceGatherType, int>> Gather(Resource rType, Inhabitance pType, int resources)
+    public List<KeyValuePair<ResourceGatherType, int>> Gather(Resource rType, int resources, Inhabitance pType, int population)
     {
         var gathertypes = new List<KeyValuePair<ResourceGatherType, int>>();
         int min;
@@ -99,6 +99,7 @@ public class Structure : Ship, ListableObject
         if((types & ResourceGatherType.Soldiers) > 0)
         {
             min = Math.Min(gatherRate, capacity - (primitivePopulation + industrialPopulation + spaceAgePopulation));
+            min = Math.Min(min, population);
             switch(pType)
             {
                 case Inhabitance.Uninhabited:
@@ -110,7 +111,7 @@ public class Structure : Ship, ListableObject
                     industrialPopulation += min;
                     break;
                 case Inhabitance.SpaceAge:
-                    industrialPopulation += min;
+                    spaceAgePopulation += min;
                     break;
             }
 
@@ -133,7 +134,8 @@ public class Structure : Ship, ListableObject
         swapPopulation = deployedCapacity;
         shipProperties = shipProperties & (~ShipProperties.Untransferable);
 
-        // distribute remaining population to the planet?
+        tile.Population += primitivePopulation + industrialPopulation + spaceAgePopulation;
+        primitivePopulation = industrialPopulation = spaceAgePopulation = 0;
     }
 
     public void PopulateStructurePanel(GameObject list)

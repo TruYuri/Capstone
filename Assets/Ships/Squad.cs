@@ -278,6 +278,8 @@ public class Squad : MonoBehaviour, ListableObject
 
         if (winner) // remove random soldiers from random ships in the fleet
         {
+            enemy.Population = enemy.Population / 2; // squad won, so halve the planet population.
+
             int nTroops = 0;
             foreach (var ship in _ships)
             {

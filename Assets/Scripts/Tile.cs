@@ -168,7 +168,6 @@ public class Tile : MonoBehaviour, ListableObject
     public void Relinquish()
     {
         GameManager.Instance.Players[_team].Tiles.Remove(this);
-        _team = Team.Uninhabited;
     }
 
     public void Claim(Team team)
@@ -203,7 +202,7 @@ public class Tile : MonoBehaviour, ListableObject
         if (_structure == null)
             return;
 
-        var gathered = _structure.Gather(_resourceType, _planetInhabitance, _resourceCount);
+        var gathered = _structure.Gather(_resourceType, _resourceCount, _planetInhabitance, _population);
 
         foreach (var resource in gathered)
         {
@@ -211,6 +210,8 @@ public class Tile : MonoBehaviour, ListableObject
             {
                 case ResourceGatherType.None:
                 case ResourceGatherType.Soldiers:
+                    _population -= resource.Value;
+                    break;
                 case ResourceGatherType.Research:
                     break;
                 case ResourceGatherType.Natural:
@@ -280,49 +281,32 @@ public class Tile : MonoBehaviour, ListableObject
             panel.transform.FindChild("ResourceIcon").gameObject.SetActive(false);
         }
 
-        var total = panel.transform.FindChild("TotalPopulation").GetComponent<Text>();
-        var primitive = panel.transform.FindChild("PrimitivePopulation").GetComponent<Text>();
-        var industrial = panel.transform.FindChild("IndustrialPopulation").GetComponent<Text>();
-        var spaceAge = panel.transform.FindChild("SpaceAgePopulation").GetComponent<Text>();
-        var zero = Convert.ToString(0);
+        int primitive = 0, industrial = 0, spaceAge = 0;
 
-        if(_team == Team.Indigineous)
+        switch(_planetInhabitance)
         {
-            total.text = _population.ToString();
+            case Inhabitance.Primitive:
+                primitive += _population;
+                break;
+            case Inhabitance.Industrial:
+                industrial += _population;
+                break;
+            case Inhabitance.SpaceAge:
+                spaceAge += _population;
+                break;
+        }
+        
+        if(_structure != null)
+        {
+            primitive += _structure.PrimitivePopulation;
+            industrial += _structure.IndustrialPopulation;
+            spaceAge += _structure.SpaceAgePopulation;
+        }
 
-            switch(_planetInhabitance)
-            {
-                case Inhabitance.Primitive:
-                    primitive.text = _population.ToString();
-                    industrial.text = zero;
-                    spaceAge.text = zero;
-                    break;
-                case Inhabitance.Industrial:
-                    primitive.text = zero;
-                    industrial.text = _population.ToString();
-                    spaceAge.text = zero;
-                    break;
-                case Inhabitance.SpaceAge:
-                    primitive.text = zero;
-                    industrial.text = zero;
-                    spaceAge.text = _population.ToString();
-                    break;
-            }
-        }
-        else if(_structure != null)
-        {
-            total.text = (_structure.PrimitivePopulation + _structure.IndustrialPopulation + _structure.SpaceAgePopulation).ToString();
-            primitive.text = _structure.PrimitivePopulation.ToString();
-            industrial.text = _structure.IndustrialPopulation.ToString();
-            spaceAge.text = _structure.SpaceAgePopulation.ToString();
-        }
-        else
-        {
-            total.text = zero;
-            primitive.text = zero;
-            industrial.text = zero;
-            spaceAge.text = zero;
-        }
+        panel.transform.FindChild("TotalPopulation").GetComponent<Text>().text = (primitive + industrial + spaceAge).ToString();
+        panel.transform.FindChild("PrimitivePopulation").GetComponent<Text>().text = primitive.ToString();
+        panel.transform.FindChild("IndustrialPopulation").GetComponent<Text>().text = industrial.ToString();
+        panel.transform.FindChild("SpaceAgePopulation").GetComponent<Text>().text = spaceAge.ToString();
     }
 
     public bool IsInRange(Squad squad)
