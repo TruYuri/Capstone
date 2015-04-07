@@ -140,6 +140,8 @@ public class Squad : MonoBehaviour, ListableObject
             _currentTile.Squad.Colliders.Remove(this);
         }
 
+        var wasInRange = _inTileRange;
+
         _currentTile = tile;
         if (_currentTile == null)
             return;
@@ -148,15 +150,18 @@ public class Squad : MonoBehaviour, ListableObject
         {
             _inTileRange = true;
 
-            if (!_collidingSquads.Contains(_currentTile.Squad))
+            if (!_collidingSquads.Contains(_currentTile.Squad) && _currentTile.Squad.Team == _team)
             {
                 _collidingSquads.Add(_currentTile.Squad);
                 _currentTile.Squad.Colliders.Add(this);
-
-                if (_currentTile.Squad.Team != _team && _currentTile.Squad.Ships.Count > 0)
-                    GameManager.Instance.Players[_team].CreateBattleEvent(this, _currentTile.Squad);
-                else if (this == HumanPlayer.Instance.Squad || _currentTile.Squad == HumanPlayer.Instance.Squad)
-                    HumanPlayer.Instance.ReloadGameplayUI();
+            }
+            else if (_currentTile.Squad.Team != _team && _currentTile.Squad.Ships.Count > 0 && !wasInRange)
+            {
+                GameManager.Instance.Players[_team].CreateBattleEvent(this, _currentTile.Squad);
+            }
+            else if(_currentTile.Squad.Team != _team && _currentTile.Squad.Ships.Count == 0 && !wasInRange)
+            {
+                HumanPlayer.Instance.ReloadGameplayUI(); // "Invade"
             }
         }
         else
@@ -265,7 +270,6 @@ public class Squad : MonoBehaviour, ListableObject
     public KeyValuePair<Team, Dictionary<string, int>> Combat(Tile enemy, float winChance) // planet combat
     {
         float winP = (float)GameManager.Generator.NextDouble();
-
         var winner = winP < winChance;
         var lost = new KeyValuePair<Team, Dictionary<string, int>>(winner ? _team : enemy.Team, new Dictionary<string,int>());
         lost.Value.Add("Primitive", 0);
