@@ -41,7 +41,7 @@ public class Squad : MonoBehaviour, ListableObject
     {
 	}
 
-    public void Init(Sector sector)
+    public void Init(Sector sector, string name)
     {
         var tile = this.GetComponent<Tile>();
         if (tile != null)
@@ -51,6 +51,7 @@ public class Squad : MonoBehaviour, ListableObject
         }
 
         _currentSector = sector;
+        _name = name;
     }
 
     // Update is called once per frame
@@ -457,9 +458,6 @@ public class Squad : MonoBehaviour, ListableObject
         var tile = this.GetComponent<Tile>();
 
         var name = _name;
-
-        if (tile != null)
-            name = tile.Name;
 
         if (this == HumanPlayer.Instance.Squad && listName == "AltSquadList")
             name = "(Self) " + name;

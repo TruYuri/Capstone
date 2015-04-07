@@ -258,13 +258,13 @@ public class Player : MonoBehaviour
             if (win.Key == _team && et != null)
             {
                 et.Relinquish();
-                et.Undeploy(true);
+                var type = et.Undeploy(true);
                 et.Claim(_team);
             }
             else if (win.Key == enemy.Team && pt != null)
             {
                 pt.Relinquish();
-                pt.Undeploy(true);
+                var type = pt.Undeploy(true);
                 pt.Claim(enemy.Team);
             }
 
@@ -332,7 +332,7 @@ public class Player : MonoBehaviour
             GameObject.DestroyImmediate(squad.gameObject);
     }
 
-    public Squad CreateNewSquad(Squad fromSquad)
+    public Squad CreateNewSquad(Squad fromSquad, string name = "Squad")
     {
         var val = GameManager.Generator.Next(2);
 
@@ -343,20 +343,20 @@ public class Player : MonoBehaviour
         else
             dist = fromSquad.GetComponent<SphereCollider>().radius / 2.0f;
         var offset = val == 0 ? new Vector3(dist, 0, 0) : new Vector3(0, 0, dist);
-        var squad = CreateNewSquad(fromSquad.transform.position + offset);
+        var squad = CreateNewSquad(fromSquad.transform.position + offset, name);
         fromSquad.Colliders.Add(squad);
         squad.Colliders.Add(fromSquad);
         return squad;
     }
 
-    public Squad CreateNewSquad(Vector3 position)
+    public Squad CreateNewSquad(Vector3 position, string name = "Squad")
     {
         var squadobj = Resources.Load<GameObject>(SQUAD_PREFAB);
         var squad = Instantiate(squadobj, position, Quaternion.identity) as GameObject;
         var component = squad.GetComponent<Squad>();
         component.Team = _team;
         _squads.Add(component);
-        component.Init(null);
+        component.Init(null, name);
         return component;
     }
 }

@@ -26,7 +26,7 @@ public class HumanPlayer : Player
         _instance = this;
 
         // create command ship, look at it, control it     
-        _commandShip = CreateNewSquad(Vector3.zero);
+        _commandShip = CreateNewSquad(Vector3.zero, "Command Ship");
         _commandShip.Ships.Add(_shipDefinitions["Command Ship"]);
         _commandShip.Ships.Add(_shipDefinitions["Research Complex"]);
 
