@@ -15,7 +15,9 @@ public class Ship : ListableObject
     protected float speed;
     protected int capacity;
     protected float protection;
+    protected int resourceCapacity;
 
+    protected int baseResourceCapacity;
     protected float baseHull;
     protected float baseFirepower;
     protected float baseSpeed;
@@ -26,6 +28,7 @@ public class Ship : ListableObject
     protected int spaceAgePopulation;
 
     protected Dictionary<Resource, int> requiredResources;
+    protected Dictionary<Resource, int> resources;
 
     protected ShipProperties shipProperties;
 
@@ -53,6 +56,11 @@ public class Ship : ListableObject
         get { return capacity; }
         set { capacity = value; }
     }
+    public int ResourceCapacity
+    {
+        get { return resourceCapacity; }
+        set { resourceCapacity = value; }
+    }
     public float Protection 
     { 
         get { return protection; }
@@ -79,10 +87,11 @@ public class Ship : ListableObject
         set { unlocked = value; }
     }
     public Sprite Icon { get { return icon; } }
+    public Dictionary<Resource, int> Resources { get { return resources; } }
 
     public ShipProperties ShipProperties { get { return shipProperties; } }
 
-    public Ship(Sprite icon, string name, float hull, float firepower, float speed, int capacity, ShipProperties shipProperties, 
+    public Ship(Sprite icon, string name, float hull, float firepower, float speed, int capacity, int rCapacity, ShipProperties shipProperties, 
         Dictionary<Resource, int> requiredResources)
     {
         this.name = name;
@@ -90,9 +99,18 @@ public class Ship : ListableObject
         this.firepower = this.baseFirepower = firepower;
         this.speed = this.baseSpeed = speed;
         this.capacity = this.baseCapacity = capacity;
+        this.resourceCapacity = this.baseResourceCapacity = rCapacity;
         this.shipProperties = shipProperties;
         this.icon = icon;
         this.requiredResources = requiredResources;
+        this.resources = new Dictionary<Resource, int>()
+        {
+            { Resource.Asterminium, 0 },
+            { Resource.Forest, 0 },
+            { Resource.Oil, 0 },
+            { Resource.Ore, 0 },
+            { Resource.NoResource, 0 }
+        };
     }
 
     protected virtual bool CanConstruct(Dictionary<Resource, int> resources)
@@ -107,7 +125,7 @@ public class Ship : ListableObject
 
     public virtual Ship Copy()
     {
-        var ship = new Ship(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, shipProperties, requiredResources);
+        var ship = new Ship(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, baseResourceCapacity, shipProperties, requiredResources);
         ship.Hull = hull;
         ship.Firepower = firepower;
         ship.Speed = speed;
@@ -119,7 +137,7 @@ public class Ship : ListableObject
 
     GameObject ListableObject.CreateListEntry(string listName, int index, System.Object data)
     {
-        var shipEntry = Resources.Load<GameObject>(LIST_PREFAB);
+        var shipEntry = UnityEngine.Resources.Load<GameObject>(LIST_PREFAB);
         var entry = GameObject.Instantiate(shipEntry) as GameObject;
         var icon = entry.transform.FindChild("Icon").GetComponent<Image>();
         icon.sprite = this.icon;
@@ -132,7 +150,7 @@ public class Ship : ListableObject
 
     GameObject ListableObject.CreateBuildListEntry(string listName, int index, System.Object data) 
     {
-        var buildEntry = Resources.Load<GameObject>(CONSTRUCT_PREFAB);
+        var buildEntry = UnityEngine.Resources.Load<GameObject>(CONSTRUCT_PREFAB);
         var entry = GameObject.Instantiate(buildEntry) as GameObject;
         entry.transform.FindChild("Name").GetComponent<Text>().text = name;
         entry.transform.FindChild("Icon").GetComponent<Image>().sprite = icon;
@@ -157,7 +175,7 @@ public class Ship : ListableObject
         go.transform.FindChild("SpeedText").GetComponent<Text>().text = speed.ToString();
         go.transform.FindChild("CapacityText").GetComponent<Text>().text = capacity.ToString();
         go.transform.FindChild("Description").GetComponent<Text>().text = (string)data;
-
+        go.transform.FindChild("ResourceCapacityText").GetComponent<Text>().text = resourceCapacity.ToString();
         go.transform.FindChild("DefenseIcon").gameObject.SetActive(false);
         go.transform.FindChild("DefenseText").gameObject.SetActive(false);
         go.transform.FindChild("DeployedCapacityIcon").gameObject.SetActive(false);
@@ -173,9 +191,16 @@ public class Ship : ListableObject
         go.transform.FindChild("FirepowerText").GetComponent<Text>().text = firepower.ToString();
         go.transform.FindChild("SpeedText").GetComponent<Text>().text = speed.ToString();
         go.transform.FindChild("CapacityText").GetComponent<Text>().text = capacity.ToString();
-        go.transform.FindChild("PopulationText").GetComponent<Text>().text = (primitivePopulation + industrialPopulation + spaceAgePopulation).ToString();
+        go.transform.FindChild("PopulationText").GetComponent<Text>().text = 
+            (primitivePopulation + industrialPopulation + spaceAgePopulation).ToString() + "/" + capacity.ToString();
         go.transform.FindChild("PrimitiveText").GetComponent<Text>().text = primitivePopulation.ToString();
         go.transform.FindChild("IndustrialText").GetComponent<Text>().text = industrialPopulation.ToString();
         go.transform.FindChild("SpaceAgeText").GetComponent<Text>().text = spaceAgePopulation.ToString();
+        go.transform.FindChild("ResourceCapacityText").GetComponent<Text>().text =
+            (resources[Resource.Forest] + resources[Resource.Oil] + resources[Resource.Ore] + resources[Resource.Asterminium]).ToString() + "/" + resourceCapacity.ToString();
+        go.transform.FindChild("OreText").GetComponent<Text>().text = resources[Resource.Ore].ToString();
+        go.transform.FindChild("OilText").GetComponent<Text>().text = resources[Resource.Oil].ToString();
+        go.transform.FindChild("ForestText").GetComponent<Text>().text = resources[Resource.Forest].ToString();
+        go.transform.FindChild("AsterminiumText").GetComponent<Text>().text = resources[Resource.Asterminium].ToString();
     }
 }

@@ -7,12 +7,12 @@ public class Structure : Ship, ListableObject
 {
     private const string LIST_PREFAB = "ShipListing";
     private List<string> constructables;
-    private Dictionary<Resource, int> resources;
     private float defense;
     private int deployedCapacity;
     private int gatherRate;
     private int range;
     private int swapPopulation;
+    private int swapCapacity;
     private ResourceGatherType types;
 
     public float Defense 
@@ -38,13 +38,11 @@ public class Structure : Ship, ListableObject
         set { range = value; }
     }
 
-    public Dictionary<Resource, int> Resources { get { return resources; } }
-
     public List<string> Constructables { get { return constructables; } }
 
-    public Structure(Sprite icon, string name, float hull, float firepower, float speed, int capacity,
+    public Structure(Sprite icon, string name, float hull, float firepower, float speed, int capacity, int rCapacity,
         float defense, int deployedCapacity, int gatherRate, int range, List<string> constructables, ShipProperties shipProperties, ResourceGatherType type, Dictionary<Resource, int> requiredResources)
-        : base(icon, name, hull, firepower, speed, capacity, shipProperties, requiredResources)
+        : base(icon, name, hull, firepower, speed, capacity, rCapacity, shipProperties, requiredResources)
     {
         this.defense = defense;
         this.deployedCapacity = deployedCapacity;
@@ -52,15 +50,8 @@ public class Structure : Ship, ListableObject
         this.constructables = constructables;
         this.range = range;
         this.swapPopulation = deployedCapacity;
+        this.swapCapacity = 99999;
         this.types = type;
-        this.resources = new Dictionary<Resource, int>()
-        {
-            { Resource.Asterminium, 0 },
-            { Resource.Forest, 0 },
-            { Resource.Oil, 0 },
-            { Resource.Ore, 0 },
-            { Resource.NoResource, 0 }
-        };
     }
 
     protected override bool CanConstruct(Dictionary<Resource, int> resources)
@@ -70,7 +61,7 @@ public class Structure : Ship, ListableObject
 
     public override Ship Copy()
     {
-        var ship = new Structure(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, 
+        var ship = new Structure(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, baseResourceCapacity,
             defense, deployedCapacity, gatherRate, range, constructables, shipProperties, types, requiredResources);
         ship.Hull = hull;
         ship.Firepower = firepower;
@@ -126,6 +117,8 @@ public class Structure : Ship, ListableObject
         swapPopulation = capacity;
         capacity = deployedCapacity;
         shipProperties |= ShipProperties.Untransferable;
+        resourceCapacity = 99999;
+        swapCapacity = resourceCapacity;
     }
 
     public void Undeploy(Tile tile)
@@ -133,7 +126,8 @@ public class Structure : Ship, ListableObject
         capacity = swapPopulation;
         swapPopulation = deployedCapacity;
         shipProperties = shipProperties & (~ShipProperties.Untransferable);
-
+        resourceCapacity = swapCapacity;
+        swapCapacity = 99999;
         tile.Population += primitivePopulation + industrialPopulation + spaceAgePopulation;
         primitivePopulation = industrialPopulation = spaceAgePopulation = 0;
     }
@@ -180,7 +174,7 @@ public class Structure : Ship, ListableObject
         go.transform.FindChild("DefenseText").GetComponent<Text>().text = defense.ToString();
         go.transform.FindChild("DeployedCapacityText").GetComponent<Text>().text = deployedCapacity.ToString();
         go.transform.FindChild("GatherRateText").GetComponent<Text>().text = gatherRate.ToString();
-
+        go.transform.FindChild("ResourceCapacityText").GetComponent<Text>().text = resourceCapacity.ToString();
         go.transform.FindChild("DefenseIcon").gameObject.SetActive(true);
         go.transform.FindChild("DefenseText").gameObject.SetActive(true);
         go.transform.FindChild("DeployedCapacityIcon").gameObject.SetActive(true);

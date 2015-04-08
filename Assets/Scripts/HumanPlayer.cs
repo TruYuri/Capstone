@@ -33,7 +33,7 @@ public class HumanPlayer : Player
         squad.Ships.Add(_shipDefinitions["Military Complex"].Copy());
         squad.Ships.Add(_shipDefinitions["Research Complex"].Copy());
 
-        Ship b, t, t1, t2, t3, t4, f;
+        Ship b, t, t1, t2, t3, t4, f, r, r1;
         squad = CreateNewSquad(new Vector3(0, 0, 11f), null);
         squad.Ships.Add(_shipDefinitions["Fighter"].Copy());
         squad.Ships.Add(t = _shipDefinitions["Transport"].Copy());
@@ -43,11 +43,21 @@ public class HumanPlayer : Player
         squad.Ships.Add(t4 = _shipDefinitions["Transport"].Copy());
         squad.Ships.Add(f = _shipDefinitions["Heavy Fighter"].Copy());
         squad.Ships.Add(b = _shipDefinitions["Behemoth"].Copy());
+        squad.Ships.Add(r = _shipDefinitions["Resource Transport"].Copy());
+        squad.Ships.Add(r1 = _shipDefinitions["Resource Transport"].Copy());
         b.PrimitivePopulation = 25;
         b.IndustrialPopulation = 15;
         b.SpaceAgePopulation = 10;
         f.SpaceAgePopulation = 3;
         t.PrimitivePopulation = t1.PrimitivePopulation = t2.PrimitivePopulation = t3.PrimitivePopulation = t4.PrimitivePopulation = 50;
+        r.Resources[Resource.Ore] = 100;
+        r.Resources[Resource.Oil] = 50;
+        r.Resources[Resource.Forest] = 25;
+        r.Resources[Resource.Asterminium] = 25;
+        r1.Resources[Resource.Ore] = 25;
+        r1.Resources[Resource.Oil] = 25;
+        r1.Resources[Resource.Forest] = 10;
+        r1.Resources[Resource.Asterminium] = 10;
         /* debug */
 
         _controlledIsWithinRange = true;
@@ -59,7 +69,6 @@ public class HumanPlayer : Player
 
     void Start()
     {
-        ReloadGameplayUI();
     }
 
     void Update()

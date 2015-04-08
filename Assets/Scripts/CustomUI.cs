@@ -28,6 +28,11 @@ public class CustomUI : MonoBehaviour
 
     }
 
+    public void ClickSwapManager()
+    {
+        GUIManager.Instance.SwapManager(data);
+    }
+
     public void ClickDiplomacy()
     {
         HumanPlayer.Instance.CreateDiplomacyEvent();
@@ -86,6 +91,11 @@ public class CustomUI : MonoBehaviour
     public void ClickSoldierTransfer()
     {
         GUIManager.Instance.SoldierTransfer(data);
+    }
+
+    public void ClickResourceTransfer()
+    {
+        GUIManager.Instance.ResourceTransfer(data);
     }
 
     public void ClickSquadsList()

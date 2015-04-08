@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -440,11 +441,13 @@ public class GUIManager : MonoBehaviour
         }
     }
 
-    private void UpdateTransferInterface(bool squads, bool squadShips, bool ships, bool soldiers)
+    private void UpdateTransferInterface(bool squads, bool squadShips, bool ships, bool other)
     {
         UpdateTransferShipInterface(squads, squadShips, ships);
-        if (soldiers)
+        if (other && _interface["SoldierManager"].gameObject.activeInHierarchy)
             UpdateTransferSoldierInterface();
+        else if (other && _interface["ResourceManager"].gameObject.activeInHierarchy)
+            UpdateTransferResourceInterface();
     }
 
     private void UpdateTransferShipInterface(bool squads, bool squadShips, bool ships)
@@ -490,6 +493,96 @@ public class GUIManager : MonoBehaviour
                 left.interactable = (ship.ShipProperties & ShipProperties.Untransferable) == 0 ? true : false;
                 dleft.interactable = true;
             }
+        }
+    }
+
+    public void SwapManager(string data)
+    {
+        if(data == "Resources")
+        {
+            _interface["ResourceManager"].gameObject.SetActive(true);
+            _interface["SoldierManager"].gameObject.SetActive(false);
+        }
+        else if(data == "Soldiers")
+        {
+            _interface["ResourceManager"].gameObject.SetActive(false);
+            _interface["SoldierManager"].gameObject.SetActive(true);
+        }
+
+        UpdateTransferInterface(false, false, false, true);
+    }
+
+    private void UpdateTransferResourceInterface()
+    {
+        var oright = _interface["OreRight"].GetComponent<Button>();
+        var lright = _interface["OilRight"].GetComponent<Button>();
+        var fright = _interface["ForestRight"].GetComponent<Button>();
+        var aright = _interface["AsterminiumRight"].GetComponent<Button>();
+        var oleft = _interface["OreLeft"].GetComponent<Button>();
+        var lleft = _interface["OilLeft"].GetComponent<Button>();
+        var fleft = _interface["ForestLeft"].GetComponent<Button>();
+        var aleft = _interface["AsterminiumLeft"].GetComponent<Button>();
+
+        var odright = _interface["OreRightAll"].GetComponent<Button>();
+        var ldright = _interface["OilRightAll"].GetComponent<Button>();
+        var fdright = _interface["ForestRightAll"].GetComponent<Button>();
+        var adright = _interface["AsterminiumRightAll"].GetComponent<Button>();
+        var odleft = _interface["OreLeftAll"].GetComponent<Button>();
+        var ldleft = _interface["OilLeftAll"].GetComponent<Button>();
+        var fdleft = _interface["ForestLeftAll"].GetComponent<Button>();
+        var adleft = _interface["AsterminiumLeftAll"].GetComponent<Button>();
+
+        var olCount = _interface["OreLeftCount"].GetComponent<Text>();
+        var llCount = _interface["OilLeftCount"].GetComponent<Text>();
+        var flCount = _interface["ForestLeftCount"].GetComponent<Text>();
+        var alCount = _interface["AsterminiumLeftCount"].GetComponent<Text>();
+        var orCount = _interface["OreRightCount"].GetComponent<Text>();
+        var lrCount = _interface["OilRightCount"].GetComponent<Text>();
+        var frCount = _interface["ForestRightCount"].GetComponent<Text>();
+        var arCount = _interface["AsterminiumRightCount"].GetComponent<Text>();
+
+        var altsquad = _indices["AltSquadList"];
+        var altships = _indices["AltShipList"];
+        var selected = _indices["SelectedShipList"];
+
+        if (selected != -1 && altships != -1) // manage soldiers!
+        {
+            var aship = HumanPlayer.Instance.Squad.Colliders[altsquad].Ships[altships];
+            var sship = HumanPlayer.Instance.Squad.Ships[selected];
+            var aShipTotal = aship.Resources[Resource.Ore] + aship.Resources[Resource.Oil] + aship.Resources[Resource.Forest] + aship.Resources[Resource.Asterminium];
+            var sShipTotal = sship.Resources[Resource.Ore] + sship.Resources[Resource.Oil] + sship.Resources[Resource.Forest] + sship.Resources[Resource.Asterminium];
+            var aShipFull = aShipTotal == aship.ResourceCapacity;
+            var sShipFull = sShipTotal == sship.ResourceCapacity;
+            var same = aship == sship;
+
+            olCount.text = aship.Resources[Resource.Ore].ToString();
+            llCount.text = aship.Resources[Resource.Oil].ToString();
+            flCount.text = aship.Resources[Resource.Forest].ToString();
+            alCount.text = aship.Resources[Resource.Asterminium].ToString();
+
+            orCount.text = sship.Resources[Resource.Ore].ToString();
+            lrCount.text = sship.Resources[Resource.Oil].ToString();
+            frCount.text = sship.Resources[Resource.Forest].ToString();
+            arCount.text = sship.Resources[Resource.Asterminium].ToString(); ;
+
+            oright.interactable = odright.interactable = aship.Resources[Resource.Ore] > 0 && !sShipFull && !same;
+            lright.interactable = ldright.interactable = aship.Resources[Resource.Oil] > 0 && !sShipFull && !same;
+            fright.interactable = fdright.interactable = aship.Resources[Resource.Forest] > 0 && !sShipFull && !same;
+            aright.interactable = adright.interactable = aship.Resources[Resource.Asterminium] > 0 && !sShipFull && !same;
+
+            oleft.interactable = odleft.interactable = sship.Resources[Resource.Ore] > 0 && !aShipFull && !same;
+            lleft.interactable = ldleft.interactable = sship.Resources[Resource.Oil] > 0 && !aShipFull && !same;
+            fleft.interactable = fdleft.interactable = sship.Resources[Resource.Forest] > 0 && !aShipFull && !same;
+            aleft.interactable = adleft.interactable = sship.Resources[Resource.Asterminium] > 0 && !aShipFull && !same;
+        }
+        else
+        {
+            odright.interactable = ldright.interactable = fdright.interactable = adright.interactable = false;
+            odleft.interactable = ldleft.interactable = fdleft.interactable = adleft.interactable = false;
+            oright.interactable = lright.interactable = fright.interactable = aright.interactable = false;
+            oleft.interactable = lleft.interactable = fleft.interactable = aleft.interactable = false;
+            olCount.text = llCount.text = flCount.text = alCount.text = Convert.ToString(0);
+            orCount.text = lrCount.text = frCount.text = arCount.text = Convert.ToString(0); 
         }
     }
 
@@ -549,13 +642,6 @@ public class GUIManager : MonoBehaviour
             pdright.interactable = idright.interactable = sdright.interactable = pdleft.interactable = idleft.interactable = sdleft.interactable = false;
             pright.interactable = iright.interactable = sright.interactable = pleft.interactable = ileft.interactable = sleft.interactable = false;
             plCount.text = ilCount.text = slCount.text = prCount.text = irCount.text = srCount.text = Convert.ToString(0);
-
-            pright.interactable = pdright.interactable = false;
-            iright.interactable = idright.interactable = false;
-            sright.interactable = sdright.interactable = false;
-            pleft.interactable = pdleft.interactable = false;
-            ileft.interactable = idleft.interactable = false;
-            sleft.interactable = sdleft.interactable = false;
         }
     }
 
@@ -708,7 +794,41 @@ public class GUIManager : MonoBehaviour
                 break;
         }
 
-        UpdateTransferInterface(false, true, true, true);
+        UpdateTransferInterface(false, false, false, true);
+    }
+
+    public void ResourceTransfer(string data)
+    {
+        var newString = Regex.Replace(data, "([a-z])([A-Z])", "$1 $2");
+        var s = newString.Split(' ').ToList();
+        var resource = (Resource)Enum.Parse(typeof(Resource), s[0]);
+        
+        // assume going right
+        Ship from = HumanPlayer.Instance.Squad.Colliders[_indices["AltSquadList"]].Ships[_indices["AltShipList"]];
+        Ship to = HumanPlayer.Instance.Squad.Ships[_indices["SelectedShipList"]];
+        if(s[1] == "Left")
+        {
+            to = HumanPlayer.Instance.Squad.Colliders[_indices["AltSquadList"]].Ships[_indices["AltShipList"]];
+            from = HumanPlayer.Instance.Squad.Ships[_indices["SelectedShipList"]];
+        }
+
+        if(s[s.Count - 1] == "All")
+        {
+            while(from.Resources[resource] > 0 &&
+                to.Resources[Resource.Ore] + to.Resources[Resource.Oil] + 
+                to.Resources[Resource.Forest] + to.Resources[Resource.Asterminium] < to.ResourceCapacity)
+            {
+                from.Resources[resource]--;
+                to.Resources[resource]++;
+            }
+        }
+        else
+        {
+            from.Resources[resource]--;
+            to.Resources[resource]++;
+        }
+
+        UpdateTransferInterface(false, false, false, true);
     }
 
     public void ExitManage()
@@ -718,11 +838,11 @@ public class GUIManager : MonoBehaviour
         if (squad.Tile != null && squad.Tile.IsInRange(squad)) // remove any deployed structures
             squad.Tile.Squad.Ships.Remove(squad.Tile.Structure);
 
-        HumanPlayer.Instance.CleanSquad(HumanPlayer.Instance.Squad);
-        HumanPlayer.Instance.ReloadGameplayUI();
         ClearList("AltSquadList");
         ClearList("AltShipList");
         ClearList("SelectedShipList");
+        HumanPlayer.Instance.CleanSquad(HumanPlayer.Instance.Squad);
+        HumanPlayer.Instance.ReloadGameplayUI();
         AutoSelectIndex<Ship>("MainShipList", HumanPlayer.Instance.Squad.Ships);
     }
 

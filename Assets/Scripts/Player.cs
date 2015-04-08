@@ -100,7 +100,7 @@ public class Player : MonoBehaviour
     {
         if (!_controlledIsWithinRange)
             return;
-        GameManager.Instance.AddEvent(new BuildEvent(_relayDistance, _team, _controlledTile, _shipDefinitions[shipName].Copy()));
+        GameManager.Instance.AddEvent(new BuildEvent(_relayDistance + 1, _team, _controlledTile, _shipDefinitions[shipName].Copy()));
         EndTurn();
     }
 
@@ -327,10 +327,10 @@ public class Player : MonoBehaviour
                 Squad.CleanSquadsFromList(this, sq.Colliders);
         Squad.CleanSquadsFromList(this, squad.Colliders);
 
-        if (squad != null && squad.Ships.Count == 0)
+        if ((squad != null && squad.Ships.Count == 0 && _controlledTile == null))
             DeleteSquad(squad);
 
-        if(_controlledSquad == null || (_controlledSquad.Ships.Count == 0 && _controlledTile != null))
+        if(_controlledSquad == null || (_controlledSquad.Ships.Count == 0 && _controlledTile == null))
         {
             var colliders = squad.Colliders;
             if(colliders.Count > 0)
@@ -352,7 +352,7 @@ public class Player : MonoBehaviour
         _squads.Remove(squad);
 
         if(squad != null)
-            GameObject.DestroyImmediate(squad.gameObject);
+            GameObject.Destroy(squad.gameObject);
     }
 
     public Squad CreateNewSquad(Squad fromSquad, string name = "Squad")
@@ -388,7 +388,7 @@ public class Player : MonoBehaviour
         // determine location
         var position = new Vector3(GameManager.Generator.Next() % 20 - 10, 0, GameManager.Generator.Next() % 20 - 10);
         _commandShipSquad = CreateNewSquad(position, null, "Command Squad");
-        _commandShipSquad.Ships.Add(_shipDefinitions["Command Ship"].Copy());
+        _commandShipSquad.Ships.Add(_commandShip = _shipDefinitions["Command Ship"].Copy());
         Control(_commandShipSquad.gameObject);
     }
 }

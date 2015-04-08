@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     private const string FIREPOWER_DETAIL = "Firepower";
     private const string SPEED_DETAIL = "Speed";
     private const string CAPACITY_DETAIL = "Capacity";
+    private const string RESOURCE_CAPACITY_DETAIL = "ResourceCapacity";
     private const string DEPLOYED_DEFENSE_DETAIL = "DeployedDefense";
     private const string DEPLOYED_CAPACITY_DETAIL = "DeployedCapacity";
     private const string GATHER_RATE_DETAIL = "GatherRate";
@@ -110,6 +111,7 @@ public class GameManager : MonoBehaviour
                 { Resource.Asterminium, int.Parse(shipDetails[section][ASTERMINIUM_DETAIL]) },
                 { Resource.Stations, int.Parse(shipDetails[section][STATIONS_DETAIL]) },
             };
+            var rCapacity = int.Parse(shipDetails[section][RESOURCE_CAPACITY_DETAIL]);
 
             if ((type & ShipProperties.Structure) > 0)
             {
@@ -125,10 +127,10 @@ public class GameManager : MonoBehaviour
                 var gatherType = ResourceGatherType.None;
                 foreach(var t in gatherList)
                     gatherType = gatherType | (ResourceGatherType)Enum.Parse(typeof(ResourceGatherType), t);
-                _shipDefinitions.Add(name, new Structure(icon, name, hull, firepower, speed, capacity, dDefense, dCapacity, rate, range, constructables, type, gatherType, resources));
+                _shipDefinitions.Add(name, new Structure(icon, name, hull, firepower, speed, capacity, rCapacity, dDefense, dCapacity, rate, range, constructables, type, gatherType, resources));
             }
             else
-                _shipDefinitions.Add(name, new Ship(icon, name, hull, firepower, speed, capacity, type, resources));
+                _shipDefinitions.Add(name, new Ship(icon, name, hull, firepower, speed, capacity, rCapacity, type, resources));
 
             descriptions.Add(name, shipDetails[section][DESCRIPTION_DETAIL]);
         }

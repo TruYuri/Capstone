@@ -171,7 +171,6 @@ public class Squad : MonoBehaviour, ListableObject
             _collidingSquads.Remove(_currentTile.Squad);
             _currentTile.Squad.Colliders.Remove(this);
             _inTileRange = false;
-            HumanPlayer.Instance.ReloadGameplayUI();
         }
 
         if(_inTileRange != wasInRange && HumanPlayer.Instance.Squad == this)
