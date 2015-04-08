@@ -25,10 +25,10 @@ public class HumanPlayer : Player
 
         _instance = this;
 
+        // create command ship, look at it, control it
+        CreateNewCommandShip();
+        _commandShipSquad.Ships.Add(_shipDefinitions["Research Complex"]);
         // create command ship, look at it, control it     
-        _commandShip = CreateNewSquad(Vector3.zero, null, "Command Ship");
-        _commandShip.Ships.Add(_shipDefinitions["Command Ship"]);
-        _commandShip.Ships.Add(_shipDefinitions["Research Complex"]);
 
         var squad = CreateNewSquad(new Vector3(0, 0, 10.5f), null);
         squad.Ships.Add(_shipDefinitions["Base"].Copy());
@@ -53,8 +53,13 @@ public class HumanPlayer : Player
         t.PrimitivePopulation = t1.PrimitivePopulation = t2.PrimitivePopulation = t3.PrimitivePopulation = t4.PrimitivePopulation = 50;
         /* debug */
 
+        _controlledSquad = _commandShipSquad;
         _controlledIsWithinRange = true;
+        Camera.main.transform.position = _commandShipSquad.transform.position + CAMERA_OFFSET;
+        Camera.main.transform.LookAt(_commandShipSquad.transform);
+        GUIManager.Instance.SquadSelected(_commandShipSquad);
         GUIManager.Instance.SetSquadControls(_controlledSquad);
+        _currentCameraDistance = Camera.main.transform.position - _commandShipSquad.transform.position;
         GUIManager.Instance.SetSquadList(false);
         GUIManager.Instance.SetTileList(false);
     }
@@ -96,6 +101,7 @@ public class HumanPlayer : Player
 
         if (Input.GetKey(KeyCode.C))
         {
+            Control(_commandShipSquad.gameObject);
             ReloadGameplayUI();
         }
 
@@ -113,6 +119,7 @@ public class HumanPlayer : Player
                     UpdateSelectedPlanet();
                     break;
                 case SQUAD_TAG:
+                    if (_commandShipSquad == _controlledSquad)
                         UpdateCommandShip();
                     else
                         UpdateSquad();
@@ -155,8 +162,13 @@ public class HumanPlayer : Player
             {
                 float speed = 25.0f;
 
+                var dir = hit.point - _commandShipSquad.transform.position;
                 dir.Normalize();
+                _commandShipSquad.transform.position += dir * speed * Time.deltaTime;
 
+                _commandShipSquad.transform.position = new Vector3(_commandShipSquad.transform.position.x, 0.0f, _commandShipSquad.transform.position.z);
+                _commandShipSquad.transform.LookAt(hit.point);
+                transform.position = _commandShipSquad.transform.position + _currentCameraDistance;
             }
         }
 
