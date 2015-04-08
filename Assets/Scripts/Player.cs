@@ -44,7 +44,9 @@ public class Player : MonoBehaviour
         _shipDefinitions = GameManager.Instance.GenerateShipDefs();
         _militaryTree = GameManager.Instance.GenerateMilitaryTree(_shipDefinitions);
         _scienceTree = GameManager.Instance.GenerateScienceTree(_shipDefinitions);
-        CreateNewCommandShip();
+
+        if(_team != global::Team.Indigenous)
+            CreateNewCommandShip();
     }
 
 	void Start () 
@@ -385,7 +387,7 @@ public class Player : MonoBehaviour
     {
         // determine location
         var position = new Vector3(GameManager.Generator.Next() % 20 - 10, 0, GameManager.Generator.Next() % 20 - 10);
-        _commandShipSquad = CreateNewSquad(Vector3.zero, null, "Command Ship");
+        _commandShipSquad = CreateNewSquad(position, null, "Command Squad");
         _commandShipSquad.Ships.Add(_shipDefinitions["Command Ship"].Copy());
         Control(_commandShipSquad.gameObject);
     }

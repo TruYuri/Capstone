@@ -381,6 +381,8 @@ public class GUIManager : MonoBehaviour
             _interface["Deploy"].GetComponent<CustomUI>().data = "Deploy";
         }
 
+        _interface["SquadTeamIcon"].GetComponent<Image>().sprite = _icons[squad.Team.ToString()];
+        _interface["SquadTeamName"].GetComponent<Text>().text = squad.name;
         SetUIElements(true, false, false, false, true);
         SetSquadControls(squad);
 
@@ -781,6 +783,8 @@ public class GUIManager : MonoBehaviour
         var et = enemy.GetComponent<Tile>();
 
         _interface["BattleChance"].GetComponent<Text>().text = WC.ToString("P");
+        _interface["PlayerBattleIcon"].GetComponent<Image>().sprite = _icons[player.Team.ToString()];
+        _interface["EnemyBattleIcon"].GetComponent<Image>().sprite = _icons[enemy.Team.ToString()];
 
         ClearList("PlayerSquadInfoList");
         player.PopulateCountList(_interface["PlayerSquadInfoList"].gameObject);

@@ -17,7 +17,6 @@ public class Squad : MonoBehaviour, ListableObject
     private bool _permanentSquad;
     private Sector _currentSector;
     private List<Squad> _collidingSquads = new List<Squad>();
-    private string _name = "Squad";
     private bool _onMission;
 
     public Team Team
@@ -51,7 +50,7 @@ public class Squad : MonoBehaviour, ListableObject
         }
 
         _currentSector = sector;
-        _name = name;
+        this.name = name;
     }
 
     // Update is called once per frame
@@ -465,7 +464,7 @@ public class Squad : MonoBehaviour, ListableObject
         var entry = Instantiate(squadEntry) as GameObject;
         var tile = this.GetComponent<Tile>();
 
-        var name = _name;
+        var name = this.name;
 
         if (this == HumanPlayer.Instance.Squad && listName == "AltSquadList")
             name = "(Self) " + name;

@@ -21,9 +21,10 @@ public class HumanPlayer : Player
 
     public override void Init(Team team)
     {
-        base.Init(team);
-
         _instance = this;
+
+        base.Init(team);
+        _currentCameraDistance = (_commandShipSquad.transform.position + CAMERA_OFFSET) - _commandShipSquad.transform.position; 
 
         // create command ship, look at it, control it 
         var squad = CreateNewSquad(new Vector3(0, 0, 10.5f), null);
@@ -49,13 +50,9 @@ public class HumanPlayer : Player
         t.PrimitivePopulation = t1.PrimitivePopulation = t2.PrimitivePopulation = t3.PrimitivePopulation = t4.PrimitivePopulation = 50;
         /* debug */
 
-        _controlledSquad = _commandShipSquad;
         _controlledIsWithinRange = true;
         Camera.main.transform.position = _commandShipSquad.transform.position + CAMERA_OFFSET;
         Camera.main.transform.LookAt(_commandShipSquad.transform);
-        GUIManager.Instance.SquadSelected(_commandShipSquad);
-        GUIManager.Instance.SetSquadControls(_controlledSquad);
-        _currentCameraDistance = Camera.main.transform.position - _commandShipSquad.transform.position;
         GUIManager.Instance.SetSquadList(false);
         GUIManager.Instance.SetTileList(false);
     }

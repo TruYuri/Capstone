@@ -68,10 +68,6 @@ public class GameManager : MonoBehaviour
         _nextEventQueue = new Queue<GameEvent>();
         _players = new Dictionary<Team, Player>()
         {
-            { Team.Union, null },
-            { Team.Kharkyr, null },
-            { Team.Plinthen, null },
-            { Team.Indigenous, null },
         };
 
         _shipDefinitions = new Dictionary<string, Ship>();
@@ -149,6 +145,8 @@ public class GameManager : MonoBehaviour
 
     public void AddHumanPlayer(Team team)
     {
+        if (!_players.ContainsKey(team))
+            _players.Add(team, null);
         var playerObj = Resources.Load<GameObject>(HUMAN_PLAYER_PREFAB);
         _players[team] = (Instantiate(playerObj) as GameObject).GetComponent<HumanPlayer>();
         _players[team].Init(team);
@@ -156,6 +154,8 @@ public class GameManager : MonoBehaviour
 
     public void AddAIPlayer(Team team)
     {
+        if (!_players.ContainsKey(team))
+            _players.Add(team, null);
         var playerObj = Resources.Load<GameObject>(AI_PLAYER_PREFAB);
         _players[team] = (Instantiate(playerObj) as GameObject).GetComponent<Player>();
         _players[team].Init(team);
@@ -200,6 +200,7 @@ public class GameManager : MonoBehaviour
         if (!_gameStarted)
         {
             AddHumanPlayer(Team.Union);
+
             AddAIPlayer(Team.Kharkyr);
             AddAIPlayer(Team.Plinthen);
             AddAIPlayer(Team.Indigenous);
@@ -211,7 +212,7 @@ public class GameManager : MonoBehaviour
             squad.Ships.Add(defs["Transport"]);
             squad.Ships.Add(defs["Heavy Fighter"]);
             squad.Ships.Add(defs["Behemoth"]);
-            squad.Ships.Add(defs["Command Ship"]);
+
             _gameStarted = true;
         }
 
