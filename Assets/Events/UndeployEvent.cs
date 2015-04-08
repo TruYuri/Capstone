@@ -19,7 +19,7 @@ public class UndeployEvent : GameEvent
     {
         base.Progress();
 
-        if (_remainingTurns != 0)
+        if (_remainingTurns > 0)
             return;
 
         var type = _tile.Undeploy(_destroy);

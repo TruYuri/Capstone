@@ -12,6 +12,8 @@ public class BattleEvent : GameEvent
         _squad1 = squad1;
         _squad2 = squad2;
         _battleType = BattleType.Space;
+        GameManager.Instance.Paused = true;
+        Progress();
     }
 
     public BattleEvent(Squad squad, Tile tile) : base(1)
@@ -19,19 +21,17 @@ public class BattleEvent : GameEvent
         _squad1 = squad;
         _squad2 = tile.GetComponent<Squad>();
         _battleType = BattleType.Invasion;
+        GameManager.Instance.Paused = true;
+        Progress();
     }
 
     public override void Progress()
     {
         base.Progress();
 
-        if (_remainingTurns != 0)
-            return;
-
         if (HumanPlayer.Instance.Team == _squad1.Team || HumanPlayer.Instance.Team == _squad2.Team) // if player involved
         {
             // note: unpause when the battle result screen is closed
-            GameManager.Instance.Paused = true;
             HumanPlayer.Instance.PrepareBattleConditions(_squad1, _squad2, _battleType);
         }
         else // else let any AI duke it out
@@ -43,7 +43,7 @@ public class BattleEvent : GameEvent
 
     public override bool AssertValid()
     {
-        if(_squad1 != null && _squad2 != null &&
+        if(_remainingTurns > 0 && _squad1 != null && _squad2 != null &&
             _squad1.gameObject != null && _squad2.gameObject != null)
         {
             var pt = _squad1.GetComponent<Tile>();

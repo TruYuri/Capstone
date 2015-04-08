@@ -57,7 +57,7 @@ public class Squad : MonoBehaviour, ListableObject
     // Update is called once per frame
     void Update()
     {
-        if(!_permanentSquad)
+        if(!_permanentSquad && !GameManager.Instance.Paused)
             CheckSectorTile();
     }
 
@@ -75,10 +75,8 @@ public class Squad : MonoBehaviour, ListableObject
                 if (!_collidingSquads.Contains(squad))
                     _collidingSquads.Add(squad);
 
-                if (_team != squad._team)
-                {
-                    GameManager.Instance.AddEvent(new BattleEvent(this, squad));
-                }
+                if (_team != squad.Team)
+                    GameManager.Instance.Players[_team].CreateBattleEvent(this, squad);
                 break;
         }
     }
@@ -162,17 +160,17 @@ public class Squad : MonoBehaviour, ListableObject
             {
                 GameManager.Instance.Players[_team].CreateBattleEvent(this, _currentTile.Squad);
             }
-            else if(_currentTile.Squad.Team != _team && _currentTile.Squad.Ships.Count == 0 && !wasInRange)
-            {
-                HumanPlayer.Instance.ReloadGameplayUI(); // "Invade"
-            }
         }
         else
         {
             _collidingSquads.Remove(_currentTile.Squad);
             _currentTile.Squad.Colliders.Remove(this);
             _inTileRange = false;
+            HumanPlayer.Instance.ReloadGameplayUI();
         }
+
+        if(_inTileRange != wasInRange && HumanPlayer.Instance.Squad == this)
+            HumanPlayer.Instance.ReloadGameplayUI();
     }
 
     public float CalculateTroopPower()

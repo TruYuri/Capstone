@@ -3,18 +3,18 @@ using System.Collections.Generic;
 
 public class DiplomacyEvent : GameEvent 
 {
-    private Team _team;
     private Tile _tile;
     private int _diplomacyTurns;
+    private Player _player;
 
     // turn parameter = turns until command begins. 
     // calculate travel turns - 1 turn per sector, swap out remaining turns when initial == 0
-    public DiplomacyEvent(int turns, Team team, Tile tile) : base(turns)
+    public DiplomacyEvent(int turns, Player player, Tile tile) : base(turns)
     {
-        _team = team;
+        _player = player;
         _tile = tile;
         _diplomacyTurns = 5;
-        tile.SetDiplomaticEffort(team);
+        tile.SetDiplomaticEffort(player.Team);
     }
 
     // when travelling, travel between planets (x = 10x, y = 10y)
@@ -27,15 +27,15 @@ public class DiplomacyEvent : GameEvent
         if (_remainingTurns > 0 && _diplomacyTurns > 0) // waiting for command to reach the squad
             return;
 
-        if (_remainingTurns == 0 && _diplomacyTurns > 0) // swap to diplomacy
+        if (_remainingTurns <= 0 && _diplomacyTurns > 0) // swap to diplomacy
         {
             _remainingTurns = _diplomacyTurns;
             _diplomacyTurns = 0;
             _stage = GameEventStage.Continue;
         }
-        else if(_remainingTurns == 0)
+        else if(_remainingTurns <= 0)
         {
-            GameManager.Instance.Players[_team].DiplomaticEffort(_tile);
+            _player.DiplomaticEffort(_tile);
             return;
         }
     }

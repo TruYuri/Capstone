@@ -13,7 +13,8 @@ public class Player : MonoBehaviour
     protected Team _team;
     protected Squad _controlledSquad;
     protected Tile _controlledTile;
-    protected Squad _commandShip;
+    protected Ship _commandShip;
+    protected Squad _commandShipSquad;
     protected Dictionary<string, Ship> _shipDefinitions;
     protected Dictionary<string, Research> _shipResearchMap;
     protected List<Squad> _squads;
@@ -22,6 +23,7 @@ public class Player : MonoBehaviour
     protected ResearchTree _militaryTree;
     protected ResearchTree _scienceTree;
     protected bool _controlledIsWithinRange;
+    private int _relayDistance;
 
     public Team Team { get { return _team; } }
     public List<Tile> Tiles { get { return _tiles; } }
@@ -55,9 +57,12 @@ public class Player : MonoBehaviour
         _controlledSquad = gameObject.GetComponent<Squad>();
         _controlledTile = gameObject.GetComponent<Tile>();
 
+        if (_commandShipSquad == null || _commandShipSquad.Sector == null)
+            return;
         // check range here
-        var path = MapManager.Instance.AStarSearch(_commandShip.Sector, _controlledSquad.Sector, 5, _team, "Relay");
+        var path = MapManager.Instance.AStarSearch(_commandShipSquad.Sector, _controlledSquad.Sector, 5, _team, "Relay");
         _controlledIsWithinRange = path != null;
+        _relayDistance = path != null ? (path.Count - 1) / 5 : 0;
     }
 
 	// Update is called once per frame
@@ -92,7 +97,7 @@ public class Player : MonoBehaviour
     {
         if (!_controlledIsWithinRange)
             return;
-        GameManager.Instance.AddEvent(new BuildEvent(1, _team, _controlledTile, _shipDefinitions[shipName].Copy()));
+        GameManager.Instance.AddEvent(new BuildEvent(_relayDistance, _team, _controlledTile, _shipDefinitions[shipName].Copy()));
         EndTurn();
     }
 
@@ -100,7 +105,7 @@ public class Player : MonoBehaviour
     {
         if (!_controlledIsWithinRange)
             return;
-        GameManager.Instance.AddEvent(new DeployEvent(1, _controlledSquad.Ships[shipIndex] as Structure, _controlledSquad, _controlledSquad.Tile));
+        GameManager.Instance.AddEvent(new DeployEvent(_relayDistance, this, _controlledSquad.Ships[shipIndex] as Structure, _controlledSquad, _controlledSquad.Tile));
         EndTurn();
     }
 
@@ -113,7 +118,7 @@ public class Player : MonoBehaviour
     {
         if (!_controlledIsWithinRange)
             return;
-        GameManager.Instance.AddEvent(new UndeployEvent(1, _team, tile, destroy));
+        GameManager.Instance.AddEvent(new UndeployEvent(_relayDistance, _team, tile, destroy));
         EndTurn();
     }
 
@@ -121,7 +126,7 @@ public class Player : MonoBehaviour
     {
         if (!_controlledIsWithinRange)
             return;
-        GameManager.Instance.AddEvent(new DiplomacyEvent(1, _team, _controlledTile));
+        GameManager.Instance.AddEvent(new DiplomacyEvent(_relayDistance, this, _controlledTile));
         EndTurn();
     }
 
@@ -130,6 +135,11 @@ public class Player : MonoBehaviour
         if (!_controlledIsWithinRange)
             return;
         GameManager.Instance.AddEvent(new TravelEvent(1, squad, toSector, dest, speed));
+    }
+
+    public void CreateCommandShipLostEvent(Squad squad)
+    {
+        GameManager.Instance.AddEvent(new CommandShipLostEvent(squad, this));
     }
 
     public void EndTurn()
@@ -316,7 +326,7 @@ public class Player : MonoBehaviour
                 Squad.CleanSquadsFromList(this, sq.Colliders);
         Squad.CleanSquadsFromList(this, squad.Colliders);
 
-        if(_controlledSquad == null || _controlledSquad.gameObject == null || (_controlledSquad.Ships.Count == 0 && _controlledTile != null))
+        if(_controlledSquad == null || (_controlledSquad.Ships.Count == 0 && _controlledTile != null))
         {
             var colliders = squad.Colliders;
             if(colliders.Count > 0)
@@ -325,8 +335,10 @@ public class Player : MonoBehaviour
                     if(colliders[i].Team == _team)
                         Control(colliders[0].gameObject);
             }
-            
-            if(_squads.Count > 0 && (_controlledSquad == null || _controlledSquad.gameObject == null))
+
+            if (_commandShipSquad == null || !_commandShipSquad.Ships.Contains(_commandShip))
+                CreateCommandShipLostEvent(_commandShipSquad);
+            else if (_squads.Count > 0 && _controlledSquad == null)
                 Control(_squads[GameManager.Generator.Next(0, _squads.Count)].gameObject);
         }
     }
@@ -365,5 +377,14 @@ public class Player : MonoBehaviour
         _squads.Add(component);
         component.Init(sector, name);
         return component;
+    }
+
+    public void CreateNewCommandShip()
+    {
+        // determine location
+
+        _commandShipSquad = CreateNewSquad(Vector3.zero, null, "Command Ship");
+        _commandShipSquad.Ships.Add(_shipDefinitions["Command Ship"].Copy());
+        Control(_commandShipSquad.gameObject);
     }
 }

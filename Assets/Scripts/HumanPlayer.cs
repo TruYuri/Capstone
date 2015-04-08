@@ -53,13 +53,8 @@ public class HumanPlayer : Player
         t.PrimitivePopulation = t1.PrimitivePopulation = t2.PrimitivePopulation = t3.PrimitivePopulation = t4.PrimitivePopulation = 50;
         /* debug */
 
-        _controlledSquad = _commandShip;
         _controlledIsWithinRange = true;
-        Camera.main.transform.position = _commandShip.transform.position + CAMERA_OFFSET;
-        Camera.main.transform.LookAt(_commandShip.transform);
-        GUIManager.Instance.SquadSelected(_commandShip);
         GUIManager.Instance.SetSquadControls(_controlledSquad);
-        _currentCameraDistance = Camera.main.transform.position - _commandShip.transform.position;
         GUIManager.Instance.SetSquadList(false);
         GUIManager.Instance.SetTileList(false);
     }
@@ -101,7 +96,6 @@ public class HumanPlayer : Player
 
         if (Input.GetKey(KeyCode.C))
         {
-            Control(_commandShip.gameObject);
             ReloadGameplayUI();
         }
 
@@ -119,7 +113,6 @@ public class HumanPlayer : Player
                     UpdateSelectedPlanet();
                     break;
                 case SQUAD_TAG:
-                    if (_commandShip == _controlledSquad)
                         UpdateCommandShip();
                     else
                         UpdateSquad();
@@ -162,13 +155,8 @@ public class HumanPlayer : Player
             {
                 float speed = 25.0f;
 
-                var dir = hit.point - _commandShip.transform.position;
                 dir.Normalize();
-                _commandShip.transform.position += dir * speed * Time.deltaTime;
 
-                _commandShip.transform.position = new Vector3(_commandShip.transform.position.x, 0.0f, _commandShip.transform.position.z);
-                _commandShip.transform.LookAt(hit.point);
-                transform.position = _commandShip.transform.position + _currentCameraDistance;
             }
         }
 

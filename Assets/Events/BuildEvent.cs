@@ -21,7 +21,7 @@ public class BuildEvent : GameEvent
     {
         base.Progress();
 
-        if (_remainingTurns != 0)
+        if (_remainingTurns > 0)
             return;
         _tile.Squad.Ships.Add(_ship);
     }

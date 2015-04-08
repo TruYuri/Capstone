@@ -41,13 +41,13 @@ public class TravelEvent : GameEvent
         if (_remainingTurns > 0 && _travelTurns > 0) // waiting for command to reach the squad
             return;
 
-        if(_remainingTurns == 0 && _travelTurns > 0) // swap to travelling
+        if(_remainingTurns <= 0 && _travelTurns > 0) // swap to travelling
         {
             _remainingTurns = _travelTurns - 1;
             _travelTurns = 0;
             _stage = GameEventStage.Continue;
         }
-        else if(_remainingTurns == 0)
+        else if(_remainingTurns <= 0)
         {
             _squad.transform.position = _destination;
             _squad.OnMission = false;
