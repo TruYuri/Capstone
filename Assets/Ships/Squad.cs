@@ -63,6 +63,9 @@ public class Squad : MonoBehaviour, ListableObject
 
     void OnCollisionEnter(Collision collision)
     {
+        if (GameManager.Instance.Paused)
+            return;
+
         // the only colliders are squads, so we can simplify stuff
         var squad = collision.collider.GetComponent<Squad>();
         if (squad == null)
@@ -87,6 +90,9 @@ public class Squad : MonoBehaviour, ListableObject
 
     void OnCollisionExit(Collision collision)
     {
+        if (GameManager.Instance.Paused)
+            return;
+
         // the only colliders are squads, so we can simplify stuff
 
         var squad = collision.collider.GetComponent<Squad>();
@@ -224,6 +230,9 @@ public class Squad : MonoBehaviour, ListableObject
         var winner = (winP < winChance ? this : enemy);
         var lost = new KeyValuePair<Team, Dictionary<string, int>>(winner.Team, new Dictionary<string,int>());
 
+        if (this == winner) enemy.Ships.Clear();
+        else _ships.Clear();
+
         float hull = 0;
         foreach (var ship in _ships)
         {
@@ -329,6 +338,7 @@ public class Squad : MonoBehaviour, ListableObject
         }
         else // tile won.
         {
+            this.Ships.Clear();
             // before changing local population, kill all the soldiers in the fleet that lost
             foreach (var ship in _ships)
             {

@@ -44,6 +44,7 @@ public class Player : MonoBehaviour
         _shipDefinitions = GameManager.Instance.GenerateShipDefs();
         _militaryTree = GameManager.Instance.GenerateMilitaryTree(_shipDefinitions);
         _scienceTree = GameManager.Instance.GenerateScienceTree(_shipDefinitions);
+        CreateNewCommandShip();
     }
 
 	void Start () 
@@ -300,21 +301,19 @@ public class Player : MonoBehaviour
         {
             if (_currentBattleType == BattleType.Space)
             {
-                _enemySquad.Ships.Clear();
-                GameManager.Instance.Players[_enemySquad.Team].CleanSquad(_enemySquad);
             }
         }
         else
         {
             if (_currentBattleType == BattleType.Space)
             {
-                _playerSquad.Ships.Clear();
-                CleanSquad(_playerSquad);
             }
         }
 
         GameManager.Instance.Paused = false;
 
+        if (_controlledSquad != null)
+            Control(_controlledSquad.gameObject);
         _playerSquad = null;
         _enemySquad = null;
     }
@@ -325,6 +324,9 @@ public class Player : MonoBehaviour
             if(sq != null && sq.gameObject != null)
                 Squad.CleanSquadsFromList(this, sq.Colliders);
         Squad.CleanSquadsFromList(this, squad.Colliders);
+
+        if (squad != null && squad.Ships.Count == 0)
+            DeleteSquad(squad);
 
         if(_controlledSquad == null || (_controlledSquad.Ships.Count == 0 && _controlledTile != null))
         {
@@ -382,7 +384,7 @@ public class Player : MonoBehaviour
     public void CreateNewCommandShip()
     {
         // determine location
-
+        var position = new Vector3(GameManager.Generator.Next() % 20 - 10, 0, GameManager.Generator.Next() % 20 - 10);
         _commandShipSquad = CreateNewSquad(Vector3.zero, null, "Command Ship");
         _commandShipSquad.Ships.Add(_shipDefinitions["Command Ship"].Copy());
         Control(_commandShipSquad.gameObject);

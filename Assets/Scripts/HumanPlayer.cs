@@ -25,11 +25,7 @@ public class HumanPlayer : Player
 
         _instance = this;
 
-        // create command ship, look at it, control it
-        CreateNewCommandShip();
-        _commandShipSquad.Ships.Add(_shipDefinitions["Research Complex"]);
-        // create command ship, look at it, control it     
-
+        // create command ship, look at it, control it 
         var squad = CreateNewSquad(new Vector3(0, 0, 10.5f), null);
         squad.Ships.Add(_shipDefinitions["Base"].Copy());
         squad.Ships.Add(_shipDefinitions["Gathering Complex"].Copy());
@@ -188,6 +184,9 @@ public class HumanPlayer : Player
 
     public void ReloadGameplayUI()
     {
+        if (_controlledSquad == null)
+            return;
+
         switch(_controlledSquad.tag)
         {
             case TILE_TAG:

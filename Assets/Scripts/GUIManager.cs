@@ -875,6 +875,5 @@ public class GUIManager : MonoBehaviour
         else
             _interface["BattleLost"].gameObject.SetActive(false);
         HumanPlayer.Instance.EndBattleConditions(win);
-        HumanPlayer.Instance.ReloadGameplayUI();
     }
 }
