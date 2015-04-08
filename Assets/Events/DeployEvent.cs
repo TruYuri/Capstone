@@ -37,10 +37,13 @@ public class DeployEvent : GameEvent
 
     public override bool AssertValid()
     {
-        if (_squad != null && _squad.gameObject != null &&
-            _tile.Team == _squad.Team && _squad.Ships.Contains(_structure) &&
-            _tile.Structure == null)
-            return true;
+        if (_squad != null && _squad.gameObject != null)
+        {
+            if (_tile != null && (_tile.Team == _squad.Team || _tile.Team == Team.Uninhabited) && _squad.Ships.Contains(_structure))
+                return true;
+            else if (_tile == null && _squad.Ships.Contains(_structure))
+                return true;
+        }
         return false;
     }
 }

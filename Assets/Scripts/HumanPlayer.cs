@@ -26,18 +26,18 @@ public class HumanPlayer : Player
         _instance = this;
 
         // create command ship, look at it, control it     
-        _commandShip = CreateNewSquad(Vector3.zero, "Command Ship");
+        _commandShip = CreateNewSquad(Vector3.zero, null, "Command Ship");
         _commandShip.Ships.Add(_shipDefinitions["Command Ship"]);
         _commandShip.Ships.Add(_shipDefinitions["Research Complex"]);
 
-        var squad = CreateNewSquad(new Vector3(0, 0, 10.5f));
+        var squad = CreateNewSquad(new Vector3(0, 0, 10.5f), null);
         squad.Ships.Add(_shipDefinitions["Base"].Copy());
         squad.Ships.Add(_shipDefinitions["Gathering Complex"].Copy());
         squad.Ships.Add(_shipDefinitions["Military Complex"].Copy());
         squad.Ships.Add(_shipDefinitions["Research Complex"].Copy());
 
         Ship b, t, t1, t2, t3, t4, f;
-        squad = CreateNewSquad(new Vector3(0, 0, 11f));
+        squad = CreateNewSquad(new Vector3(0, 0, 11f), null);
         squad.Ships.Add(_shipDefinitions["Fighter"].Copy());
         squad.Ships.Add(t = _shipDefinitions["Transport"].Copy());
         squad.Ships.Add(t1 = _shipDefinitions["Transport"].Copy());
@@ -160,7 +160,7 @@ public class HumanPlayer : Player
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
             {
-                float speed = 50.0f;
+                float speed = 25.0f;
 
                 var dir = hit.point - _commandShip.transform.position;
                 dir.Normalize();

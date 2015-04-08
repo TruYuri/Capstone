@@ -14,6 +14,7 @@ public class BuildEvent : GameEvent
         _tile = tile;
         _ship = ship;
         _structure = tile.Structure;
+        _team = team;
     }
 
     public override void Progress()

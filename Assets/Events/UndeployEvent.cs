@@ -26,20 +26,22 @@ public class UndeployEvent : GameEvent
 
         if (MapManager.Instance.DeploySpawnTable.ContainsKey(type))
         {
-            var squad = GameManager.Instance.Players[_tile.Team].CreateNewSquad(_tile.transform.position);
+            var squad = GameManager.Instance.Players[_tile.Team].CreateNewSquad(_tile.transform.position, _tile.Squad.Sector);
             foreach (var ship in _tile.Squad.Ships)
                 squad.Ships.Add(ship);
             if (HumanPlayer.Instance.Squad == _tile.Squad)
                 HumanPlayer.Instance.Control(squad.gameObject);
-            GameManager.Instance.Players[_tile.Team].DeleteSquad(_tile.Squad);
+            GameManager.Instance.Players[_team].Squads.Remove(_tile.Squad);
+            GameManager.Instance.Players[_team].DeleteSquad(_tile.Squad);
+            GameManager.Instance.Players[_team].Tiles.Remove(_tile);
         }
-        else
-            GameManager.Instance.Players[_tile.Team].Squads.Remove(_tile.Squad);
     }
 
     public override bool AssertValid()
     {
-        if (_tile != null && _tile.Team == _team && _tile.Structure != null)
+        if (_destroy && _tile != null && _tile.Structure != null)
+            return true;
+        else if (_tile != null && _tile.Team == _team && _tile.Structure != null)
             return true;
         return false;
     }

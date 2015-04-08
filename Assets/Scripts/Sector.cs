@@ -238,6 +238,13 @@ public class Sector : MonoBehaviour
         return _tileGrid[gridPos.Key, gridPos.Value];
     }
 
+    public void DeleteTile(Tile tile)
+    {
+        var grid = WorldToGridArray(tile.transform.position);
+        _tileGrid[grid.Key, grid.Value] = null;
+        GameObject.Destroy(tile);
+    }
+
 	// Update is called once per frame
 	void Update () 
     {

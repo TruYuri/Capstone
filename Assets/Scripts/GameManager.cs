@@ -205,7 +205,7 @@ public class GameManager : MonoBehaviour
             AddAIPlayer(Team.Indigenous);
 
             // debug
-            var squad = _players[Team.Kharkyr].CreateNewSquad(new Vector3(0, 0, -10));
+            var squad = _players[Team.Kharkyr].CreateNewSquad(new Vector3(0, 0, -10), null);
             var defs = GenerateShipDefs();
             squad.Ships.Add(defs["Fighter"]);
             squad.Ships.Add(defs["Transport"]);
@@ -233,10 +233,13 @@ public class GameManager : MonoBehaviour
     {
         while (_eventQueue.Count > 0)
         {
-            _eventQueue.Peek().Progress();
-            _eventQueue.Peek().Update();
+            if (_eventQueue.Peek().AssertValid())
+            {
+                _eventQueue.Peek().Progress();
+                _eventQueue.Peek().Update();
+            }
 
-            if (_eventQueue.Peek().Stage == GameEventStage.Continue && _eventQueue.Peek().AssertValid())
+            if (_eventQueue.Peek().Stage == GameEventStage.Continue)
                 _nextEventQueue.Enqueue(_eventQueue.Dequeue());
             else // end
                 _eventQueue.Dequeue();

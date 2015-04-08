@@ -184,16 +184,23 @@ public class Tile : MonoBehaviour, ListableObject
         }
     }
 
-    public string Undeploy(bool destroy)
+    public string Undeploy(bool destroyStructure)
     {
         if (_structure == null)
             return "";
 
-        if (!destroy && _structure != null)
+        if (!destroyStructure && _structure != null)
             _squad.Ships.Add(_structure);
         _structure.Undeploy(this);
-        _squad.Sector.UnregisterSpaceStructure(_team, _structure);
+
+        if(MapManager.Instance.DeploySpawnTable.ContainsKey(_planetType))
+        {
+            _squad.Sector.UnregisterSpaceStructure(_team, _structure);
+            _squad.Sector.DeleteTile(this);
+        }
+
         _structure = null;
+
         return _planetType;
     }
 

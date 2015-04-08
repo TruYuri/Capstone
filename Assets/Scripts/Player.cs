@@ -106,9 +106,14 @@ public class Player : MonoBehaviour
 
     public void CreateUndeployEvent(bool destroy)
     {
+        CreateUndeployEvent(_controlledTile, destroy);
+    }
+
+    public void CreateUndeployEvent(Tile tile, bool destroy)
+    {
         if (!_controlledIsWithinRange)
             return;
-        GameManager.Instance.AddEvent(new UndeployEvent(1, _team, _controlledTile, destroy));
+        GameManager.Instance.AddEvent(new UndeployEvent(1, _team, tile, destroy));
         EndTurn();
     }
 
@@ -258,12 +263,14 @@ public class Player : MonoBehaviour
             if (win.Key == _team && et != null)
             {
                 et.Relinquish();
-                var type = et.Undeploy(true);
                 et.Claim(_team);
+                GameManager.Instance.Players[et.Team].CreateUndeployEvent(et, true);
             }
             else if (win.Key == enemy.Team && pt != null)
             {
                 pt.Relinquish();
+                pt.Claim(enemy.Team);
+                GameManager.Instance.Players[pt.Team].CreateUndeployEvent(pt, true);
                 var type = pt.Undeploy(true);
                 pt.Claim(enemy.Team);
             }
@@ -343,20 +350,20 @@ public class Player : MonoBehaviour
         else
             dist = fromSquad.GetComponent<SphereCollider>().radius / 2.0f;
         var offset = val == 0 ? new Vector3(dist, 0, 0) : new Vector3(0, 0, dist);
-        var squad = CreateNewSquad(fromSquad.transform.position + offset, name);
+        var squad = CreateNewSquad(fromSquad.transform.position + offset, fromSquad.Sector, name);
         fromSquad.Colliders.Add(squad);
         squad.Colliders.Add(fromSquad);
         return squad;
     }
 
-    public Squad CreateNewSquad(Vector3 position, string name = "Squad")
+    public Squad CreateNewSquad(Vector3 position, Sector sector, string name = "Squad")
     {
         var squadobj = Resources.Load<GameObject>(SQUAD_PREFAB);
         var squad = Instantiate(squadobj, position, Quaternion.identity) as GameObject;
         var component = squad.GetComponent<Squad>();
         component.Team = _team;
         _squads.Add(component);
-        component.Init(null, name);
+        component.Init(sector, name);
         return component;
     }
 }
