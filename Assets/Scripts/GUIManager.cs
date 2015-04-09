@@ -96,16 +96,48 @@ public class GUIManager : MonoBehaviour
         }
     }
 
-    //
-    // These functions update main UI when the object is selected
-    //
+    public void SetScreen(string screen)
+    {
+        var player = HumanPlayer.Instance;
+        switch (screen)
+        {
+            case "MainUI":
+                _interface["MainUI"].gameObject.SetActive(true);
+                _interface["ScientificResearch"].gameObject.SetActive(false);
+                _interface["MilitaryResearch"].gameObject.SetActive(false);
+                break;
+            case "Scientific":
+                _interface["MainUI"].gameObject.SetActive(false);
+                _interface["ScientificResearch"].gameObject.SetActive(true);
+                _interface["MilitaryResearch"].gameObject.SetActive(false);
+
+                player.DisplayResearch("Scientific", "Command Ship", _interface["Command Ship"].gameObject);
+                player.DisplayResearch("Scientific", "Efficiency", _interface["Efficiency"].gameObject);
+                player.DisplayResearch("Scientific", "Complex", _interface["Complex"].gameObject);
+                player.DisplayResearch("Scientific", "Relay", _interface["Relay"].gameObject);
+                player.DisplayResearch("Scientific", "Warp Portal", _interface["Warp Portal"].gameObject);
+                break;
+            case "Military":
+                _interface["MainUI"].gameObject.SetActive(false);
+                _interface["ScientificResearch"].gameObject.SetActive(false);
+                _interface["MilitaryResearch"].gameObject.SetActive(true);
+
+                player.DisplayResearch("Military", "Fighter", _interface["Fighter"].gameObject);
+                player.DisplayResearch("Military", "Transport", _interface["Transport"].gameObject);
+                player.DisplayResearch("Military", "Guard Satellite", _interface["Guard Satellite"].gameObject);
+                player.DisplayResearch("Military", "Heavy Fighter", _interface["Heavy Fighter"].gameObject);
+                player.DisplayResearch("Military", "Behemoth", _interface["Behemoth"].gameObject);
+                break;
+        }
+    }
+
     public void SetSquadControls(Squad squad)
     {
         if (_interface["SquadMenu"].gameObject.activeInHierarchy == false)
             return;
 
         var manage = _interface["Manage"].gameObject.GetComponent<Button>();
-        var deploy = _interface["Deploy"].gameObject.GetComponent<Button>();
+        var deploy = _interface["SquadAction"].gameObject.GetComponent<Button>();
         var type = deploy.GetComponent<CustomUI>().data;
         var tile = squad.Tile;
 
@@ -129,6 +161,7 @@ public class GUIManager : MonoBehaviour
                 click = true;
             else if (type == "Invade" && squad.CalculateTroopPower() > 0f)
                 click = true;
+            else if (type == "Warp") ;
 
             deploy.interactable = click;
             manage.interactable = squad.Ships.Count > 0 || squad.Colliders.Count > 0;
@@ -370,16 +403,17 @@ public class GUIManager : MonoBehaviour
             _indices[index] = -1;
 
         PopulateList<Ship>(squad.Ships, "MainShipList", ListingType.Info, false);
+        var text = _interface["SquadActionText"].GetComponent<Text>();
+        var data = _interface["SquadAction"].GetComponent<CustomUI>();
 
-        if (squad.Tile != null && squad.Tile.IsInRange(squad) && squad.Tile.Team != squad.Team && squad.Tile.Team != Team.Uninhabited)
+        text.text = data.data = "Deploy";
+
+        if (squad.Tile != null && squad.Tile.IsInRange(squad))
         {
-            _interface["DeployText"].GetComponent<Text>().text = "Invade";
-            _interface["Deploy"].GetComponent<CustomUI>().data = "Invade";
-        }
-        else
-        {
-            _interface["DeployText"].GetComponent<Text>().text = "Deploy";
-            _interface["Deploy"].GetComponent<CustomUI>().data = "Deploy";
+            if(squad.Tile.Team != squad.Team && squad.Tile.Team != Team.Uninhabited)
+                text.text = data.data = "Invade";
+            else if(squad.Tile.Team == squad.Team && squad.Tile.Structure != null && squad.Tile.Structure.Name == "Warp Portal")
+                text.text = data.data = "Warp";
         }
 
         _interface["SquadTeamIcon"].GetComponent<Image>().sprite = _icons[squad.Team.ToString()];
@@ -405,8 +439,8 @@ public class GUIManager : MonoBehaviour
         _interface["ConstBar"].gameObject.SetActive(playerStructure);
         _interface["Structure"].gameObject.SetActive(playerStructure);
         _interface["ConstructionList"].gameObject.SetActive(playerStructure);
-        _interface["DeployText"].GetComponent<Text>().text = deployText;
-        _interface["Deploy"].GetComponent<CustomUI>().data = deployText;
+        _interface["SquadActionText"].GetComponent<Text>().text = deployText;
+        _interface["SquadAction"].GetComponent<CustomUI>().data = deployText;
 
         if (playerStructure)
         {
@@ -425,7 +459,7 @@ public class GUIManager : MonoBehaviour
         SetSquadControls(squad);
     }
 
-    public void SquadGroundAction(string data)
+    public void SquadAction(string data)
     {
         switch(data)
         {
@@ -437,6 +471,9 @@ public class GUIManager : MonoBehaviour
                 break;
             case "Invade":
                 HumanPlayer.Instance.CreateBattleEvent(HumanPlayer.Instance.Squad, HumanPlayer.Instance.Squad.Tile);
+                break;
+            case "Warp":
+
                 break;
         }
     }

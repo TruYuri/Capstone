@@ -53,4 +53,9 @@ public class WarpPortalResearch : Research
         warpPortal.Unlocked = true;
         return warpPortal.Unlocked;
     }
+
+    public override void Display(GameObject panel)
+    {
+        
+    }
 }

@@ -61,5 +61,10 @@ public class ComplexResearch : Research
         structureDefinitions["Base"].Unlocked = true;
         return true;
     }
+
+    public override void Display(GameObject panel)
+    {
+        
+    }
 }
 

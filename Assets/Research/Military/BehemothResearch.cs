@@ -104,7 +104,7 @@ public class BehemothResearch : Research
         return behemothShip.Unlocked;
     }
 
-    public override void Display()
+    public override void Display(GameObject panel) 
     {
     }
 }

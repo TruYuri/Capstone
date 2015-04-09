@@ -79,7 +79,7 @@ public class GuardSatelliteResearch : Research
         return guardSatelliteShip.Unlocked;
     }
 
-    public override void Display()
+    public override void Display(GameObject panel) 
     {
     }
 }

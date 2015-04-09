@@ -104,7 +104,7 @@ public class HeavyFighterResearch : Research
         return heavyFighterShip.Unlocked;
     }
 
-    public override void Display()
+    public override void Display(GameObject panel) 
     {
     }
 }

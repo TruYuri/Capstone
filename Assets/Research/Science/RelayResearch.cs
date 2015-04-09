@@ -53,4 +53,9 @@ public class RelayResearch : Research
         relay.Unlocked = true;
         return relay.Unlocked;
     }
+
+    public override void Display(GameObject panel)
+    {
+        
+    }
 }

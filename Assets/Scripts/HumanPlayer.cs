@@ -65,6 +65,7 @@ public class HumanPlayer : Player
         Camera.main.transform.LookAt(_commandShipSquad.transform);
         GUIManager.Instance.SetSquadList(false);
         GUIManager.Instance.SetTileList(false);
+        GUIManager.Instance.SetScreen("MainUI");
     }
 
     void Start()
@@ -175,6 +176,18 @@ public class HumanPlayer : Player
         }
 
         GUIManager.Instance.SetSquadControls(_controlledSquad);
+    }
+
+    public void DisplayResearch(string type, string name, GameObject panel)
+    {
+        if(type == "Military")
+        {
+            _militaryTree.GetResearch(name).Display(panel);
+        }
+        else if(type == "Scientific")
+        {
+            _scienceTree.GetResearch(name).Display(panel);
+        }
     }
 
     public Ship GetShipDefinition(string name)

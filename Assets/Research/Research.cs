@@ -32,7 +32,7 @@ public class Research
         return false;
     }
 
-    public virtual void Display() 
+    public virtual void Display(GameObject panel) 
     { 
     }
 }

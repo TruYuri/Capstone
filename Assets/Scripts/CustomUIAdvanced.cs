@@ -8,7 +8,7 @@ public class CustomUIAdvanced : CustomUI, IPointerEnterHandler, IPointerExitHand
 	// Use this for initialization
 	void Start () 
     {
-        GUIManager.Instance.Register(data, this, disableAtStart);
+        // GUIManager.Instance.Register(data, this, disableAtStart);
 	}
 
     public void OnPointerEnter(PointerEventData eventData)

@@ -80,7 +80,7 @@ public class TransportResearch : Research
         return transportShip.Unlocked;
     }
 
-    public override void Display()
+    public override void Display(GameObject panel) 
     {
 
     }

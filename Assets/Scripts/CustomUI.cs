@@ -28,6 +28,11 @@ public class CustomUI : MonoBehaviour
 
     }
 
+    public void SetScreen()
+    {
+        GUIManager.Instance.SetScreen(data);
+    }
+
     public void ClickSwapManager()
     {
         GUIManager.Instance.SwapManager(data);
@@ -53,9 +58,9 @@ public class CustomUI : MonoBehaviour
         GUIManager.Instance.ExitManage();
     }
 
-    public void ClickDeploy()
+    public void ClickSquadAction()
     {
-        GUIManager.Instance.SquadGroundAction(data);
+        GUIManager.Instance.SquadAction(data);
     }
 
     public void ClickListItem()

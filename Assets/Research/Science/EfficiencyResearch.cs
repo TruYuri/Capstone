@@ -94,4 +94,9 @@ public class EfficiencyResearch : Research
         shipDefinitions["Resource Transport"].Unlocked = true;
         return shipDefinitions["Resource Transport"].Unlocked;
     }
+
+    public override void Display(GameObject panel)
+    {
+        
+    }
 }

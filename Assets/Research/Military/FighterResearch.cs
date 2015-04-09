@@ -78,7 +78,7 @@ public class FighterResearch : Research
         return fighterShip.Unlocked;
     }
 
-    public override void Display() 
+    public override void Display(GameObject panel)  
     {
     }
 }

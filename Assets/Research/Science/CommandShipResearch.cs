@@ -94,7 +94,7 @@ public class CommandShipResearch : Research
         return false;
     }
 
-    public override void Display()
+    public override void Display(GameObject panel) 
     {
     }
 }
