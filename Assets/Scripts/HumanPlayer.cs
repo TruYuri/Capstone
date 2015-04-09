@@ -28,28 +28,22 @@ public class HumanPlayer : Player
 
         // create command ship, look at it, control it 
         var squad = CreateNewSquad(new Vector3(0, 0, 10.5f), null);
-        squad.Ships.Add(_shipDefinitions["Base"].Copy());
-        squad.Ships.Add(_shipDefinitions["Gathering Complex"].Copy());
-        squad.Ships.Add(_shipDefinitions["Military Complex"].Copy());
-        squad.Ships.Add(_shipDefinitions["Research Complex"].Copy());
+        AddShip(squad, "Base");
+        AddShip(squad, "Gathering Complex");
+        AddShip(squad, "Military Complex");
+        AddShip(squad, "Research Complex");
 
-        Ship b, t, t1, t2, t3, t4, f, r, r1;
         squad = CreateNewSquad(new Vector3(0, 0, 11f), null);
-        squad.Ships.Add(_shipDefinitions["Fighter"].Copy());
-        squad.Ships.Add(t = _shipDefinitions["Transport"].Copy());
-        squad.Ships.Add(t1 = _shipDefinitions["Transport"].Copy());
-        squad.Ships.Add(t2 = _shipDefinitions["Transport"].Copy());
-        squad.Ships.Add(t3 = _shipDefinitions["Transport"].Copy());
-        squad.Ships.Add(t4 = _shipDefinitions["Transport"].Copy());
-        squad.Ships.Add(f = _shipDefinitions["Heavy Fighter"].Copy());
-        squad.Ships.Add(b = _shipDefinitions["Behemoth"].Copy());
-        squad.Ships.Add(r = _shipDefinitions["Resource Transport"].Copy());
-        squad.Ships.Add(r1 = _shipDefinitions["Resource Transport"].Copy());
-        b.PrimitivePopulation = 25;
-        b.IndustrialPopulation = 15;
-        b.SpaceAgePopulation = 10;
-        f.SpaceAgePopulation = 3;
-        t.PrimitivePopulation = t1.PrimitivePopulation = t2.PrimitivePopulation = t3.PrimitivePopulation = t4.PrimitivePopulation = 50;
+        AddShip(squad, "Fighter");
+        var t = AddShip(squad, "Transport");
+        var t1 = AddShip(squad, "Transport");
+        var t2 = AddShip(squad, "Transport");
+        var t3 = AddShip(squad, "Transport");
+        var t4 = AddShip(squad, "Transport");
+        var f = AddShip(squad, "Heavy Fighter");
+        var b = AddShip(squad, "Behemoth");
+        var r = AddShip(squad, "Resource Transport");
+        var r1 = AddShip(squad, "Resource Transport");
         r.Resources[Resource.Ore] = 100;
         r.Resources[Resource.Oil] = 50;
         r.Resources[Resource.Forest] = 25;
@@ -58,6 +52,12 @@ public class HumanPlayer : Player
         r1.Resources[Resource.Oil] = 25;
         r1.Resources[Resource.Forest] = 10;
         r1.Resources[Resource.Asterminium] = 10;
+        t1.Population[Inhabitance.Primitive] = 50;
+        t2.Population[Inhabitance.Industrial] = 50;
+        t3.Population[Inhabitance.SpaceAge] = 50;
+        t4.Population[Inhabitance.Primitive] = 5;
+        t4.Population[Inhabitance.Industrial] = 10;
+        t4.Population[Inhabitance.SpaceAge] = 15;
         /* debug */
 
         _controlledIsWithinRange = true;

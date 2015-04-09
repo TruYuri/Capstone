@@ -14,8 +14,7 @@ public class CustomUI : MonoBehaviour
 
     public void ClickUpgrade()
     {
-        var split = data.Split('|');
-        HumanPlayer.Instance.UpgradeResearch(split[0], split[1], split[2]);
+        GUIManager.Instance.UpdateResearch(data);
     }
 
     public void ClickBattle()
@@ -73,24 +72,9 @@ public class CustomUI : MonoBehaviour
         GUIManager.Instance.NewSquad();
     }
 
-    public void TransferToControlledSquad()
+    public void ClickShipTransfer()
     {
-        GUIManager.Instance.TransferToControlledSquad();
-    }
-
-    public void TransferAllToControlledSquad()
-    {
-        GUIManager.Instance.TransferAllToControlledSquad();
-    }
-
-    public void TransferToSelectedSquad()
-    {
-        GUIManager.Instance.TransferToSelectedSquad();
-    }
-
-    public void TransferAllToSelectedSquad()
-    {
-        GUIManager.Instance.TransferAllToSelectedSquad();
+        GUIManager.Instance.ShipTransfer(data);
     }
 
     public void ClickSoldierTransfer()

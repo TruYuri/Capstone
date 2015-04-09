@@ -72,7 +72,7 @@ public class Structure : Ship, ListableObject
         return ship;
     }
 
-    public List<KeyValuePair<ResourceGatherType, int>> Gather(Resource rType, int resources, Inhabitance pType, int population)
+    public List<KeyValuePair<ResourceGatherType, int>> Gather(Resource rType, int resources, Inhabitance pType, int population, Team team)
     {
         var gathertypes = new List<KeyValuePair<ResourceGatherType, int>>();
         int min;
@@ -87,25 +87,11 @@ public class Structure : Ship, ListableObject
         {
             gathertypes.Add(new KeyValuePair<ResourceGatherType, int>(ResourceGatherType.Research, gatherRate));
         }
-        if((types & ResourceGatherType.Soldiers) > 0)
+        if((types & ResourceGatherType.Soldiers) > 0 && pType != Inhabitance.Uninhabited)
         {
-            min = Math.Min(gatherRate, capacity - (primitivePopulation + industrialPopulation + spaceAgePopulation));
+            min = Math.Min(gatherRate, capacity - CountPopulation());
             min = Math.Min(min, population);
-            switch(pType)
-            {
-                case Inhabitance.Uninhabited:
-                    break;
-                case Inhabitance.Primitive:
-                    primitivePopulation += min;
-                    break;
-                case Inhabitance.Industrial:
-                    industrialPopulation += min;
-                    break;
-                case Inhabitance.SpaceAge:
-                    spaceAgePopulation += min;
-                    break;
-            }
-
+            this.population[pType] += min;
             gathertypes.Add(new KeyValuePair<ResourceGatherType, int>(ResourceGatherType.Soldiers, min));
         }
 
@@ -119,6 +105,7 @@ public class Structure : Ship, ListableObject
         shipProperties |= ShipProperties.Untransferable;
         resourceCapacity = 99999;
         swapCapacity = resourceCapacity;
+        isDeployed = true;
     }
 
     public void Undeploy(Tile tile)
@@ -128,16 +115,21 @@ public class Structure : Ship, ListableObject
         shipProperties = shipProperties & (~ShipProperties.Untransferable);
         resourceCapacity = swapCapacity;
         swapCapacity = 99999;
-        tile.Population += primitivePopulation + industrialPopulation + spaceAgePopulation;
-        primitivePopulation = industrialPopulation = spaceAgePopulation = 0;
+        tile.Population += CountPopulation();
+        population = new Dictionary<Inhabitance, int>()
+        {
+            { Inhabitance.Primitive, 0 },
+            { Inhabitance.Industrial, 0 },
+            { Inhabitance.SpaceAge, 0 }
+        };
+        isDeployed = false;
     }
 
     public void PopulateStructurePanel(GameObject list)
     {
         list.transform.FindChild("StructureIcon").GetComponent<Image>().sprite = icon;
         list.transform.FindChild("StructureName").GetComponent<Text>().text = name;
-        list.transform.FindChild("Capacity").GetComponent<Text>().text = (primitivePopulation + industrialPopulation + spaceAgePopulation).ToString()
-            + " / " + deployedCapacity.ToString();
+        list.transform.FindChild("Capacity").GetComponent<Text>().text = CountPopulation().ToString() + " / " + deployedCapacity.ToString();
         list.transform.FindChild("Defense").GetComponent<Text>().text = defense.ToString();
         list.transform.FindChild("GatherRate").GetComponent<Text>().text = gatherRate.ToString();
         list.transform.FindChild("OilAmount").GetComponent<Text>().text = resources[Resource.Oil].ToString();
@@ -157,7 +149,7 @@ public class Structure : Ship, ListableObject
         if (HumanPlayer.Instance.Squad.Tile != null && this == HumanPlayer.Instance.Squad.Tile.Structure)
             name = "(Deployed) " + name;
         entry.transform.FindChild("Name").GetComponent<Text>().text = name;
-        entry.transform.FindChild("Population").GetComponent<Text>().text = primitivePopulation + industrialPopulation + spaceAgePopulation + " / " + capacity;
+        entry.transform.FindChild("Population").GetComponent<Text>().text = CountPopulation().ToString() + " / " + capacity;
         entry.GetComponent<CustomUIAdvanced>().data = listName + "|" + index.ToString();
 
         return entry;

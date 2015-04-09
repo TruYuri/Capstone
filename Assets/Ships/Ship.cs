@@ -23,14 +23,18 @@ public class Ship : ListableObject
     protected float baseSpeed;
     protected int baseCapacity;
 
-    protected int primitivePopulation;
-    protected int industrialPopulation;
-    protected int spaceAgePopulation;
-
+    protected Dictionary<Inhabitance, int> population;
     protected Dictionary<Resource, int> requiredResources;
     protected Dictionary<Resource, int> resources;
 
     protected ShipProperties shipProperties;
+
+    protected bool isDeployed;
+
+    public bool IsDeployed
+    {
+        get { return isDeployed; }
+    }
 
     public string Name
     {
@@ -66,21 +70,6 @@ public class Ship : ListableObject
         get { return protection; }
         set { protection = value; }
     }
-    public int PrimitivePopulation
-    {
-        get { return primitivePopulation; }
-        set { primitivePopulation = value; }
-    }
-    public int IndustrialPopulation
-    {
-        get { return industrialPopulation; }
-        set { industrialPopulation = value; }
-    }
-    public int SpaceAgePopulation
-    {
-        get { return spaceAgePopulation; }
-        set { spaceAgePopulation = value; }
-    }
     public bool Unlocked
     {
         get { return unlocked; }
@@ -88,7 +77,7 @@ public class Ship : ListableObject
     }
     public Sprite Icon { get { return icon; } }
     public Dictionary<Resource, int> Resources { get { return resources; } }
-
+    public Dictionary<Inhabitance, int> Population { get { return population; } }
     public ShipProperties ShipProperties { get { return shipProperties; } }
 
     public Ship(Sprite icon, string name, float hull, float firepower, float speed, int capacity, int rCapacity, ShipProperties shipProperties, 
@@ -103,6 +92,12 @@ public class Ship : ListableObject
         this.shipProperties = shipProperties;
         this.icon = icon;
         this.requiredResources = requiredResources;
+        this.population = new Dictionary<Inhabitance, int>()
+        {
+            { Inhabitance.Primitive, 0 },
+            { Inhabitance.Industrial, 0 },
+            { Inhabitance.SpaceAge, 0 }
+        };
         this.resources = new Dictionary<Resource, int>()
         {
             { Resource.Asterminium, 0 },
@@ -121,6 +116,22 @@ public class Ship : ListableObject
             resources[Resource.Oil] >= requiredResources[Resource.Oil] &&
             resources[Resource.Asterminium] >= requiredResources[Resource.Asterminium] &&
             resources[Resource.Forest] >= requiredResources[Resource.Forest];
+    }
+
+    public int CountPopulation()
+    {
+        int i = 0;
+        foreach(var pop in population)
+            i += pop.Value;
+        return i;
+    }
+
+    public int CountResources()
+    {
+        int i = 0;
+        foreach (var resource in resources)
+            i += resource.Value;
+        return i;
     }
 
     public virtual Ship Copy()
@@ -142,7 +153,7 @@ public class Ship : ListableObject
         var icon = entry.transform.FindChild("Icon").GetComponent<Image>();
         icon.sprite = this.icon;
         entry.transform.FindChild("Name").GetComponent<Text>().text = name;
-        entry.transform.FindChild("Population").GetComponent<Text>().text = primitivePopulation + industrialPopulation + spaceAgePopulation + " / " + capacity;
+        entry.transform.FindChild("Population").GetComponent<Text>().text = CountPopulation().ToString() + " / " + capacity;
         entry.GetComponent<CustomUIAdvanced>().data = listName + "|" + index.ToString();
 
         return entry;
@@ -191,11 +202,9 @@ public class Ship : ListableObject
         go.transform.FindChild("FirepowerText").GetComponent<Text>().text = firepower.ToString();
         go.transform.FindChild("SpeedText").GetComponent<Text>().text = speed.ToString();
         go.transform.FindChild("CapacityText").GetComponent<Text>().text = capacity.ToString();
-        go.transform.FindChild("PopulationText").GetComponent<Text>().text = 
-            (primitivePopulation + industrialPopulation + spaceAgePopulation).ToString() + "/" + capacity.ToString();
-        go.transform.FindChild("PrimitiveText").GetComponent<Text>().text = primitivePopulation.ToString();
-        go.transform.FindChild("IndustrialText").GetComponent<Text>().text = industrialPopulation.ToString();
-        go.transform.FindChild("SpaceAgeText").GetComponent<Text>().text = spaceAgePopulation.ToString();
+        go.transform.FindChild("PopulationText").GetComponent<Text>().text = CountPopulation().ToString() + "/" + capacity.ToString();
+        foreach(var pop in population)
+            go.transform.FindChild(pop.Key.ToString() + "Text").GetComponent<Text>().text = pop.Value.ToString();
         go.transform.FindChild("ResourceCapacityText").GetComponent<Text>().text =
             (resources[Resource.Forest] + resources[Resource.Oil] + resources[Resource.Ore] + resources[Resource.Asterminium]).ToString() + "/" + resourceCapacity.ToString();
         go.transform.FindChild("OreText").GetComponent<Text>().text = resources[Resource.Ore].ToString();

@@ -16,7 +16,8 @@ public class Player : MonoBehaviour
     protected Ship _commandShip;
     protected Squad _commandShipSquad;
     protected Dictionary<string, Ship> _shipDefinitions;
-    protected Dictionary<string, Research> _shipResearchMap;
+    protected Dictionary<string, HashSet<Ship>> _shipRegistry;
+    protected Dictionary<Inhabitance, int> _soldierRegistry;
     protected List<Squad> _squads;
     protected List<Tile> _tiles;
     protected int _numResearchStations;
@@ -44,6 +45,17 @@ public class Player : MonoBehaviour
         _shipDefinitions = GameManager.Instance.GenerateShipDefs();
         _militaryTree = GameManager.Instance.GenerateMilitaryTree(_shipDefinitions);
         _scienceTree = GameManager.Instance.GenerateScienceTree(_shipDefinitions);
+        _shipRegistry = new Dictionary<string, HashSet<Ship>>();
+        _soldierRegistry = new Dictionary<Inhabitance, int>();
+        foreach(var ship in _shipDefinitions)
+        {
+            _shipRegistry.Add(ship.Key, new HashSet<Ship>());
+        }
+
+        _soldierRegistry.Add(Inhabitance.Uninhabited, 0);
+        _soldierRegistry.Add(Inhabitance.Primitive, 0);
+        _soldierRegistry.Add(Inhabitance.Industrial, 0);
+        _soldierRegistry.Add(Inhabitance.SpaceAge, 0);
 
         if(_team != global::Team.Indigenous)
             CreateNewCommandShip();
@@ -99,7 +111,7 @@ public class Player : MonoBehaviour
     {
         if (!_controlledIsWithinRange)
             return;
-        GameManager.Instance.AddEvent(new BuildEvent(_relayDistance + 1, _team, _controlledTile, _shipDefinitions[shipName].Copy()));
+        GameManager.Instance.AddEvent(new BuildEvent(_relayDistance + 1, this, _controlledTile, _shipDefinitions[shipName].Copy()));
         EndTurn();
     }
 
@@ -152,6 +164,8 @@ public class Player : MonoBehaviour
     // DON'T CALL THIS FROM HERE - for GameManager!
     public virtual void TurnEnd()
     {
+        _numResearchStations = _shipRegistry["Research Complex"].Count(r => r.IsDeployed == true);
+        _numResearchStations += _shipRegistry["Base"].Count(r => r.IsDeployed == true);
         _militaryTree.Advance();
         _scienceTree.Advance();
 
@@ -191,51 +205,17 @@ public class Player : MonoBehaviour
     {
         var IP = tile.Population * 2;
 
-        int prim = 0, ind = 0, space = 0;
-        for(int i = 0; i < _squads.Count; i++)
-        {
-            for(int j = 0; j < _squads[i].Ships.Count; j++)
-            {
-                prim += _squads[i].Ships[j].PrimitivePopulation;
-                ind += _squads[i].Ships[j].IndustrialPopulation;
-                space += _squads[i].Ships[j].SpaceAgePopulation;
-            }
-        }
-
-        for(int i = 0; i < _tiles.Count; i++)
-        {
-            switch(_tiles[i].PopulationType)
-            {
-                case Inhabitance.Primitive:
-                    prim += _tiles[i].Population;
-                    break;
-                case Inhabitance.Industrial:
-                    ind += _tiles[i].Population;
-                    break;
-                case Inhabitance.SpaceAge:
-                    space += _tiles[i].Population;
-                    break;
-            }
-
-            if(tile.Structure != null)
-            {
-                prim += _tiles[i].Structure.PrimitivePopulation;
-                ind += _tiles[i].Structure.IndustrialPopulation;
-                space += _tiles[i].Structure.SpaceAgePopulation;
-            }
-        }
-
         int PP = 0;
         switch(tile.PopulationType)
         {
             case Inhabitance.Primitive:
-                PP = prim * 2 + ind + space;
+                PP = _soldierRegistry[Inhabitance.Primitive] * 2 + _soldierRegistry[Inhabitance.Industrial] + _soldierRegistry[Inhabitance.SpaceAge];
                 break;
             case Inhabitance.Industrial:
-                PP = prim + ind * 2 + space;
+                PP = _soldierRegistry[Inhabitance.Primitive] + _soldierRegistry[Inhabitance.Industrial] * 2 + _soldierRegistry[Inhabitance.SpaceAge];
                 break;
             case Inhabitance.SpaceAge:
-                PP = prim + ind + space * 2;
+                PP = _soldierRegistry[Inhabitance.Primitive] + _soldierRegistry[Inhabitance.Industrial] + _soldierRegistry[Inhabitance.SpaceAge] * 2;
                 break;
         }
 
@@ -246,6 +226,7 @@ public class Player : MonoBehaviour
         {
             tile.Claim(_team);
             tile.Population += Mathf.FloorToInt(IP * DC * ((float)GameManager.Generator.NextDouble() * (0.75f - 0.25f) + 0.25f));
+            AddSoldiers(tile.PopulationType, tile.Population);
             return true;
         }
         return false;
@@ -388,6 +369,54 @@ public class Player : MonoBehaviour
         var position = new Vector3(GameManager.Generator.Next() % 20 - 10, 0, GameManager.Generator.Next() % 20 - 10);
         _commandShipSquad = CreateNewSquad(position, null, "Command Squad");
         _commandShipSquad.Ships.Add(_commandShip = _shipDefinitions["Command Ship"].Copy());
+        _shipRegistry[_commandShip.Name].Add(_commandShip);
         Control(_commandShipSquad.gameObject);
+    }
+
+    public Ship AddShip(Squad squad, string name)
+    {
+        var ship = _shipDefinitions[name].Copy();
+        AddShip(squad, ship);
+        return ship;
+    }
+
+    public Ship AddShip(Squad squad, Ship ship)
+    {
+        _shipRegistry[ship.Name].Add(ship);
+        squad.Ships.Add(ship);
+        return ship;
+    }
+
+    public void RemoveShip(Squad squad, Ship ship)
+    {
+        _shipRegistry[ship.Name].Remove(ship);
+        squad.Ships.Remove(ship);
+
+        foreach (var type in ship.Population)
+            RemoveSoldiers(type.Key, type.Value);
+    }
+
+    public void RemoveAllShips(Squad squad)
+    {
+        for (int i = 0; i < squad.Ships.Count; i++)
+        {
+            foreach (var type in squad.Ships[i].Population)
+                RemoveSoldiers(type.Key, type.Value);
+
+            _shipRegistry[squad.Ships[i].Name].Remove(squad.Ships[i]);
+            squad.Ships[i] = null;
+        }
+
+        squad.Ships.Clear();
+    }
+
+    public void AddSoldiers(Inhabitance type, int count)
+    {
+        _soldierRegistry[type] += count;
+    }
+
+    public void RemoveSoldiers(Inhabitance type, int count)
+    {
+        _soldierRegistry[type] -= count;
     }
 }

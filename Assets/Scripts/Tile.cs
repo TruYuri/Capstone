@@ -189,17 +189,18 @@ public class Tile : MonoBehaviour, ListableObject
         if (_structure == null)
             return "";
 
-        if (!destroyStructure && _structure != null)
-            _squad.Ships.Add(_structure);
+        _squad.Ships.Add(_structure);
         _structure.Undeploy(this);
+
+        if (destroyStructure)
+            GameManager.Instance.Players[_team].RemoveShip(_squad, _structure);
+        _structure = null;
 
         if(MapManager.Instance.DeploySpawnTable.ContainsKey(_planetType))
         {
             _squad.Sector.UnregisterSpaceStructure(_team, _structure);
             _squad.Sector.DeleteTile(this);
         }
-
-        _structure = null;
 
         return _planetType;
     }
@@ -217,7 +218,7 @@ public class Tile : MonoBehaviour, ListableObject
         if (_structure == null)
             return;
 
-        var gathered = _structure.Gather(_resourceType, _resourceCount, _planetInhabitance, _population);
+        var gathered = _structure.Gather(_resourceType, _resourceCount, _planetInhabitance, _population, _team);
 
         foreach (var resource in gathered)
         {
@@ -239,30 +240,18 @@ public class Tile : MonoBehaviour, ListableObject
     public float CalculateDefensivePower()
     {
         var power = 0f;
-        if (_team == Team.Indigenous) // use Indigenous
+        var bonuses = new Dictionary<Inhabitance, float>()
         {
-            switch(_planetInhabitance)
-            {
-                case Inhabitance.Uninhabited:
-                    break;
-                case Inhabitance.Primitive:
-                    power = _population;
-                    break;
-                case Inhabitance.Industrial:
-                    power = _population * 1.5f;
-                    break;
-                case Inhabitance.SpaceAge:
-                    power = _population * 1.75f;
-                    break;
-            }
-        }
-        else if (_structure == null)
+            { Inhabitance.Primitive, 1f },
+            { Inhabitance.Industrial, 1.5f },
+            { Inhabitance.SpaceAge, 1.75f }
+        };
+        
+        power += _population * bonuses[_planetInhabitance];
+        if (_structure == null)
         {
-            var primitive = _structure.PrimitivePopulation;
-            var industrial = _structure.IndustrialPopulation;
-            var spaceAge = _structure.SpaceAgePopulation;
-
-            power = primitive + industrial * 1.5f + spaceAge * 1.75f + _structure.Defense;
+            foreach(var bonus in bonuses)
+                power += _structure.Population[bonus.Key] * bonus.Value;
         }
 
         return power;
@@ -330,32 +319,25 @@ public class Tile : MonoBehaviour, ListableObject
             panel.transform.FindChild("ResourceIcon").gameObject.SetActive(false);
         }
 
-        int primitive = 0, industrial = 0, spaceAge = 0;
-
-        switch(_planetInhabitance)
+        var populations = new Dictionary<Inhabitance, int>() 
         {
-            case Inhabitance.Primitive:
-                primitive += _population;
-                break;
-            case Inhabitance.Industrial:
-                industrial += _population;
-                break;
-            case Inhabitance.SpaceAge:
-                spaceAge += _population;
-                break;
-        }
-        
+            { Inhabitance.Primitive, 0 },
+            { Inhabitance.Industrial, 0 },
+            { Inhabitance.SpaceAge, 0 }
+        };
         if(_structure != null)
+            populations = new Dictionary<Inhabitance, int>(_structure.Population);
+        if(_planetInhabitance != Inhabitance.Uninhabited)
+            populations[_planetInhabitance] += _population;
+
+        int total = 0;
+        foreach(var pop in populations)
         {
-            primitive += _structure.PrimitivePopulation;
-            industrial += _structure.IndustrialPopulation;
-            spaceAge += _structure.SpaceAgePopulation;
+            panel.transform.FindChild(pop.Key.ToString() + "Population").GetComponent<Text>().text = pop.Value.ToString();
+            total += pop.Value;
         }
 
-        panel.transform.FindChild("TotalPopulation").GetComponent<Text>().text = (primitive + industrial + spaceAge).ToString();
-        panel.transform.FindChild("PrimitivePopulation").GetComponent<Text>().text = primitive.ToString();
-        panel.transform.FindChild("IndustrialPopulation").GetComponent<Text>().text = industrial.ToString();
-        panel.transform.FindChild("SpaceAgePopulation").GetComponent<Text>().text = spaceAge.ToString();
+        panel.transform.FindChild("TotalPopulation").GetComponent<Text>().text = total.ToString();
     }
 
     public bool IsInRange(Squad squad)
