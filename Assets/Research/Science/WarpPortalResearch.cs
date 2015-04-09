@@ -16,13 +16,8 @@ public class WarpPortalResearch : Research
         upgrades.Add(DEFENSE, 0);
     }
 
-    public override bool UpgradeResearch(string name, int stations)
+    public override void UpgradeResearch(string name)
     {
-        var meetsCriteria = base.UpgradeResearch(name, stations);
-
-        if (!meetsCriteria)
-            return false;
-
         switch(name)
         {
             case RANGE:
@@ -32,8 +27,6 @@ public class WarpPortalResearch : Research
                 UpgradeDefense();
                 break;
         }
-
-        return true;
     }
 
     private void UpgradeRange()
@@ -54,7 +47,7 @@ public class WarpPortalResearch : Research
         return warpPortal.Unlocked;
     }
 
-    public override void Display(GameObject panel)
+    public override void Display(GameObject panel, int stations)
     {
         
     }

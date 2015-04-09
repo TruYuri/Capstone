@@ -20,13 +20,8 @@ public class EfficiencyResearch : Research
         upgrades.Add(RESOURCE_TRANSPORT, 0);
     }
 
-    public override bool UpgradeResearch(string name, int stations)
+    public override void UpgradeResearch(string name)
     {
-        var meetsCriteria = base.UpgradeResearch(name, stations);
-
-        if (!meetsCriteria)
-            return false;
-
         switch(name)
         {
             case GATHERING:
@@ -42,8 +37,6 @@ public class EfficiencyResearch : Research
                 UpgradeResourceTransport();
                 break;
         }
-
-        return true;
     }
 
     private void UpgradeGathering()
@@ -95,7 +88,7 @@ public class EfficiencyResearch : Research
         return shipDefinitions["Resource Transport"].Unlocked;
     }
 
-    public override void Display(GameObject panel)
+    public override void Display(GameObject panel, int stations)
     {
         
     }

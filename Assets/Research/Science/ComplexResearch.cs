@@ -23,13 +23,8 @@ public class ComplexResearch : Research
         upgrades.Add(CAPACITY, 0);
     }
 
-    public override bool UpgradeResearch(string name, int stations)
+    public override void UpgradeResearch(string name)
     {
-        var meetsCriteria = base.UpgradeResearch(name, stations);
-
-        if (!meetsCriteria)
-            return false;
-
         switch (name)
         {
             case DEFENSE:
@@ -39,8 +34,6 @@ public class ComplexResearch : Research
                 UpgradeCapacity();
                 break;
         }
-
-        return true;
     }
 
     private void UpgradeDefense()
@@ -62,7 +55,7 @@ public class ComplexResearch : Research
         return true;
     }
 
-    public override void Display(GameObject panel)
+    public override void Display(GameObject panel, int stations)
     {
         
     }

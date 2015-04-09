@@ -1,6 +1,6 @@
-﻿
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
+using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class TransportResearch : Research
 {
@@ -20,13 +20,8 @@ public class TransportResearch : Research
         upgrades.Add(CAPACITY, 0);
     }
 
-    public override bool UpgradeResearch(string name, int stations)
+    public override void UpgradeResearch(string name)
     {
-        var meetsCriteria = base.UpgradeResearch(name, stations);
-
-        if (!meetsCriteria)
-            return false;
-
         switch (name)
         {
             case ARMOR:
@@ -42,8 +37,6 @@ public class TransportResearch : Research
                 UpgradeCapacity();
                 break;
         }
-
-        return true;
     }
 
     private void UpgradeArmor()
@@ -52,14 +45,10 @@ public class TransportResearch : Research
         transportShip.Hull += 2.0f;
     }
 
-    private bool UpgradePlating()
+    private void UpgradePlating()
     {
-        if (upgrades[ARMOR] < 5)
-            return false;
-
         upgrades[PLATING]++;
         transportShip.Protection = upgrades[PLATING] * 0.02f;
-        return true;
     }
 
     private void UpgradeThrusters()
@@ -80,8 +69,26 @@ public class TransportResearch : Research
         return transportShip.Unlocked;
     }
 
-    public override void Display(GameObject panel) 
+    public override void Display(GameObject panel, int stations) 
     {
+        var items = new Dictionary<string, Transform>()
+        {
+            { THRUSTERS, panel.transform.FindChild("TransportThrustersButton") },
+            { CAPACITY, panel.transform.FindChild("TransportCapacityButton") },
+            { ARMOR, panel.transform.FindChild("TransportArmorButton") },
+            { PLATING, panel.transform.FindChild("TransportAsterminiumButton") },
+        };
 
+        foreach (var item in items)
+        {
+            item.Value.FindChild("CountText").GetComponent<Text>().text = upgrades[item.Key].ToString() + "/10";
+            if (CanUpgrade(item.Key, stations) && Unlock())
+                item.Value.GetComponent<Button>().interactable = true;
+            else
+                item.Value.GetComponent<Button>().interactable = false;
+        }
+
+        if (upgrades[ARMOR] < 5)
+            items[PLATING].GetComponent<Button>().interactable = false;
     }
 }

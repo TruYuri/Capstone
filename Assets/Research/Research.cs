@@ -16,7 +16,7 @@ public class Research
         this.name = name;
     }
 
-    public virtual bool UpgradeResearch(string name, int stations)
+    protected bool CanUpgrade(string name, int stations)
     {
         var invalidLevel = upgrades[name] >= 10;
         var invalidStations = stations < (upgrades[name] + 1) * (level);
@@ -27,12 +27,16 @@ public class Research
         return true;
     }
 
+    public virtual void UpgradeResearch(string name)
+    {
+    }
+
     public virtual bool Unlock() 
     {
         return false;
     }
 
-    public virtual void Display(GameObject panel) 
+    public virtual void Display(GameObject panel, int stations) 
     { 
     }
 }

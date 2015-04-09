@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class CommandShipResearch : Research
 {
@@ -21,13 +22,8 @@ public class CommandShipResearch : Research
         upgrades.Add(THRUSTERS, 0);
     }
 
-    public override bool UpgradeResearch(string name, int stations)
+    public override void UpgradeResearch(string name)
     {
-        var meetsCriteria = base.UpgradeResearch(name, stations);
-
-        if (!meetsCriteria)
-            return false;
-
         switch (name)
         {
             case ARMOR:
@@ -46,8 +42,6 @@ public class CommandShipResearch : Research
                 UpgradeThrusters();
                 break;
         }
-
-        return true;
     }
 
     private void UpgradeArmor()
@@ -56,14 +50,10 @@ public class CommandShipResearch : Research
         commandShip.Hull += 3.0f;
     }
 
-    private bool UpgradePlating()
+    private void UpgradePlating()
     {
-        if (upgrades[ARMOR] < 5)
-            return false;
-
         upgrades[PLATING]++;
         commandShip.Protection = upgrades[PLATING] * 0.02f;
-        return true;
     }
 
     private void UpgradePlasmas()
@@ -72,15 +62,11 @@ public class CommandShipResearch : Research
         commandShip.Firepower += 2.0f;
     }
 
-    private bool UpgradeTorpedoes()
+    private void UpgradeTorpedoes()
     {
-        if (upgrades[PLASMAS] < 5)
-            return false;
-
         commandShip.Firepower -= upgrades[TORPEDOES] * 0.02f;
         upgrades[TORPEDOES]++;
         commandShip.Firepower += upgrades[TORPEDOES] * 0.02f;
-        return true;
     }
 
     private void UpgradeThrusters()
@@ -91,10 +77,34 @@ public class CommandShipResearch : Research
 
     public override bool Unlock()
     {
-        return false;
+        commandShip.Unlocked = true;
+        return commandShip.Unlocked;
     }
 
-    public override void Display(GameObject panel) 
+    public override void Display(GameObject panel, int stations) 
     {
+        var items = new Dictionary<string, Transform>()
+        {
+            { TORPEDOES, panel.transform.FindChild("CommandTorpedoesButton") },
+            { THRUSTERS, panel.transform.FindChild("CommandThrustersButton") },
+            { ARMOR, panel.transform.FindChild("CommandArmorButton") },
+            { PLATING, panel.transform.FindChild("CommandAsterminiumButton") },
+            { PLASMAS, panel.transform.FindChild("CommandPlasmasButton") }
+        };
+
+        foreach (var item in items)
+        {
+            item.Value.FindChild("CountText").GetComponent<Text>().text = upgrades[item.Key].ToString() + "/10";
+            if (CanUpgrade(item.Key, stations) && Unlock())
+                item.Value.GetComponent<Button>().interactable = true;
+            else
+                item.Value.GetComponent<Button>().interactable = false;
+        }
+
+        if (upgrades[ARMOR] < 5)
+            items[PLATING].GetComponent<Button>().interactable = false;
+
+        if (upgrades[PLASMAS] < 5)
+            items[TORPEDOES].GetComponent<Button>().interactable = false;
     }
 }

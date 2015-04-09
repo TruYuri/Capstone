@@ -16,13 +16,8 @@ public class RelayResearch : Research
         upgrades.Add(DEFENSE, 0);
     }
 
-    public override bool UpgradeResearch(string name, int stations)
+    public override void UpgradeResearch(string name)
     {
-        var meetsCriteria = base.UpgradeResearch(name, stations);
-
-        if (!meetsCriteria)
-            return false;
-
         switch(name)
         {
             case RANGE:
@@ -32,8 +27,6 @@ public class RelayResearch : Research
                 UpgradeDefense();
                 break;
         }
-
-        return true;
     }
 
     private void UpgradeRange()
@@ -54,7 +47,7 @@ public class RelayResearch : Research
         return relay.Unlocked;
     }
 
-    public override void Display(GameObject panel)
+    public override void Display(GameObject panel, int stations)
     {
         
     }

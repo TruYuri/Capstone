@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class GuardSatelliteResearch : Research
 {
@@ -19,20 +20,16 @@ public class GuardSatelliteResearch : Research
         upgrades.Add(TORPEDOES, 0);
     }
 
-    public override bool UpgradeResearch(string researchName, int stations)
+    public override void UpgradeResearch(string researchName)
     {
-        var meetsCriteria = base.UpgradeResearch(name, stations);
-
-        if (!meetsCriteria)
-            return false;
-
         switch (researchName)
         {
             case ARMOR:
                 AdvanceArmor();
                 break;
             case PLATING:
-                return AdvancePlating();
+                AdvancePlating();
+                break;
             case PLASMAS:
                 AdvancePlasmas();
                 break;
@@ -40,8 +37,6 @@ public class GuardSatelliteResearch : Research
                 AdvanceTorpedoes();
                 break;
         }
-
-        return true;
     }
 
     private void AdvanceArmor()
@@ -50,14 +45,10 @@ public class GuardSatelliteResearch : Research
         guardSatelliteShip.Hull += 0.5f;
     }
 
-    private bool AdvancePlating()
+    private void AdvancePlating()
     {
-        if (upgrades[ARMOR] < 5)
-            return false;
-
         upgrades[PLATING]++;
         guardSatelliteShip.Protection = upgrades[PLATING] * 0.02f;
-        return true;
     }
 
     private void AdvancePlasmas()
@@ -79,7 +70,26 @@ public class GuardSatelliteResearch : Research
         return guardSatelliteShip.Unlocked;
     }
 
-    public override void Display(GameObject panel) 
+    public override void Display(GameObject panel, int stations) 
     {
+        var items = new Dictionary<string, Transform>()
+        {
+            { TORPEDOES, panel.transform.FindChild("GuardTorpedoesButton") },
+            { ARMOR, panel.transform.FindChild("GuardArmorButton") },
+            { PLATING, panel.transform.FindChild("GuardAsterminiumButton") },
+            { PLASMAS, panel.transform.FindChild("GuardPlasmasButton") }
+        };
+
+        foreach (var item in items)
+        {
+            item.Value.FindChild("CountText").GetComponent<Text>().text = upgrades[item.Key].ToString() + "/10";
+            if (CanUpgrade(item.Key, stations) && Unlock())
+                item.Value.GetComponent<Button>().interactable = true;
+            else
+                item.Value.GetComponent<Button>().interactable = false;
+        }
+
+        if (upgrades[ARMOR] < 5)
+            items[PLATING].GetComponent<Button>().interactable = false;
     }
 }

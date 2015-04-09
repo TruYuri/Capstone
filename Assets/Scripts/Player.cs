@@ -77,13 +77,12 @@ public class Player : MonoBehaviour
         EndTurn();
 	}
 
-    public bool UpgradeResearch(string type, string research, string property)
+    public void UpgradeResearch(string type, string research, string property)
     {
         if(type == MILITARY)
-            return _militaryTree.GetResearch(research).UpgradeResearch(property, _numResearchStations);
+            _militaryTree.GetResearch(research).UpgradeResearch(property);
         else if(type == SCIENCE)
-            return _scienceTree.GetResearch(research).UpgradeResearch(property, _numResearchStations);
-        return false;
+            _scienceTree.GetResearch(research).UpgradeResearch(property);
     }
 
     public void CreateBattleEvent(Squad squad1, Tile tile)

@@ -182,11 +182,11 @@ public class HumanPlayer : Player
     {
         if(type == "Military")
         {
-            _militaryTree.GetResearch(name).Display(panel);
+            _militaryTree.GetResearch(name).Display(panel, _numResearchStations);
         }
         else if(type == "Scientific")
         {
-            _scienceTree.GetResearch(name).Display(panel);
+            _scienceTree.GetResearch(name).Display(panel, _numResearchStations);
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class FighterResearch : Research
 {
@@ -19,20 +20,16 @@ public class FighterResearch : Research
         upgrades.Add(THRUSTERS, 0);
     }
 
-    public override bool UpgradeResearch(string name, int stations) 
+    public override void UpgradeResearch(string name) 
     {
-        var meetsCriteria = base.UpgradeResearch(name, stations);
-
-        if (!meetsCriteria)
-            return false;
-
         switch(name)
         {
             case ARMOR:
                 UpgradeArmor();
                 break;
             case PLATING:
-                return UpgradePlating();
+                UpgradePlating();
+                break;
             case PLASMAS:
                 UpgradePlasmas();
                 break;
@@ -40,8 +37,6 @@ public class FighterResearch : Research
                 UpgradeThrusters();
                 break;
         }
-
-        return true;
     }
 
     private void UpgradeArmor()
@@ -50,14 +45,10 @@ public class FighterResearch : Research
         fighterShip.Hull += 0.25f;
     }
 
-    private bool UpgradePlating()
+    private void UpgradePlating()
     {
-        if (upgrades[ARMOR] < 5)
-            return false;
-
         upgrades[PLATING]++;
         fighterShip.Protection = upgrades[PLATING] * 0.02f;
-        return true;
     }
 
     private void UpgradePlasmas()
@@ -78,7 +69,26 @@ public class FighterResearch : Research
         return fighterShip.Unlocked;
     }
 
-    public override void Display(GameObject panel)  
+    public override void Display(GameObject panel, int stations)  
     {
+        var items = new Dictionary<string, Transform>()
+        {
+            { THRUSTERS, panel.transform.FindChild("FighterThrustersButton") },
+            { ARMOR, panel.transform.FindChild("FighterArmorButton") },
+            { PLATING, panel.transform.FindChild("FighterAsterminiumButton") },
+            { PLASMAS, panel.transform.FindChild("FighterPlasmasButton") }
+        };
+
+        foreach (var item in items)
+        {
+            item.Value.FindChild("CountText").GetComponent<Text>().text = upgrades[item.Key].ToString() + "/10";
+            if (CanUpgrade(item.Key, stations) && Unlock())
+                item.Value.GetComponent<Button>().interactable = true;
+            else
+                item.Value.GetComponent<Button>().interactable = false;
+        }
+
+        if (upgrades[ARMOR] < 5)
+            items[PLATING].GetComponent<Button>().interactable = false;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class HeavyFighterResearch : Research
 {
@@ -23,25 +24,22 @@ public class HeavyFighterResearch : Research
         upgrades.Add(CAPACITY, 0);
     }
 
-    public override bool UpgradeResearch(string name, int stations)
+    public override void UpgradeResearch(string name)
     {
-        var meetsCriteria = base.UpgradeResearch(name, stations);
-
-        if (!meetsCriteria)
-            return false;
-
         switch (name)
         {
             case ARMOR:
                 UpgradeArmor();
                 break;
             case PLATING:
-                return UpgradePlating();
+                UpgradePlating();
+                break;
             case PLASMAS:
                 UpgradePlasmas();
                 break;
             case TORPEDOES:
-                return UpgradeTorpedoes();
+                UpgradeTorpedoes();
+                break;
             case THRUSTERS:
                 UpgradeThrusters();
                 break;
@@ -49,8 +47,6 @@ public class HeavyFighterResearch : Research
                 UpgradeCapacity();
                 break;
         }
-
-        return true;
     }
 
     private void UpgradeArmor()
@@ -59,14 +55,10 @@ public class HeavyFighterResearch : Research
         heavyFighterShip.Hull += 0.5f;
     }
 
-    private bool UpgradePlating()
+    private void UpgradePlating()
     {
-        if (upgrades[ARMOR] < 5)
-            return false;
-
         upgrades[PLATING]++;
         heavyFighterShip.Protection = upgrades[PLATING] * 0.02f;
-        return true;
     }
 
     private void UpgradePlasmas()
@@ -75,15 +67,11 @@ public class HeavyFighterResearch : Research
         heavyFighterShip.Firepower += 0.75f;
     }
 
-    private bool UpgradeTorpedoes()
+    private void UpgradeTorpedoes()
     {
-        if (upgrades[PLASMAS] < 5)
-            return false;
-
         heavyFighterShip.Firepower -= upgrades[TORPEDOES] * 0.02f;
         upgrades[TORPEDOES]++;
         heavyFighterShip.Firepower += upgrades[TORPEDOES] * 0.02f;
-        return true;
     }
 
     private void UpgradeThrusters()
@@ -104,7 +92,31 @@ public class HeavyFighterResearch : Research
         return heavyFighterShip.Unlocked;
     }
 
-    public override void Display(GameObject panel) 
+    public override void Display(GameObject panel, int stations) 
     {
+        var items = new Dictionary<string, Transform>()
+        {
+            { TORPEDOES, panel.transform.FindChild("HeavyTorpedoesButton") },
+            { THRUSTERS, panel.transform.FindChild("HeavyThrustersButton") },
+            { CAPACITY, panel.transform.FindChild("HeavyCapacityButton") },
+            { ARMOR, panel.transform.FindChild("HeavyArmorButton") },
+            { PLATING, panel.transform.FindChild("HeavyAsterminiumButton") },
+            { PLASMAS, panel.transform.FindChild("HeavyPlasmasButton") }
+        };
+
+        foreach (var item in items)
+        {
+            item.Value.FindChild("CountText").GetComponent<Text>().text = upgrades[item.Key].ToString() + "/10";
+            if (CanUpgrade(item.Key, stations) && Unlock())
+                item.Value.GetComponent<Button>().interactable = true;
+            else
+                item.Value.GetComponent<Button>().interactable = false;
+        }
+
+        if (upgrades[ARMOR] < 5)
+            items[PLATING].GetComponent<Button>().interactable = false;
+
+        if (upgrades[PLASMAS] < 5)
+            items[TORPEDOES].GetComponent<Button>().interactable = false;
     }
 }
