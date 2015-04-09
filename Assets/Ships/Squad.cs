@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System;
+using System.Linq;
 using System.Collections.Generic;
 
 public class Squad : MonoBehaviour, ListableObject
@@ -183,9 +185,9 @@ public class Squad : MonoBehaviour, ListableObject
 
         foreach (var ship in _ships)
         {
-            primitive += ship.PrimitivePopulation;
-            industrial += ship.IndustrialPopulation;
-            spaceAge += ship.SpaceAgePopulation;
+            primitive += ship.Population[Inhabitance.Primitive];
+            industrial += ship.Population[Inhabitance.Industrial];
+            spaceAge += ship.Population[Inhabitance.SpaceAge];
         }
 
         return primitive + industrial * 1.5f + spaceAge * 1.75f;
@@ -228,8 +230,10 @@ public class Squad : MonoBehaviour, ListableObject
         var winner = (winP < winChance ? this : enemy);
         var lost = new KeyValuePair<Team, Dictionary<string, int>>(winner.Team, new Dictionary<string,int>());
 
-        if (this == winner) enemy.Ships.Clear();
-        else _ships.Clear();
+        if (this == winner) 
+            GameManager.Instance.Players[enemy.Team].RemoveAllShips(enemy);
+        else
+            GameManager.Instance.Players[_team].RemoveAllShips(this);
 
         float hull = 0;
         foreach (var ship in _ships)
@@ -254,11 +258,11 @@ public class Squad : MonoBehaviour, ListableObject
                 {
                     if (!lost.Value.ContainsKey(ship.Name))
                         lost.Value.Add(ship.Name, 0);
-                    _ships.Remove(ship);
                     lost.Value[ship.Name]++;
-                    prim += ship.PrimitivePopulation;
-                    ind += ship.IndustrialPopulation;
-                    space += ship.SpaceAgePopulation;
+                    prim += ship.Population[Inhabitance.Primitive];
+                    ind += ship.Population[Inhabitance.Industrial];
+                    space += ship.Population[Inhabitance.SpaceAge];
+                    GameManager.Instance.Players[winner.Team].RemoveShip(winner, _ships[randPos]);
                 }
             }
             else
@@ -279,19 +283,26 @@ public class Squad : MonoBehaviour, ListableObject
     {
         float winP = (float)GameManager.Generator.NextDouble();
         var winner = winP < winChance;
+        var winTeam = winner ? _team : enemy.Team;
         var lost = new KeyValuePair<Team, Dictionary<string, int>>(winner ? _team : enemy.Team, new Dictionary<string,int>());
-        lost.Value.Add("Primitive", 0);
-        lost.Value.Add("Industrial", 0);
-        lost.Value.Add("Space Age", 0);
+        var types = new List<Inhabitance>() { Inhabitance.Primitive, Inhabitance.Industrial, Inhabitance.SpaceAge };
+        var populationLoss = new Dictionary<Inhabitance, int>();
+        foreach(var type in types)
+        {
+            populationLoss.Add(type, 0);
+        }
 
         if (winner) // remove random soldiers from random ships in the fleet
         {
-            enemy.Population = enemy.Population / 2; // squad won, so halve the planet population.
+            GameManager.Instance.Players[enemy.Team].RemoveSoldiers(enemy.PopulationType, enemy.Population);
+            GameManager.Instance.Players[_team].AddSoldiers(enemy.PopulationType, enemy.Population / 2);
+
+            enemy.Population /= 2; // squad won, so halve the planet population.
 
             int nTroops = 0;
             foreach (var ship in _ships)
             {
-                nTroops += ship.PrimitivePopulation + ship.SpaceAgePopulation + ship.IndustrialPopulation;
+                nTroops += ship.CountPopulation();
             }
 
             float damage = Mathf.Floor(nTroops * (1.0f - winChance) * ((float)GameManager.Generator.NextDouble() * (1.25f - 0.75f) + 0.75f));
@@ -299,128 +310,92 @@ public class Squad : MonoBehaviour, ListableObject
             while (damage >= 1.0f && nTroops > 0)
             {
                 var randShip = GameManager.Generator.Next(0, _ships.Count);
-                // somehow distribute probability around # troops and from which ships
 
-                while (_ships[randShip].PrimitivePopulation + _ships[randShip].IndustrialPopulation + _ships[randShip].SpaceAgePopulation == 0)
+                while (_ships[randShip].CountPopulation() == 0)
                     randShip = GameManager.Generator.Next(0, _ships.Count);
 
                 damage -= 1.0f;
-                var randSoldier = GameManager.Generator.Next(0, _ships[randShip].PrimitivePopulation + 
-                    _ships[randShip].IndustrialPopulation + _ships[randShip].SpaceAgePopulation);
+                var randSoldier = GameManager.Generator.Next(0, _ships[randShip].CountPopulation());
                 float saveChance = (float)GameManager.Generator.NextDouble();
-                if(randSoldier < _ships[randShip].PrimitivePopulation)
+
+                for(int i = 0; i < types.Count; i++)
                 {
-                    if(saveChance >= 0.2f)
+                    if (randSoldier < _ships[randShip].Population[types[i]] && saveChance >= 0.3f - i * 0.1f)
                     {
-                        _ships[randShip].PrimitivePopulation--;
-                        lost.Value["Primitive"]++;
+                        _ships[randShip].Population[types[i]]--;
+                        populationLoss[types[i]]++;
                         nTroops--;
+                        break;
                     }
-                }
-                else if(randSoldier < _ships[randShip].IndustrialPopulation)
-                {
-                    if (saveChance >= 0.1f)
-                    {
-                        _ships[randShip].IndustrialPopulation--;
-                        lost.Value["Industrial"]++;
-                        nTroops--;
-                    }
-                }
-                else
-                {
-                    _ships[randShip].SpaceAgePopulation--;
-                    lost.Value["Space Age"]++;
-                    nTroops--;
                 }
             }
         }
         else // tile won.
         {
-            this.Ships.Clear();
             // before changing local population, kill all the soldiers in the fleet that lost
             foreach (var ship in _ships)
             {
-                ship.PrimitivePopulation = ship.SpaceAgePopulation = ship.IndustrialPopulation = 0;
-            }
-
-            int primPop = 0, indPop = 0, spacePop = 0;
-
-            // tile won, kill off soldiers lost in battle
-            if(enemy.Team == Team.Indigenous)
-            {
-                switch(enemy.PopulationType)
+                foreach(var type in types)
                 {
-                    case Inhabitance.Primitive:
-                        primPop = enemy.Population;
-                        break;
-                    case Inhabitance.Industrial:
-                        indPop = enemy.Population;
-                        break;
-                    case Inhabitance.SpaceAge:
-                        spacePop = enemy.Population;
-                        break;
+                    GameManager.Instance.Players[_team].RemoveSoldiers(type, ship.Population[type]);
+                    ship.Population[type] = 0;
                 }
             }
-            else if(enemy.Structure != null)
+
+            // tile won, kill off soldiers lost in battle
+            int nTroops = enemy.Population;
+            foreach (var type in types)
             {
-                primPop = enemy.Structure.PrimitivePopulation;
-                indPop = enemy.Structure.IndustrialPopulation;
-                spacePop = enemy.Structure.SpaceAgePopulation;
+                if(enemy.Structure != null)
+                    nTroops += enemy.Structure.Population[type];
+
+                nTroops += populationLoss[type];
             }
 
-            int nTroops = primPop + indPop + spacePop;
             float damage = Mathf.Floor(nTroops * (1.0f - winChance) * ((float)GameManager.Generator.NextDouble() * (1.25f - 0.75f) + 0.75f));
             while (damage >= 1.0f && nTroops > 0)
             {
                 var randSoldier = GameManager.Generator.Next(0, nTroops);
                 damage -= 1.0f;
                 float saveChance = (float)GameManager.Generator.NextDouble();
-                if(randSoldier < primPop)
+
+                for(int i = 0; i < types.Count; i++)
                 {
-                    if(saveChance >= 0.2f)
+                    if(randSoldier < populationLoss[types[i]] && saveChance >= 0.3f - i * 0.1f)
                     {
                         nTroops--;
-                        primPop--;
-                        lost.Value["Primitive"]++;
+                        populationLoss[types[i]]++;
                     }
-                }
-                else if(randSoldier < indPop)
-                {
-                    if (saveChance >= 0.1f)
-                    {
-                        nTroops--;
-                        indPop--;
-                        lost.Value["Industrial"]++;
-                    }
-                }
-                else
-                {
-                    nTroops--;
-                    spacePop--;
-                    lost.Value["Space Age"]++;
                 }
             }
 
-            if (enemy.Team == Team.Indigenous)
-            {
-                enemy.Population = nTroops;
-                if (nTroops == 0)
-                    enemy.Relinquish();
-            }
+            if (nTroops == 0)
+                enemy.Relinquish();
             else
             {
-                enemy.Structure.PrimitivePopulation = primPop;
-                enemy.Structure.IndustrialPopulation = indPop;
-                enemy.Structure.SpaceAgePopulation = spacePop;
+                foreach(var type in types)
+                {
+                    if(type == enemy.PopulationType)
+                    {
+                        var min = Math.Min(populationLoss[type], enemy.Population);
+                        enemy.Population -= min;
+                        populationLoss[type] -= min;
+                    }
+
+                    if (enemy.Structure != null)
+                        enemy.Structure.Population[type] -= populationLoss[type];
+                }
             }
         }
 
-        if (lost.Value["Primitive"] == 0)
-            lost.Value.Remove("Primitive");
-        if (lost.Value["Industrial"] == 0)
-            lost.Value.Remove("Industrial");
-        if (lost.Value["Space Age"] == 0)
-            lost.Value.Remove("Space Age");
+        foreach(var type in types)
+        {
+            if (populationLoss[type] > 0)
+                lost.Value.Add(type.ToString(), populationLoss[type]);
+
+            if (winner) GameManager.Instance.Players[_team].RemoveSoldiers(type, populationLoss[type]);
+            else GameManager.Instance.Players[enemy.Team].RemoveSoldiers(type, populationLoss[type]);
+        }
 
         return lost;
     }
