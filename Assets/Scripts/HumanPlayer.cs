@@ -129,6 +129,9 @@ public class HumanPlayer : Player
                     break;
             }
         }
+
+        if(_controlledSquad != null && _controlledSquad.Sector != null)
+            GUIManager.Instance.UpdateMinimapPosition(_controlledSquad.transform.position, _controlledSquad.Sector);
     }
 
     private void UpdateSelectedPlanet()

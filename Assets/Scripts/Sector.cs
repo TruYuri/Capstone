@@ -11,14 +11,14 @@ public class Sector : MonoBehaviour
     private const string PLANET_NAME = "AssignedName";
 
     // Adjoining sectors
-    private Vector2 _gridPos;
+    private KeyValuePair<int, int> _gridPos;
     private Tile[,] _tileGrid = new Tile[18, 18];
     private Dictionary<string, int> _planetCounts = new Dictionary<string, int>();
     private Dictionary<Team, Dictionary<string, List<Structure>>> _deployedSpaceStructures;
 
-    public Vector2 GridPosition { get { return _gridPos; } }
+    public KeyValuePair<int, int> GridPosition { get { return _gridPos; } }
 
-    public void Init(Vector2 gridPos)
+    public void Init(KeyValuePair<int, int> gridPos)
     {
         _gridPos = gridPos;
         _deployedSpaceStructures = new Dictionary<Team, Dictionary<string, List<Structure>>>();
@@ -77,7 +77,7 @@ public class Sector : MonoBehaviour
             _planetCounts[type]++;
 
             suffix = "-"
-            + Math.Abs(_gridPos.x).ToString() + Math.Abs(_gridPos.y).ToString()
+            + Math.Abs(_gridPos.Key).ToString() + Math.Abs(_gridPos.Value).ToString()
             + PlanetSuffix(type, _planetCounts[type]);
         }
 
@@ -110,11 +110,11 @@ public class Sector : MonoBehaviour
 
         val += (char)('a' + count);
 
-        if (_gridPos.y >= 0 && _gridPos.x >= 0)
+        if (_gridPos.Key >= 0 && _gridPos.Value >= 0)
             val += "-q1";
-        else if (_gridPos.y < 0 && _gridPos.x >= 0)
+        else if (_gridPos.Key < 0 && _gridPos.Value >= 0)
             val += "-q2";
-        else if (_gridPos.y < 0 && _gridPos.x < 0)
+        else if (_gridPos.Key < 0 && _gridPos.Value < 0)
             val += "-q3";
         else
             val += "-q4";
@@ -139,12 +139,19 @@ public class Sector : MonoBehaviour
         });
     }
 
+    public List<Structure> GetSpaceStructures(Team team, string type)
+    {
+        if(_deployedSpaceStructures.ContainsKey(team) && _deployedSpaceStructures[team].ContainsKey(type))
+            return _deployedSpaceStructures[team][type];
+        return null;
+    }
+
     public void UnregisterSpaceStructure(Team team, Structure structure)
     {
         _deployedSpaceStructures[team][structure.Name].Remove(structure);
     }
 
-    public int GetRangeExtension(Team team, string type)
+    public int GetBestRangeExtension(Team team, string type)
     {
         if(_deployedSpaceStructures.ContainsKey(team) && _deployedSpaceStructures[team].ContainsKey(type) && _deployedSpaceStructures[team][type].Count > 0)
         {

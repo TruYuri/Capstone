@@ -26,8 +26,10 @@ public class MapManager : MonoBehaviour
     private const string PLANET_ORE_DETAIL = "Ore";
     private const string PLANET_OIL_DETAIL = "Oil";
     private const string PLANET_ASTERMINIUM_DETAIL = "Asterminium";
+    private const string MINIMAP_TILE_TEXTURE = "minimaptile";
 
     private static MapManager _instance;
+    private Texture2D _minimapTile;
     private Dictionary<string, float> _planetTypeSpawnTable;
     private Dictionary<string, float> _deploySpawnTable;
     private Dictionary<string, TextureAtlasDetails> _planetTextureTable;
@@ -36,6 +38,8 @@ public class MapManager : MonoBehaviour
     private Dictionary<string, Dictionary<string, string>> _planetSpawnDetails;
     private Texture2D _textureAtlas;
     private Dictionary<int, Dictionary<int, Sector>> _sectorMap;
+    private KeyValuePair<int, int> minMapSectors;
+    private KeyValuePair<int, int> maxMapSectors;
 
     public static MapManager Instance
     {
@@ -68,6 +72,9 @@ public class MapManager : MonoBehaviour
         _planetSpawnDetails = new Dictionary<string, Dictionary<string, string>>();
         _sectorMap = new Dictionary<int, Dictionary<int, Sector>>();
         _planetSpawnDetails = new Dictionary<string, Dictionary<string, string>>();
+        minMapSectors = new KeyValuePair<int, int>();
+        maxMapSectors = new KeyValuePair<int, int>();
+        _minimapTile = Resources.Load<Texture2D>(MINIMAP_TILE_TEXTURE);
 
         var parser = new INIParser(Application.dataPath + INI_PATH);
         var spawnTables = parser.ParseINI();
@@ -148,33 +155,117 @@ public class MapManager : MonoBehaviour
     {
     }
 
-    public void GenerateNewSectors(Vector3 realPosition, Vector2 gridPosition)
+    public void GenerateNewSectors(Vector3 realPosition, KeyValuePair<int, int> gridPosition)
     {
         var position = realPosition;
-        var v = (int)gridPosition.x;
-        var h = (int)gridPosition.y;
-
+        var v = gridPosition.Key;
+        var h = gridPosition.Value;
+        var gen = 0;
         if (Mathf.Abs(v) % 2 == 0) // even grid row
         {
-            GenerateSector(position + TOP_RIGHT_OFFSET, v + 1, h);
-            GenerateSector(position + RIGHT_OFFSET, v, h + 1);
-            GenerateSector(position + BOTTOM_RIGHT_OFFSET, v - 1, h);
-            GenerateSector(position + BOTTOM_LEFT_OFFSET, v - 1, h - 1);
-            GenerateSector(position + LEFT_OFFSET, v, h - 1);
-            GenerateSector(position + TOP_LEFT_OFFSET, v + 1, h - 1);
+            gen += GenerateSector(position + TOP_RIGHT_OFFSET, v + 1, h);
+            gen += GenerateSector(position + RIGHT_OFFSET, v, h + 1);
+            gen += GenerateSector(position + BOTTOM_RIGHT_OFFSET, v - 1, h);
+            gen += GenerateSector(position + BOTTOM_LEFT_OFFSET, v - 1, h - 1);
+            gen += GenerateSector(position + LEFT_OFFSET, v, h - 1);
+            gen += GenerateSector(position + TOP_LEFT_OFFSET, v + 1, h - 1);
         }
         else // odd row
         {
-            GenerateSector(position + TOP_RIGHT_OFFSET, v + 1, h + 1);
-            GenerateSector(position + RIGHT_OFFSET, v, h + 1);
-            GenerateSector(position + BOTTOM_RIGHT_OFFSET, v - 1, h + 1);
-            GenerateSector(position + BOTTOM_LEFT_OFFSET, v - 1, h);
-            GenerateSector(position + LEFT_OFFSET, v, h - 1);
-            GenerateSector(position + TOP_LEFT_OFFSET, v + 1, h);
+            gen += GenerateSector(position + TOP_RIGHT_OFFSET, v + 1, h + 1);
+            gen += GenerateSector(position + RIGHT_OFFSET, v, h + 1);
+            gen += GenerateSector(position + BOTTOM_RIGHT_OFFSET, v - 1, h + 1);
+            gen += GenerateSector(position + BOTTOM_LEFT_OFFSET, v - 1, h);
+            gen += GenerateSector(position + LEFT_OFFSET, v, h - 1);
+            gen += GenerateSector(position + TOP_LEFT_OFFSET, v + 1, h);
         }
+
+        if (gen == 0)
+            return;
+
+        var minimap = GenerateMap(_sectorMap);
+        GUIManager.Instance.UpdateMinimap(minimap);
     }
 
-    private void GenerateSector(Vector3 position, int vertical, int horizontal)
+    private Texture2D GenerateMap(Dictionary<int, Dictionary<int, Sector>> map)
+    {
+        // update minimap
+        var width = Math.Abs(maxMapSectors.Value - minMapSectors.Value + 1) * 64 + 64;
+        var height = Math.Abs(maxMapSectors.Key - minMapSectors.Key + 1) * 64 + 64;
+
+        // find nearest 192x256 multiple
+
+        var miniMap = new Texture2D(width, height);
+        miniMap.alphaIsTransparency = true;
+        var centerX = miniMap.width / 2;
+        var centerY = miniMap.height / 2;
+        var pixels = _minimapTile.GetPixels();
+        var color = pixels[32 * 64 + 32];
+        foreach (var vertical in _sectorMap)
+        {
+            foreach (var horizontal in vertical.Value)
+            {
+                // offset stuff
+                var even = Mathf.Abs(vertical.Key) % 2 == 0;
+                var paddingX = 0;
+                var paddingY = 0;
+                if (vertical.Key != 0)
+                    paddingY = (vertical.Key < 0 ? 1 : -1) * 15 * Math.Abs(vertical.Key);
+                paddingX = (horizontal.Key < 0 ? 1 : -1) * 6 * Math.Abs(horizontal.Key);
+                if (!even)
+                    paddingX -= 3;
+
+                var xoffset = even ? 0 : 32;
+                var yoffset = vertical.Key * 64;
+                var posX = centerX + horizontal.Key * 64 - 32 + xoffset + paddingX;
+                var posY = centerY + yoffset - 32 + paddingY;
+
+                // this is a major performance hog, need to redo
+                for (int y = 0; y < 64; y++)
+                {
+                    var yn = y * 64;
+                    for (int x = 0; x < 64; x++)
+                    {
+                        if (pixels[yn + x] == color)
+                            miniMap.SetPixel(posX + x, posY + y, color);
+                    }
+                }
+            }
+        }
+        // grab rectangle so the texture doesn't shrink/etc
+        miniMap.Apply();
+        return miniMap;
+    }
+
+    // return relative coordinates
+    public Vector2 GetMiniMapPosition(Texture2D map, Sector center, Vector3 position)
+    {
+        // center of map is center tile, so...
+        int v = center.GridPosition.Key;
+        int h = center.GridPosition.Value;
+
+        // get pixel coordinate first
+        var even = v % 2 == 0;
+        var centerX = map.width / 2;
+        var centerY = map.height / 2;
+        var paddingX = 0;
+        var paddingY = 0;
+
+        if (v != 0)
+            paddingY = (v < 0 ? 1 : -1) * 15 * Math.Abs(v);
+        paddingX = (v < 0 ? 1 : -1) * 6 * Math.Abs(v);
+        if (!even)
+            paddingX -= 3;
+
+        var xoffset = even ? 0 : 32;
+        var yoffset = v * 64;
+        var posX = centerX + h * 64 + xoffset + paddingX;
+        var posY = centerY + yoffset + paddingY;
+
+        return new Vector2(posX / (float)map.width, posY / (float)map.height);
+    }
+
+    private int GenerateSector(Vector3 position, int vertical, int horizontal)
     {
         if (!_sectorMap.ContainsKey(vertical))
             _sectorMap.Add(vertical, new Dictionary<int, Sector>());
@@ -184,9 +275,58 @@ public class MapManager : MonoBehaviour
             var sectorPrefab = Resources.Load<UnityEngine.Object>(SECTOR_PREFAB);
             var sector = Instantiate(sectorPrefab, position, Quaternion.Euler(-90f, 0, 0)) as GameObject;
             var component = sector.GetComponent<Sector>();
-            component.Init(new Vector2(vertical, horizontal));
+            component.Init(new KeyValuePair<int, int>(vertical, horizontal));
             _sectorMap[vertical].Add(horizontal, component);
+
+            if (vertical < minMapSectors.Key)
+                minMapSectors = new KeyValuePair<int, int>(vertical, minMapSectors.Value);
+            if (horizontal < minMapSectors.Value)
+                minMapSectors = new KeyValuePair<int,int>(minMapSectors.Key, horizontal);
+            if (vertical > maxMapSectors.Key)
+                maxMapSectors = new KeyValuePair<int, int>(vertical, maxMapSectors.Value);
+            if (horizontal > maxMapSectors.Value)
+                maxMapSectors = new KeyValuePair<int, int>(maxMapSectors.Key, horizontal);
+
+            return 1;
         }
+
+        return 0;
+    }
+
+    private HashSet<Sector> FindWarpsRecursive(Team team, int v, int h, int range)
+    {
+        HashSet<Sector> portals = new HashSet<Sector>();
+
+        if (range < 0)
+            return portals;
+
+        if (_sectorMap.ContainsKey(v) && _sectorMap[v].ContainsKey(h))
+        {
+            var ports = _sectorMap[v][h].GetSpaceStructures(team, "Warp Portal");
+            if(ports != null && ports.Count > 0)
+                portals.Add(_sectorMap[v][h]);
+        }
+
+        if(Math.Abs(v) % 2 == 0)
+        {
+            portals.UnionWith(FindWarpsRecursive(team, v + 1, h, range - 1));
+            portals.UnionWith(FindWarpsRecursive(team, v, h + 1, range - 1));
+            portals.UnionWith(FindWarpsRecursive(team, v - 1, h, range - 1));
+            portals.UnionWith(FindWarpsRecursive(team, v - 1, h - 1, range - 1));
+            portals.UnionWith(FindWarpsRecursive(team, v, h - 1, range - 1));
+            portals.UnionWith(FindWarpsRecursive(team, v + 1, h - 1, range - 1));
+        }
+        else
+        {
+            portals.UnionWith(FindWarpsRecursive(team, v + 1, h + 1, range - 1));
+            portals.UnionWith(FindWarpsRecursive(team, v, h + 1, range - 1));
+            portals.UnionWith(FindWarpsRecursive(team, v - 1, h + 1, range - 1));
+            portals.UnionWith(FindWarpsRecursive(team, v - 1, h, range - 1));
+            portals.UnionWith(FindWarpsRecursive(team, v, h - 1, range - 1));
+            portals.UnionWith(FindWarpsRecursive(team, v + 1, h, range - 1));
+        }
+
+        return portals;
     }
 
     private class AStarSectorNode
@@ -247,14 +387,9 @@ public class MapManager : MonoBehaviour
 
             var extension = 0;
             if (type != "" && MapManager.Instance.SectorMap.ContainsKey(x) && MapManager.Instance.SectorMap[x].ContainsKey(y))
-                extension = MapManager.Instance.SectorMap[x][y].GetRangeExtension(team, "Relay"); // if sector has a relay, extend range;
+                extension = MapManager.Instance.SectorMap[x][y].GetBestRangeExtension(team, "Relay"); // if sector has a relay, extend range;
             return new AStarSectorNode(list, g + 1, r - 1 + extension, team, type);
         }
-    }
-
-    private KeyValuePair<int, int> SectorGridToKVP(Sector sector)
-    {
-        return new KeyValuePair<int, int>((int)sector.GridPosition.x, (int)sector.GridPosition.y);
     }
 
     public List<KeyValuePair<int, int>> AStarSearch(Sector start, Sector goal, int startRange = 0, Team team = Team.Uninhabited, string type = "")
@@ -263,8 +398,8 @@ public class MapManager : MonoBehaviour
         var fringeSet = new Dictionary<KeyValuePair<int, int>, AStarSectorNode>();
         var explored = new HashSet<KeyValuePair<int, int>>();
 
-        var startPos = SectorGridToKVP(start);
-        var endpos = SectorGridToKVP(goal);
+        var startPos = start.GridPosition;
+        var endpos = goal.GridPosition;
 
         var initList = new List<KeyValuePair<int, int>>();
         initList.Add(startPos);

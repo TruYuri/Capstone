@@ -206,13 +206,14 @@ public class GUIManager : MonoBehaviour
         PopulateList<Tile>(HumanPlayer.Instance.Tiles, "TileList", ListingType.Info, null);
     }
 
-    public void SetUIElements(bool squad, bool battle, bool tile, bool manage, bool lists)
+    public void SetUIElements(bool squad, bool battle, bool tile, bool manage, bool lists, bool minimap)
     {
         _interface["SquadMenu"].gameObject.SetActive(squad);
         _interface["BattleMenu"].gameObject.SetActive(battle);
         _interface["PlanetInfo"].gameObject.SetActive(tile);
         _interface["ManageMenu"].gameObject.SetActive(manage);
         _interface["MenuControl"].gameObject.SetActive(lists);
+        _interface["MapInfo"].gameObject.SetActive(minimap);
     }
 
     public void ItemClicked(string data)
@@ -350,7 +351,7 @@ public class GUIManager : MonoBehaviour
 
     public void PopulateManageLists()
     {
-        SetUIElements(false, false, false, true, false);
+        SetUIElements(false, false, false, true, false, false);
         _indices["MainShipList"] = -1;
         ClearList("MainShipList");
 
@@ -425,7 +426,7 @@ public class GUIManager : MonoBehaviour
 
         _interface["SquadTeamIcon"].GetComponent<Image>().sprite = _icons[squad.Team.ToString()];
         _interface["SquadTeamName"].GetComponent<Text>().text = squad.name;
-        SetUIElements(true, false, false, false, true);
+        SetUIElements(true, false, false, false, true, true);
         SetSquadControls(squad);
 
         ReloadSquadList();
@@ -462,7 +463,7 @@ public class GUIManager : MonoBehaviour
             PopulateList<Ship>(buildList, "Constructables", ListingType.Build, tile.Structure.Resources);
         }
 
-        SetUIElements(true, false, true, false, true);
+        SetUIElements(true, false, true, false, true, true);
         SetSquadControls(squad);
     }
 
@@ -814,7 +815,7 @@ public class GUIManager : MonoBehaviour
 
         }
 
-        SetUIElements(false, true, false, false, false);
+        SetUIElements(false, true, false, false, false, false);
     }
 
     public void Battle()
@@ -878,7 +879,7 @@ public class GUIManager : MonoBehaviour
             }
         }
 
-        SetUIElements(false, false, false, false, false);
+        SetUIElements(false, false, false, false, false, false);
     }
 
     public void ContinueAfterBattle(bool win)
@@ -888,5 +889,35 @@ public class GUIManager : MonoBehaviour
         else
             _interface["BattleLost"].gameObject.SetActive(false);
         HumanPlayer.Instance.EndBattleConditions(win);
+    }
+
+    public void UpdateMinimap(Texture2D texture)
+    {
+        var image = _interface["Minimap"].GetComponent<RawImage>();
+        image.texture = texture;
+        
+        var centerx = texture.width / 2;
+        var centery = texture.height / 2;
+        image.uvRect = new Rect((centerx - 128) / (float)texture.width, (centery - 96) / (float)texture.height, 
+            256 / (float)texture.width, 192 / (float)texture.height);
+    }
+
+    public void UpdateMinimapPosition(Vector3 position, Sector sector)
+    {
+        var image = _interface["Minimap"].GetComponent<RawImage>();
+        var texture = image.texture;
+        var centerx = texture.width / 2;
+        var centery = texture.height / 2;
+        var mapPos = MapManager.Instance.GetMiniMapPosition(texture as Texture2D, sector, position);
+        
+        var left = mapPos.x - (128 / (float)texture.width);
+        if(left < 0f)
+            left = 0f;
+        var top = mapPos.y - (96 / (float)texture.height);
+        if (top < 0f)
+            top = 0f;
+
+        image.uvRect = new Rect(left, top,
+            256 / (float)texture.width, 192 / (float)texture.height);
     }
 }
