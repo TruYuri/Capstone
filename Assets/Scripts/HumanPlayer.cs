@@ -65,6 +65,7 @@ public class HumanPlayer : Player
         Camera.main.transform.LookAt(_commandShipSquad.transform);
         GUIManager.Instance.SetSquadList(false);
         GUIManager.Instance.SetTileList(false);
+        GUIManager.Instance.SetWarpList(false);
         GUIManager.Instance.SetScreen("MainUI");
     }
 

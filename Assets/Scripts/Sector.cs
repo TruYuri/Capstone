@@ -168,22 +168,22 @@ public class Sector : MonoBehaviour
     // Y:
     // Same, actually.
 
-    private Vector2 WorldToGridReal(Vector3 point)
+    private KeyValuePair<int, int> WorldToGridReal(Vector3 point)
     {
         var diff = point - this.transform.position;
-        float x = 0, y = 0;
+        int x = 0, y = 0;
         // round to nearest multiple of 10
         if (diff.x < 0.0f) // on the left
-            x = Mathf.Ceil(diff.x / 10.0f) * 10.0f;
+            x = Mathf.CeilToInt(diff.x / 10.0f) * 10;
         else
-            x = Mathf.Floor(diff.x / 10.0f) * 10.0f;
+            x = Mathf.FloorToInt(diff.x / 10.0f) * 10;
 
         if (diff.z < 0.0f) // on the left
-            y = Mathf.Ceil(diff.z / 10.0f) * 10.0f;
+            y = Mathf.CeilToInt(diff.z / 10.0f) * 10;
         else
-            y = Mathf.Floor(diff.z / 10.0f) * 10.0f;
+            y = Mathf.FloorToInt(diff.z / 10.0f) * 10;
 
-        return new Vector2(x, y);
+        return new KeyValuePair<int, int>(x, y);
     }
 
     public bool IsValidLocation(Vector3 pos)
@@ -209,15 +209,15 @@ public class Sector : MonoBehaviour
         var y = 0;
 
         // convert x to array position
-        if (diff.x == 0.0f)
-            x = diffreal.x < 0.0f ? 8 : 9;
+        if (diff.Key == 0)
+            x = diffreal.x < 0f ? 8 : 9;
         else
-            x = (diffreal.x < 0.0f ? 8 : 9) + (int)(diff.x / 10.0f);
+            x = (diffreal.x < 0f ? 8 : 9) + (int)(diff.Key / 10.0f);
 
-        if (diff.y == 0.0f)
-            y = diffreal.z < 0.0f ? 8 : 9;
+        if (diff.Value == 0)
+            y = diffreal.z < 0f ? 8 : 9;
         else
-            y = (diffreal.z < 0.0f ? 8 : 9) + (int)(diff.y / 10.0f);
+            y = (diffreal.z < 0f ? 8 : 9) + (int)(diff.Value / 10.0f);
 
         return new KeyValuePair<int, int>((int)(x + 0.5f), (int)(y + 0.5f));
     }
@@ -236,10 +236,11 @@ public class Sector : MonoBehaviour
 	
     public Tile CreateTileAtPosition(string type, Vector3 pos)
     {
+        var fixedPos = pos - this.transform.position;
         var relativePos = WorldToGridReal(pos);
         var gridPos = WorldToGridArray(pos);
-        var realPosition = new Vector3(relativePos.x, 0f, relativePos.y)
-            + new Vector3(relativePos.x >= 0 ? 5 : -5, 0.0f, relativePos.y >= 0 ? 5 : -5);
+        var realPosition = new Vector3(relativePos.Key, 0f, relativePos.Value)
+            + new Vector3(fixedPos.x >= 0 ? 5 : -5, 0.0f, fixedPos.z >= 0 ? 5 : -5);
 
         CreateTile(gridPos, realPosition, type);
         return _tileGrid[gridPos.Key, gridPos.Value];

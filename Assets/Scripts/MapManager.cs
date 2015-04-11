@@ -183,15 +183,35 @@ public class MapManager : MonoBehaviour
         if (gen == 0)
             return;
 
-        var minimap = GenerateMap(_sectorMap);
+        var minimap = GenerateMap(_sectorMap, new Dictionary<Sector,Color>());
         GUIManager.Instance.UpdateMinimap(minimap);
     }
 
-    private Texture2D GenerateMap(Dictionary<int, Dictionary<int, Sector>> map)
+    private KeyValuePair<int, int> GenerateCenter(int centerX, int centerY, int v, int h)
+    {
+        // offset stuff
+        var even = Mathf.Abs(v) % 2 == 0;
+        var paddingY = (v < 0 ? 1 : -1) * 15 * Math.Abs(v);
+        var paddingX = (h < 0 ? 1 : -1) * 6 * Math.Abs(h);
+        if (!even)
+            paddingX -= 3;
+
+        var xoffset = even ? 0 : 32;
+        var yoffset = v * 64;
+        var posX = centerX + h * 64 + xoffset + paddingX;
+        var posY = centerY + yoffset + paddingY;
+
+        return new KeyValuePair<int, int>(posX, posY);
+    }
+
+    public Texture2D GenerateMap(Dictionary<int, Dictionary<int, Sector>> map, Dictionary<Sector, Color> colors)
     {
         // update minimap
         var width = Math.Abs(maxMapSectors.Value - minMapSectors.Value + 1) * 64 + 64;
         var height = Math.Abs(maxMapSectors.Key - minMapSectors.Key + 1) * 64 + 64;
+
+        if (colors == null)
+            colors = new Dictionary<Sector, Color>();
 
         // find nearest 192x256 multiple
 
@@ -205,20 +225,13 @@ public class MapManager : MonoBehaviour
         {
             foreach (var horizontal in vertical.Value)
             {
-                // offset stuff
-                var even = Mathf.Abs(vertical.Key) % 2 == 0;
-                var paddingX = 0;
-                var paddingY = 0;
-                if (vertical.Key != 0)
-                    paddingY = (vertical.Key < 0 ? 1 : -1) * 15 * Math.Abs(vertical.Key);
-                paddingX = (horizontal.Key < 0 ? 1 : -1) * 6 * Math.Abs(horizontal.Key);
-                if (!even)
-                    paddingX -= 3;
+                var center = GenerateCenter(centerX, centerY, vertical.Key, horizontal.Key);
+                var posX = center.Key - 32;
+                var posY = center.Value - 32;
 
-                var xoffset = even ? 0 : 32;
-                var yoffset = vertical.Key * 64;
-                var posX = centerX + horizontal.Key * 64 - 32 + xoffset + paddingX;
-                var posY = centerY + yoffset - 32 + paddingY;
+                var c = color;
+                if (colors.ContainsKey(horizontal.Value))
+                    c = colors[horizontal.Value];
 
                 // this is a major performance hog, need to redo
                 for (int y = 0; y < 64; y++)
@@ -227,7 +240,7 @@ public class MapManager : MonoBehaviour
                     for (int x = 0; x < 64; x++)
                     {
                         if (pixels[yn + x] == color)
-                            miniMap.SetPixel(posX + x, posY + y, color);
+                            miniMap.SetPixel(posX + x, posY + y, c);
                     }
                 }
             }
@@ -238,31 +251,19 @@ public class MapManager : MonoBehaviour
     }
 
     // return relative coordinates
-    public Vector2 GetMiniMapPosition(Texture2D map, Sector center, Vector3 position)
+    public Vector2 GetMiniMapPosition(Texture2D map, Sector center, Vector3 pos)
     {
         // center of map is center tile, so...
         int v = center.GridPosition.Key;
         int h = center.GridPosition.Value;
-
-        // get pixel coordinate first
-        var even = v % 2 == 0;
         var centerX = map.width / 2;
         var centerY = map.height / 2;
-        var paddingX = 0;
-        var paddingY = 0;
 
-        if (v != 0)
-            paddingY = (v < 0 ? 1 : -1) * 15 * Math.Abs(v);
-        paddingX = (v < 0 ? 1 : -1) * 6 * Math.Abs(v);
-        if (!even)
-            paddingX -= 3;
+        var c = GenerateCenter(centerX, centerY, v, h);
 
-        var xoffset = even ? 0 : 32;
-        var yoffset = v * 64;
-        var posX = centerX + h * 64 + xoffset + paddingX;
-        var posY = centerY + yoffset + paddingY;
+        // positional math here
 
-        return new Vector2(posX / (float)map.width, posY / (float)map.height);
+        return new Vector2(c.Key / (float)map.width, c.Value / (float)map.height);
     }
 
     private int GenerateSector(Vector3 position, int vertical, int horizontal)
@@ -291,6 +292,22 @@ public class MapManager : MonoBehaviour
         }
 
         return 0;
+    }
+
+    public Dictionary<Structure, Sector> FindPortals(Team team, Structure portal, Sector start)
+    {
+        var sectors = FindWarpsRecursive(team, start.GridPosition.Key, start.GridPosition.Value, portal.Range);
+
+        var gates = new Dictionary<Structure, Sector>();
+        foreach(var p in sectors)
+        {
+            var ps = p.GetSpaceStructures(team, "Warp Portal");
+            foreach(var g in ps)
+            {
+                gates.Add(g, p);
+            }
+        }
+        return gates;
     }
 
     private HashSet<Sector> FindWarpsRecursive(Team team, int v, int h, int range)

@@ -55,7 +55,8 @@ public class GUIManager : MonoBehaviour
             { "AltShipList", -1 },
             { "SelectedShipList", -1 },
             { "SquadList", -1 },
-            { "TileList", -1 }
+            { "TileList", -1 },
+            { "WarpList", -1 }
         };
 
         _icons = new Dictionary<string, Sprite>()
@@ -168,7 +169,10 @@ public class GUIManager : MonoBehaviour
                 click = true;
             else if (type == "Invade" && squad.CalculateTroopPower() > 0f)
                 click = true;
-            else if (type == "Warp") ;
+            else if (type == "Warp")
+            {
+                click = true;
+            }
 
             deploy.interactable = click;
             manage.interactable = squad.Ships.Count > 0 || squad.Colliders.Count > 0;
@@ -247,6 +251,10 @@ public class GUIManager : MonoBehaviour
                 _indices[split[0]] = int.Parse(split[1]);
                 HumanPlayer.Instance.Control(HumanPlayer.Instance.Tiles[_indices[split[0]]].gameObject);
                 break;
+            case "WarpList":
+                _indices[split[0]] = int.Parse(split[1]);
+                SetWarpList(true);
+                break;
         }
     }
     
@@ -269,6 +277,7 @@ public class GUIManager : MonoBehaviour
             {
                 case "MainShipList":
                 case "SelectedShipList":
+                case "WarpList":
                     var i = int.Parse(split[1]);
                     var ship1 = HumanPlayer.Instance.Squad.Ships[i];
                     (ship1 as ListableObject).PopulateGeneralInfo(
@@ -311,6 +320,7 @@ public class GUIManager : MonoBehaviour
             case "MainShipList":
             case "SelectedShipList":
             case "AltShipList":
+            case "WarpList":
                 _interface["ShipInfo"].transform.position = Input.mousePosition;
                 break;
             case "Constructables":
@@ -333,6 +343,7 @@ public class GUIManager : MonoBehaviour
             case "MainShipList":
             case "SelectedShipList":
             case "AltShipList":
+            case "WarpList":
                 _interface["ShipInfo"].gameObject.SetActive(false);
                 break;
             case "Constructables":
@@ -481,9 +492,67 @@ public class GUIManager : MonoBehaviour
                 HumanPlayer.Instance.CreateBattleEvent(HumanPlayer.Instance.Squad, HumanPlayer.Instance.Squad.Tile);
                 break;
             case "Warp":
-
+                SetWarpList(true);
                 break;
         }
+    }
+
+    public void SetWarpList(bool enable)
+    {
+        _interface["WarpScreen"].gameObject.SetActive(enable);
+
+        if (!enable)
+            return;
+
+        ClearList("WarpList");
+        var sq = HumanPlayer.Instance.Squad;
+        // get list of sectors with warp portals
+        // get list of warp portals
+
+        var warpList = MapManager.Instance.FindPortals(HumanPlayer.Instance.Team, sq.Tile.Structure, sq.Sector);
+        warpList.Remove(sq.Tile.Structure);
+        var portals = warpList.Keys.ToList();
+        PopulateList<Structure>(portals, "WarpList", ListingType.Info, null);
+        var i = _indices["WarpList"];
+
+        var colors = new Dictionary<Sector, Color>()
+        {
+            { sq.Sector, Color.green },
+        };
+
+        if (i != -1 && warpList[portals[i]] == sq.Sector)
+            colors[sq.Sector] = Color.red;
+        else if (i != -1)
+            colors.Add(warpList[portals[i]], Color.red);
+
+        var image = _interface["WarpMap"].GetComponent<RawImage>();
+        var texture = MapManager.Instance.GenerateMap(MapManager.Instance.SectorMap, colors);
+
+        var center = MapManager.Instance.GetMiniMapPosition(texture, sq.Sector, sq.transform.position);     
+        var centerx = texture.width / 2;
+        var centery = texture.height / 2;
+
+        image.texture = texture;
+
+        var minw = Math.Min(texture.width, 390);
+        var miny = Math.Min(texture.height, 390);
+
+        var left = center.x - (minw / 2 / (float)texture.width);
+        if(left < 0f)
+            left = 0f;
+        var top = center.y - (miny / 2 / (float)texture.height);
+        if (top < 0f)
+            top = 0f;
+
+        _interface["WarpButton"].GetComponent<Button>().interactable = i != -1;
+        //image.uvRect = new Rect(left, top,
+        image.uvRect = new Rect(left, top,
+            minw / (float)texture.width, miny / (float)texture.height);
+    }
+
+    public void Warp()
+    {
+
     }
 
     private void UpdateTransferInterface(bool squads, bool squadShips, bool ships, bool other)
@@ -700,7 +769,8 @@ public class GUIManager : MonoBehaviour
     {
         var newString = Regex.Replace(data, "([a-z])([A-Z])", "$1 $2");
         var s = newString.Split(' ').ToList();
-        if (s[1] != "Left" || s[1] != "Right") { s[0] += s[1]; s.RemoveAt(1); }
+        if (s.Count >= 3 && s[1] != "Right" && s[1] != "Left") 
+            { s[0] += s[1]; s.RemoveAt(1); }
         var type = (Inhabitance)Enum.Parse(typeof(Inhabitance), s[0]);
 
         var from = HumanPlayer.Instance.Squad.Colliders[_indices["AltSquadList"]].Ships[_indices["AltShipList"]];
@@ -917,6 +987,7 @@ public class GUIManager : MonoBehaviour
         if (top < 0f)
             top = 0f;
 
+        //image.uvRect = new Rect(left, top,
         image.uvRect = new Rect(left, top,
             256 / (float)texture.width, 192 / (float)texture.height);
     }
