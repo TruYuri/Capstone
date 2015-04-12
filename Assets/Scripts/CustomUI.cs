@@ -24,7 +24,7 @@ public class CustomUI : MonoBehaviour
 
     public void ClickRetreat()
     {
-
+        GUIManager.Instance.Retreat();
     }
 
     public void ClickWarp()

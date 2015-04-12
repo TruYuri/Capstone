@@ -111,16 +111,12 @@ public class Player : MonoBehaviour
 
     public void CreateBuildEvent(string shipName)
     {
-        if (!_controlledIsWithinRange)
-            return;
         GameManager.Instance.AddEvent(new BuildEvent(_relayDistance + 1, this, _controlledTile, _shipDefinitions[shipName].Copy()));
         EndTurn();
     }
 
     public void CreateDeployEvent(int shipIndex)
     {
-        if (!_controlledIsWithinRange)
-            return;
         GameManager.Instance.AddEvent(new DeployEvent(_relayDistance, this, _controlledSquad.Ships[shipIndex] as Structure, _controlledSquad, _controlledSquad.Tile));
         EndTurn();
     }
@@ -132,25 +128,24 @@ public class Player : MonoBehaviour
 
     public void CreateUndeployEvent(Tile tile, bool destroy)
     {
-        if (!_controlledIsWithinRange)
-            return;
         GameManager.Instance.AddEvent(new UndeployEvent(_relayDistance, _team, tile, destroy));
         EndTurn();
     }
 
     public void CreateDiplomacyEvent()
     {
-        if (!_controlledIsWithinRange)
-            return;
         GameManager.Instance.AddEvent(new DiplomacyEvent(_relayDistance, this, _controlledTile));
         EndTurn();
     }
 
     public void CreateTravelEvent(Squad squad, Sector toSector, Vector3 dest, float speed)
     {
-        if (!_controlledIsWithinRange)
-            return;
         GameManager.Instance.AddEvent(new TravelEvent(_relayDistance, squad, toSector, dest, speed));
+    }
+
+    public void CreateRetreatEvent(Squad squad)
+    {
+        GameManager.Instance.AddEvent(new RetreatEvent(squad));
     }
 
     public void CreateCommandShipLostEvent(Squad squad)
@@ -160,8 +155,6 @@ public class Player : MonoBehaviour
 
     public void CreateWarpEvent(Tile exitGate, Squad squad)
     {
-        if (!_controlledIsWithinRange)
-            return;
         GameManager.Instance.AddEvent(new WarpEvent(_relayDistance, squad, exitGate));
     }
 

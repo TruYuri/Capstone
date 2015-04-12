@@ -38,6 +38,7 @@ public class BattleEvent : GameEvent
         {
             var WC = GameManager.Instance.Players[_squad1.Team].PrepareBattleConditions(_squad1, _squad2, _battleType);
             GameManager.Instance.Players[_squad1.Team].Battle(WC, _battleType, _squad1, _squad2);
+            GameManager.Instance.Paused = false;
         }
     }
 

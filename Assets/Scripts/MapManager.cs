@@ -187,6 +187,47 @@ public class MapManager : MonoBehaviour
         GUIManager.Instance.UpdateMinimap(minimap);
     }
 
+    public Sector FindNearestSector(Sector sector, Vector3 detail)
+    {
+        var v = sector.GridPosition.Key;
+        var h = sector.GridPosition.Value;
+
+        Sector closest = null;
+        float mgn = 0f;
+        List<Sector> secs = new List<Sector>();
+
+        if (Mathf.Abs(v) % 2 == 0) // even grid row
+        {
+            secs.Add(_sectorMap[v + 1][h]);
+            secs.Add(_sectorMap[v][h + 1]);
+            secs.Add(_sectorMap[v - 1][h]);
+            secs.Add(_sectorMap[v - 1][h - 1]);
+            secs.Add(_sectorMap[v][h - 1]);
+            secs.Add(_sectorMap[v + 1][h - 1]);
+        }
+        else // odd row
+        {
+            secs.Add(_sectorMap[v + 1][h + 1]);
+            secs.Add(_sectorMap[v][h + 1]);
+            secs.Add(_sectorMap[v - 1][h + 1]);
+            secs.Add(_sectorMap[v - 1][h]);
+            secs.Add(_sectorMap[v][h - 1]);
+            secs.Add(_sectorMap[v + 1][h]);
+        }
+
+        foreach(var sec in secs)
+        {
+            var dist = (detail - sec.transform.position).sqrMagnitude;
+            if(closest == null || dist < mgn)
+            {
+                closest = sec;
+                mgn = dist;
+            }
+        }
+
+        return closest;
+    }
+
     private KeyValuePair<int, int> GenerateCenter(int centerX, int centerY, int v, int h)
     {
         // offset stuff

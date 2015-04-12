@@ -156,7 +156,7 @@ public class GUIManager : MonoBehaviour
         var click = false;
         if (HumanPlayer.Instance.Team == squad.Team && HumanPlayer.Instance.ControlledIsWithinRange)
         {
-            if (type == "Deploy" && index != -1 && squad.OnMission == false) // deploy
+            if (type == "Deploy" && index != -1 && squad.Mission == null) // deploy
             {
                 if (tile != null && (squad.Ships[index].ShipProperties & ShipProperties.GroundStructure) > 0
                     && squad.Tile.IsInRange(squad) && (tile.Team == squad.Team || tile.Team == Team.Uninhabited) && tile.Structure == null) // existing planet
@@ -963,6 +963,14 @@ public class GUIManager : MonoBehaviour
         else
             _interface["BattleLost"].gameObject.SetActive(false);
         HumanPlayer.Instance.EndBattleConditions(win);
+    }
+
+
+    public void Retreat()
+    {
+        HumanPlayer.Instance.CreateRetreatEvent(HumanPlayer.Instance.Squad);
+        HumanPlayer.Instance.ReloadGameplayUI();
+        GameManager.Instance.Paused = false;
     }
 
     public void UpdateMinimap(Texture2D texture)

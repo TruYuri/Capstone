@@ -250,7 +250,10 @@ public class GameManager : MonoBehaviour
 
         var invalid = new List<GameEvent>();
         foreach (var item in _nextEventQueue)
-            item.Update();
+        {
+            if(item.AssertValid())
+                item.Update();
+        }
 
         int count = 0;
         foreach (var player in _players)

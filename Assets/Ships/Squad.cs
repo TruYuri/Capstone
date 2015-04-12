@@ -19,17 +19,17 @@ public class Squad : MonoBehaviour, ListableObject
     private bool _permanentSquad;
     private Sector _currentSector;
     private List<Squad> _collidingSquads = new List<Squad>();
-    private bool _onMission;
+    private GameEvent _mission;
 
     public Team Team
     {
         get { return _team; }
         set { _team = value; }
     }
-    public bool OnMission 
+    public GameEvent Mission 
     { 
-        get { return _onMission; }
-        set { _onMission = value; }
+        get { return _mission; }
+        set { _mission = value; }
     }
 
     public List<Ship> Ships { get { return _ships; } }

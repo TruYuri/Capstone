@@ -15,7 +15,7 @@ public class DeployEvent : GameEvent
         _squad = squad;
         _tile = tile;
         _player = player;
-        _squad.OnMission = true;
+        _squad.Mission = this;
     }
 
     public override void Progress()
@@ -26,7 +26,7 @@ public class DeployEvent : GameEvent
             return;
 
         _tile = _squad.Deploy(_structure, _tile);
-        _squad.OnMission = false;
+        _squad.Mission = null;
         if(_squad.Ships.Count == 0 && _tile.Squad != _squad)
         {
             if (HumanPlayer.Instance == _player)
@@ -39,7 +39,7 @@ public class DeployEvent : GameEvent
 
     public override bool AssertValid()
     {
-        if (_squad != null && _squad.gameObject != null)
+        if (_squad != null && _squad.gameObject != null && _squad.Mission == this)
         {
             if (_tile != null && (_tile.Team == _squad.Team || _tile.Team == Team.Uninhabited) && _squad.Ships.Contains(_structure))
                 return true;

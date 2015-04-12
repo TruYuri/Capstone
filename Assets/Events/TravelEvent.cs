@@ -25,7 +25,7 @@ public class TravelEvent : GameEvent
         _squad = squad;
         _destination = destination;
         _velocity = velocity;
-        _squad.OnMission = true;
+        _squad.Mission = this;
         _destinationSector = destinationSector;
         _destinationSectors = MapManager.Instance.AStarSearch(squad.Sector, destinationSector);
         _travelTurns = _destinationSectors.Count;
@@ -50,7 +50,7 @@ public class TravelEvent : GameEvent
         else if(_remainingTurns <= 0)
         {
             _squad.transform.position = _destination;
-            _squad.OnMission = false;
+            _squad.Mission = null;
             return;
         }
 
@@ -70,13 +70,20 @@ public class TravelEvent : GameEvent
         {
             var next = _destinationSectors[0];
 
-            // determine "corners"
-
+            // add final corner first
             _turnDestinations.Add((cur.transform.position + next.transform.position) / 2.0f);
-            //_turnDestinations.Add(next.transform.position);
+
+            // determine columns/rows to traverse to reach the corner - avoiding planets
+
+            
         }
-        else if(_destinationSectors.Count == 1)
+        else if (_destinationSectors.Count == 1)
+        {
+            // add final destination
             _turnDestinations.Add(_destination);
+
+            // determine coumns/rows to traverse to reach the destination - avoiding planets
+        }
     }
 
     public override void Update()
@@ -84,9 +91,12 @@ public class TravelEvent : GameEvent
         if (_travelTurns > 0 || _turnDestinations == null || _turnDestinations.Count == 0)
             return;
 
-        var dir = _turnDestinations[0] - _squad.transform.position;
+        var dirraw = _turnDestinations[0] - _squad.transform.position;
+        var dir = dirraw;
         dir.Normalize();
+
         _squad.transform.position += dir * _velocity * Time.deltaTime;
+        //_squad.transform.position = Vector3.Lerp(_squad.transform.position, _turnDestinations[0], Time.deltaTime);
 
         var diff = _squad.transform.position - _turnDestinations[0];
         if (diff.magnitude < 0.1f)
@@ -95,7 +105,7 @@ public class TravelEvent : GameEvent
 
     public override bool AssertValid()
     {
-        if (_squad != null && _squad.gameObject != null)
+        if (_squad != null && _squad.gameObject != null && _squad.Mission == this)
             return true;
         return false;
     }

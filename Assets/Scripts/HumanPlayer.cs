@@ -148,9 +148,22 @@ public class HumanPlayer : Player
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             EventSystem eventSystem = EventSystem.current;
             if (Physics.Raycast(ray, out hit) && !eventSystem.IsPointerOverGameObject()
-                && _controlledSquad.Team == _team && _controlledSquad.OnMission == false)
+                && _controlledSquad.Team == _team && _controlledSquad.Mission == null)
             {
-                CreateTravelEvent(_controlledSquad, hit.collider.gameObject.GetComponent<Sector>(), hit.point, 10.0f);
+                Sector sector = null;
+
+                switch(hit.collider.tag)
+                {
+                    case SQUAD_TAG:
+                        sector = hit.collider.GetComponent<Squad>().Sector;
+                        break;
+                    case SECTOR_TAG:
+                        sector = hit.collider.GetComponent<Sector>();
+                        break;
+                }
+
+                if(sector != null)
+                    CreateTravelEvent(_controlledSquad, sector, hit.point, 10.0f);
             }
             
         }

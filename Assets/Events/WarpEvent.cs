@@ -11,7 +11,7 @@ public class WarpEvent : GameEvent
     {
         _exitPortal = exit;
         _squad = squad;
-        _squad.OnMission = true;
+        _squad.Mission = this;
     }
 
     public override void Progress()
@@ -21,7 +21,7 @@ public class WarpEvent : GameEvent
         if (_remainingTurns > 0)
             return;
 
-        _squad.OnMission = false;
+        _squad.Mission = null;
         var r = _exitPortal.Radius;
         var val = GameManager.Generator.Next(2);
         var offset = val == 0 ? new Vector3(r, 0, 0) : new Vector3(0, 0, r);
@@ -30,7 +30,7 @@ public class WarpEvent : GameEvent
 
     public override bool AssertValid()
     {
-        if (_squad != null && _squad.gameObject != null && _exitPortal != null && _exitPortal.gameObject != null)
+        if (_squad != null && _squad.gameObject != null && _exitPortal != null && _exitPortal.gameObject != null && _squad.Mission == this)
         {
             return true;
         }
