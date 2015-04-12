@@ -357,7 +357,7 @@ public class Player : MonoBehaviour
         var component = squad.GetComponent<Squad>();
         component.Team = _team;
         _squads.Add(component);
-        component.Init(sector, name);
+        component.Init(_team, sector, name);
         return component;
     }
 

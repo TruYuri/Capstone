@@ -9,7 +9,7 @@ public class CommandShipLostEvent : GameEvent
         _player = player;
 
         if (squad != null)
-            squad.Init(squad.Sector, "Squad");
+            squad.Init(_player.Team, squad.Sector, "Squad");
     }
 
     public override void Progress()

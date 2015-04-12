@@ -27,9 +27,11 @@ public class MapManager : MonoBehaviour
     private const string PLANET_OIL_DETAIL = "Oil";
     private const string PLANET_ASTERMINIUM_DETAIL = "Asterminium";
     private const string MINIMAP_TILE_TEXTURE = "minimaptile";
+    private const string MINIMAP_HIGHLIGHT = "minimapHighlight";
 
     private static MapManager _instance;
-    private Texture2D _minimapTile;
+    private Color[] _minimapTile;
+    private Color[] _minimapHighlight;
     private Dictionary<string, float> _planetTypeSpawnTable;
     private Dictionary<string, float> _deploySpawnTable;
     private Dictionary<string, TextureAtlasDetails> _planetTextureTable;
@@ -74,7 +76,10 @@ public class MapManager : MonoBehaviour
         _planetSpawnDetails = new Dictionary<string, Dictionary<string, string>>();
         minMapSectors = new KeyValuePair<int, int>();
         maxMapSectors = new KeyValuePair<int, int>();
-        _minimapTile = Resources.Load<Texture2D>(MINIMAP_TILE_TEXTURE);
+        var tex = Resources.Load<Texture2D>(MINIMAP_TILE_TEXTURE);
+        _minimapTile = tex.GetPixels();
+        tex = Resources.Load<Texture2D>(MINIMAP_HIGHLIGHT);
+        _minimapHighlight = tex.GetPixels();
 
         var parser = new INIParser(Application.dataPath + INI_PATH);
         var spawnTables = parser.ParseINI();
@@ -182,9 +187,6 @@ public class MapManager : MonoBehaviour
 
         if (gen == 0)
             return;
-
-        var minimap = GenerateMap(_sectorMap, new Dictionary<Sector,Color>());
-        GUIManager.Instance.UpdateMinimap(minimap);
     }
 
     public Sector FindNearestSector(Sector sector, Vector3 detail)
@@ -245,15 +247,15 @@ public class MapManager : MonoBehaviour
         return new KeyValuePair<int, int>(posX, posY);
     }
 
-    public Texture2D GenerateMap(Dictionary<int, Dictionary<int, Sector>> map, Dictionary<Sector, Color> specialColors)
+    public Texture2D GenerateMap(Dictionary<Sector, Color> highlights)
     {
         // update minimap
         // generate map so it'll always be able to center it on minimap.
         var width = Math.Abs(maxMapSectors.Value - minMapSectors.Value + 1) * 64 + 64;
         var height = Math.Abs(maxMapSectors.Key - minMapSectors.Key + 1) * 64 + 64;
 
-        if (specialColors == null)
-            specialColors = new Dictionary<Sector, Color>();
+        if (highlights == null)
+            highlights = new Dictionary<Sector, Color>();
 
         // find nearest 192x256 multiple
 
@@ -261,8 +263,7 @@ public class MapManager : MonoBehaviour
         miniMap.alphaIsTransparency = true;
         var centerX = miniMap.width / 2;
         var centerY = miniMap.height / 2;
-        var pixels = _minimapTile.GetPixels();
-        var color = pixels[32 * 64 + 32];
+        var color = _minimapTile[32 * 64 + 32];
         foreach (var vertical in _sectorMap)
         {
             foreach (var horizontal in vertical.Value)
@@ -271,9 +272,8 @@ public class MapManager : MonoBehaviour
                 var posX = center.Key - 32;
                 var posY = center.Value - 32;
 
+                var pixels = _minimapTile;
                 var c = GameManager.Instance.PlayerColors[horizontal.Value.GetOwner()];
-                if (specialColors.ContainsKey(horizontal.Value))
-                    c = specialColors[horizontal.Value];
 
                 // this is a major performance hog, need to redo
                 for (int y = 0; y < 64; y++)
@@ -283,6 +283,22 @@ public class MapManager : MonoBehaviour
                     {
                         if (pixels[yn + x] == color)
                             miniMap.SetPixel(posX + x, posY + y, c);
+                    }
+                }
+
+                if (highlights.ContainsKey(horizontal.Value))
+                {
+                    c = highlights[horizontal.Value];
+                    pixels = _minimapHighlight;
+
+                    for (int y = 0; y < 64; y++)
+                    {
+                        var yn = y * 64;
+                        for (int x = 0; x < 64; x++)
+                        {
+                            if (pixels[yn + x] == color)
+                                miniMap.SetPixel(posX + x, posY + y, c);
+                        }
                     }
                 }
             }

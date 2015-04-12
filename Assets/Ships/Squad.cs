@@ -42,7 +42,7 @@ public class Squad : MonoBehaviour, ListableObject
     {
 	}
 
-    public void Init(Sector sector, string name)
+    public void Init(Team team, Sector sector, string name)
     {
         var tile = this.GetComponent<Tile>();
         if (tile != null)
@@ -51,8 +51,12 @@ public class Squad : MonoBehaviour, ListableObject
             _inTileRange = _permanentSquad = true;
         }
 
+        _team = team;
         _currentSector = sector;
         this.name = name;
+
+        if(_currentTile == null)
+            this.GetComponent<MeshRenderer>().material.color = GameManager.Instance.PlayerColors[_team];
     }
 
     // Update is called once per frame
@@ -133,12 +137,15 @@ public class Squad : MonoBehaviour, ListableObject
             if (sector != null && _currentSector != sector)
             {
                 _currentSector = col.collider.gameObject.GetComponent<Sector>();
-
-                if (_team == HumanPlayer.Instance.Team)
+                var human = HumanPlayer.Instance;
+                if (_team == human.Team)
                 {
-                    if(!HumanPlayer.Instance.ExploredSectors.ContainsKey(_currentSector))
-                        HumanPlayer.Instance.ExploredSectors.Add(_currentSector, true);
+                    if(!human.ExploredSectors.ContainsKey(_currentSector))
+                        human.ExploredSectors.Add(_currentSector, true);
                     _currentSector.GenerateNewSectors();
+
+                    if(human.Squad == this)
+                        human.Control(this.gameObject);
                 }
             }
         }

@@ -527,16 +527,16 @@ public class GUIManager : MonoBehaviour
 
         var colors = new Dictionary<Sector, Color>()
         {
-            { sq.Sector, Color.green },
+            { sq.Sector, Color.black },
         };
 
         if (i != -1 && warpList[portals[i]] == sq.Sector)
             colors[sq.Sector] = Color.red;
         else if (i != -1)
-            colors.Add(warpList[portals[i]], Color.red);
+            colors.Add(warpList[portals[i]], Color.magenta);
 
         var image = _interface["WarpMap"].GetComponent<RawImage>();
-        var texture = MapManager.Instance.GenerateMap(MapManager.Instance.SectorMap, colors);
+        var texture = MapManager.Instance.GenerateMap(colors);
 
         var center = MapManager.Instance.GetMiniMapPosition(texture, sq.Sector, sq.transform.position);     
         var centerx = texture.width / 2;

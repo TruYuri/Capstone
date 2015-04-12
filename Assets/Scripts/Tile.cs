@@ -52,7 +52,7 @@ public class Tile : MonoBehaviour, ListableObject
         _name = name;
         _planetType = type;
         _squad = this.GetComponent<Squad>();
-        _squad.Init(sector, _name);
+        _squad.Init(Team.Uninhabited, sector, _name);
         _diplomacy = new Dictionary<global::Team, bool>();
         transform.SetParent(sector.transform);
     }
