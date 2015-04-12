@@ -23,8 +23,10 @@ public class Player : MonoBehaviour
     protected int _numResearchStations;
     protected ResearchTree _militaryTree;
     protected ResearchTree _scienceTree;
+
+    // these variables control messaging and command range
     protected bool _controlledIsWithinRange;
-    private int _relayDistance;
+    protected int _relayDistance;
 
     public Team Team { get { return _team; } }
     public List<Tile> Tiles { get { return _tiles; } }
@@ -148,12 +150,19 @@ public class Player : MonoBehaviour
     {
         if (!_controlledIsWithinRange)
             return;
-        GameManager.Instance.AddEvent(new TravelEvent(1, squad, toSector, dest, speed));
+        GameManager.Instance.AddEvent(new TravelEvent(_relayDistance, squad, toSector, dest, speed));
     }
 
     public void CreateCommandShipLostEvent(Squad squad)
     {
         GameManager.Instance.AddEvent(new CommandShipLostEvent(squad, this));
+    }
+
+    public void CreateWarpEvent(Tile exitGate, Squad squad)
+    {
+        if (!_controlledIsWithinRange)
+            return;
+        GameManager.Instance.AddEvent(new WarpEvent(_relayDistance, squad, exitGate));
     }
 
     public void EndTurn()

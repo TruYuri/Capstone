@@ -29,7 +29,7 @@ public class CustomUI : MonoBehaviour
 
     public void ClickWarp()
     {
-
+        GUIManager.Instance.Warp();
     }
 
     public void SetScreen()

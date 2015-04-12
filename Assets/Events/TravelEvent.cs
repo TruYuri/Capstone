@@ -14,7 +14,7 @@ public class TravelEvent : GameEvent
     private Vector3 _destination;
     private float _velocity;
     private Sector _destinationSector;
-    private List<KeyValuePair<int, int>> _destinationSectors;
+    private List<Sector> _destinationSectors;
     private List<Vector3> _turnDestinations;
     private int _travelTurns;
 
@@ -43,7 +43,7 @@ public class TravelEvent : GameEvent
 
         if(_remainingTurns <= 0 && _travelTurns > 0) // swap to travelling
         {
-            _remainingTurns = _travelTurns - 1;
+            _remainingTurns = _travelTurns;
             _travelTurns = 0;
             _stage = GameEventStage.Continue;
         }
@@ -59,15 +59,23 @@ public class TravelEvent : GameEvent
 
         _turnDestinations = new List<Vector3>();
 
-        if(_destinationSectors.Count > 1)
-            _destinationSectors.RemoveAt(0);
-
+        Sector cur = null;
         if (_destinationSectors.Count > 1)
         {
-            var next = _destinationSectors[0];
-            _turnDestinations.Add(MapManager.Instance.SectorMap[next.Key][next.Value].transform.position);
+            cur = _destinationSectors[0];
+            _destinationSectors.RemoveAt(0);
         }
-        else
+
+        if (_destinationSectors.Count >= 1 && cur != null)
+        {
+            var next = _destinationSectors[0];
+
+            // determine "corners"
+
+            _turnDestinations.Add((cur.transform.position + next.transform.position) / 2.0f);
+            //_turnDestinations.Add(next.transform.position);
+        }
+        else if(_destinationSectors.Count == 1)
             _turnDestinations.Add(_destination);
     }
 

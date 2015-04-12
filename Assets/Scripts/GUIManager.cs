@@ -497,6 +497,19 @@ public class GUIManager : MonoBehaviour
         }
     }
 
+    public void Warp()
+    {
+        var sq = HumanPlayer.Instance.Squad;
+        var warpList = MapManager.Instance.FindPortals(HumanPlayer.Instance.Team, sq.Tile.Structure, sq.Sector);
+        warpList.Remove(sq.Tile.Structure);
+        var portals = warpList.Keys.ToList();
+
+        HumanPlayer.Instance.CreateWarpEvent(portals[_indices["WarpList"]].Tile, sq);
+
+        GUIManager.Instance.SetWarpList(false);
+        HumanPlayer.Instance.ReloadGameplayUI();
+    }
+
     public void SetWarpList(bool enable)
     {
         _interface["WarpScreen"].gameObject.SetActive(enable);
@@ -506,9 +519,6 @@ public class GUIManager : MonoBehaviour
 
         ClearList("WarpList");
         var sq = HumanPlayer.Instance.Squad;
-        // get list of sectors with warp portals
-        // get list of warp portals
-
         var warpList = MapManager.Instance.FindPortals(HumanPlayer.Instance.Team, sq.Tile.Structure, sq.Sector);
         warpList.Remove(sq.Tile.Structure);
         var portals = warpList.Keys.ToList();
@@ -545,14 +555,8 @@ public class GUIManager : MonoBehaviour
             top = 0f;
 
         _interface["WarpButton"].GetComponent<Button>().interactable = i != -1;
-        //image.uvRect = new Rect(left, top,
         image.uvRect = new Rect(left, top,
             minw / (float)texture.width, miny / (float)texture.height);
-    }
-
-    public void Warp()
-    {
-
     }
 
     private void UpdateTransferInterface(bool squads, bool squadShips, bool ships, bool other)

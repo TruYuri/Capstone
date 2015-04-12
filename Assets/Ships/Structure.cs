@@ -14,6 +14,7 @@ public class Structure : Ship, ListableObject
     private int swapPopulation;
     private int swapCapacity;
     private ResourceGatherType types;
+    private Tile tile;
 
     public float Defense 
     { 
@@ -36,6 +37,12 @@ public class Structure : Ship, ListableObject
     {
         get { return range; }
         set { range = value; }
+    }
+
+    public Tile Tile
+    {
+        get { return tile; }
+        set { tile = value; }
     }
 
     public List<string> Constructables { get { return constructables; } }
@@ -106,6 +113,7 @@ public class Structure : Ship, ListableObject
         resourceCapacity = 99999;
         swapCapacity = resourceCapacity;
         isDeployed = true;
+        this.tile = tile;
     }
 
     public void Undeploy(Tile tile)
@@ -123,6 +131,7 @@ public class Structure : Ship, ListableObject
             { Inhabitance.SpaceAge, 0 }
         };
         isDeployed = false;
+        this.tile = null;
     }
 
     public void PopulateStructurePanel(GameObject list)

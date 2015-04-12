@@ -207,6 +207,7 @@ public class MapManager : MonoBehaviour
     public Texture2D GenerateMap(Dictionary<int, Dictionary<int, Sector>> map, Dictionary<Sector, Color> colors)
     {
         // update minimap
+        // generate map so it'll always be able to center it on minimap.
         var width = Math.Abs(maxMapSectors.Value - minMapSectors.Value + 1) * 64 + 64;
         var height = Math.Abs(maxMapSectors.Key - minMapSectors.Key + 1) * 64 + 64;
 
@@ -409,7 +410,7 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    public List<KeyValuePair<int, int>> AStarSearch(Sector start, Sector goal, int startRange = 0, Team team = Team.Uninhabited, string type = "")
+    public List<Sector> AStarSearch(Sector start, Sector goal, int startRange = 0, Team team = Team.Uninhabited, string type = "")
     {
         var fringe = new List<AStarSectorNode>();
         var fringeSet = new Dictionary<KeyValuePair<int, int>, AStarSectorNode>();
@@ -431,7 +432,12 @@ public class MapManager : MonoBehaviour
 
             var last = cur.sectorPath[cur.sectorPath.Count - 1];
             if (last.Key == endpos.Key && last.Value == endpos.Value)
-                return cur.sectorPath;
+            {
+                var sectors = new List<Sector>();
+                for (int i = 0; i < cur.sectorPath.Count; i++)
+                    sectors.Add(_sectorMap[cur.sectorPath[i].Key][cur.sectorPath[i].Value]);
+                return sectors;
+            }
 
             fringe.RemoveAt(0);
             fringeSet.Remove(last);

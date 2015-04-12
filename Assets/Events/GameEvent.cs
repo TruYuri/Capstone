@@ -18,7 +18,7 @@ public class GameEvent
 	public virtual void Progress () 
     {
         _remainingTurns--;
-        _stage = (_remainingTurns == 0 ? GameEventStage.End : GameEventStage.Continue);
+        _stage = (_remainingTurns <= 0 ? GameEventStage.End : GameEventStage.Continue);
 	}
 
     // progress() runs first, then Update should run without ever progressing anything. This is for, say, cosmetic stuff.
