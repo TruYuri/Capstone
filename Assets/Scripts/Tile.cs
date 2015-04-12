@@ -147,6 +147,9 @@ public class Tile : MonoBehaviour, ListableObject
                 _team = Team.Indigenous;
                 _squad.Team = Team.Indigenous;
 
+                if (!GameManager.Instance.Players.ContainsKey(_team))
+                    GameManager.Instance.AddAIPlayer(_team);
+                GameManager.Instance.Players[_team].ClaimTile(this);
                 // generate random defenses if space age
             }
         }
@@ -166,15 +169,13 @@ public class Tile : MonoBehaviour, ListableObject
         }
 	}
 
-    public void Relinquish()
-    {
-        GameManager.Instance.Players[_team].Tiles.Remove(this);
-    }
-
     public void Claim(Team team)
     {
+        if (_team != Team.Uninhabited)
+            GameManager.Instance.Players[_team].RelinquishTile(this);
+
         _team = team;
-        GameManager.Instance.Players[_team].Tiles.Add(this);
+        GameManager.Instance.Players[_team].ClaimTile(this);
         _squad.Team = _team;
 
         var teams = _diplomacy.Keys.ToList();
@@ -248,7 +249,7 @@ public class Tile : MonoBehaviour, ListableObject
         };
         
         power += _population * bonuses[_planetInhabitance];
-        if (_structure == null)
+        if (_structure != null)
         {
             foreach(var bonus in bonuses)
                 power += _structure.Population[bonus.Key] * bonus.Value;

@@ -15,13 +15,22 @@ public class Sector : MonoBehaviour
     private Tile[,] _tileGrid = new Tile[18, 18];
     private Dictionary<string, int> _planetCounts = new Dictionary<string, int>();
     private Dictionary<Team, Dictionary<string, List<Structure>>> _deployedSpaceStructures;
+    private Dictionary<Team, int> _ownershipCounts;
 
     public KeyValuePair<int, int> GridPosition { get { return _gridPos; } }
+    public Dictionary<Team, int> Ownership { get { return _ownershipCounts; } }
 
     public void Init(KeyValuePair<int, int> gridPos)
     {
         _gridPos = gridPos;
         _deployedSpaceStructures = new Dictionary<Team, Dictionary<string, List<Structure>>>();
+        _ownershipCounts = new Dictionary<Team, int>()
+        {
+            { Team.Indigenous, 0 },
+            { Team.Kharkyr, 0 },
+            { Team.Plinthen, 0 },
+            { Team.Union, 0 }
+        };
     }
 
 	void Start () 
@@ -251,6 +260,26 @@ public class Sector : MonoBehaviour
         var grid = WorldToGridArray(tile.transform.position);
         _tileGrid[grid.Key, grid.Value] = null;
         GameObject.Destroy(tile);
+    }
+
+    public Team GetOwner()
+    {
+        Team owner = Team.Uninhabited;
+
+        if (!HumanPlayer.Instance.ExploredSectors.ContainsKey(this))
+            return owner;
+
+        int n = 0;
+        foreach(var team in Ownership)
+        {
+            if(team.Value > n)
+            {
+                owner = team.Key;
+                n = team.Value;
+            }
+        }
+
+        return owner;
     }
 
 	// Update is called once per frame

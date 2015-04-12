@@ -133,7 +133,13 @@ public class Squad : MonoBehaviour, ListableObject
             if (sector != null && _currentSector != sector)
             {
                 _currentSector = col.collider.gameObject.GetComponent<Sector>();
-                _currentSector.GenerateNewSectors();
+
+                if (_team == HumanPlayer.Instance.Team)
+                {
+                    if(!HumanPlayer.Instance.ExploredSectors.ContainsKey(_currentSector))
+                        HumanPlayer.Instance.ExploredSectors.Add(_currentSector, true);
+                    _currentSector.GenerateNewSectors();
+                }
             }
         }
 
@@ -369,22 +375,17 @@ public class Squad : MonoBehaviour, ListableObject
                 }
             }
 
-            if (nTroops == 0)
-                enemy.Relinquish();
-            else
+            foreach (var type in types)
             {
-                foreach(var type in types)
+                if (type == enemy.PopulationType)
                 {
-                    if(type == enemy.PopulationType)
-                    {
-                        var min = Math.Min(populationLoss[type], enemy.Population);
-                        enemy.Population -= min;
-                        populationLoss[type] -= min;
-                    }
-
-                    if (enemy.Structure != null)
-                        enemy.Structure.Population[type] -= populationLoss[type];
+                    var min = Math.Min(populationLoss[type], enemy.Population);
+                    enemy.Population -= min;
+                    populationLoss[type] -= min;
                 }
+
+                if (enemy.Structure != null)
+                    enemy.Structure.Population[type] -= populationLoss[type];
             }
         }
 

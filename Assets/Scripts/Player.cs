@@ -257,17 +257,13 @@ public class Player : MonoBehaviour
             // do nothing / undeploy as necessary
             if (win.Key == _team && et != null)
             {
-                et.Relinquish();
                 et.Claim(_team);
                 GameManager.Instance.Players[et.Team].CreateUndeployEvent(et, true);
             }
             else if (win.Key == enemy.Team && pt != null)
             {
-                pt.Relinquish();
                 pt.Claim(enemy.Team);
                 GameManager.Instance.Players[pt.Team].CreateUndeployEvent(pt, true);
-                var type = pt.Undeploy(true);
-                pt.Claim(enemy.Team);
             }
 
             winner = new KeyValuePair<KeyValuePair<Team, BattleType>, Dictionary<string, int>>
@@ -373,6 +369,18 @@ public class Player : MonoBehaviour
         _commandShipSquad.Ships.Add(_commandShip = _shipDefinitions["Command Ship"].Copy());
         _shipRegistry[_commandShip.Name].Add(_commandShip);
         Control(_commandShipSquad.gameObject);
+    }
+
+    public void ClaimTile(Tile tile)
+    {
+        _tiles.Add(tile);
+        tile.transform.parent.GetComponent<Sector>().Ownership[tile.Team]++;
+    }
+
+    public void RelinquishTile(Tile tile)
+    {
+        _tiles.Remove(tile);
+        tile.transform.parent.GetComponent<Sector>().Ownership[tile.Team]--;
     }
 
     public Ship AddShip(Squad squad, string name)

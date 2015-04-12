@@ -15,17 +15,20 @@ public class HumanPlayer : Player
     private readonly Vector3 CAMERA_OFFSET = new Vector3(0, 20, -13);
 
     private Vector3 _currentCameraDistance;
+    private Dictionary<Sector, bool> _exploredSectors;
+
     public static HumanPlayer Instance { get { return _instance; } } // move this to a GameManager registry!
     public Squad Squad { get { return _controlledSquad; } }
     public Tile Tile { get { return _controlledTile; } }
+    public Dictionary<Sector, bool> ExploredSectors { get { return _exploredSectors; } }
 
     public override void Init(Team team)
     {
         _instance = this;
 
         base.Init(team);
-        _currentCameraDistance = (_commandShipSquad.transform.position + CAMERA_OFFSET) - _commandShipSquad.transform.position; 
-
+        _currentCameraDistance = (_commandShipSquad.transform.position + CAMERA_OFFSET) - _commandShipSquad.transform.position;
+        _exploredSectors = new Dictionary<Sector, bool>();
         // create command ship, look at it, control it 
         var squad = CreateNewSquad(new Vector3(0, 0, 10.5f), null);
         AddShip(squad, "Base");
@@ -71,6 +74,10 @@ public class HumanPlayer : Player
 
     void Start()
     {
+        // claim a starting tile
+
+
+
     }
 
     void Update()

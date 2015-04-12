@@ -245,15 +245,15 @@ public class MapManager : MonoBehaviour
         return new KeyValuePair<int, int>(posX, posY);
     }
 
-    public Texture2D GenerateMap(Dictionary<int, Dictionary<int, Sector>> map, Dictionary<Sector, Color> colors)
+    public Texture2D GenerateMap(Dictionary<int, Dictionary<int, Sector>> map, Dictionary<Sector, Color> specialColors)
     {
         // update minimap
         // generate map so it'll always be able to center it on minimap.
         var width = Math.Abs(maxMapSectors.Value - minMapSectors.Value + 1) * 64 + 64;
         var height = Math.Abs(maxMapSectors.Key - minMapSectors.Key + 1) * 64 + 64;
 
-        if (colors == null)
-            colors = new Dictionary<Sector, Color>();
+        if (specialColors == null)
+            specialColors = new Dictionary<Sector, Color>();
 
         // find nearest 192x256 multiple
 
@@ -271,9 +271,9 @@ public class MapManager : MonoBehaviour
                 var posX = center.Key - 32;
                 var posY = center.Value - 32;
 
-                var c = color;
-                if (colors.ContainsKey(horizontal.Value))
-                    c = colors[horizontal.Value];
+                var c = GameManager.Instance.PlayerColors[horizontal.Value.GetOwner()];
+                if (specialColors.ContainsKey(horizontal.Value))
+                    c = specialColors[horizontal.Value];
 
                 // this is a major performance hog, need to redo
                 for (int y = 0; y < 64; y++)

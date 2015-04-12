@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
     private Dictionary<string, Ship> _shipDefinitions;
     private Texture2D _shipTextureAtlas;
     private Dictionary<Team, Player> _players;
+    private Dictionary<Team, Color> _playerColors;
     private bool _gameStarted;
 
     public static GameManager Instance 
@@ -60,15 +61,24 @@ public class GameManager : MonoBehaviour
         set { _paused = value; }
     }
 
+    public bool GameStarted { get { return _gameStarted; } }
+
     public Dictionary<Team, Player> Players { get { return _players; } }
+    public Dictionary<Team, Color> PlayerColors { get { return _playerColors; } }
 
     void Awake()
     {
         _instance = this;
         _eventQueue = new Queue<GameEvent>();
         _nextEventQueue = new Queue<GameEvent>();
-        _players = new Dictionary<Team, Player>()
+        _players = new Dictionary<Team, Player>();
+        _playerColors = new Dictionary<Team, Color>()
         {
+            { Team.Uninhabited, Color.grey },
+            { Team.Indigenous, Color.white },
+            { Team.Union, Color.blue },
+            { Team.Plinthen, Color.green},
+            { Team.Kharkyr, Color.red }
         };
 
         _shipDefinitions = new Dictionary<string, Ship>();
@@ -205,7 +215,7 @@ public class GameManager : MonoBehaviour
 
             AddAIPlayer(Team.Kharkyr);
             AddAIPlayer(Team.Plinthen);
-            AddAIPlayer(Team.Indigenous);
+            //AddAIPlayer(Team.Indigenous);
 
             // debug
             var squad = _players[Team.Kharkyr].CreateNewSquad(new Vector3(0, 0, -10), null);
@@ -219,9 +229,11 @@ public class GameManager : MonoBehaviour
         }
 
         // debug
-        _players[Team.Kharkyr].EndTurn();
-        _players[Team.Plinthen].EndTurn();
-        _players[Team.Indigenous].EndTurn();
+        foreach(var team in _players)
+        {
+            if(team.Key != HumanPlayer.Instance.Team)
+                team.Value.EndTurn();
+        }
 
         if(!_paused)
             NextEvent();
