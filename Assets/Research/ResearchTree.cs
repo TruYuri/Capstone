@@ -4,7 +4,6 @@ using System.Collections.Generic;
 public class ResearchTree
 {
     private int maxLevel;
-    private int currentLevel;
     private Research[] tree;
 
     public ResearchTree(int nLevels)

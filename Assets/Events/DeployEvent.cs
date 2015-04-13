@@ -31,7 +31,6 @@ public class DeployEvent : GameEvent
         {
             if (HumanPlayer.Instance == _player)
                 _player.Control(_tile.gameObject);
-            var team = _squad.Team;
             _player.CleanSquad(_squad);
             _player.DeleteSquad(_squad);
         }

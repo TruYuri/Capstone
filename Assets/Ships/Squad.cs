@@ -296,7 +296,6 @@ public class Squad : MonoBehaviour, ListableObject
     {
         float winP = (float)GameManager.Generator.NextDouble();
         var winner = winP < winChance;
-        var winTeam = winner ? _team : enemy.Team;
         var lost = new KeyValuePair<Team, Dictionary<string, int>>(winner ? _team : enemy.Team, new Dictionary<string,int>());
         var types = new List<Inhabitance>() { Inhabitance.Primitive, Inhabitance.Industrial, Inhabitance.SpaceAge };
         var populationLoss = new Dictionary<Inhabitance, int>();
@@ -444,7 +443,6 @@ public class Squad : MonoBehaviour, ListableObject
     {
         var squadEntry = Resources.Load<GameObject>(SQUAD_LIST_PREFAB);
         var entry = Instantiate(squadEntry) as GameObject;
-        var tile = this.GetComponent<Tile>();
 
         var name = this.name;
 

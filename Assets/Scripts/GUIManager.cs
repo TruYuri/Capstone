@@ -539,8 +539,6 @@ public class GUIManager : MonoBehaviour
         var texture = MapManager.Instance.GenerateMap(colors);
 
         var center = MapManager.Instance.GetMiniMapPosition(texture, sq.Sector, sq.transform.position);     
-        var centerx = texture.width / 2;
-        var centery = texture.height / 2;
 
         image.texture = texture;
 
@@ -973,33 +971,20 @@ public class GUIManager : MonoBehaviour
         GameManager.Instance.Paused = false;
     }
 
-    public void UpdateMinimap(Texture2D texture)
+    public void UpdateMinimap(Texture2D texture, Vector3 position, Sector sector)
     {
         var image = _interface["Minimap"].GetComponent<RawImage>();
         image.texture = texture;
-        
-        var centerx = texture.width / 2;
-        var centery = texture.height / 2;
-        image.uvRect = new Rect((centerx - 128) / (float)texture.width, (centery - 96) / (float)texture.height, 
-            256 / (float)texture.width, 192 / (float)texture.height);
-    }
 
-    public void UpdateMinimapPosition(Vector3 position, Sector sector)
-    {
-        var image = _interface["Minimap"].GetComponent<RawImage>();
-        var texture = image.texture;
-        var centerx = texture.width / 2;
-        var centery = texture.height / 2;
         var mapPos = MapManager.Instance.GetMiniMapPosition(texture as Texture2D, sector, position);
-        
+
         var left = mapPos.x - (128 / (float)texture.width);
-        if(left < 0f)
+        if (left < 0f)
             left = 0f;
         var top = mapPos.y - (96 / (float)texture.height);
         if (top < 0f)
             top = 0f;
 
-        //image.uvRect = new Rect(left, top,
         image.uvRect = new Rect(left, top,
             256 / (float)texture.width, 192 / (float)texture.height);
     }

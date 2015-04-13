@@ -3,17 +3,9 @@ using System.Collections.Generic;
 
 public class TravelEvent : GameEvent 
 {
-    private readonly Vector3 TOP_RIGHT_OFFSET = new Vector3(98.3f, 0.0f, 149.0f);
-    private readonly Vector3 RIGHT_OFFSET = new Vector3(196.5f, 0, 0.0f);
-    private readonly Vector3 BOTTOM_RIGHT_OFFSET = new Vector3(98.3f, 0.0f, -149.0f);
-    private readonly Vector3 BOTTOM_LEFT_OFFSET = new Vector3(-98.3f, 0.0f, -149.0f);
-    private readonly Vector3 LEFT_OFFSET = new Vector3(-196.5f, 0, 0);
-    private readonly Vector3 TOP_LEFT_OFFSET = new Vector3(-98.3f, 0.0f, 149.0f);
-
     private Squad _squad;
     private Vector3 _destination;
     private float _velocity;
-    private Sector _destinationSector;
     private List<Sector> _destinationSectors;
     private List<Vector3> _turnDestinations;
     private int _travelTurns;
@@ -26,7 +18,6 @@ public class TravelEvent : GameEvent
         _destination = destination;
         _velocity = velocity;
         _squad.Mission = this;
-        _destinationSector = destinationSector;
         _destinationSectors = MapManager.Instance.AStarSearch(squad.Sector, destinationSector);
         _travelTurns = _destinationSectors.Count;
     }
@@ -91,12 +82,7 @@ public class TravelEvent : GameEvent
         if (_travelTurns > 0 || _turnDestinations == null || _turnDestinations.Count == 0)
             return;
 
-        var dirraw = _turnDestinations[0] - _squad.transform.position;
-        var dir = dirraw;
-        dir.Normalize();
-
-        _squad.transform.position += dir * _velocity * Time.deltaTime;
-        //_squad.transform.position = Vector3.Lerp(_squad.transform.position, _turnDestinations[0], Time.deltaTime);
+        _squad.transform.position = Vector3.MoveTowards(_squad.transform.position, _turnDestinations[0], _velocity * Time.deltaTime);
 
         var diff = _squad.transform.position - _turnDestinations[0];
         if (diff.magnitude < 0.1f)

@@ -3,13 +3,6 @@ using System.Collections.Generic;
 
 public class RetreatEvent : GameEvent 
 {
-    private readonly Vector3 TOP_RIGHT_OFFSET = new Vector3(98.3f, 0.0f, 149.0f);
-    private readonly Vector3 RIGHT_OFFSET = new Vector3(196.5f, 0, 0.0f);
-    private readonly Vector3 BOTTOM_RIGHT_OFFSET = new Vector3(98.3f, 0.0f, -149.0f);
-    private readonly Vector3 BOTTOM_LEFT_OFFSET = new Vector3(-98.3f, 0.0f, -149.0f);
-    private readonly Vector3 LEFT_OFFSET = new Vector3(-196.5f, 0, 0);
-    private readonly Vector3 TOP_LEFT_OFFSET = new Vector3(-98.3f, 0.0f, 149.0f);
-
     private Squad _squad;
 
     // turn parameter = turns until command begins. 

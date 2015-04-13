@@ -12,7 +12,11 @@ public class HumanPlayer : Player
     private const string SECTOR_TAG = "Sector";
     private const string COMMAND_SHIP_PREFAB = "CommandShip";
     private const string MOUSE_SCROLLWHEEL = "Mouse ScrollWheel";
-    private readonly Vector3 CAMERA_OFFSET = new Vector3(0, 20, -13);
+
+    [SerializeField] private float _cameraSpeed = 0;
+    [SerializeField] private Vector3 _cameraOffset = Vector3.zero;
+    [SerializeField] private float _minCamDistance = 0;
+    [SerializeField] private float _maxCamDistance = 0;
 
     private Vector3 _currentCameraDistance;
     private Dictionary<Sector, bool> _exploredSectors;
@@ -27,7 +31,7 @@ public class HumanPlayer : Player
         _instance = this;
 
         base.Init(team);
-        _currentCameraDistance = (_commandShipSquad.transform.position + CAMERA_OFFSET) - _commandShipSquad.transform.position;
+        _currentCameraDistance = _cameraOffset;
         _exploredSectors = new Dictionary<Sector, bool>();
         // create command ship, look at it, control it 
         var squad = CreateNewSquad(new Vector3(0, 0, 10.5f), null);
@@ -38,13 +42,13 @@ public class HumanPlayer : Player
 
         squad = CreateNewSquad(new Vector3(0, 0, 11f), null);
         AddShip(squad, "Fighter");
-        var t = AddShip(squad, "Transport");
+        AddShip(squad, "Transport");
         var t1 = AddShip(squad, "Transport");
         var t2 = AddShip(squad, "Transport");
         var t3 = AddShip(squad, "Transport");
         var t4 = AddShip(squad, "Transport");
-        var f = AddShip(squad, "Heavy Fighter");
-        var b = AddShip(squad, "Behemoth");
+        AddShip(squad, "Heavy Fighter");
+        AddShip(squad, "Behemoth");
         var r = AddShip(squad, "Resource Transport");
         var r1 = AddShip(squad, "Resource Transport");
         r.Resources[Resource.Ore] = 100;
@@ -64,8 +68,9 @@ public class HumanPlayer : Player
         /* debug */
 
         _controlledIsWithinRange = true;
-        Camera.main.transform.position = _commandShipSquad.transform.position + CAMERA_OFFSET;
+        Camera.main.transform.position = _commandShipSquad.transform.position + _currentCameraDistance;
         Camera.main.transform.LookAt(_commandShipSquad.transform);
+        _currentCameraDistance = Camera.main.transform.position - _commandShipSquad.transform.position;
         GUIManager.Instance.SetSquadList(false);
         GUIManager.Instance.SetTileList(false);
         GUIManager.Instance.SetWarpList(false);
@@ -116,14 +121,26 @@ public class HumanPlayer : Player
             ReloadGameplayUI();
         }
 
-        var scrollChange = Input.GetAxis(MOUSE_SCROLLWHEEL);
-        var change = 50.0f * scrollChange * Camera.main.transform.forward;
-        Camera.main.transform.position += change;
-        _currentCameraDistance += change;
 
         if (_controlledSquad != null)
         {
-            transform.position = _controlledSquad.transform.position + _currentCameraDistance;
+            var scrollChange = -Input.GetAxis(MOUSE_SCROLLWHEEL);
+
+            float s = 0;
+            var dir = -Camera.main.transform.forward;
+            var dist = (_controlledSquad.transform.position - Camera.main.transform.position).magnitude;
+            if (scrollChange < 0)
+                s = Mathf.Min(_cameraSpeed, dist - _minCamDistance);
+            else if (scrollChange > 0)
+                s = Mathf.Min(_cameraSpeed, _maxCamDistance - dist);
+
+            var change = s * scrollChange * dir;
+            var sqr = ((_currentCameraDistance + change) - _controlledSquad.transform.position).sqrMagnitude;
+
+            _currentCameraDistance += change;
+            Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position,
+                _controlledSquad.transform.position + _currentCameraDistance, Mathf.Clamp01(Time.deltaTime * _cameraSpeed));
+
             switch (_controlledSquad.tag)
             {
                 case TILE_TAG:
@@ -137,9 +154,6 @@ public class HumanPlayer : Player
                     break;
             }
         }
-
-        if(_controlledSquad != null && _controlledSquad.Sector != null)
-            GUIManager.Instance.UpdateMinimapPosition(_controlledSquad.transform.position, _controlledSquad.Sector);
     }
 
     private void UpdateSelectedPlanet()
@@ -185,7 +199,7 @@ public class HumanPlayer : Player
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit, _maxCamDistance, ~LayerMask.NameToLayer("Sector")))
             {
                 float speed = 25.0f;
 
@@ -195,7 +209,6 @@ public class HumanPlayer : Player
 
                 _commandShipSquad.transform.position = new Vector3(_commandShipSquad.transform.position.x, 0.0f, _commandShipSquad.transform.position.z);
                 _commandShipSquad.transform.LookAt(hit.point);
-                transform.position = _commandShipSquad.transform.position + _currentCameraDistance;
             }
         }
 
@@ -244,8 +257,11 @@ public class HumanPlayer : Player
 
     public override void Control(GameObject gameObject)
     {
-        base.Control(gameObject);
-        transform.position = _controlledSquad.transform.position + _currentCameraDistance;
+        if (_controlledSquad == null || (_controlledSquad != null && gameObject != _controlledSquad.gameObject))
+        {
+            base.Control(gameObject);
+            transform.position = _controlledSquad.transform.position + _currentCameraDistance;
+        }
 
         if (_controlledSquad.Sector != null && _controlledSquad.Sector != null)
         {
@@ -257,7 +273,7 @@ public class HumanPlayer : Player
                 colors.Add(_commandShipSquad.Sector, Color.magenta);
 
             var minimap = MapManager.Instance.GenerateMap(colors);
-            GUIManager.Instance.UpdateMinimap(minimap);
+            GUIManager.Instance.UpdateMinimap(minimap, _controlledSquad.transform.position, _controlledSquad.Sector);
         }
 
         ReloadGameplayUI();

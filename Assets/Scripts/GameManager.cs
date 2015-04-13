@@ -260,7 +260,6 @@ public class GameManager : MonoBehaviour
                 _eventQueue.Dequeue();
         }
 
-        var invalid = new List<GameEvent>();
         foreach (var item in _nextEventQueue)
         {
             if(item.AssertValid())
