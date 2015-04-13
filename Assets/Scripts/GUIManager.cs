@@ -155,9 +155,9 @@ public class GUIManager : MonoBehaviour
 
         // note: i fucking hate this bit
         var click = false;
-        if (HumanPlayer.Instance.Team == squad.Team && HumanPlayer.Instance.ControlledIsWithinRange)
+        if (HumanPlayer.Instance.Team == squad.Team && HumanPlayer.Instance.ControlledIsWithinRange && HumanPlayer.Instance.Squad.Mission == null)
         {
-            if (type == "Deploy" && index != -1 && squad.Mission == null) // deploy
+            if (type == "Deploy" && index != -1) // deploy
             {
                 if (tile != null && (squad.Ships[index].ShipProperties & ShipProperties.GroundStructure) > 0
                     && squad.Tile.IsInRange(squad) && (tile.Team == squad.Team || tile.Team == Team.Uninhabited) && tile.Structure == null) // existing planet
@@ -170,10 +170,8 @@ public class GUIManager : MonoBehaviour
                 click = true;
             else if (type == "Invade" && squad.CalculateTroopPower() > 0f)
                 click = true;
-            else if (type == "Warp")
-            {
+            else if (type == "Warp" && tile.Team == squad.Team)
                 click = true;
-            }
 
             deploy.interactable = click;
             manage.interactable = squad.Ships.Count > 0 || squad.Colliders.Count > 0;
