@@ -135,7 +135,6 @@ public class HumanPlayer : Player
                 s = Mathf.Min(_cameraSpeed, _maxCamDistance - dist);
 
             var change = s * scrollChange * dir;
-            var sqr = ((_currentCameraDistance + change) - _controlledSquad.transform.position).sqrMagnitude;
 
             _currentCameraDistance += change;
             Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position,

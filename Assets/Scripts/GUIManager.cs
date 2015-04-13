@@ -103,12 +103,13 @@ public class GUIManager : MonoBehaviour
         switch (screen)
         {
             case "MainUI":
-                _interface["MainUI"].gameObject.SetActive(true);
+                _interface["Main"].gameObject.SetActive(true);
                 _interface["ScientificResearch"].gameObject.SetActive(false);
                 _interface["MilitaryResearch"].gameObject.SetActive(false);
+                HumanPlayer.Instance.ReloadGameplayUI();
                 break;
             case "Scientific":
-                _interface["MainUI"].gameObject.SetActive(false);
+                _interface["Main"].gameObject.SetActive(false);
                 _interface["ScientificResearch"].gameObject.SetActive(true);
                 _interface["MilitaryResearch"].gameObject.SetActive(false);
 
@@ -119,7 +120,7 @@ public class GUIManager : MonoBehaviour
                 player.DisplayResearch("Scientific", "Warp Portal", _interface["Warp Portal"].gameObject);
                 break;
             case "Military":
-                _interface["MainUI"].gameObject.SetActive(false);
+                _interface["Main"].gameObject.SetActive(false);
                 _interface["ScientificResearch"].gameObject.SetActive(false);
                 _interface["MilitaryResearch"].gameObject.SetActive(true);
 
