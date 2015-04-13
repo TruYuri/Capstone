@@ -47,6 +47,8 @@ public class BehemothResearch : Research
                 UpgradeCapacity();
                 break;
         }
+
+        behemothShip.RecalculateResources();
     }
 
     private void UpgradeArmor()
@@ -59,6 +61,8 @@ public class BehemothResearch : Research
     {
         upgrades[PLATING]++;
         behemothShip.Protection = upgrades[PLATING] * 0.02f;
+        behemothShip.Plating++;
+
     }
 
     private void UpgradePlasmas()

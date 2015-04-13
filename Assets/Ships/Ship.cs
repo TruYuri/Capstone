@@ -6,6 +6,7 @@ public class Ship : ListableObject
 {
     private const string LIST_PREFAB = "ShipListing";
     private const string CONSTRUCT_PREFAB = "Constructable";
+    private const string PLATING = "Asterminium Plating";
 
     protected bool unlocked;
     protected Sprite icon;
@@ -16,7 +17,7 @@ public class Ship : ListableObject
     protected int capacity;
     protected float protection;
     protected int resourceCapacity;
-
+    protected int plating;
     protected int baseResourceCapacity;
     protected float baseHull;
     protected float baseFirepower;
@@ -60,6 +61,11 @@ public class Ship : ListableObject
         get { return capacity; }
         set { capacity = value; }
     }
+    public int Plating
+    {
+        get { return plating; }
+        set { plating = value; }
+    }
     public int ResourceCapacity
     {
         get { return resourceCapacity; }
@@ -80,8 +86,7 @@ public class Ship : ListableObject
     public Dictionary<Inhabitance, int> Population { get { return population; } }
     public ShipProperties ShipProperties { get { return shipProperties; } }
 
-    public Ship(Sprite icon, string name, float hull, float firepower, float speed, int capacity, int rCapacity, ShipProperties shipProperties, 
-        Dictionary<Resource, int> requiredResources)
+    public Ship(Sprite icon, string name, float hull, float firepower, float speed, int capacity, int rCapacity, int plating, ShipProperties shipProperties)
     {
         this.name = name;
         this.hull = this.baseHull = hull;
@@ -91,12 +96,19 @@ public class Ship : ListableObject
         this.resourceCapacity = this.baseResourceCapacity = rCapacity;
         this.shipProperties = shipProperties;
         this.icon = icon;
-        this.requiredResources = requiredResources;
+        this.plating = plating;
         this.population = new Dictionary<Inhabitance, int>()
         {
             { Inhabitance.Primitive, 0 },
             { Inhabitance.Industrial, 0 },
             { Inhabitance.SpaceAge, 0 }
+        };
+        this.requiredResources = new Dictionary<Resource, int>()
+        {
+            { Resource.Asterminium, 0 },
+            { Resource.Forest, 0 },
+            { Resource.Oil, 0 },
+            { Resource.Ore, 0 },
         };
         this.resources = new Dictionary<Resource, int>()
         {
@@ -104,18 +116,24 @@ public class Ship : ListableObject
             { Resource.Forest, 0 },
             { Resource.Oil, 0 },
             { Resource.Ore, 0 },
-            { Resource.NoResource, 0 }
         };
     }
 
-    protected virtual bool CanConstruct(Dictionary<Resource, int> resources)
+    protected bool CanConstruct(Dictionary<Resource, int> resources)
     {
         return unlocked && 
-            resources[Resource.Stations] >= requiredResources[Resource.Stations] &&
             resources[Resource.Ore] >= requiredResources[Resource.Ore] &&
             resources[Resource.Oil] >= requiredResources[Resource.Oil] &&
             resources[Resource.Asterminium] >= requiredResources[Resource.Asterminium] &&
             resources[Resource.Forest] >= requiredResources[Resource.Forest];
+    }
+
+    public virtual void RecalculateResources()
+    {
+        requiredResources[Resource.Ore] = Mathf.CeilToInt(hull * 5);
+        requiredResources[Resource.Oil] = Mathf.CeilToInt(hull / 2.0f + speed / 2.0f + firepower / 2.0f);
+        requiredResources[Resource.Asterminium] = Mathf.CeilToInt(plating * hull);
+        requiredResources[Resource.Forest] = capacity;
     }
 
     public int CountPopulation()
@@ -136,7 +154,7 @@ public class Ship : ListableObject
 
     public virtual Ship Copy()
     {
-        var ship = new Ship(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, baseResourceCapacity, shipProperties, requiredResources);
+        var ship = new Ship(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, baseResourceCapacity, plating, shipProperties);
         ship.Hull = hull;
         ship.Firepower = firepower;
         ship.Speed = speed;

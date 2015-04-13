@@ -37,6 +37,8 @@ public class GuardSatelliteResearch : Research
                 AdvanceTorpedoes();
                 break;
         }
+
+        guardSatelliteShip.RecalculateResources();
     }
 
     private void AdvanceArmor()
@@ -49,6 +51,7 @@ public class GuardSatelliteResearch : Research
     {
         upgrades[PLATING]++;
         guardSatelliteShip.Protection = upgrades[PLATING] * 0.02f;
+        guardSatelliteShip.Plating++;
     }
 
     private void AdvancePlasmas()

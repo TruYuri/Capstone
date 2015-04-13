@@ -26,6 +26,8 @@ public class ComplexResearch : Research
 
     public override void UpgradeResearch(string name)
     {
+        base.UpgradeResearch(name);
+
         switch (name)
         {
             case DEFENSE:
@@ -35,6 +37,9 @@ public class ComplexResearch : Research
                 UpgradeCapacity();
                 break;
         }
+
+        foreach (var struc in structureDefinitions)
+            struc.Value.RecalculateResources();
     }
 
     private void UpgradeDefense()

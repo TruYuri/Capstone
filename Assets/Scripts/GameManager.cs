@@ -26,10 +26,6 @@ public class GameManager : MonoBehaviour
     private const string N_CONSTRUCTABLES_DETAIL = "nConstructables";
     private const string CONSTRUCTABLE_DETAIL = "Constructable";
     private const string RESOURCE_TYPE_DETAIL = "ResourceGatherType";
-    private const string ORE_DETAIL = "Ore";
-    private const string OIL_DETAIL = "Oil";
-    private const string ASTERMINIUM_DETAIL = "Asterminium";
-    private const string FOREST_DETAIL = "Forest";
     private const string STATIONS_DETAIL = "Stations";
     private const string DESCRIPTION_DETAIL = "Description";
 
@@ -113,14 +109,6 @@ public class GameManager : MonoBehaviour
             var speed = float.Parse(shipDetails[section][SPEED_DETAIL]);
             var capacity = int.Parse(shipDetails[section][CAPACITY_DETAIL]);
             var name = shipNames[i];
-            var resources = new Dictionary<Resource, int>()
-            {
-                { Resource.Oil, int.Parse(shipDetails[section][OIL_DETAIL]) },
-                { Resource.Ore, int.Parse(shipDetails[section][ORE_DETAIL]) },
-                { Resource.Forest, int.Parse(shipDetails[section][FOREST_DETAIL]) },
-                { Resource.Asterminium, int.Parse(shipDetails[section][ASTERMINIUM_DETAIL]) },
-                { Resource.Stations, int.Parse(shipDetails[section][STATIONS_DETAIL]) },
-            };
             var rCapacity = int.Parse(shipDetails[section][RESOURCE_CAPACITY_DETAIL]);
 
             if ((type & ShipProperties.Structure) > 0)
@@ -137,10 +125,10 @@ public class GameManager : MonoBehaviour
                 var gatherType = ResourceGatherType.None;
                 foreach(var t in gatherList)
                     gatherType = gatherType | (ResourceGatherType)Enum.Parse(typeof(ResourceGatherType), t);
-                _shipDefinitions.Add(name, new Structure(icon, name, hull, firepower, speed, capacity, rCapacity, dDefense, dCapacity, rate, range, constructables, type, gatherType, resources));
+                _shipDefinitions.Add(name, new Structure(icon, name, hull, firepower, speed, capacity, rCapacity, dDefense, dCapacity, rate, range, constructables, type, gatherType));
             }
             else
-                _shipDefinitions.Add(name, new Ship(icon, name, hull, firepower, speed, capacity, rCapacity, type, resources));
+                _shipDefinitions.Add(name, new Ship(icon, name, hull, firepower, speed, capacity, rCapacity, 0, type));
 
             descriptions.Add(name, shipDetails[section][DESCRIPTION_DETAIL]);
         }

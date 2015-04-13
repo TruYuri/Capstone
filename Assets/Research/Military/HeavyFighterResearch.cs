@@ -47,6 +47,8 @@ public class HeavyFighterResearch : Research
                 UpgradeCapacity();
                 break;
         }
+
+        heavyFighterShip.RecalculateResources();
     }
 
     private void UpgradeArmor()
@@ -59,6 +61,7 @@ public class HeavyFighterResearch : Research
     {
         upgrades[PLATING]++;
         heavyFighterShip.Protection = upgrades[PLATING] * 0.02f;
+        heavyFighterShip.Plating++;
     }
 
     private void UpgradePlasmas()

@@ -28,6 +28,8 @@ public class WarpPortalResearch : Research
                 UpgradeDefense();
                 break;
         }
+
+        warpPortal.RecalculateResources();
     }
 
     private void UpgradeRange()

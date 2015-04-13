@@ -25,6 +25,7 @@ public class HumanPlayer : Player
     public Squad Squad { get { return _controlledSquad; } }
     public Tile Tile { get { return _controlledTile; } }
     public Dictionary<Sector, bool> ExploredSectors { get { return _exploredSectors; } }
+    public Squad CommandSquad { get { return _commandShipSquad; } }
 
     public override void Init(Team team)
     {

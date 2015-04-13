@@ -28,6 +28,8 @@ public class RelayResearch : Research
                 UpgradeDefense();
                 break;
         }
+
+        relay.RecalculateResources();
     }
 
     private void UpgradeRange()

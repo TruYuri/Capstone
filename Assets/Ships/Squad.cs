@@ -140,6 +140,9 @@ public class Squad : MonoBehaviour, ListableObject
                 var human = HumanPlayer.Instance;
                 if (_team == human.Team)
                 {
+                    if (human.CommandSquad == this)
+                        human.EndTurn();
+
                     if(!human.ExploredSectors.ContainsKey(_currentSector))
                         human.ExploredSectors.Add(_currentSector, true);
                     _currentSector.GenerateNewSectors();

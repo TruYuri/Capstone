@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     protected Dictionary<string, Ship> _shipDefinitions;
     protected Dictionary<string, HashSet<Ship>> _shipRegistry;
     protected Dictionary<Inhabitance, int> _soldierRegistry;
+    protected Dictionary<Resource, int> _resourceRegistry;
     protected List<Squad> _squads;
     protected List<Tile> _tiles;
     protected int _numResearchStations;
@@ -49,8 +50,10 @@ public class Player : MonoBehaviour
         _scienceTree = GameManager.Instance.GenerateScienceTree(_shipDefinitions);
         _shipRegistry = new Dictionary<string, HashSet<Ship>>();
         _soldierRegistry = new Dictionary<Inhabitance, int>();
+        _resourceRegistry = new Dictionary<Resource, int>();
         foreach(var ship in _shipDefinitions)
         {
+            ship.Value.RecalculateResources();
             _shipRegistry.Add(ship.Key, new HashSet<Ship>());
         }
 
@@ -366,7 +369,7 @@ public class Player : MonoBehaviour
         // determine location
         var position = new Vector3(GameManager.Generator.Next() % 20 - 10, 0, GameManager.Generator.Next() % 20 - 10);
         _commandShipSquad = CreateNewSquad(position, null, "Command Squad");
-        _commandShipSquad.Ships.Add(_commandShip = _shipDefinitions["Command Ship"].Copy());
+        _commandShipSquad.Ships.Add(_commandShip = _shipDefinitions["Command Ship"]);
         _shipRegistry[_commandShip.Name].Add(_commandShip);
         Control(_commandShipSquad.gameObject);
     }

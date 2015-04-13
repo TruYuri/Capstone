@@ -37,6 +37,8 @@ public class TransportResearch : Research
                 UpgradeCapacity();
                 break;
         }
+
+        transportShip.RecalculateResources();
     }
 
     private void UpgradeArmor()
@@ -49,6 +51,7 @@ public class TransportResearch : Research
     {
         upgrades[PLATING]++;
         transportShip.Protection = upgrades[PLATING] * 0.02f;
+        transportShip.Plating++;
     }
 
     private void UpgradeThrusters()

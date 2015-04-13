@@ -42,6 +42,8 @@ public class CommandShipResearch : Research
                 UpgradeThrusters();
                 break;
         }
+
+        commandShip.RecalculateResources();
     }
 
     private void UpgradeArmor()
@@ -54,6 +56,7 @@ public class CommandShipResearch : Research
     {
         upgrades[PLATING]++;
         commandShip.Protection = upgrades[PLATING] * 0.02f;
+        commandShip.Plating++;
     }
 
     private void UpgradePlasmas()

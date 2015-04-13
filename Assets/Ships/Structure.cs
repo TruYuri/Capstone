@@ -48,8 +48,8 @@ public class Structure : Ship, ListableObject
     public List<string> Constructables { get { return constructables; } }
 
     public Structure(Sprite icon, string name, float hull, float firepower, float speed, int capacity, int rCapacity,
-        float defense, int deployedCapacity, int gatherRate, int range, List<string> constructables, ShipProperties shipProperties, ResourceGatherType type, Dictionary<Resource, int> requiredResources)
-        : base(icon, name, hull, firepower, speed, capacity, rCapacity, shipProperties, requiredResources)
+        float defense, int deployedCapacity, int gatherRate, int range, List<string> constructables, ShipProperties shipProperties, ResourceGatherType type)
+        : base(icon, name, hull, firepower, speed, capacity, rCapacity, 0, shipProperties)
     {
         this.defense = defense;
         this.deployedCapacity = deployedCapacity;
@@ -61,15 +61,32 @@ public class Structure : Ship, ListableObject
         this.types = type;
     }
 
-    protected override bool CanConstruct(Dictionary<Resource, int> resources)
+    public override void RecalculateResources()
     {
-        return base.CanConstruct(resources);
+        // find a way to factor this out later - this is just dirty
+        if (name == "Relay")
+        {
+            base.RecalculateResources();
+            requiredResources[Resource.Asterminium] = range * 2;
+        }
+        else if (name == "Warp Portal")
+        {
+            base.RecalculateResources();
+            requiredResources[Resource.Asterminium] = range * 5;
+        }
+        else
+        {
+            requiredResources[Resource.Ore] = Mathf.CeilToInt(defense);
+            requiredResources[Resource.Oil] = 0;
+            requiredResources[Resource.Asterminium] = 0;
+            requiredResources[Resource.Forest] = deployedCapacity;
+        }
     }
 
     public override Ship Copy()
     {
         var ship = new Structure(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, baseResourceCapacity,
-            defense, deployedCapacity, gatherRate, range, constructables, shipProperties, types, requiredResources);
+            defense, deployedCapacity, gatherRate, range, constructables, shipProperties, types);
         ship.Hull = hull;
         ship.Firepower = firepower;
         ship.Speed = speed;

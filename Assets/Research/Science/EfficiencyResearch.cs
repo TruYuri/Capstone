@@ -38,6 +38,9 @@ public class EfficiencyResearch : Research
                 UpgradeResourceTransport();
                 break;
         }
+
+        foreach (var ship in shipDefinitions)
+            ship.Value.RecalculateResources();
     }
 
     private void UpgradeGathering()

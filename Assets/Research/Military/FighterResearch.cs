@@ -37,6 +37,8 @@ public class FighterResearch : Research
                 UpgradeThrusters();
                 break;
         }
+
+        fighterShip.RecalculateResources();
     }
 
     private void UpgradeArmor()
@@ -49,6 +51,7 @@ public class FighterResearch : Research
     {
         upgrades[PLATING]++;
         fighterShip.Protection = upgrades[PLATING] * 0.02f;
+        fighterShip.Plating++;
     }
 
     private void UpgradePlasmas()
