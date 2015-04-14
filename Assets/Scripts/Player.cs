@@ -229,7 +229,7 @@ public class Player : MonoBehaviour
                 break;
         }
 
-        var DC = (PP - IP) / 100.0f * 0.5f + 0.5f;
+        var DC = ((PP - IP) / 100.0f * 0.5f + 0.5f) * (_team == Team.Union ? 1.5f : 1f);
         var DP = GameManager.Generator.NextDouble();
 
         if (DP < DC) // we won!

@@ -174,9 +174,21 @@ public class Tile : MonoBehaviour, ListableObject
     public void Claim(Team team)
     {
         if (_team != Team.Uninhabited)
+        {
             GameManager.Instance.Players[_team].RelinquishTile(this);
 
+            if (_team == Team.Plinthen)
+            {
+                _resourceCount -= Mathf.CeilToInt(_resourceCount * 1.15f);
+                _resourceCount = (_resourceCount < 0 ? 0 : _resourceCount);
+            }
+        }
+
         _team = team;
+
+        if (_team == Team.Plinthen)
+            _resourceCount += Mathf.CeilToInt(_resourceCount * 1.15f);
+
         GameManager.Instance.Players[_team].ClaimTile(this);
         _squad.Team = _team;
 
@@ -259,7 +271,7 @@ public class Tile : MonoBehaviour, ListableObject
                 power += _structure.Population[bonus.Key] * bonus.Value;
         }
 
-        return power;
+        return power * (_team == Team.Kharkyr ? 1.15f : 1f);
     }
 
     public void SetDiplomaticEffort(Team team)

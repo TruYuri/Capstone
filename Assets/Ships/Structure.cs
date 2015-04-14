@@ -103,13 +103,9 @@ public class Structure : Ship, ListableObject
 
         if((types & ResourceGatherType.Natural) > 0)
         {
-            min = Math.Min(gatherRate, resources);
+            min = Math.Min(Mathf.CeilToInt(gatherRate * (team == Team.Plinthen ? 1.15f : 1f)), resources);
             GameManager.Instance.Players[team].AddResources(this, rType, min);
             gathertypes.Add(new KeyValuePair<ResourceGatherType, int>(ResourceGatherType.Natural, min));
-        }
-        if((types & ResourceGatherType.Research) > 0)
-        {
-            gathertypes.Add(new KeyValuePair<ResourceGatherType, int>(ResourceGatherType.Research, gatherRate));
         }
         if((types & ResourceGatherType.Soldiers) > 0 && pType != Inhabitance.Uninhabited)
         {

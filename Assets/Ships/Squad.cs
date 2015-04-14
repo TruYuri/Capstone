@@ -206,7 +206,7 @@ public class Squad : MonoBehaviour, ListableObject
             spaceAge += ship.Population[Inhabitance.SpaceAge];
         }
 
-        return primitive + industrial * 1.5f + spaceAge * 1.75f;
+        return (primitive + industrial * 1.5f + spaceAge * 1.75f) * (_team == Team.Kharkyr ? 1.15f : 1f);
     }
 
     public float CalculateShipPower()
@@ -220,7 +220,7 @@ public class Squad : MonoBehaviour, ListableObject
             speed += ship.Speed;
         }
 
-        return firepower * 2.0f + speed * 1.5f + hull;
+        return (firepower * 2.0f + speed * 1.5f + hull) * (_team == Team.Kharkyr ? 1.15f : 1f);
     }
 
     public float GenerateWinChance(Squad enemy)
