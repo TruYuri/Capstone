@@ -62,7 +62,8 @@ public class TravelEvent : GameEvent
             var next = _destinationSectors[0];
 
             // add final corner first
-            _turnDestinations.Add((cur.transform.position + next.transform.position) / 2.0f);
+            var dir = (cur.transform.position - next.transform.position).normalized;
+            _turnDestinations.Add((cur.transform.position + next.transform.position) / 2.0f + dir * 2.0f);
 
             // determine columns/rows to traverse to reach the corner - avoiding planets
 

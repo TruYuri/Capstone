@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -9,6 +10,18 @@ public class Sector : MonoBehaviour
 
     private const string TILE_PREFAB = "Tile";   
     private const string PLANET_NAME = "AssignedName";
+
+    private const string PLANET_SMALL_SPAWN_DETAIL = "SmallSizeSpawnRate";
+    private const string PLANET_SMALL_RESOURCE_MIN_DETAIL = "ResourceAmountSmallMinimum";
+    private const string PLANET_SMALL_RESOURCE_MAX_DETAIL = "ResourceAmountSmallMaximum";
+    private const string PLANET_SMALL_POPULATION_MIN_DETAIL = "PopulationAmountSmallMinimum";
+    private const string PLANET_SMALL_POPULATION_MAX_DETAIL = "PopulationAmountSmallMaximum";
+
+    private const string PLANET_LARGE_SPAWN_DETAIL = "LargeSizeSpawnRate";
+    private const string PLANET_LARGE_RESOURCE_MIN_DETAIL = "ResourceAmountLargeMinimum";
+    private const string PLANET_LARGE_RESOURCE_MAX_DETAIL = "ResourceAmountLargeMaximum";
+    private const string PLANET_LARGE_POPULATION_MIN_DETAIL = "PopulationAmountLargeMinimum";
+    private const string PLANET_LARGE_POPULATION_MAX_DETAIL = "PopulationAmountLargeMaximum";
 
     // Adjoining sectors
     private KeyValuePair<int, int> _gridPos;
@@ -33,6 +46,7 @@ public class Sector : MonoBehaviour
         };
     }
 
+    /* Old
 	void Start () 
     {
         this.transform.parent = MapManager.Instance.transform;
@@ -65,7 +79,152 @@ public class Sector : MonoBehaviour
             }
         }
 	}
+     */
 
+    void Start()
+    {
+        this.transform.parent = MapManager.Instance.transform;
+        int count = 0;
+        var MAX = 4;
+        var chance = 1.0f / 244f;
+        var gen = GameManager.Generator;
+
+        if (Tile == null)
+            Tile = Resources.Load<GameObject>(TILE_PREFAB);
+
+        // Generate center columns
+        for (int i = -85, j = 0; i <= 85; i += 10, j++)
+        {
+            if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(8, j), new Vector3(-5, 0, i)); count++; }
+            if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(9, j), new Vector3(5, 0, i)); count++; }
+        }
+
+        // Generate middle columns
+        for (int n = 0; n < 4; n++)
+        {
+            int shift = 2 * n * 10;
+            int nx1 = 8 - n * 2 - 1;
+            int px1 = 9 + n * 2 + 1;
+            int nx2 = 8 - n * 2 - 2;
+            int px2 = 9 + n * 2 + 2;
+
+            for (int i = -75 + n * 10, j = n; i <= 75 - n * 10; i += 10, j++)
+            {
+                if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(nx1, j + 1), new Vector3(-15 - shift, 0, i)); count++; }
+                if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(nx2, j + 1), new Vector3(-25 - shift, 0, i)); count++; }
+                if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(px1, j + 1), new Vector3(15 + shift, 0, i)); count++; }
+                if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(px2, j + 1), new Vector3(25 + shift, 0, i)); count++; }
+            }
+        }
+    }
+
+    private void CreateTile(KeyValuePair<int, int> grid, Vector3 offset, string type = null)
+    {
+        var suffix = string.Empty;
+        var mm = MapManager.Instance;
+        var pType = Inhabitance.Uninhabited;
+        var population = 0;
+        var rType = Resource.NoResource;
+        var rCount = 0;
+        var size = TileSize.Small;
+
+        if (type == null)
+        {
+            // generate resource type
+            var chance = (float)GameManager.Generator.NextDouble();
+            var rates = mm.ResourceRates.Keys.OrderBy(r => mm.ResourceRates[r]).ToList();
+            foreach (var r in rates)
+            {
+                if (chance <= mm.ResourceRates[r])
+                {
+                    rType = r;
+                    break;
+                }
+            }
+
+            // generate planet type from resource type
+            chance = (float)GameManager.Generator.NextDouble();
+            var step = 1.0f / mm.ResourcePlanetTypes[rType].Count();
+            int i = 0;
+            while (chance > (i + 1) * step)
+                i++;
+            type = mm.ResourcePlanetTypes[rType][i];
+
+            // generate population type
+            chance = (float)GameManager.Generator.NextDouble();
+            var pt = mm.PlanetInhabitanceSpawnTable[type].Keys.OrderBy(p => mm.PlanetInhabitanceSpawnTable[type][p]).ToList();
+            foreach (var t in pt)
+            {
+                if (chance <= mm.PlanetInhabitanceSpawnTable[type][t])
+                {
+                    pType = t;
+                    break;
+                }
+            }
+
+            // generate large/small
+            chance = (float)GameManager.Generator.NextDouble();
+            if (chance < float.Parse(mm.PlanetSpawnDetails[type][PLANET_SMALL_SPAWN_DETAIL]))
+            {
+                size = TileSize.Small;
+
+                // generate resource and population amount
+                int minimum, maximum;
+                if (pType != Inhabitance.Uninhabited)
+                {
+                    minimum = int.Parse(mm.PlanetSpawnDetails[type][PLANET_SMALL_POPULATION_MIN_DETAIL]);
+                    maximum = int.Parse(mm.PlanetSpawnDetails[type][PLANET_SMALL_POPULATION_MAX_DETAIL]);
+                    population = GameManager.Generator.Next(minimum, maximum + 1);
+                }
+
+                minimum = int.Parse(mm.PlanetSpawnDetails[type][PLANET_SMALL_RESOURCE_MIN_DETAIL]);
+                maximum = int.Parse(mm.PlanetSpawnDetails[type][PLANET_SMALL_RESOURCE_MAX_DETAIL]);
+                rCount = GameManager.Generator.Next(minimum, maximum + 1);
+            }
+            else
+            {
+                size = TileSize.Large;
+
+                // generate resource and population amount
+                int minimum, maximum;
+                if (pType != Inhabitance.Uninhabited)
+                {
+                    minimum = int.Parse(mm.PlanetSpawnDetails[type][PLANET_LARGE_POPULATION_MIN_DETAIL]);
+                    maximum = int.Parse(mm.PlanetSpawnDetails[type][PLANET_LARGE_POPULATION_MAX_DETAIL]);
+                    population = GameManager.Generator.Next(minimum, maximum + 1);
+                }
+
+                minimum = int.Parse(mm.PlanetSpawnDetails[type][PLANET_LARGE_RESOURCE_MIN_DETAIL]);
+                maximum = int.Parse(mm.PlanetSpawnDetails[type][PLANET_LARGE_RESOURCE_MAX_DETAIL]);
+                rCount = GameManager.Generator.Next(minimum, maximum + 1);
+            }
+
+            if (!_planetCounts.ContainsKey(type))
+                _planetCounts.Add(type, 0);
+            _planetCounts[type]++;
+
+            suffix = "-"
+            + Math.Abs(_gridPos.Key).ToString() + Math.Abs(_gridPos.Value).ToString()
+            + PlanetSuffix(type, _planetCounts[type]);
+        }
+        else
+        {
+
+        }
+
+        if (MapManager.Instance.PlanetTextureTable[type].Texture == null)
+            return;
+
+        var name = MapManager.Instance.PlanetSpawnDetails[type][PLANET_NAME] + suffix;
+        var tileObj = Instantiate(Tile, this.transform.position + offset, Quaternion.identity) as GameObject;
+
+        var tile = tileObj.GetComponent<Tile>();
+        tile.Init(this, type, name, pType, population, rType, rCount, size);
+        _tileGrid[grid.Key, grid.Value] = tile;
+    }
+
+    // Old tile generation - keeping because it's beautiful
+    /*
     private void CreateTile(KeyValuePair<int, int> grid, Vector3 offset, string type = null)
     {
         var suffix = string.Empty;
@@ -100,7 +259,7 @@ public class Sector : MonoBehaviour
         var tile = tileObj.GetComponent<Tile>();
         tile.Init(type, name, this);
         _tileGrid[grid.Key, grid.Value] = tile;
-    }
+    } */
 
     public void GenerateNewSectors()
     {

@@ -28,6 +28,7 @@ public class MapManager : MonoBehaviour
     private const string PLANET_ASTERMINIUM_DETAIL = "Asterminium";
     private const string MINIMAP_TILE_TEXTURE = "minimaptile";
     private const string MINIMAP_HIGHLIGHT = "minimapHighlight";
+    private const string RESOURCE_RATES = "[Resource Type Spawn Rates]";
 
     private static MapManager _instance;
     private Color[] _minimapTile;
@@ -38,6 +39,8 @@ public class MapManager : MonoBehaviour
     private Dictionary<string, Dictionary<Inhabitance, float>> _planetInhabitanceSpawnTable;
     private Dictionary<string, Dictionary<Resource, float>> _planetResourceSpawnTable;
     private Dictionary<string, Dictionary<string, string>> _planetSpawnDetails;
+    private Dictionary<Resource, List<string>> _resourcePlanetTypes; // new
+    private Dictionary<Resource, float> _resourceRate; // new
     private Texture2D _textureAtlas;
     private Dictionary<int, Dictionary<int, Sector>> _sectorMap;
     private KeyValuePair<int, int> minMapSectors;
@@ -62,6 +65,9 @@ public class MapManager : MonoBehaviour
     public Dictionary<string, Dictionary<Resource, float>> PlanetResourceSpawnTable { get { return _planetResourceSpawnTable; } }
     public Dictionary<string, Dictionary<string, string>> PlanetSpawnDetails { get { return _planetSpawnDetails; } }
     public Dictionary<int, Dictionary<int, Sector>> SectorMap { get { return _sectorMap; } }
+    public Dictionary<Resource, List<string>> ResourcePlanetTypes { get { return _resourcePlanetTypes; } } // new
+    public Dictionary<Resource, float> ResourceRates { get { return _resourceRate; } } // new
+
 
     void Awake()
     {
@@ -74,6 +80,16 @@ public class MapManager : MonoBehaviour
         _planetSpawnDetails = new Dictionary<string, Dictionary<string, string>>();
         _sectorMap = new Dictionary<int, Dictionary<int, Sector>>();
         _planetSpawnDetails = new Dictionary<string, Dictionary<string, string>>();
+        _resourceRate = new Dictionary<Resource, float>();
+        _resourcePlanetTypes = new Dictionary<Resource, List<string>>()
+        {
+            { Resource.NoResource, new List<string>() },
+            { Resource.Oil, new List<string>() },
+            { Resource.Ore, new List<string>() },
+            { Resource.Asterminium, new List<string>() },
+            { Resource.Forest, new List<string>() },
+            { Resource.Stations, new List<string>() },
+        };
         minMapSectors = new KeyValuePair<int, int>();
         maxMapSectors = new KeyValuePair<int, int>();
         var tex = Resources.Load<Texture2D>(MINIMAP_TILE_TEXTURE);
@@ -102,6 +118,14 @@ public class MapManager : MonoBehaviour
         spawnTables.Remove(PLANET_SECTION_HEADER);
         spawnTables.Remove(DEPLOYABLE_SECTION_HEADER);
 
+        /* new */
+        float t = 0f;
+        _resourceRate.Add(Resource.Asterminium, t = float.Parse(spawnTables[RESOURCE_RATES][PLANET_ASTERMINIUM_DETAIL]));
+        _resourceRate.Add(Resource.Oil, t += float.Parse(spawnTables[RESOURCE_RATES][PLANET_OIL_DETAIL]));
+        _resourceRate.Add(Resource.Ore, t += float.Parse(spawnTables[RESOURCE_RATES][PLANET_ORE_DETAIL]));
+        _resourceRate.Add(Resource.Forest, t += float.Parse(spawnTables[RESOURCE_RATES][PLANET_FOREST_DETAIL]));
+        spawnTables.Remove(RESOURCE_RATES);
+
         foreach (var planet in spawnTables)
         {
             var key = planet.Key.TrimStart('[');
@@ -119,11 +143,35 @@ public class MapManager : MonoBehaviour
             _planetInhabitanceSpawnTable[key].Add(Inhabitance.Industrial, runningTotal += float.Parse(spawnTables[planet.Key][PLANET_INDUSTRIAL_DETAIL]));
             _planetInhabitanceSpawnTable[key].Add(Inhabitance.SpaceAge, runningTotal += float.Parse(spawnTables[planet.Key][PLANET_SPACEAGE_DETAIL]));
 
+            /* old method - still used, but need to separate
             // cache per-planet Resource probabilities
             _planetResourceSpawnTable[key].Add(Resource.Forest, runningTotal = float.Parse(spawnTables[planet.Key][PLANET_FOREST_DETAIL]));
             _planetResourceSpawnTable[key].Add(Resource.Ore, runningTotal += float.Parse(spawnTables[planet.Key][PLANET_ORE_DETAIL]));
             _planetResourceSpawnTable[key].Add(Resource.Oil, runningTotal += float.Parse(spawnTables[planet.Key][PLANET_OIL_DETAIL]));
             _planetResourceSpawnTable[key].Add(Resource.Asterminium, runningTotal += float.Parse(spawnTables[planet.Key][PLANET_ASTERMINIUM_DETAIL]));
+            */
+
+            // new
+            var val = float.Parse(spawnTables[planet.Key][PLANET_FOREST_DETAIL]);
+            runningTotal = val;
+            _planetResourceSpawnTable[key].Add(Resource.Forest, runningTotal);
+            if (val > 0f) _resourcePlanetTypes[Resource.Forest].Add(key);
+
+            val = float.Parse(spawnTables[planet.Key][PLANET_ORE_DETAIL]);
+            runningTotal += val;
+            _planetResourceSpawnTable[key].Add(Resource.Ore, runningTotal);
+            if (val > 0f) _resourcePlanetTypes[Resource.Ore].Add(key);
+
+            val = float.Parse(spawnTables[planet.Key][PLANET_OIL_DETAIL]);
+            runningTotal += val;
+            _planetResourceSpawnTable[key].Add(Resource.Oil, runningTotal);
+            if (val > 0f) _resourcePlanetTypes[Resource.Oil].Add(key);
+
+            val = float.Parse(spawnTables[planet.Key][PLANET_ASTERMINIUM_DETAIL]);
+            runningTotal += val;
+            _planetResourceSpawnTable[key].Add(Resource.Asterminium, runningTotal);
+            if (val > 0f) _resourcePlanetTypes[Resource.Asterminium].Add(key);
+            // end new
 
             // remove used data from the table
             spawnTables[planet.Key].Remove(PLANET_UNINHABITED_DETAIL);

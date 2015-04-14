@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 public class Tile : MonoBehaviour, ListableObject
 {
+    /*
     private const string PLANET_SMALL_SPAWN_DETAIL = "SmallSizeSpawnRate";
     private const string PLANET_SMALL_RESOURCE_MIN_DETAIL = "ResourceAmountSmallMinimum";
     private const string PLANET_SMALL_RESOURCE_MAX_DETAIL = "ResourceAmountSmallMaximum";
@@ -18,6 +19,7 @@ public class Tile : MonoBehaviour, ListableObject
     private const string PLANET_LARGE_RESOURCE_MAX_DETAIL = "ResourceAmountLargeMaximum";
     private const string PLANET_LARGE_POPULATION_MIN_DETAIL = "PopulationAmountLargeMinimum";
     private const string PLANET_LARGE_POPULATION_MAX_DETAIL = "PopulationAmountLargeMaximum";
+    */
 
     private const string TILE_LISTING_PREFAB = "TileListing";
 
@@ -46,7 +48,62 @@ public class Tile : MonoBehaviour, ListableObject
     }
     public Inhabitance PopulationType {  get { return _planetInhabitance; } }
 
-	// Use this for initialization
+	// New Generation code - handled in Sector/GenerateTile, sent here
+    public void Init(Sector sector, string type, string name, Inhabitance pType, int p, Resource rType, int rCount, TileSize size)
+    {
+        _squad = this.GetComponent<Squad>();
+        _squad.Init(Team.Uninhabited, sector, _name);
+        _diplomacy = new Dictionary<global::Team, bool>();
+        transform.SetParent(sector.transform);
+
+        _planetType = type;
+        _name = name;
+        _planetInhabitance = pType;
+        _population = p;
+        _resourceType = rType;
+        _resourceCount = rCount;
+
+        var mapManager = MapManager.Instance;
+        var system = GetComponent<ParticleSystem>();
+        var renderer = system.GetComponent<Renderer>();
+
+        _radius = 4.0f;
+        _clickRadius = 1.5f;
+        system.startSize = 5.0f;
+        if (size == TileSize.Small)
+        {
+            system.startSize *= 0.5f;
+            _radius = 1.0f;
+            _clickRadius = 1.0f;
+        }
+
+        renderer.material.mainTexture = mapManager.PlanetTextureTable[_planetType].Texture;
+        renderer.material.mainTextureOffset = mapManager.PlanetTextureTable[_planetType].TextureOffset;
+        renderer.material.mainTextureScale = mapManager.PlanetTextureTable[_planetType].TextureScale;
+
+        system.enableEmission = true;
+        renderer.enabled = true;
+
+        if (_population > 0)
+        {
+            _team = Team.Indigenous;
+            _squad.Team = Team.Indigenous;
+
+            if (!GameManager.Instance.Players.ContainsKey(_team))
+                GameManager.Instance.AddAIPlayer(_team);
+            GameManager.Instance.Players[_team].AddSoldiers(this, _planetInhabitance, _population);
+            GameManager.Instance.Players[_team].ClaimTile(this);
+            // generate random defenses if space age
+        }
+    }
+
+    void Start()
+    {
+
+    }
+
+   // Old Generation code - commenting out because it's too beautiful to delete.
+        /*
     public void Init(string type, string name, Sector sector)
     {
         _name = name;
@@ -61,8 +118,26 @@ public class Tile : MonoBehaviour, ListableObject
     {
         // Determine tile type
         var mapManager = MapManager.Instance;
-        // Determine Size, Population, and Resource Amount
+         
+        var chance = (float)GameManager.Generator.NextDouble();
+            foreach (var planet in MapManager.Instance.PlanetTypeSpawnTable)
+            {
+                if (chance <= planet.Value)
+                {
+                    type = planet.Key;
+                    break;
+                }
+            }
 
+            if (!_planetCounts.ContainsKey(type))
+                _planetCounts.Add(type, 0);
+            _planetCounts[type]++;
+
+            suffix = "-"
+            + Math.Abs(_gridPos.Key).ToString() + Math.Abs(_gridPos.Value).ToString()
+            + PlanetSuffix(type, _planetCounts[type]);
+          
+         
         // Determine Inhabitance
         var chance = (float)GameManager.Generator.NextDouble();
         foreach (var inhabit in mapManager.PlanetInhabitanceSpawnTable[_planetType])
@@ -122,7 +197,7 @@ public class Tile : MonoBehaviour, ListableObject
             }
         }
 
-        if(mapManager.PlanetTextureTable[_planetType].Texture != null)
+        if (mapManager.PlanetTextureTable[_planetType].Texture != null)
         {
             var system = GetComponent<ParticleSystem>();
             var renderer = system.GetComponent<Renderer>();
@@ -156,6 +231,7 @@ public class Tile : MonoBehaviour, ListableObject
             }
         }
 	}
+         */
 
 	// Update is called once per frame
 	void Update () 
@@ -197,6 +273,8 @@ public class Tile : MonoBehaviour, ListableObject
         {
             _diplomacy[t] = false;
         }
+
+        HumanPlayer.Instance.Control(HumanPlayer.Instance.Squad.gameObject);
     }
 
     public string Undeploy(bool destroyStructure)

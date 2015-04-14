@@ -21,7 +21,8 @@ public class RetreatEvent : GameEvent
         base.Progress();
 
         var closest = MapManager.Instance.FindNearestSector(_squad.Sector, _squad.transform.position);
-        var pos = (closest.transform.position + _squad.Sector.transform.position) / 2.0f;
+        var dir = (closest.transform.position - _squad.Sector.transform.position).normalized;
+        var pos = (closest.transform.position + _squad.Sector.transform.position) / 2.0f + dir * 2.0f;
 
         _squad.transform.position = pos;
         _squad.Mission = null;
