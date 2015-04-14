@@ -13,7 +13,8 @@ public class HeavyFighterResearch : Research
 
     private Ship heavyFighterShip;
 
-    public HeavyFighterResearch(Ship ship) : base(ship.Name, 4)
+    public HeavyFighterResearch(Ship ship, List<Research> prereqs)
+        : base(ship.Name, 4, prereqs)
     {
         this.heavyFighterShip = ship;
         upgrades.Add(ARMOR, 0);

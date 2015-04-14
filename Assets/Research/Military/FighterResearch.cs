@@ -11,7 +11,8 @@ public class FighterResearch : Research
 
     private Ship fighterShip;
 
-    public FighterResearch(Ship ship) : base(ship.Name, 1)
+    public FighterResearch(Ship ship, List<Research> prereqs) 
+        : base(ship.Name, 1, prereqs)
     {
         this.fighterShip = ship;
         upgrades.Add(ARMOR, 0);

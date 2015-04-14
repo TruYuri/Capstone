@@ -174,11 +174,11 @@ public class GameManager : MonoBehaviour
     public ResearchTree GenerateMilitaryTree(Dictionary<string, Ship> shipDefs)
     {
         var tree = new ResearchTree(5);
-        tree.AddResearch(1, new FighterResearch(shipDefs["Fighter"]));
-        tree.AddResearch(2, new TransportResearch(shipDefs["Transport"]));
-        tree.AddResearch(3, new GuardSatelliteResearch(shipDefs["Guard Satellite"]));
-        tree.AddResearch(4, new HeavyFighterResearch(shipDefs["Heavy Fighter"]));
-        tree.AddResearch(5, new BehemothResearch(shipDefs["Behemoth"]));
+        tree.AddResearch(1, new FighterResearch(shipDefs["Fighter"], null));
+        tree.AddResearch(2, new TransportResearch(shipDefs["Transport"], new List<Research>() { tree.GetResearch(1) }));
+        tree.AddResearch(3, new GuardSatelliteResearch(shipDefs["Guard Satellite"], new List<Research>() { tree.GetResearch(2) }));
+        tree.AddResearch(4, new HeavyFighterResearch(shipDefs["Heavy Fighter"], new List<Research>() { tree.GetResearch(3) }));
+        tree.AddResearch(5, new BehemothResearch(shipDefs["Behemoth"], new List<Research>() { tree.GetResearch(4) }));
 
         return tree;
     }
@@ -186,11 +186,11 @@ public class GameManager : MonoBehaviour
     public ResearchTree GenerateScienceTree(Dictionary<string, Ship> shipDefs)
     {
         var tree = new ResearchTree(5);
-        tree.AddResearch(1, new CommandShipResearch(shipDefs["Command Ship"]));
-        tree.AddResearch(2, new EfficiencyResearch(shipDefs));
-        tree.AddResearch(3, new ComplexResearch(shipDefs));
-        tree.AddResearch(4, new RelayResearch(shipDefs["Relay"] as Structure));
-        tree.AddResearch(5, new WarpPortalResearch(shipDefs["Warp Portal"] as Structure));
+        tree.AddResearch(1, new CommandShipResearch(shipDefs["Command Ship"], null));
+        tree.AddResearch(2, new EfficiencyResearch(shipDefs, null));
+        tree.AddResearch(3, new ComplexResearch(shipDefs, null));
+        tree.AddResearch(4, new RelayResearch(shipDefs["Relay"] as Structure, null));
+        tree.AddResearch(5, new WarpPortalResearch(shipDefs["Warp Portal"] as Structure, new List<Research>() { tree.GetResearch(4) }));
 
         return tree;
     }
@@ -222,17 +222,37 @@ public class GameManager : MonoBehaviour
             if(team.Key != HumanPlayer.Instance.Team)
                 team.Value.EndTurn();
         }
+        // debug
 
-        if(!_paused)
-            NextEvent();
+        if (_paused)
+            return;
+
+        ProcessEvents();
+
+        int count = 0;
+        foreach (var player in _players)
+            if (player.Value.TurnEnded)
+                count++;
+        if (count == _players.Count)
+        {
+            _eventQueue = _nextEventQueue;
+            _nextEventQueue = new Queue<GameEvent>();
+            ProcessEvents();
+
+            foreach (var player in _players)
+                player.Value.TurnEnd();
+        }
 	}
 
-    public void AddEvent(GameEvent gameEvent)
+    public void AddEvent(GameEvent gameEvent, bool immediate)
     {
-        _eventQueue.Enqueue(gameEvent);
+        if (immediate)
+            _eventQueue.Enqueue(gameEvent);
+        else
+            _nextEventQueue.Enqueue(gameEvent);
     }
 
-    public void NextEvent()
+    private void ProcessEvents()
     {
         while (_eventQueue.Count > 0)
         {
@@ -250,22 +270,8 @@ public class GameManager : MonoBehaviour
 
         foreach (var item in _nextEventQueue)
         {
-            if(item.AssertValid())
+            if (item.AssertValid())
                 item.Update();
         }
-
-        int count = 0;
-        foreach (var player in _players)
-            if (player.Value.TurnEnded)
-                count++;
-        if(count == _players.Count)
-        {
-            _eventQueue = _nextEventQueue;
-            _nextEventQueue = new Queue<GameEvent>();
-
-            foreach (var player in _players)
-                player.Value.TurnEnd();
-        }
-
     }
 }

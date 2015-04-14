@@ -12,7 +12,8 @@ public class EfficiencyResearch : Research
 
     private Dictionary<string, Ship> shipDefinitions;
 
-    public EfficiencyResearch(Dictionary<string, Ship> shipDefinitions) : base("Efficiency", 2)
+    public EfficiencyResearch(Dictionary<string, Ship> shipDefinitions, List<Research> prereqs)
+        : base("Efficiency", 2, prereqs)
     {
         this.shipDefinitions = shipDefinitions;
         upgrades.Add(GATHERING, 0);

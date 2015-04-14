@@ -12,7 +12,8 @@ public class CommandShipResearch : Research
 
     Ship commandShip;
 
-    public CommandShipResearch(Ship ship) : base(ship.Name, 1)
+    public CommandShipResearch(Ship ship, List<Research> prereqs)
+        : base(ship.Name, 1, prereqs)
     {
         this.commandShip = ship;
         upgrades.Add(ARMOR, 0);

@@ -45,27 +45,31 @@ public class HumanPlayer : Player
         AddShip(squad, "Fighter");
         AddShip(squad, "Transport");
         var t1 = AddShip(squad, "Transport");
-        var t2 = AddShip(squad, "Transport");
-        var t3 = AddShip(squad, "Transport");
+        AddShip(squad, "Transport");
+        AddShip(squad, "Transport");
         var t4 = AddShip(squad, "Transport");
         AddShip(squad, "Heavy Fighter");
         AddShip(squad, "Behemoth");
         var r = AddShip(squad, "Resource Transport");
         var r1 = AddShip(squad, "Resource Transport");
-        r.Resources[Resource.Ore] = 100;
-        r.Resources[Resource.Oil] = 50;
-        r.Resources[Resource.Forest] = 25;
-        r.Resources[Resource.Asterminium] = 25;
-        r1.Resources[Resource.Ore] = 25;
-        r1.Resources[Resource.Oil] = 25;
-        r1.Resources[Resource.Forest] = 10;
-        r1.Resources[Resource.Asterminium] = 10;
-        t1.Population[Inhabitance.Primitive] = 50;
-        t2.Population[Inhabitance.Industrial] = 50;
-        t3.Population[Inhabitance.SpaceAge] = 50;
-        t4.Population[Inhabitance.Primitive] = 5;
-        t4.Population[Inhabitance.Industrial] = 10;
-        t4.Population[Inhabitance.SpaceAge] = 15;
+
+        AddResources(r, Resource.Ore, 100);
+        AddResources(r, Resource.Oil, 50);
+        AddResources(r, Resource.Forest, 25);
+        AddResources(r, Resource.Asterminium, 25);
+
+        AddResources(r1, Resource.Ore, 25);
+        AddResources(r1, Resource.Oil, 25);
+        AddResources(r1, Resource.Forest, 10);
+        AddResources(r1, Resource.Asterminium, 10);
+
+        AddSoldiers(t1, Inhabitance.Primitive, 50);
+        AddSoldiers(t1, Inhabitance.Industrial, 50);
+        AddSoldiers(t1, Inhabitance.SpaceAge, 50);
+
+        AddSoldiers(t4, Inhabitance.Primitive, 5);
+        AddSoldiers(t4, Inhabitance.Industrial, 10);
+        AddSoldiers(t4, Inhabitance.SpaceAge, 15);
         /* debug */
 
         _controlledIsWithinRange = true;
@@ -199,7 +203,7 @@ public class HumanPlayer : Player
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, _maxCamDistance, ~LayerMask.NameToLayer("Sector")))
+            if (Physics.Raycast(ray, out hit, float.PositiveInfinity, ~LayerMask.NameToLayer("Sector")))
             {
                 float speed = 25.0f;
 
@@ -219,11 +223,11 @@ public class HumanPlayer : Player
     {
         if(type == "Military")
         {
-            _militaryTree.GetResearch(name).Display(panel, _numResearchStations);
+            _militaryTree.GetResearch(name).Display(panel, _resourceRegistry[Resource.Stations]);
         }
         else if(type == "Scientific")
         {
-            _scienceTree.GetResearch(name).Display(panel, _numResearchStations);
+            _scienceTree.GetResearch(name).Display(panel, _resourceRegistry[Resource.Stations]);
         }
     }
 
@@ -246,7 +250,7 @@ public class HumanPlayer : Player
         switch(_controlledSquad.tag)
         {
             case TILE_TAG:
-                GUIManager.Instance.TileSelected(_controlledTile, _numResearchStations, _shipDefinitions);
+                GUIManager.Instance.TileSelected(_controlledTile, _shipDefinitions);
                 break;
             case SQUAD_TAG:
             case COMMAND_SHIP_TAG:

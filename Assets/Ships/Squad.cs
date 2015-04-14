@@ -309,8 +309,8 @@ public class Squad : MonoBehaviour, ListableObject
 
         if (winner) // remove random soldiers from random ships in the fleet
         {
-            GameManager.Instance.Players[enemy.Team].RemoveSoldiers(enemy.PopulationType, enemy.Population);
-            GameManager.Instance.Players[_team].AddSoldiers(enemy.PopulationType, enemy.Population / 2);
+            GameManager.Instance.Players[enemy.Team].RemoveSoldiers(enemy, true, enemy.PopulationType, enemy.Population);
+            GameManager.Instance.Players[_team].AddSoldiers(enemy, enemy.PopulationType, enemy.Population / 2);
 
             enemy.Population /= 2; // squad won, so halve the planet population.
 
@@ -337,7 +337,7 @@ public class Squad : MonoBehaviour, ListableObject
                 {
                     if (randSoldier < _ships[randShip].Population[types[i]] && saveChance >= 0.3f - i * 0.1f)
                     {
-                        _ships[randShip].Population[types[i]]--;
+                        GameManager.Instance.Players[_team].RemoveSoldiers(_ships[randShip], types[i], 1);
                         populationLoss[types[i]]++;
                         nTroops--;
                         break;
@@ -352,7 +352,7 @@ public class Squad : MonoBehaviour, ListableObject
             {
                 foreach(var type in types)
                 {
-                    GameManager.Instance.Players[_team].RemoveSoldiers(type, ship.Population[type]);
+                    GameManager.Instance.Players[_team].RemoveSoldiers(ship, type, ship.Population[type]);
                     ship.Population[type] = 0;
                 }
             }
@@ -386,15 +386,7 @@ public class Squad : MonoBehaviour, ListableObject
 
             foreach (var type in types)
             {
-                if (type == enemy.PopulationType)
-                {
-                    var min = Math.Min(populationLoss[type], enemy.Population);
-                    enemy.Population -= min;
-                    populationLoss[type] -= min;
-                }
-
-                if (enemy.Structure != null)
-                    enemy.Structure.Population[type] -= populationLoss[type];
+                GameManager.Instance.Players[enemy.Team].RemoveSoldiers(enemy, true, type, populationLoss[type]);
             }
         }
 
@@ -402,9 +394,6 @@ public class Squad : MonoBehaviour, ListableObject
         {
             if (populationLoss[type] > 0)
                 lost.Value.Add(type.ToString(), populationLoss[type]);
-
-            if (winner) GameManager.Instance.Players[_team].RemoveSoldiers(type, populationLoss[type]);
-            else GameManager.Instance.Players[enemy.Team].RemoveSoldiers(type, populationLoss[type]);
         }
 
         return lost;

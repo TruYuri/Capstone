@@ -11,7 +11,8 @@ public class GuardSatelliteResearch : Research
 
     private Ship guardSatelliteShip;
 
-    public GuardSatelliteResearch(Ship ship) : base(ship.Name, 3)
+    public GuardSatelliteResearch(Ship ship, List<Research> prereqs) 
+        : base(ship.Name, 3, prereqs)
     {
         this.guardSatelliteShip = ship;
         upgrades.Add(ARMOR, 0);

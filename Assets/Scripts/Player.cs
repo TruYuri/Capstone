@@ -21,7 +21,6 @@ public class Player : MonoBehaviour
     protected Dictionary<Resource, int> _resourceRegistry;
     protected List<Squad> _squads;
     protected List<Tile> _tiles;
-    protected int _numResearchStations;
     protected ResearchTree _militaryTree;
     protected ResearchTree _scienceTree;
 
@@ -57,10 +56,14 @@ public class Player : MonoBehaviour
             _shipRegistry.Add(ship.Key, new HashSet<Ship>());
         }
 
-        _soldierRegistry.Add(Inhabitance.Uninhabited, 0);
         _soldierRegistry.Add(Inhabitance.Primitive, 0);
         _soldierRegistry.Add(Inhabitance.Industrial, 0);
         _soldierRegistry.Add(Inhabitance.SpaceAge, 0);
+        _resourceRegistry.Add(Resource.Ore, 0);
+        _resourceRegistry.Add(Resource.Oil, 0);
+        _resourceRegistry.Add(Resource.Forest, 0);
+        _resourceRegistry.Add(Resource.Asterminium, 0);
+        _resourceRegistry.Add(Resource.Stations, 0);
 
         if(_team != global::Team.Indigenous)
             CreateNewCommandShip();
@@ -82,7 +85,7 @@ public class Player : MonoBehaviour
         // check range here
         var path = MapManager.Instance.AStarSearch(_commandShipSquad.Sector, _controlledSquad.Sector, 5, _team, "Relay");
         _controlledIsWithinRange = path != null;
-        _relayDistance = path != null ? (path.Count - 1) / 5 : 0;
+        _relayDistance = path != null ? (path.Count - 1) : 0;
     }
 
 	// Update is called once per frame
@@ -104,23 +107,28 @@ public class Player : MonoBehaviour
 
     public void CreateBattleEvent(Squad squad1, Tile tile)
     {
-        GameManager.Instance.AddEvent(new BattleEvent(squad1, tile));
+        GameManager.Instance.AddEvent(new BattleEvent(squad1, tile), true);
     }
 
     public void CreateBattleEvent(Squad squad1, Squad squad2)
     {
-        GameManager.Instance.AddEvent(new BattleEvent(squad1, squad2));
+        GameManager.Instance.AddEvent(new BattleEvent(squad1, squad2), true);
+    }
+
+    public void CreateRetreatEvent(Squad squad)
+    {
+        GameManager.Instance.AddEvent(new RetreatEvent(squad), true);
     }
 
     public void CreateBuildEvent(string shipName)
     {
-        GameManager.Instance.AddEvent(new BuildEvent(_relayDistance + 1, this, _controlledTile, _shipDefinitions[shipName].Copy()));
+        GameManager.Instance.AddEvent(new BuildEvent(_relayDistance + 1, this, _controlledTile, _shipDefinitions[shipName].Copy()), false);
         EndTurn();
     }
 
     public void CreateDeployEvent(int shipIndex)
     {
-        GameManager.Instance.AddEvent(new DeployEvent(_relayDistance, this, _controlledSquad.Ships[shipIndex] as Structure, _controlledSquad, _controlledSquad.Tile));
+        GameManager.Instance.AddEvent(new DeployEvent(_relayDistance, this, _controlledSquad.Ships[shipIndex] as Structure, _controlledSquad, _controlledSquad.Tile), false);
         EndTurn();
     }
 
@@ -131,34 +139,31 @@ public class Player : MonoBehaviour
 
     public void CreateUndeployEvent(Tile tile, bool destroy)
     {
-        GameManager.Instance.AddEvent(new UndeployEvent(_relayDistance, _team, tile, destroy));
+        GameManager.Instance.AddEvent(new UndeployEvent(_relayDistance, _team, tile, destroy), false);
         EndTurn();
     }
 
     public void CreateDiplomacyEvent()
     {
-        GameManager.Instance.AddEvent(new DiplomacyEvent(_relayDistance, this, _controlledTile));
+        GameManager.Instance.AddEvent(new DiplomacyEvent(_relayDistance, this, _controlledTile), false);
         EndTurn();
     }
 
     public void CreateTravelEvent(Squad squad, Sector toSector, Vector3 dest, float speed)
     {
-        GameManager.Instance.AddEvent(new TravelEvent(_relayDistance, squad, toSector, dest, speed));
-    }
-
-    public void CreateRetreatEvent(Squad squad)
-    {
-        GameManager.Instance.AddEvent(new RetreatEvent(squad));
+        GameManager.Instance.AddEvent(new TravelEvent(_relayDistance, squad, toSector, dest, speed), false);
+        EndTurn();
     }
 
     public void CreateCommandShipLostEvent(Squad squad)
     {
-        GameManager.Instance.AddEvent(new CommandShipLostEvent(squad, this));
+        GameManager.Instance.AddEvent(new CommandShipLostEvent(squad, this), true);
     }
 
     public void CreateWarpEvent(Tile exitGate, Squad squad)
     {
-        GameManager.Instance.AddEvent(new WarpEvent(_relayDistance, squad, exitGate));
+        GameManager.Instance.AddEvent(new WarpEvent(_relayDistance, squad, exitGate), false);
+        EndTurn();
     }
 
     public void EndTurn()
@@ -169,13 +174,13 @@ public class Player : MonoBehaviour
     // DON'T CALL THIS FROM HERE - for GameManager!
     public virtual void TurnEnd()
     {
-        _numResearchStations = _shipRegistry["Research Complex"].Count(r => r.IsDeployed == true);
-        _numResearchStations += _shipRegistry["Base"].Count(r => r.IsDeployed == true);
+        _resourceRegistry[Resource.Stations] = _shipRegistry["Research Complex"].Count(r => r.IsDeployed == true);
+        _resourceRegistry[Resource.Stations] += _shipRegistry["Base"].Count(r => r.IsDeployed == true);
         _militaryTree.Advance();
         _scienceTree.Advance();
 
         foreach (var tile in _tiles)
-            tile.Gather();
+            tile.GatherAndGrow();
 
         _turnEnded = false;
     }
@@ -231,9 +236,12 @@ public class Player : MonoBehaviour
         {
             tile.Claim(_team);
             tile.Population += Mathf.FloorToInt(IP * DC * ((float)GameManager.Generator.NextDouble() * (0.75f - 0.25f) + 0.25f));
-            AddSoldiers(tile.PopulationType, tile.Population);
+            AddSoldiers(tile, tile.PopulationType, tile.Population);
             return true;
         }
+
+        tile.EndDiplomaticEffort(_team);
+
         return false;
     }
 
@@ -374,6 +382,8 @@ public class Player : MonoBehaviour
         Control(_commandShipSquad.gameObject);
     }
 
+    // Utility functions to ensure proper management of resources
+
     public void ClaimTile(Tile tile)
     {
         _tiles.Add(tile);
@@ -406,15 +416,16 @@ public class Player : MonoBehaviour
         squad.Ships.Remove(ship);
 
         foreach (var type in ship.Population)
-            RemoveSoldiers(type.Key, type.Value);
+            RemoveSoldiers(ship, type.Key, type.Value);
     }
 
     public void RemoveAllShips(Squad squad)
     {
+        var types = _soldierRegistry.Keys.ToList();
         for (int i = 0; i < squad.Ships.Count; i++)
         {
-            foreach (var type in squad.Ships[i].Population)
-                RemoveSoldiers(type.Key, type.Value);
+            foreach (var type in types)
+                RemoveSoldiers(squad.Ships[i], type, squad.Ships[i].Population[type]);
 
             _shipRegistry[squad.Ships[i].Name].Remove(squad.Ships[i]);
             squad.Ships[i] = null;
@@ -423,13 +434,50 @@ public class Player : MonoBehaviour
         squad.Ships.Clear();
     }
 
-    public void AddSoldiers(Inhabitance type, int count)
+    public void AddSoldiers(Tile tile, Inhabitance type, int count)
     {
+        tile.Population += count;
         _soldierRegistry[type] += count;
     }
 
-    public void RemoveSoldiers(Inhabitance type, int count)
+    public void AddSoldiers(Ship ship, Inhabitance type, int count)
     {
+        ship.Population[type] += count;
+        _soldierRegistry[type] += count;
+    }
+
+    public void RemoveSoldiers(Tile tile, bool structure, Inhabitance type, int count)
+    {
+        if(structure && tile.Structure != null)
+        {
+            var min = tile.Structure.Population[type] < count ? tile.Structure.Population[type] : count;
+            count -= min;
+
+            RemoveSoldiers(tile.Structure, type, min);
+
+            if (min > 0 && tile.PopulationType == type)
+                tile.Population -= min;
+        }
+        else
+            tile.Population -= count;
         _soldierRegistry[type] -= count;
+    }
+
+    public void RemoveSoldiers(Ship ship, Inhabitance type, int count)
+    {
+        ship.Population[type] -= count;
+        _soldierRegistry[type] -= count;
+    }
+
+    public void AddResources(Ship ship, Resource type, int count)
+    {
+        ship.Resources[type] += count;
+        _resourceRegistry[type] += count;
+    }
+
+    public void RemoveResources(Ship ship, Resource type, int count)
+    {
+        ship.Resources[type] -= count;
+        _resourceRegistry[type] -= count;
     }
 }

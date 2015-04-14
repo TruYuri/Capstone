@@ -104,7 +104,7 @@ public class Structure : Ship, ListableObject
         if((types & ResourceGatherType.Natural) > 0)
         {
             min = Math.Min(gatherRate, resources);
-            this.resources[rType] += min;
+            GameManager.Instance.Players[team].AddResources(this, rType, min);
             gathertypes.Add(new KeyValuePair<ResourceGatherType, int>(ResourceGatherType.Natural, min));
         }
         if((types & ResourceGatherType.Research) > 0)
@@ -115,7 +115,7 @@ public class Structure : Ship, ListableObject
         {
             min = Math.Min(gatherRate, capacity - CountPopulation());
             min = Math.Min(min, population);
-            this.population[pType] += min;
+            GameManager.Instance.Players[team].AddSoldiers(this, pType, min);
             gathertypes.Add(new KeyValuePair<ResourceGatherType, int>(ResourceGatherType.Soldiers, min));
         }
 

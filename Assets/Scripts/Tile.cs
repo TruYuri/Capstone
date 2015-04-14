@@ -76,6 +76,7 @@ public class Tile : MonoBehaviour, ListableObject
 
         chance = (float)GameManager.Generator.NextDouble();
         var small = true;
+        int population = 0;
         if (chance < float.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_SPAWN_DETAIL]))
         {
             small = true;
@@ -85,7 +86,7 @@ public class Tile : MonoBehaviour, ListableObject
             {
                 minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_POPULATION_MIN_DETAIL]);
                 maximum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_POPULATION_MAX_DETAIL]);
-                _population = GameManager.Generator.Next(minimum, maximum + 1);
+                population = GameManager.Generator.Next(minimum, maximum + 1);
             }
 
             minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_RESOURCE_MIN_DETAIL]);
@@ -101,7 +102,7 @@ public class Tile : MonoBehaviour, ListableObject
             {
                 minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_POPULATION_MIN_DETAIL]);
                 maximum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_POPULATION_MAX_DETAIL]);
-                _population = GameManager.Generator.Next(minimum, maximum + 1);
+                population = GameManager.Generator.Next(minimum, maximum + 1);
             }
 
             minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_RESOURCE_MIN_DETAIL]);
@@ -142,13 +143,14 @@ public class Tile : MonoBehaviour, ListableObject
             system.enableEmission = true;
             renderer.enabled = true;
 
-            if (_population > 0)
+            if (population > 0)
             {
                 _team = Team.Indigenous;
                 _squad.Team = Team.Indigenous;
 
                 if (!GameManager.Instance.Players.ContainsKey(_team))
                     GameManager.Instance.AddAIPlayer(_team);
+                GameManager.Instance.Players[_team].AddSoldiers(this, _planetInhabitance, population);
                 GameManager.Instance.Players[_team].ClaimTile(this);
                 // generate random defenses if space age
             }
@@ -214,8 +216,10 @@ public class Tile : MonoBehaviour, ListableObject
         _structure.Deploy(this);
     }
 
-    public void Gather()
+    public void GatherAndGrow()
     {
+        _population += Mathf.CeilToInt(_population * 0.05f);
+
         if (_structure == null)
             return;
 
@@ -227,7 +231,7 @@ public class Tile : MonoBehaviour, ListableObject
             {
                 case ResourceGatherType.None:
                 case ResourceGatherType.Soldiers:
-                    _population -= resource.Value;
+                    GameManager.Instance.Players[_team].RemoveSoldiers(this, false, PopulationType, resource.Value);
                     break;
                 case ResourceGatherType.Research:
                     break;
@@ -284,7 +288,7 @@ public class Tile : MonoBehaviour, ListableObject
         panel.transform.FindChild("TeamName").GetComponent<Text>().text = _team.ToString();
         panel.transform.FindChild("TeamIcon").GetComponent<Image>().sprite = GUIManager.Instance.Icons[_team.ToString()];
 
-        if(_team == global::Team.Indigenous)
+        if(_team == Team.Indigenous)
         {
             if(_diplomacy.ContainsKey(HumanPlayer.Instance.Team) && _diplomacy[HumanPlayer.Instance.Team])
             {

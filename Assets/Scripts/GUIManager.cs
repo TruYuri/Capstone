@@ -443,7 +443,7 @@ public class GUIManager : MonoBehaviour
         ReloadTileList();
     }
 
-    public void TileSelected(Tile tile, int playerStations, Dictionary<string, Ship> defs)
+    public void TileSelected(Tile tile, Dictionary<string, Ship> defs)
     {
         var squad = tile.gameObject.GetComponent<Squad>();
         SquadSelected(squad);
@@ -464,7 +464,6 @@ public class GUIManager : MonoBehaviour
         {
             // populate structure info
             tile.Structure.Resources.Remove(Resource.Stations);
-            tile.Structure.Resources.Add(Resource.Stations, playerStations);
             tile.Structure.PopulateStructurePanel(_interface["Structure"].gameObject);
 
             var buildList = new List<Ship>();
@@ -819,14 +818,14 @@ public class GUIManager : MonoBehaviour
         {
             while(from.Resources[resource] > 0 && to.CountResources() < to.ResourceCapacity)
             {
-                from.Resources[resource]--;
-                to.Resources[resource]++;
+                HumanPlayer.Instance.RemoveResources(from, resource, 1);
+                HumanPlayer.Instance.AddResources(to, resource, 1);
             }
         }
         else
         {
-            from.Resources[resource]--;
-            to.Resources[resource]++;
+            HumanPlayer.Instance.RemoveResources(from, resource, 1);
+            HumanPlayer.Instance.AddResources(to, resource, 1);
         }
 
         UpdateTransferInterface(false, true, true, true);

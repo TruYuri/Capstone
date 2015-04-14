@@ -10,7 +10,8 @@ public class WarpPortalResearch : Research
 
     private Structure warpPortal;
 
-    public WarpPortalResearch(Structure warpPortal) : base(warpPortal.Name, 3)
+    public WarpPortalResearch(Structure warpPortal, List<Research> prereqs)
+        : base(warpPortal.Name, 3, prereqs)
     {
         this.warpPortal = warpPortal;
         upgrades.Add(RANGE, 0);
@@ -35,7 +36,7 @@ public class WarpPortalResearch : Research
     private void UpgradeRange()
     {
         upgrades[RANGE]++;
-        warpPortal.Range += 1;
+        warpPortal.Range++;
     }
 
     private void UpgradeDefense()

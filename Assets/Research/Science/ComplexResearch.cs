@@ -8,9 +8,10 @@ public class ComplexResearch : Research
     private const string DEFENSE = "Defense";
     private const string CAPACITY = "Capacity";
 
-    private Dictionary<string, Structure> structureDefinitions; 
+    private Dictionary<string, Structure> structureDefinitions;
 
-    public ComplexResearch(Dictionary<string, Ship> shipDefinitions) : base("Complex", 3)
+    public ComplexResearch(Dictionary<string, Ship> shipDefinitions, List<Research> prereqs)
+        : base("Complex", 3, prereqs)
     {
         structureDefinitions = new Dictionary<string, Structure>()
         {

@@ -10,7 +10,8 @@ public class RelayResearch : Research
 
     private Structure relay;
 
-    public RelayResearch(Structure relay) : base(relay.Name, 3)
+    public RelayResearch(Structure relay, List<Research> prereqs) 
+        : base(relay.Name, 3, prereqs)
     {
         this.relay = relay;
         upgrades.Add(RANGE, 0);
@@ -35,7 +36,7 @@ public class RelayResearch : Research
     private void UpgradeRange()
     {
         upgrades[RANGE]++;
-        relay.Range += 1;
+        relay.Range++;
     }
 
     private void UpgradeDefense()

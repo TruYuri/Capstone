@@ -6,12 +6,14 @@ public class Research
     protected string name;
     protected int level;
     protected Dictionary<string, int> upgrades;
+    protected List<Research> prereqs;
 
     public string Name { get { return name; } }
 
-    public Research(string name, int level)
+    public Research(string name, int level, List<Research> prereqs)
     {
         this.upgrades = new Dictionary<string, int>();
+        this.prereqs = prereqs;
         this.level = level;
         this.name = name;
     }

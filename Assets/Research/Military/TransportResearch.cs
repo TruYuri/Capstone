@@ -11,7 +11,8 @@ public class TransportResearch : Research
 
     private Ship transportShip;
 
-    public TransportResearch(Ship ship) : base(ship.Name, 2)
+    public TransportResearch(Ship ship, List<Research> prereqs)
+        : base(ship.Name, 2, prereqs)
     {
         this.transportShip = ship;
         upgrades.Add(ARMOR, 0);

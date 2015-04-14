@@ -13,7 +13,8 @@ public class BehemothResearch : Research
 
     private Ship behemothShip;
 
-    public BehemothResearch(Ship ship) : base(ship.Name, 5)
+    public BehemothResearch(Ship ship, List<Research> prereqs)
+        : base(ship.Name, 5, prereqs)
     {
         this.behemothShip = ship;
         upgrades.Add(ARMOR, 0);
