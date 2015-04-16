@@ -53,7 +53,7 @@ public class ComplexResearch : Research
         upgrades[CAPACITY]++;
     }
 
-    public override bool Unlock()
+    public override bool CanUnlock(Dictionary<Resource, int> resources)
     {
         structureDefinitions["Gathering Complex"].Unlocked = true;
         structureDefinitions["Research Complex"].Unlocked = true;
@@ -62,7 +62,7 @@ public class ComplexResearch : Research
         return true;
     }
 
-    public override void Display(GameObject panel, int stations)
+    public override void Display(GameObject panel, Dictionary<Resource, int> resources)
     {
         var items = new Dictionary<string, Transform>()
         {
@@ -73,7 +73,7 @@ public class ComplexResearch : Research
         foreach (var item in items)
         {
             item.Value.FindChild("CountText").GetComponent<Text>().text = upgrades[item.Key].ToString() + "/10";
-            if (CanUpgrade(item.Key, stations) && Unlock())
+            if (CanUpgrade(item.Key, resources[Resource.Stations]) && CanUnlock(resources))
                 item.Value.GetComponent<Button>().interactable = true;
             else
                 item.Value.GetComponent<Button>().interactable = false;

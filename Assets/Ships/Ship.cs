@@ -119,13 +119,13 @@ public class Ship : ListableObject
         };
     }
 
-    protected bool CanConstruct(Dictionary<Resource, int> resources)
+    public bool CanConstruct(Dictionary<Resource, int> resources, int n)
     {
         return unlocked && 
-            resources[Resource.Ore] >= requiredResources[Resource.Ore] &&
-            resources[Resource.Oil] >= requiredResources[Resource.Oil] &&
-            resources[Resource.Asterminium] >= requiredResources[Resource.Asterminium] &&
-            resources[Resource.Forest] >= requiredResources[Resource.Forest];
+            resources[Resource.Ore] >= requiredResources[Resource.Ore] * n &&
+            resources[Resource.Oil] >= requiredResources[Resource.Oil] * n &&
+            resources[Resource.Asterminium] >= requiredResources[Resource.Asterminium] * n &&
+            resources[Resource.Forest] >= requiredResources[Resource.Forest] * n;
     }
 
     public virtual void RecalculateResources()
@@ -190,7 +190,7 @@ public class Ship : ListableObject
         entry.GetComponent<CustomUIAdvanced>().data = listName + "|" + name;
 
         var resources = data as Dictionary<Resource, int>;
-        if (CanConstruct(resources))
+        if (CanConstruct(resources, 1))
             entry.GetComponent<Button>().interactable = true;
 
         return entry;

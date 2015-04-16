@@ -176,8 +176,6 @@ public class Player : MonoBehaviour
     {
         _resourceRegistry[Resource.Stations] = _shipRegistry["Research Complex"].Count(r => r.IsDeployed == true);
         _resourceRegistry[Resource.Stations] += _shipRegistry["Base"].Count(r => r.IsDeployed == true);
-        _militaryTree.Advance();
-        _scienceTree.Advance();
 
         foreach (var tile in _tiles)
             tile.GatherAndGrow();

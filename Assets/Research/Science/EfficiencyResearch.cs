@@ -87,13 +87,13 @@ public class EfficiencyResearch : Research
         shipDefinitions[RESOURCE_TRANSPORT].Capacity += 0;
     }
 
-    public override bool Unlock()
+    public override bool CanUnlock(Dictionary<Resource, int> resources)
     {
         shipDefinitions["Resource Transport"].Unlocked = true;
         return shipDefinitions["Resource Transport"].Unlocked;
     }
 
-    public override void Display(GameObject panel, int stations)
+    public override void Display(GameObject panel, Dictionary<Resource, int> resources)
     {
         var items = new Dictionary<string, Transform>()
         {
@@ -106,7 +106,7 @@ public class EfficiencyResearch : Research
         foreach (var item in items)
         {
             item.Value.FindChild("CountText").GetComponent<Text>().text = upgrades[item.Key].ToString() + "/10";
-            if (CanUpgrade(item.Key, stations) && Unlock())
+            if (CanUpgrade(item.Key, resources[Resource.Stations]) && CanUnlock(resources))
                 item.Value.GetComponent<Button>().interactable = true;
             else
                 item.Value.GetComponent<Button>().interactable = false;

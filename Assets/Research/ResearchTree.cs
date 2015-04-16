@@ -34,12 +34,6 @@ public class ResearchTree
         return null;
     }
 
-    public void Advance()
-    {
-        for (int i = 0; i < maxLevel; i++)
-            tree[i].Unlock();
-    }
-
     public void Display()
     {
 

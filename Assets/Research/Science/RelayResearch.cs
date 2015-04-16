@@ -45,13 +45,13 @@ public class RelayResearch : Research
         relay.Hull += 5.0f;
     }
 
-    public override bool Unlock()
+    public override bool CanUnlock(Dictionary<Resource, int> resources)
     {
         relay.Unlocked = true;
         return relay.Unlocked;
     }
 
-    public override void Display(GameObject panel, int stations)
+    public override void Display(GameObject panel, Dictionary<Resource, int> resources)
     {
         var items = new Dictionary<string, Transform>()
         {
@@ -59,10 +59,24 @@ public class RelayResearch : Research
             { RANGE, panel.transform.FindChild("RelayRangeButton") },
         };
 
+        var p2 = panel.transform.FindChild("RelayUnlocked");
+        var p1 = panel.transform.FindChild("Relay");
+
+        p1.gameObject.SetActive(false);
+        p2.gameObject.SetActive(false);
+
+        if (unlocked)
+            p2.gameObject.SetActive(true);
+        else
+        {
+            p1.gameObject.SetActive(true);
+            p1.GetComponentInChildren<Button>().interactable = CanUnlock(resources);
+        }
+
         foreach (var item in items)
         {
             item.Value.FindChild("CountText").GetComponent<Text>().text = upgrades[item.Key].ToString() + "/10";
-            if (CanUpgrade(item.Key, stations) && Unlock())
+            if (CanUpgrade(item.Key, resources[Resource.Stations]) && CanUnlock(resources))
                 item.Value.GetComponent<Button>().interactable = true;
             else
                 item.Value.GetComponent<Button>().interactable = false;

@@ -7,7 +7,9 @@ public class Research
     protected int level;
     protected Dictionary<string, int> upgrades;
     protected List<Research> prereqs;
+    protected bool unlocked;
 
+    public bool Unlocked { get { return unlocked; } }
     public string Name { get { return name; } }
 
     public Research(string name, int level, List<Research> prereqs)
@@ -33,12 +35,17 @@ public class Research
     {
     }
 
-    public virtual bool Unlock() 
+    public virtual bool CanUnlock(Dictionary<Resource, int> resources)
     {
         return false;
     }
 
-    public virtual void Display(GameObject panel, int stations) 
+    public virtual void Unlock()
+    {
+        unlocked = true;
+    }
+
+    public virtual void Display(GameObject panel, Dictionary<Resource, int> resources)
     { 
     }
 }
