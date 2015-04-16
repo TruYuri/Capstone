@@ -18,40 +18,33 @@ public class WarpPortalResearch : Research
         upgrades.Add(DEFENSE, 0);
     }
 
-    public override void UpgradeResearch(string name)
+    public override void UpgradeResearch(string name, Dictionary<Resource, int> resources)
     {
         switch(name)
         {
             case RANGE:
-                UpgradeRange();
+                upgrades[RANGE]++;
+                warpPortal.Range++;
                 break;
             case DEFENSE:
-                UpgradeDefense();
+                upgrades[DEFENSE]++;
+                warpPortal.Hull += 5.0f;
                 break;
         }
 
         warpPortal.RecalculateResources();
     }
 
-    private void UpgradeRange()
+    public override void Unlock()
     {
-        upgrades[RANGE]++;
-        warpPortal.Range++;
-    }
-
-    private void UpgradeDefense()
-    {
-        upgrades[DEFENSE]++;
-        warpPortal.Hull += 5.0f;
+        base.Unlock();
+        warpPortal.Unlocked = true;
     }
 
     public override bool CanUnlock(Dictionary<Resource, int> resources)
     {
-        if (unlocked || warpPortal.Unlocked || prereqs == null)
-        {
-            unlocked = true;
+        if (unlocked || warpPortal.Unlocked)
             return true;
-        }
 
         bool unlock = true;
 

@@ -19,70 +19,35 @@ public class FighterResearch : Research
         upgrades.Add(PLATING, 0);
         upgrades.Add(PLASMAS, 0);
         upgrades.Add(THRUSTERS, 0);
+
+        fighterShip.Unlocked = true;
+        Unlock();
     }
 
-    public override void UpgradeResearch(string name) 
+    public override void UpgradeResearch(string name, Dictionary<Resource, int> resources) 
     {
         switch(name)
         {
             case ARMOR:
-                UpgradeArmor();
+                upgrades[ARMOR]++;
+                fighterShip.Hull += 0.25f;
                 break;
             case PLATING:
-                UpgradePlating();
+                upgrades[PLATING]++;
+                fighterShip.Protection = upgrades[PLATING] * 0.02f;
+                fighterShip.Plating++;
                 break;
             case PLASMAS:
-                UpgradePlasmas();
+                upgrades[PLASMAS]++;
+                fighterShip.Firepower += 0.25f;
                 break;
             case THRUSTERS:
-                UpgradeThrusters();
+                upgrades[THRUSTERS]++;
+                fighterShip.Speed += 1.0f;
                 break;
         }
 
         fighterShip.RecalculateResources();
-    }
-
-    private void UpgradeArmor()
-    {
-        upgrades[ARMOR]++;
-        fighterShip.Hull += 0.25f;
-    }
-
-    private void UpgradePlating()
-    {
-        upgrades[PLATING]++;
-        fighterShip.Protection = upgrades[PLATING] * 0.02f;
-        fighterShip.Plating++;
-    }
-
-    private void UpgradePlasmas()
-    {
-        upgrades[PLASMAS]++;
-        fighterShip.Firepower += 0.25f;
-    }
-
-    private void UpgradeThrusters()
-    {
-        upgrades[THRUSTERS]++;
-        fighterShip.Speed += 1.0f;
-    }
-
-    public override bool CanUnlock(Dictionary<Resource, int> resources)
-    {
-        if (unlocked || fighterShip.Unlocked || prereqs == null)
-        {
-            unlocked = true;
-            return true;
-        }
-
-        bool unlock = true;
-
-        foreach (var p in prereqs)
-            unlock = unlock && p.Unlocked;
-        unlock = unlock && fighterShip.CanConstruct(resources, 5);
-
-        fighterShip.Unlocked = unlocked = unlock;
-        return unlock;
     }
 
     public override void Display(GameObject panel, Dictionary<Resource, int> resources)

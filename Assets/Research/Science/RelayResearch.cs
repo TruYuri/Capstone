@@ -18,40 +18,33 @@ public class RelayResearch : Research
         upgrades.Add(DEFENSE, 0);
     }
 
-    public override void UpgradeResearch(string name)
+    public override void UpgradeResearch(string name, Dictionary<Resource, int> resources)
     {
         switch(name)
         {
             case RANGE:
-                UpgradeRange();
+                upgrades[RANGE]++;
+                relay.Range++;
                 break;
             case DEFENSE:
-                UpgradeDefense();
+                upgrades[DEFENSE]++;
+                relay.Hull += 5.0f;
                 break;
         }
 
         relay.RecalculateResources();
     }
 
-    private void UpgradeRange()
+    public override void Unlock()
     {
-        upgrades[RANGE]++;
-        relay.Range++;
-    }
-
-    private void UpgradeDefense()
-    {
-        upgrades[DEFENSE]++;
-        relay.Hull += 5.0f;
+        base.Unlock();
+        relay.Unlocked = true;
     }
 
     public override bool CanUnlock(Dictionary<Resource, int> resources)
     {
         if (unlocked || relay.Unlocked)
-        {
-            unlocked = true;
             return true;
-        }
 
         bool unlock = true;
 

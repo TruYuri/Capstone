@@ -22,36 +22,33 @@ public class EfficiencyResearch : Research
         upgrades.Add(RESOURCE_TRANSPORT, 0);
     }
 
-    public override void UpgradeResearch(string name)
+    public override void UpgradeResearch(string name, Dictionary<Resource, int> resources)
     {
         switch(name)
         {
             case GATHERING:
-                UpgradeGathering();
+                upgrades[GATHERING]++;
+                // upgrade complexes
+                // subtract resources
                 break;
             case RESEARCH:
-                UpgradeResearch();
+                upgrades[RESEARCH]++;
+                // upgrade complexes
+                // subtract resources
                 break;
             case MILITARY:
                 UpgradeMilitary();
+                // subtract resources
                 break;
             case RESOURCE_TRANSPORT:
-                UpgradeResourceTransport();
+                upgrades[RESOURCE_TRANSPORT]++;
+                shipDefinitions[RESOURCE_TRANSPORT].Hull += 5;
+                shipDefinitions[RESOURCE_TRANSPORT].Capacity += 0;
                 break;
         }
 
         foreach (var ship in shipDefinitions)
             ship.Value.RecalculateResources();
-    }
-
-    private void UpgradeGathering()
-    {
-        upgrades[GATHERING]++;
-    }
-
-    private void UpgradeResearch()
-    {
-        upgrades[RESEARCH]++;
     }
 
     private void UpgradeMilitary()
@@ -78,24 +75,6 @@ public class EfficiencyResearch : Research
             shipDefinitions[ship].Speed += newBonus - oldBonus;
             // shipDefinitions[ship].Capacity += newBonus - oldBonus;
         }
-    }
-
-    private void UpgradeResourceTransport()
-    {
-        upgrades[RESOURCE_TRANSPORT]++;
-        shipDefinitions[RESOURCE_TRANSPORT].Hull += 5;
-        shipDefinitions[RESOURCE_TRANSPORT].Capacity += 0;
-    }
-
-    public override bool CanUnlock(Dictionary<Resource, int> resources)
-    {
-        if (unlocked || prereqs == null)
-        {
-            unlocked = true;
-            return true;
-        }
-
-        return false;
     }
 
     public override void Display(GameObject panel, Dictionary<Resource, int> resources)

@@ -25,79 +25,51 @@ public class BehemothResearch : Research
         upgrades.Add(CAPACITY, 0);
     }
 
-    public override void UpgradeResearch(string name)
+    public override void UpgradeResearch(string name, Dictionary<Resource, int> resources)
     {
         switch (name)
         {
             case ARMOR:
-                UpgradeArmor();
+                upgrades[ARMOR]++;
+                behemothShip.Hull += 3.0f;
                 break;
             case PLATING:
-                UpgradePlating();
+                upgrades[PLATING]++;
+                behemothShip.Protection = upgrades[PLATING] * 0.02f;
+                behemothShip.Plating++;
                 break;
             case PLASMAS:
-                UpgradePlasmas();
+                upgrades[PLASMAS]++;
+                behemothShip.Firepower += 2.0f;
                 break;
             case TORPEDOES:
-                UpgradeTorpedoes();
+                behemothShip.Firepower -= upgrades[TORPEDOES] * 0.02f;
+                upgrades[TORPEDOES]++;
+                behemothShip.Firepower += upgrades[TORPEDOES] * 0.02f;
                 break;
             case THRUSTERS:
-                UpgradeThrusters();
+                upgrades[THRUSTERS]++;
+                behemothShip.Speed += 0.25f;
                 break;
             case CAPACITY:
-                UpgradeCapacity();
+                upgrades[CAPACITY]++;
+                behemothShip.Capacity += 50;
                 break;
         }
 
         behemothShip.RecalculateResources();
     }
 
-    private void UpgradeArmor()
+    public override void Unlock()
     {
-        upgrades[ARMOR]++;
-        behemothShip.Hull += 3.0f;
-    }
-
-    private void UpgradePlating()
-    {
-        upgrades[PLATING]++;
-        behemothShip.Protection = upgrades[PLATING] * 0.02f;
-        behemothShip.Plating++;
-
-    }
-
-    private void UpgradePlasmas()
-    {
-        upgrades[PLASMAS]++;
-        behemothShip.Firepower += 2.0f;
-    }
-
-    private void UpgradeTorpedoes()
-    {
-        behemothShip.Firepower -= upgrades[TORPEDOES] * 0.02f;
-        upgrades[TORPEDOES]++;
-        behemothShip.Firepower += upgrades[TORPEDOES] * 0.02f;
-    }
-
-    private void UpgradeThrusters()
-    {
-        upgrades[THRUSTERS]++;
-        behemothShip.Speed += 0.25f;
-    }
-
-    private void UpgradeCapacity()
-    {
-        upgrades[CAPACITY]++;
-        behemothShip.Capacity += 50;
+        base.Unlock();
+        behemothShip.Unlocked = true;
     }
 
     public override bool CanUnlock(Dictionary<Resource, int> resources)
     {
-        if (unlocked || behemothShip.Unlocked || prereqs == null)
-        {
-            unlocked = true;
+        if (unlocked || behemothShip.Unlocked)
             return true;
-        }
 
         bool unlock = true;
 
@@ -105,7 +77,6 @@ public class BehemothResearch : Research
             unlock = unlock && p.Unlocked;
         unlock = unlock && behemothShip.CanConstruct(resources, 5);
 
-        behemothShip.Unlocked = unlocked = unlock;
         return unlock;
     }
 

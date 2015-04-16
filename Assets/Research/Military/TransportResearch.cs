@@ -21,59 +21,42 @@ public class TransportResearch : Research
         upgrades.Add(CAPACITY, 0);
     }
 
-    public override void UpgradeResearch(string name)
+    public override void UpgradeResearch(string name, Dictionary<Resource, int> resources)
     {
         switch (name)
         {
             case ARMOR:
-                UpgradeArmor();
+                upgrades[ARMOR]++;
+                transportShip.Hull += 2.0f;
                 break;
             case PLATING:
-                UpgradePlating();
+                upgrades[PLATING]++;
+                transportShip.Protection = upgrades[PLATING] * 0.02f;
+                transportShip.Plating++;
                 break;
             case THRUSTERS:
-                UpgradeThrusters();
+                upgrades[THRUSTERS]++;
+                transportShip.Speed += 0.5f;
                 break;
             case CAPACITY:
-                UpgradeCapacity();
+                upgrades[CAPACITY]++;
+                transportShip.Capacity += 100;
                 break;
         }
 
         transportShip.RecalculateResources();
     }
 
-    private void UpgradeArmor()
+    public override void Unlock()
     {
-        upgrades[ARMOR]++;
-        transportShip.Hull += 2.0f;
-    }
-
-    private void UpgradePlating()
-    {
-        upgrades[PLATING]++;
-        transportShip.Protection = upgrades[PLATING] * 0.02f;
-        transportShip.Plating++;
-    }
-
-    private void UpgradeThrusters()
-    {
-        upgrades[THRUSTERS]++;
-        transportShip.Speed += 0.5f;
-    }
-
-    private void UpgradeCapacity()
-    {
-        upgrades[CAPACITY]++;
-        transportShip.Capacity += 100;
+        base.Unlock();
+        transportShip.Unlocked = true;
     }
 
     public override bool CanUnlock(Dictionary<Resource, int> resources)
     {
-        if (unlocked || transportShip.Unlocked || prereqs == null)
-        {
-            unlocked = true;
+        if (unlocked || transportShip.Unlocked)
             return true;
-        }
 
         bool unlock = true;
 
@@ -81,7 +64,6 @@ public class TransportResearch : Research
             unlock = unlock && p.Unlocked;
         unlock = unlock && transportShip.CanConstruct(resources, 5);
 
-        transportShip.Unlocked = unlocked = unlock;
         return unlock;
     }
 

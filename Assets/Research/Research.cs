@@ -31,21 +31,17 @@ public class Research
         return true;
     }
 
-    public virtual void UpgradeResearch(string name)
-    {
-    }
-
-    public virtual bool CanUnlock(Dictionary<Resource, int> resources)
-    {
-        return false;
-    }
+    public virtual void UpgradeResearch(string name, Dictionary<Resource, int> resources) { }
 
     public virtual void Unlock()
     {
         unlocked = true;
     }
 
-    public virtual void Display(GameObject panel, Dictionary<Resource, int> resources)
-    { 
+    public virtual bool CanUnlock(Dictionary<Resource, int> resources)
+    {
+        return true;
     }
+
+    public virtual void Display(GameObject panel, Dictionary<Resource, int> resources) { }
 }

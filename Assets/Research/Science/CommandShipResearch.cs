@@ -21,73 +21,39 @@ public class CommandShipResearch : Research
         upgrades.Add(PLASMAS, 0);
         upgrades.Add(TORPEDOES, 0);
         upgrades.Add(THRUSTERS, 0);
+
+        commandShip.Unlocked = true;
     }
 
-    public override void UpgradeResearch(string name)
+    public override void UpgradeResearch(string name, Dictionary<Resource, int> resources)
     {
         switch (name)
         {
             case ARMOR:
-                UpgradeArmor();
+                upgrades[ARMOR]++;
+                commandShip.Hull += 3.0f;
                 break;
             case PLATING:
-                UpgradePlating();
+                upgrades[PLATING]++;
+                commandShip.Protection = upgrades[PLATING] * 0.02f;
+                commandShip.Plating++;
                 break;
             case PLASMAS:
-                UpgradePlasmas();
+                upgrades[PLASMAS]++;
+                commandShip.Firepower += 2.0f;
                 break;
             case TORPEDOES:
-                UpgradeTorpedoes();
+                commandShip.Firepower -= upgrades[TORPEDOES] * 0.02f;
+                upgrades[TORPEDOES]++;
+                commandShip.Firepower += upgrades[TORPEDOES] * 0.02f;
                 break;
             case THRUSTERS:
-                UpgradeThrusters();
+                upgrades[THRUSTERS]++;
+                commandShip.Speed += 2.0f;
                 break;
         }
 
         commandShip.RecalculateResources();
-    }
-
-    private void UpgradeArmor()
-    {
-        upgrades[ARMOR]++;
-        commandShip.Hull += 3.0f;
-    }
-
-    private void UpgradePlating()
-    {
-        upgrades[PLATING]++;
-        commandShip.Protection = upgrades[PLATING] * 0.02f;
-        commandShip.Plating++;
-    }
-
-    private void UpgradePlasmas()
-    {
-        upgrades[PLASMAS]++;
-        commandShip.Firepower += 2.0f;
-    }
-
-    private void UpgradeTorpedoes()
-    {
-        commandShip.Firepower -= upgrades[TORPEDOES] * 0.02f;
-        upgrades[TORPEDOES]++;
-        commandShip.Firepower += upgrades[TORPEDOES] * 0.02f;
-    }
-
-    private void UpgradeThrusters()
-    {
-        upgrades[THRUSTERS]++;
-        commandShip.Speed += 2.0f;
-    }
-
-    public override bool CanUnlock(Dictionary<Resource, int> resources)
-    {
-        if (unlocked || prereqs == null)
-        {
-            unlocked = true;
-            return true;
-        }
-
-        return false;
     }
 
     public override void Display(GameObject panel, Dictionary<Resource, int> resources)

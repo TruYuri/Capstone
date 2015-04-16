@@ -23,19 +23,25 @@ public class ComplexResearch : Research
 
         upgrades.Add(DEFENSE, 0);
         upgrades.Add(CAPACITY, 0);
+
+        shipDefinitions["Gathering Complex"].Unlocked = true;
+        shipDefinitions["Research Complex"].Unlocked = true;
+        shipDefinitions["Base"].Unlocked = true;
+        shipDefinitions["Military Complex"].Unlocked = true;
+        shipDefinitions["Resource Transport"].Unlocked = true;
     }
 
-    public override void UpgradeResearch(string name)
+    public override void UpgradeResearch(string name, Dictionary<Resource, int> resources)
     {
-        base.UpgradeResearch(name);
-
         switch (name)
         {
             case DEFENSE:
                 UpgradeDefense();
+                // subtract resources
                 break;
             case CAPACITY:
                 UpgradeCapacity();
+                // subtract resources
                 break;
         }
 
@@ -46,22 +52,15 @@ public class ComplexResearch : Research
     private void UpgradeDefense()
     {
         upgrades[DEFENSE]++;
+
+        // upgrade complexes
     }
 
     private void UpgradeCapacity()
     {
         upgrades[CAPACITY]++;
-    }
 
-    public override bool CanUnlock(Dictionary<Resource, int> resources)
-    {
-        if (unlocked || prereqs == null)
-        {
-            unlocked = true;
-            return true;
-        }
-
-        return false;
+        // upgrade complexes
     }
 
     public override void Display(GameObject panel, Dictionary<Resource, int> resources)

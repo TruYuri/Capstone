@@ -25,78 +25,51 @@ public class HeavyFighterResearch : Research
         upgrades.Add(CAPACITY, 0);
     }
 
-    public override void UpgradeResearch(string name)
+    public override void UpgradeResearch(string name, Dictionary<Resource, int> resources)
     {
         switch (name)
         {
             case ARMOR:
-                UpgradeArmor();
+                upgrades[ARMOR]++;
+                heavyFighterShip.Hull += 0.5f;
                 break;
             case PLATING:
-                UpgradePlating();
+                upgrades[PLATING]++;
+                heavyFighterShip.Protection = upgrades[PLATING] * 0.02f;
+                heavyFighterShip.Plating++;
                 break;
             case PLASMAS:
-                UpgradePlasmas();
+                upgrades[PLASMAS]++;
+                heavyFighterShip.Firepower += 0.75f;
                 break;
             case TORPEDOES:
-                UpgradeTorpedoes();
+                heavyFighterShip.Firepower -= upgrades[TORPEDOES] * 0.02f;
+                upgrades[TORPEDOES]++;
+                heavyFighterShip.Firepower += upgrades[TORPEDOES] * 0.02f;
                 break;
             case THRUSTERS:
-                UpgradeThrusters();
+                upgrades[THRUSTERS]++;
+                heavyFighterShip.Speed += 0.5f;
                 break;
             case CAPACITY:
-                UpgradeCapacity();
+                upgrades[CAPACITY]++;
+                heavyFighterShip.Capacity += 10;
                 break;
         }
 
         heavyFighterShip.RecalculateResources();
     }
 
-    private void UpgradeArmor()
+    public override void Unlock()
     {
-        upgrades[ARMOR]++;
-        heavyFighterShip.Hull += 0.5f;
-    }
-
-    private void UpgradePlating()
-    {
-        upgrades[PLATING]++;
-        heavyFighterShip.Protection = upgrades[PLATING] * 0.02f;
-        heavyFighterShip.Plating++;
-    }
-
-    private void UpgradePlasmas()
-    {
-        upgrades[PLASMAS]++;
-        heavyFighterShip.Firepower += 0.75f;
-    }
-
-    private void UpgradeTorpedoes()
-    {
-        heavyFighterShip.Firepower -= upgrades[TORPEDOES] * 0.02f;
-        upgrades[TORPEDOES]++;
-        heavyFighterShip.Firepower += upgrades[TORPEDOES] * 0.02f;
-    }
-
-    private void UpgradeThrusters()
-    {
-        upgrades[THRUSTERS]++;
-        heavyFighterShip.Speed += 0.5f;
-    }
-
-    private void UpgradeCapacity()
-    {
-        upgrades[CAPACITY]++;
-        heavyFighterShip.Capacity += 10;
+        base.Unlock();
+        heavyFighterShip.Unlocked = true;
     }
 
     public override bool CanUnlock(Dictionary<Resource, int> resources)
     {
-        if (unlocked || heavyFighterShip.Unlocked || prereqs == null)
-        {
-            unlocked = true;
+        if (unlocked || heavyFighterShip.Unlocked)
             return true;
-        }
 
         bool unlock = true;
 
@@ -104,7 +77,6 @@ public class HeavyFighterResearch : Research
             unlock = unlock && p.Unlocked;
         unlock = unlock && heavyFighterShip.CanConstruct(resources, 5);
 
-        heavyFighterShip.Unlocked = unlocked = unlock;
         return unlock;
     }
 

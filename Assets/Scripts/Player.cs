@@ -99,10 +99,20 @@ public class Player : MonoBehaviour
 
     public void UpgradeResearch(string type, string research, string property)
     {
-        if(type == MILITARY)
-            _militaryTree.GetResearch(research).UpgradeResearch(property);
-        else if(type == SCIENCE)
-            _scienceTree.GetResearch(research).UpgradeResearch(property);
+        if (property == "Unlock")
+        {
+            if (type == MILITARY)
+                _militaryTree.GetResearch(research).Unlock();
+            else if (type == SCIENCE)
+                _scienceTree.GetResearch(research).Unlock();
+        }
+        else
+        {
+            if (type == MILITARY)
+                _militaryTree.GetResearch(research).UpgradeResearch(property, _resourceRegistry);
+            else if (type == SCIENCE)
+                _scienceTree.GetResearch(research).UpgradeResearch(property, _resourceRegistry);
+        }
     }
 
     public void CreateBattleEvent(Squad squad1, Tile tile)

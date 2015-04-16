@@ -21,60 +21,43 @@ public class GuardSatelliteResearch : Research
         upgrades.Add(TORPEDOES, 0);
     }
 
-    public override void UpgradeResearch(string researchName)
+    public override void UpgradeResearch(string name, Dictionary<Resource, int> resources)
     {
-        switch (researchName)
+        switch (name)
         {
             case ARMOR:
-                AdvanceArmor();
+                upgrades[ARMOR]++;
+                guardSatelliteShip.Hull += 0.5f;
                 break;
             case PLATING:
-                AdvancePlating();
+                upgrades[PLATING]++;
+                guardSatelliteShip.Protection = upgrades[PLATING] * 0.02f;
+                guardSatelliteShip.Plating++;
                 break;
             case PLASMAS:
-                AdvancePlasmas();
+                upgrades[PLASMAS]++;
+                guardSatelliteShip.Firepower += 1.0f;
                 break;
             case TORPEDOES:
-                AdvanceTorpedoes();
+                guardSatelliteShip.Firepower -= upgrades[TORPEDOES] * 0.02f;
+                upgrades[TORPEDOES]++;
+                guardSatelliteShip.Firepower += upgrades[TORPEDOES] * 0.02f;
                 break;
         }
 
         guardSatelliteShip.RecalculateResources();
     }
 
-    private void AdvanceArmor()
+    public override void Unlock()
     {
-        upgrades[ARMOR]++;
-        guardSatelliteShip.Hull += 0.5f;
-    }
-
-    private void AdvancePlating()
-    {
-        upgrades[PLATING]++;
-        guardSatelliteShip.Protection = upgrades[PLATING] * 0.02f;
-        guardSatelliteShip.Plating++;
-    }
-
-    private void AdvancePlasmas()
-    {
-        upgrades[PLASMAS]++;
-        guardSatelliteShip.Firepower += 1.0f;
-    }
-
-    private void AdvanceTorpedoes()
-    {
-        guardSatelliteShip.Firepower -= upgrades[TORPEDOES] * 0.02f;
-        upgrades[TORPEDOES]++;
-        guardSatelliteShip.Firepower += upgrades[TORPEDOES] * 0.02f;
+        base.Unlock();
+        guardSatelliteShip.Unlocked = true;
     }
 
     public override bool CanUnlock(Dictionary<Resource, int> resources)
     {
-        if (unlocked || guardSatelliteShip.Unlocked || prereqs == null)
-        {
-            unlocked = true;
+        if (unlocked || guardSatelliteShip.Unlocked)
             return true;
-        }
 
         bool unlock = true;
 
@@ -82,7 +65,6 @@ public class GuardSatelliteResearch : Research
             unlock = unlock && p.Unlocked;
         unlock = unlock && guardSatelliteShip.CanConstruct(resources, 5);
 
-        guardSatelliteShip.Unlocked = unlocked = unlock;
         return unlock;
     }
 
