@@ -47,8 +47,18 @@ public class RelayResearch : Research
 
     public override bool CanUnlock(Dictionary<Resource, int> resources)
     {
-        relay.Unlocked = true;
-        return relay.Unlocked;
+        if (unlocked || relay.Unlocked)
+        {
+            unlocked = true;
+            return true;
+        }
+
+        bool unlock = true;
+
+        unlock = unlock && relay.CanConstruct(resources, 5);
+
+        relay.Unlocked = unlocked = unlock;
+        return unlock;
     }
 
     public override void Display(GameObject panel, Dictionary<Resource, int> resources)
@@ -66,7 +76,11 @@ public class RelayResearch : Research
         p2.gameObject.SetActive(false);
 
         if (unlocked)
+        {
             p2.gameObject.SetActive(true);
+            p2.FindChild("StatsRangeText").GetComponent<Text>().text = "Range: " + relay.Range.ToString();
+            p2.FindChild("StatsDefenseText").GetComponent<Text>().text = "Hull: " + relay.Hull.ToString();
+        }
         else
         {
             p1.gameObject.SetActive(true);

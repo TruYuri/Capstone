@@ -55,11 +55,13 @@ public class ComplexResearch : Research
 
     public override bool CanUnlock(Dictionary<Resource, int> resources)
     {
-        structureDefinitions["Gathering Complex"].Unlocked = true;
-        structureDefinitions["Research Complex"].Unlocked = true;
-        structureDefinitions["Military Complex"].Unlocked = true;
-        structureDefinitions["Base"].Unlocked = true;
-        return true;
+        if (unlocked || prereqs == null)
+        {
+            unlocked = true;
+            return true;
+        }
+
+        return false;
     }
 
     public override void Display(GameObject panel, Dictionary<Resource, int> resources)
@@ -69,6 +71,11 @@ public class ComplexResearch : Research
             { DEFENSE, panel.transform.FindChild("ComplexDefenseButton") },
             { CAPACITY, panel.transform.FindChild("ComplexCapacityButton") },
         };
+
+        var p2 = panel.transform.FindChild("Complex");
+
+        p2.FindChild("StatsDefenseText").GetComponent<Text>().text = "Defense: " + (upgrades[DEFENSE] * 10) + "%";
+        p2.FindChild("StatsCapacityText").GetComponent<Text>().text = "Capacity: " + (upgrades[CAPACITY] * 10) + "%";
 
         foreach (var item in items)
         {

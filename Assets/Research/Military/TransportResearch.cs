@@ -102,7 +102,13 @@ public class TransportResearch : Research
         p2.gameObject.SetActive(false);
 
         if (unlocked)
+        {
             p2.gameObject.SetActive(true);
+            p2.FindChild("StatsSpeedText").GetComponent<Text>().text = "Speed: " + transportShip.Speed.ToString();
+            p2.FindChild("StatsFirepowerText").GetComponent<Text>().text = "Firepower: " + transportShip.Firepower.ToString();
+            p2.FindChild("StatsHullText").GetComponent<Text>().text = "Hull: " + transportShip.Hull.ToString();
+            p2.FindChild("StatsCapacityText").GetComponent<Text>().text = "Capacity: " + transportShip.Capacity.ToString();
+        }
         else
         {
             p1.gameObject.SetActive(true);

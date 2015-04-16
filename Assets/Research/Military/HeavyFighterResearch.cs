@@ -127,7 +127,13 @@ public class HeavyFighterResearch : Research
         p2.gameObject.SetActive(false);
 
         if (unlocked)
+        {
             p2.gameObject.SetActive(true);
+            p2.FindChild("StatsSpeedText").GetComponent<Text>().text = "Speed: " + heavyFighterShip.Speed.ToString();
+            p2.FindChild("StatsFirepowerText").GetComponent<Text>().text = "Firepower: " + heavyFighterShip.Firepower.ToString();
+            p2.FindChild("StatsHullText").GetComponent<Text>().text = "Hull: " + heavyFighterShip.Hull.ToString();
+            p2.FindChild("StatsCapacityText").GetComponent<Text>().text = "Capacity: " + heavyFighterShip.Capacity.ToString();
+        }
         else
         {
             p1.gameObject.SetActive(true);

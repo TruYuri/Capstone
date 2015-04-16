@@ -47,8 +47,20 @@ public class WarpPortalResearch : Research
 
     public override bool CanUnlock(Dictionary<Resource, int> resources)
     {
-        warpPortal.Unlocked = true;
-        return warpPortal.Unlocked;
+        if (unlocked || warpPortal.Unlocked || prereqs == null)
+        {
+            unlocked = true;
+            return true;
+        }
+
+        bool unlock = true;
+
+        foreach (var p in prereqs)
+            unlock = unlock && p.Unlocked;
+        unlock = unlock && warpPortal.CanConstruct(resources, 5);
+
+        warpPortal.Unlocked = unlocked = unlock;
+        return unlock;
     }
 
     public override void Display(GameObject panel, Dictionary<Resource, int> resources)
@@ -66,7 +78,11 @@ public class WarpPortalResearch : Research
         p2.gameObject.SetActive(false);
 
         if (unlocked)
+        {
             p2.gameObject.SetActive(true);
+            p2.FindChild("StatsRangeText").GetComponent<Text>().text = "Range: " + warpPortal.Range.ToString();
+            p2.FindChild("StatsDefenseText").GetComponent<Text>().text = "Hull: " + warpPortal.Hull.ToString();
+        }
         else
         {
             p1.gameObject.SetActive(true);

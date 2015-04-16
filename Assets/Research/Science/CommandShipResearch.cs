@@ -81,8 +81,13 @@ public class CommandShipResearch : Research
 
     public override bool CanUnlock(Dictionary<Resource, int> resources)
     {
-        commandShip.Unlocked = true;
-        return commandShip.Unlocked;
+        if (unlocked || prereqs == null)
+        {
+            unlocked = true;
+            return true;
+        }
+
+        return false;
     }
 
     public override void Display(GameObject panel, Dictionary<Resource, int> resources)
@@ -95,6 +100,13 @@ public class CommandShipResearch : Research
             { PLATING, panel.transform.FindChild("CommandAsterminiumButton") },
             { PLASMAS, panel.transform.FindChild("CommandPlasmasButton") }
         };
+
+        var p2 = panel.transform.FindChild("Command");
+
+        p2.FindChild("StatsSpeedText").GetComponent<Text>().text = "Speed: " + commandShip.Speed.ToString();
+        p2.FindChild("StatsFirepowerText").GetComponent<Text>().text = "Firepower: " + commandShip.Firepower.ToString();
+        p2.FindChild("StatsHullText").GetComponent<Text>().text = "Hull: " + commandShip.Hull.ToString();
+        p2.FindChild("StatsCapacityText").GetComponent<Text>().text = "Capacity: " + commandShip.Capacity.ToString();
 
         foreach (var item in items)
         {

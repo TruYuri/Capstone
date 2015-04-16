@@ -89,8 +89,13 @@ public class EfficiencyResearch : Research
 
     public override bool CanUnlock(Dictionary<Resource, int> resources)
     {
-        shipDefinitions["Resource Transport"].Unlocked = true;
-        return shipDefinitions["Resource Transport"].Unlocked;
+        if (unlocked || prereqs == null)
+        {
+            unlocked = true;
+            return true;
+        }
+
+        return false;
     }
 
     public override void Display(GameObject panel, Dictionary<Resource, int> resources)
@@ -102,6 +107,13 @@ public class EfficiencyResearch : Research
             { MILITARY, panel.transform.FindChild("EfficiencyMilitaryButton") },
             { RESOURCE_TRANSPORT, panel.transform.FindChild("EfficiencyResourceButton") },
         };
+
+        var p2 = panel.transform.FindChild("Efficiency");
+
+        p2.FindChild("StatsResourceText").GetComponent<Text>().text = "Resource Hull: " + shipDefinitions["Resource Transport"].Speed.ToString();
+        p2.FindChild("StatsMilitaryText").GetComponent<Text>().text = "Miitary: " + (upgrades[MILITARY] * 1) .ToString() + "%";
+        p2.FindChild("StatsGatheringText").GetComponent<Text>().text = "Gather: " + (upgrades[GATHERING] * 2).ToString() + "%";
+        p2.FindChild("StatsResearchText").GetComponent<Text>().text = "Research: -" + (upgrades[RESEARCH] * 1).ToString() + "%";
 
         foreach (var item in items)
         {

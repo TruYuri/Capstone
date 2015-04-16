@@ -95,6 +95,13 @@ public class FighterResearch : Research
             { PLASMAS, panel.transform.FindChild("FighterPlasmasButton") }
         };
 
+        var p2 = panel.transform.FindChild("Fighter");
+
+        p2.FindChild("StatsSpeedText").GetComponent<Text>().text = "Speed: " + fighterShip.Speed.ToString();
+        p2.FindChild("StatsFirepowerText").GetComponent<Text>().text = "Firepower: " + fighterShip.Firepower.ToString();
+        p2.FindChild("StatsHullText").GetComponent<Text>().text = "Hull: " + fighterShip.Hull.ToString();
+        p2.FindChild("StatsCapacityText").GetComponent<Text>().text = "Capacity: " + fighterShip.Capacity.ToString();
+
         foreach (var item in items)
         {
             item.Value.FindChild("CountText").GetComponent<Text>().text = upgrades[item.Key].ToString() + "/10";

@@ -127,8 +127,14 @@ public class BehemothResearch : Research
         p1.gameObject.SetActive(false);
         p2.gameObject.SetActive(false);
 
-        if (unlocked) 
+        if (unlocked)
+        {
             p2.gameObject.SetActive(true);
+            p2.FindChild("StatsSpeedText").GetComponent<Text>().text = "Speed: " + behemothShip.Speed.ToString();
+            p2.FindChild("StatsFirepowerText").GetComponent<Text>().text = "Firepower: " + behemothShip.Firepower.ToString();
+            p2.FindChild("StatsHullText").GetComponent<Text>().text = "Hull: " + behemothShip.Hull.ToString();
+            p2.FindChild("StatsCapacityText").GetComponent<Text>().text = "Capacity: " + behemothShip.Capacity.ToString();
+        }
         else
         {
             p1.gameObject.SetActive(true);

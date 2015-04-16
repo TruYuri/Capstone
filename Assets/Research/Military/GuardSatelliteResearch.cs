@@ -103,7 +103,13 @@ public class GuardSatelliteResearch : Research
         p2.gameObject.SetActive(false);
 
         if (unlocked)
+        {
             p2.gameObject.SetActive(true);
+            p2.FindChild("StatsSpeedText").GetComponent<Text>().text = "Speed: " + guardSatelliteShip.Speed.ToString();
+            p2.FindChild("StatsFirepowerText").GetComponent<Text>().text = "Firepower: " + guardSatelliteShip.Firepower.ToString();
+            p2.FindChild("StatsHullText").GetComponent<Text>().text = "Hull: " + guardSatelliteShip.Hull.ToString();
+            p2.FindChild("StatsCapacityText").GetComponent<Text>().text = "Capacity: " + guardSatelliteShip.Capacity.ToString();
+        }
         else
         {
             p1.gameObject.SetActive(true);
