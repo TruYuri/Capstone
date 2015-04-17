@@ -24,14 +24,28 @@ public class ComplexResearch : Research
         upgrades.Add(DEFENSE, 0);
         upgrades.Add(CAPACITY, 0);
 
+        foreach (var upgrade in upgrades)
+        {
+            costs.Add(upgrade.Key, new Dictionary<Resource, int>()
+                { 
+                    { Resource.Asterminium, 0 },
+                    { Resource.Forest, 0 },
+                    { Resource.Oil, 0 },
+                    { Resource.Ore, 0 },
+                    { Resource.Stations, 0 }
+                });
+        }
+
         shipDefinitions["Gathering Complex"].Unlocked = true;
         shipDefinitions["Research Complex"].Unlocked = true;
         shipDefinitions["Base"].Unlocked = true;
         shipDefinitions["Military Complex"].Unlocked = true;
         shipDefinitions["Resource Transport"].Unlocked = true;
+
+        RecalculateResourceCosts();
     }
 
-    public override void UpgradeResearch(string name, Dictionary<Resource, int> resources)
+    public override Dictionary<Resource, int> UpgradeResearch(string name)
     {
         switch (name)
         {
@@ -47,6 +61,25 @@ public class ComplexResearch : Research
 
         foreach (var struc in structureDefinitions)
             struc.Value.RecalculateResources();
+
+        var r = costs[name];
+        RecalculateResourceCosts();
+        return r;
+    }
+
+    private void RecalculateResourceCosts()
+    {
+        costs[DEFENSE] = new Dictionary<Resource, int>()
+        {
+            { Resource.Ore, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * structureDefinitions["Base"].Defense * 2) },
+            { Resource.Forest, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * structureDefinitions["Base"].Defense * 2) }
+        };
+
+        costs[CAPACITY] = new Dictionary<Resource, int>()
+        {
+            { Resource.Ore, Mathf.CeilToInt((upgrades[CAPACITY] + 1) * structureDefinitions["Base"].DeployedCapacity) },
+            { Resource.Forest, Mathf.CeilToInt((upgrades[CAPACITY] + 1) * structureDefinitions["Base"].DeployedCapacity) }
+        };
     }
 
     private void UpgradeDefense()

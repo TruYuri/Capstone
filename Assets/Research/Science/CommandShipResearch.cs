@@ -22,10 +22,23 @@ public class CommandShipResearch : Research
         upgrades.Add(TORPEDOES, 0);
         upgrades.Add(THRUSTERS, 0);
 
+        foreach (var upgrade in upgrades)
+        {
+            costs.Add(upgrade.Key, new Dictionary<Resource, int>()
+                { 
+                    { Resource.Asterminium, 0 },
+                    { Resource.Forest, 0 },
+                    { Resource.Oil, 0 },
+                    { Resource.Ore, 0 },
+                    { Resource.Stations, 0 }
+                });
+        }
+
         commandShip.Unlocked = true;
+        RecalculateResourceCosts();
     }
 
-    public override void UpgradeResearch(string name, Dictionary<Resource, int> resources)
+    public override Dictionary<Resource, int> UpgradeResearch(string name)
     {
         switch (name)
         {
@@ -54,6 +67,39 @@ public class CommandShipResearch : Research
         }
 
         commandShip.RecalculateResources();
+        var r = costs[name];
+        RecalculateResourceCosts();
+        return r;
+    }
+
+    private void RecalculateResourceCosts()
+    {
+        costs[ARMOR] = new Dictionary<Resource, int>()
+        {
+            { Resource.Ore, Mathf.CeilToInt((upgrades[ARMOR] + 1) * 3 * commandShip.Hull) }
+        };
+
+        costs[PLATING] = new Dictionary<Resource, int>()
+        {
+            { Resource.Asterminium, Mathf.CeilToInt((upgrades[PLATING] + 1) * commandShip.Hull) }
+        };
+
+        costs[PLASMAS] = new Dictionary<Resource, int>()
+        {
+            { Resource.Ore, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 2 * commandShip.Firepower) },
+            { Resource.Oil, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 2 * commandShip.Firepower) }
+        };
+
+        costs[TORPEDOES] = new Dictionary<Resource, int>()
+        {
+            { Resource.Asterminium, Mathf.CeilToInt((upgrades[TORPEDOES] + 1) * commandShip.Firepower) }
+        };
+
+        costs[THRUSTERS] = new Dictionary<Resource, int>()
+        {
+            { Resource.Ore, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 2f * commandShip.Speed * 10f) },
+            { Resource.Oil, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 2f * commandShip.Speed * 10f) }
+        };
     }
 
     public override void Display(GameObject panel, Dictionary<Resource, int> resources)

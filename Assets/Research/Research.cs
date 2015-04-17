@@ -7,6 +7,7 @@ public class Research
     protected int level;
     protected Dictionary<string, int> upgrades;
     protected List<Research> prereqs;
+    protected Dictionary<string, Dictionary<Resource, int>> costs;
     protected bool unlocked;
 
     public bool Unlocked { get { return unlocked; } }
@@ -14,6 +15,7 @@ public class Research
 
     public Research(string name, int level, List<Research> prereqs)
     {
+        this.costs = new Dictionary<string, Dictionary<Resource, int>>();
         this.upgrades = new Dictionary<string, int>();
         this.prereqs = prereqs;
         this.level = level;
@@ -31,11 +33,12 @@ public class Research
         return true;
     }
 
-    public virtual void UpgradeResearch(string name, Dictionary<Resource, int> resources) { }
+    public virtual Dictionary<Resource, int> UpgradeResearch(string name) { return new Dictionary<Resource, int>(); }
 
-    public virtual void Unlock()
+    public virtual Dictionary<Resource, int> Unlock()
     {
         unlocked = true;
+        return new Dictionary<Resource, int>();
     }
 
     public virtual bool CanUnlock(Dictionary<Resource, int> resources)

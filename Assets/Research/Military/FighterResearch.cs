@@ -21,10 +21,24 @@ public class FighterResearch : Research
         upgrades.Add(THRUSTERS, 0);
 
         fighterShip.Unlocked = true;
+
+        foreach(var upgrade in upgrades)
+        {
+            costs.Add(upgrade.Key, new Dictionary<Resource,int>()
+                { 
+                    { Resource.Asterminium, 0 },
+                    { Resource.Forest, 0 },
+                    { Resource.Oil, 0 },
+                    { Resource.Ore, 0 },
+                    { Resource.Stations, 0 }
+                });
+        }
+
         Unlock();
+        RecalculateResourceCosts();
     }
 
-    public override void UpgradeResearch(string name, Dictionary<Resource, int> resources) 
+    public override Dictionary<Resource, int> UpgradeResearch(string name) 
     {
         switch(name)
         {
@@ -48,6 +62,34 @@ public class FighterResearch : Research
         }
 
         fighterShip.RecalculateResources();
+        var r = costs[name];
+        RecalculateResourceCosts();
+        return r;
+    }
+
+    private void RecalculateResourceCosts()
+    {
+        costs[ARMOR] = new Dictionary<Resource, int>()
+        {
+            { Resource.Ore, Mathf.CeilToInt((upgrades[ARMOR] + 1) * 0.25f * fighterShip.Hull) }
+        };
+
+        costs[PLATING] = new Dictionary<Resource, int>()
+        {
+            { Resource.Asterminium, Mathf.CeilToInt((upgrades[PLATING] + 1) * fighterShip.Hull) }
+        };
+
+        costs[PLASMAS] = new Dictionary<Resource, int>()
+        {
+            { Resource.Ore, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 0.25f * fighterShip.Firepower) },
+            { Resource.Oil, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 0.25f * fighterShip.Firepower) }
+        };
+
+        costs[THRUSTERS] = new Dictionary<Resource, int>()
+        {
+            { Resource.Ore, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 1f * fighterShip.Speed * 10f) },
+            { Resource.Oil, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 1f * fighterShip.Speed * 10f) }
+        };
     }
 
     public override void Display(GameObject panel, Dictionary<Resource, int> resources)
@@ -70,7 +112,7 @@ public class FighterResearch : Research
         foreach (var item in items)
         {
             item.Value.FindChild("CountText").GetComponent<Text>().text = upgrades[item.Key].ToString() + "/10";
-            if (CanUpgrade(item.Key, resources[Resource.Stations]) && CanUnlock(resources))
+            if (CanUpgrade(item.Key, resources[Resource.Stations]) && unlocked)
                 item.Value.GetComponent<Button>().interactable = true;
             else
                 item.Value.GetComponent<Button>().interactable = false;

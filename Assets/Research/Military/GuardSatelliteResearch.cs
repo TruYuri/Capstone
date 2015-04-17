@@ -19,9 +19,23 @@ public class GuardSatelliteResearch : Research
         upgrades.Add(PLATING, 0);
         upgrades.Add(PLASMAS, 0);
         upgrades.Add(TORPEDOES, 0);
+
+        foreach (var upgrade in upgrades)
+        {
+            costs.Add(upgrade.Key, new Dictionary<Resource, int>()
+                { 
+                    { Resource.Asterminium, 0 },
+                    { Resource.Forest, 0 },
+                    { Resource.Oil, 0 },
+                    { Resource.Ore, 0 },
+                    { Resource.Stations, 0 }
+                });
+        }
+
+        RecalculateResourceCosts();
     }
 
-    public override void UpgradeResearch(string name, Dictionary<Resource, int> resources)
+    public override Dictionary<Resource, int> UpgradeResearch(string name)
     {
         switch (name)
         {
@@ -46,12 +60,40 @@ public class GuardSatelliteResearch : Research
         }
 
         guardSatelliteShip.RecalculateResources();
+        var r = costs[name];
+        RecalculateResourceCosts();
+        return r;
     }
 
-    public override void Unlock()
+    private void RecalculateResourceCosts()
+    {
+        costs[ARMOR] = new Dictionary<Resource, int>()
+        {
+            { Resource.Ore, Mathf.CeilToInt((upgrades[ARMOR] + 1) * 0.5f * guardSatelliteShip.Hull) }
+        };
+
+        costs[PLATING] = new Dictionary<Resource, int>()
+        {
+            { Resource.Asterminium, Mathf.CeilToInt((upgrades[PLATING] + 1) * guardSatelliteShip.Hull) }
+        };
+
+        costs[PLASMAS] = new Dictionary<Resource, int>()
+        {
+            { Resource.Ore, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 1 * guardSatelliteShip.Firepower) },
+            { Resource.Oil, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 1 * guardSatelliteShip.Firepower) }
+        };
+
+        costs[TORPEDOES] = new Dictionary<Resource, int>()
+        {
+            { Resource.Asterminium, Mathf.CeilToInt((upgrades[TORPEDOES] + 1) * guardSatelliteShip.Firepower) }
+        };
+    }
+
+    public override Dictionary<Resource, int> Unlock()
     {
         base.Unlock();
         guardSatelliteShip.Unlocked = true;
+        return new Dictionary<Resource, int>();
     }
 
     public override bool CanUnlock(Dictionary<Resource, int> resources)

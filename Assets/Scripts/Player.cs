@@ -99,20 +99,23 @@ public class Player : MonoBehaviour
 
     public void UpgradeResearch(string type, string research, string property)
     {
+        Dictionary<Resource, int> change = null;
         if (property == "Unlock")
         {
             if (type == MILITARY)
-                _militaryTree.GetResearch(research).Unlock();
+                change = _militaryTree.GetResearch(research).Unlock();
             else if (type == SCIENCE)
-                _scienceTree.GetResearch(research).Unlock();
+                change = _scienceTree.GetResearch(research).Unlock();
         }
         else
         {
             if (type == MILITARY)
-                _militaryTree.GetResearch(research).UpgradeResearch(property, _resourceRegistry);
+                change = _militaryTree.GetResearch(research).UpgradeResearch(property);
             else if (type == SCIENCE)
-                _scienceTree.GetResearch(research).UpgradeResearch(property, _resourceRegistry);
+                change = _scienceTree.GetResearch(research).UpgradeResearch(property);
         }
+
+        // subtract resources
     }
 
     public void CreateBattleEvent(Squad squad1, Tile tile)

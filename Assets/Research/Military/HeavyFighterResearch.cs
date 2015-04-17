@@ -23,9 +23,23 @@ public class HeavyFighterResearch : Research
         upgrades.Add(TORPEDOES, 0);
         upgrades.Add(THRUSTERS, 0);
         upgrades.Add(CAPACITY, 0);
+
+        foreach (var upgrade in upgrades)
+        {
+            costs.Add(upgrade.Key, new Dictionary<Resource, int>()
+                { 
+                    { Resource.Asterminium, 0 },
+                    { Resource.Forest, 0 },
+                    { Resource.Oil, 0 },
+                    { Resource.Ore, 0 },
+                    { Resource.Stations, 0 }
+                });
+        }
+
+        RecalculateResourceCosts();
     }
 
-    public override void UpgradeResearch(string name, Dictionary<Resource, int> resources)
+    public override Dictionary<Resource, int> UpgradeResearch(string name)
     {
         switch (name)
         {
@@ -58,12 +72,52 @@ public class HeavyFighterResearch : Research
         }
 
         heavyFighterShip.RecalculateResources();
+        var r = costs[name];
+        RecalculateResourceCosts();
+        return r;
     }
 
-    public override void Unlock()
+    private void RecalculateResourceCosts()
+    {
+        costs[ARMOR] = new Dictionary<Resource, int>()
+        {
+            { Resource.Ore, Mathf.CeilToInt((upgrades[ARMOR] + 1) * 0.5f * heavyFighterShip.Hull) }
+        };
+
+        costs[PLATING] = new Dictionary<Resource, int>()
+        {
+            { Resource.Asterminium, Mathf.CeilToInt((upgrades[PLATING] + 1) * heavyFighterShip.Hull) }
+        };
+
+        costs[PLASMAS] = new Dictionary<Resource, int>()
+        {
+            { Resource.Ore, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 0.75f * heavyFighterShip.Firepower) },
+            { Resource.Oil, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 0.75f * heavyFighterShip.Firepower) }
+        };
+
+        costs[TORPEDOES] = new Dictionary<Resource, int>()
+        {
+            { Resource.Asterminium, Mathf.CeilToInt((upgrades[TORPEDOES] + 1) * heavyFighterShip.Firepower) }
+        };
+
+        costs[THRUSTERS] = new Dictionary<Resource, int>()
+        {
+            { Resource.Ore, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 0.25f * heavyFighterShip.Speed * 10f) },
+            { Resource.Oil, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 0.25f * heavyFighterShip.Speed * 10f) }
+        };
+
+        costs[CAPACITY] = new Dictionary<Resource, int>()
+        {
+            { Resource.Ore, Mathf.CeilToInt((upgrades[CAPACITY] + 1) * 10f * heavyFighterShip.Hull / 2.0f) },
+            { Resource.Forest, Mathf.CeilToInt((upgrades[CAPACITY] + 1) * 10f * heavyFighterShip.Hull / 2.0f) }
+        };
+    }
+
+    public override Dictionary<Resource, int> Unlock()
     {
         base.Unlock();
         heavyFighterShip.Unlocked = true;
+        return new Dictionary<Resource, int>();
     }
 
     public override bool CanUnlock(Dictionary<Resource, int> resources)

@@ -20,9 +20,23 @@ public class EfficiencyResearch : Research
         upgrades.Add(RESEARCH, 0);
         upgrades.Add(MILITARY, 0);
         upgrades.Add(RESOURCE_TRANSPORT, 0);
+
+        foreach (var upgrade in upgrades)
+        {
+            costs.Add(upgrade.Key, new Dictionary<Resource, int>()
+                { 
+                    { Resource.Asterminium, 0 },
+                    { Resource.Forest, 0 },
+                    { Resource.Oil, 0 },
+                    { Resource.Ore, 0 },
+                    { Resource.Stations, 0 }
+                });
+        }
+
+        RecalculateResourceCosts();
     }
 
-    public override void UpgradeResearch(string name, Dictionary<Resource, int> resources)
+    public override Dictionary<Resource, int> UpgradeResearch(string name)
     {
         switch(name)
         {
@@ -49,6 +63,44 @@ public class EfficiencyResearch : Research
 
         foreach (var ship in shipDefinitions)
             ship.Value.RecalculateResources();
+        var r = costs[name];
+        RecalculateResourceCosts();
+        return r;
+    }
+
+    private void RecalculateResourceCosts()
+    {
+        costs[GATHERING] = new Dictionary<Resource, int>()
+        {
+            { Resource.Forest, ((upgrades[GATHERING] + 1) * 400) },
+            { Resource.Ore, ((upgrades[GATHERING] + 1) * 300) },
+            { Resource.Oil, ((upgrades[GATHERING] + 1) * 200) },
+            { Resource.Asterminium, ((upgrades[GATHERING] + 1) * 100) }
+        };
+
+        costs[RESEARCH] = new Dictionary<Resource, int>()
+        {
+            { Resource.Forest, ((upgrades[RESEARCH] + 1) * 400) },
+            { Resource.Ore, ((upgrades[RESEARCH] + 1) * 300) },
+            { Resource.Oil, ((upgrades[RESEARCH] + 1) * 200) },
+            { Resource.Asterminium, ((upgrades[RESEARCH] + 1) * 100) }
+        };
+
+        costs[MILITARY] = new Dictionary<Resource, int>()
+        {
+            { Resource.Forest, ((upgrades[MILITARY] + 1) * 400) },
+            { Resource.Ore, ((upgrades[MILITARY] + 1) * 300) },
+            { Resource.Oil, ((upgrades[MILITARY] + 1) * 200) },
+            { Resource.Asterminium, ((upgrades[MILITARY] + 1) * 100) }
+        };
+
+        costs[RESOURCE_TRANSPORT] = new Dictionary<Resource, int>()
+        {
+            { Resource.Forest, ((upgrades[RESOURCE_TRANSPORT] + 1) * 400) },
+            { Resource.Ore, ((upgrades[RESOURCE_TRANSPORT] + 1) * 300) },
+            { Resource.Oil, ((upgrades[RESOURCE_TRANSPORT] + 1) * 200) },
+            { Resource.Asterminium, ((upgrades[RESOURCE_TRANSPORT] + 1) * 100) }
+        };
     }
 
     private void UpgradeMilitary()

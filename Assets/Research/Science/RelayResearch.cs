@@ -16,9 +16,23 @@ public class RelayResearch : Research
         this.relay = relay;
         upgrades.Add(RANGE, 0);
         upgrades.Add(DEFENSE, 0);
+
+        foreach (var upgrade in upgrades)
+        {
+            costs.Add(upgrade.Key, new Dictionary<Resource, int>()
+                { 
+                    { Resource.Asterminium, 0 },
+                    { Resource.Forest, 0 },
+                    { Resource.Oil, 0 },
+                    { Resource.Ore, 0 },
+                    { Resource.Stations, 0 }
+                });
+        }
+
+        RecalculateResourceCosts();
     }
 
-    public override void UpgradeResearch(string name, Dictionary<Resource, int> resources)
+    public override Dictionary<Resource, int> UpgradeResearch(string name)
     {
         switch(name)
         {
@@ -33,12 +47,30 @@ public class RelayResearch : Research
         }
 
         relay.RecalculateResources();
+        var r = costs[name];
+        RecalculateResourceCosts();
+        return r;
     }
 
-    public override void Unlock()
+    private void RecalculateResourceCosts()
+    {
+        costs[DEFENSE] = new Dictionary<Resource, int>()
+        {
+            { Resource.Ore, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * relay.Hull * relay.Firepower / 2.0f) },
+            { Resource.Oil, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * relay.Hull * relay.Firepower / 2.0f) }
+        };
+
+        costs[RANGE] = new Dictionary<Resource, int>()
+        {
+            { Resource.Asterminium, (upgrades[RANGE] + 1) * relay.Range * 2 }
+        };
+    }
+
+    public override Dictionary<Resource, int> Unlock()
     {
         base.Unlock();
         relay.Unlocked = true;
+        return new Dictionary<Resource, int>();
     }
 
     public override bool CanUnlock(Dictionary<Resource, int> resources)
