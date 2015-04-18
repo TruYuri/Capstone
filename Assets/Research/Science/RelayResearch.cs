@@ -64,6 +64,14 @@ public class RelayResearch : Research
         {
             { Resource.Asterminium, Mathf.CeilToInt((upgrades[RANGE] + 1) * relay.Range * 2  * (1.0f - reduction))}
         };
+
+        var types = new List<Resource>() { Resource.Asterminium, Resource.Ore, Resource.Oil, Resource.Forest };
+        foreach (var c in costs)
+        {
+            foreach (var t in types)
+                if (!c.Value.ContainsKey(t))
+                    c.Value.Add(t, 0);
+        }
     }
 
     public override Dictionary<Resource, int> Unlock(float reduction)

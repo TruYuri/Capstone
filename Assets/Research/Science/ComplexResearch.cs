@@ -79,6 +79,14 @@ public class ComplexResearch : Research
             { Resource.Ore, Mathf.CeilToInt((upgrades[CAPACITY] + 1) * structureDefinitions["Base"].DeployedCapacity * (1.0f - reduction)) },
             { Resource.Forest, Mathf.CeilToInt((upgrades[CAPACITY] + 1) * structureDefinitions["Base"].DeployedCapacity * (1.0f - reduction)) }
         };
+
+        var types = new List<Resource>() { Resource.Asterminium, Resource.Ore, Resource.Oil, Resource.Forest };
+        foreach (var c in costs)
+        {
+            foreach (var t in types)
+                if (!c.Value.ContainsKey(t))
+                    c.Value.Add(t, 0);
+        }
     }
 
     private void UpgradeDefense()

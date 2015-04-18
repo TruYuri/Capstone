@@ -37,46 +37,28 @@ public class HumanPlayer : Player
         
         
         // debug
-        var squad = CreateNewSquad(new Vector3(0, 0, 10.5f), null);
+        var squad = _commandShipSquad;
         AddShip(squad, "Base");
-        AddShip(squad, "Gathering Complex");
-        AddShip(squad, "Military Complex");
         AddShip(squad, "Research Complex");
-
-        squad = CreateNewSquad(new Vector3(0, 0, 11f), null);
-        AddShip(squad, "Fighter");
-        AddShip(squad, "Transport");
-        var t1 = AddShip(squad, "Transport");
-        AddShip(squad, "Transport");
-        AddShip(squad, "Transport");
-        var t4 = AddShip(squad, "Transport");
-        AddShip(squad, "Heavy Fighter");
-        AddShip(squad, "Behemoth");
-        var r = AddShip(squad, "Resource Transport");
-        var r1 = AddShip(squad, "Resource Transport");
-
-        AddResources(r, Resource.Ore, 100);
-        AddResources(r, Resource.Oil, 50);
-        AddResources(r, Resource.Forest, 25);
-        AddResources(r, Resource.Asterminium, 25);
-
-        AddResources(r1, Resource.Ore, 25);
-        AddResources(r1, Resource.Oil, 25);
-        AddResources(r1, Resource.Forest, 10);
-        AddResources(r1, Resource.Asterminium, 10);
-
-        AddSoldiers(t1, Inhabitance.Primitive, 50);
-        AddSoldiers(t1, Inhabitance.Industrial, 50);
-        AddSoldiers(t1, Inhabitance.SpaceAge, 50);
-
-        AddSoldiers(t4, Inhabitance.Primitive, 5);
-        AddSoldiers(t4, Inhabitance.Industrial, 10);
-        AddSoldiers(t4, Inhabitance.SpaceAge, 15);
-
-        _resourceRegistry[Resource.Asterminium] = 10000;
-        _resourceRegistry[Resource.Forest] = 10000;
-        _resourceRegistry[Resource.Oil] = 10000;
-        _resourceRegistry[Resource.Ore] = 10000;
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Research Complex");
         /* debug */
 
         _controlledIsWithinRange = true;

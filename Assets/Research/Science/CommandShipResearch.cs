@@ -100,6 +100,14 @@ public class CommandShipResearch : Research
             { Resource.Ore, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 2f * commandShip.Speed * 10f * (1.0f - reduction)) },
             { Resource.Oil, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 2f * commandShip.Speed * 10f * (1.0f - reduction)) }
         };
+
+        var types = new List<Resource>() { Resource.Asterminium, Resource.Ore, Resource.Oil, Resource.Forest };
+        foreach (var c in costs)
+        {
+            foreach (var t in types)
+                if (!c.Value.ContainsKey(t))
+                    c.Value.Add(t, 0);
+        }
     }
 
     public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)

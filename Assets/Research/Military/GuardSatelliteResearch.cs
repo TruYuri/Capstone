@@ -87,6 +87,14 @@ public class GuardSatelliteResearch : Research
         {
             { Resource.Asterminium, Mathf.CeilToInt((upgrades[TORPEDOES] + 1) * guardSatelliteShip.Firepower) }
         };
+
+        var types = new List<Resource>() { Resource.Asterminium, Resource.Ore, Resource.Oil, Resource.Forest };
+        foreach (var c in costs)
+        {
+            foreach (var t in types)
+                if (!c.Value.ContainsKey(t))
+                    c.Value.Add(t, 0);
+        }
     }
 
     public override Dictionary<Resource, int> Unlock(float reduction)

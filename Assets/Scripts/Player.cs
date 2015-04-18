@@ -122,6 +122,22 @@ public class Player : MonoBehaviour
         }
 
         // subtract resources
+        var types = change.Keys.ToList();
+        foreach (var t in types)
+        {
+            while (change[t] > 0)
+            {
+                foreach (var tile in _tiles)
+                    if (tile.Structure != null && tile.Structure.Resources[t] > 0)
+                    {
+                        tile.Structure.Resources[t] -= 1;
+                        change[t] -= 1;
+
+                        if (change[t] == 0)
+                            break;
+                    }
+            }
+        }
     }
 
     public void CreateBattleEvent(Squad squad1, Tile tile)

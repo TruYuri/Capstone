@@ -116,6 +116,14 @@ public class EfficiencyResearch : Research
             { Resource.Oil, Mathf.CeilToInt(((upgrades[RESOURCE_TRANSPORT] + 1) * 200 * (1.0f - reduction))) },
             { Resource.Asterminium, Mathf.CeilToInt(((upgrades[RESOURCE_TRANSPORT] + 1) * 100 * (1.0f - reduction))) }
         };
+
+        var types = new List<Resource>() { Resource.Asterminium, Resource.Ore, Resource.Oil, Resource.Forest };
+        foreach (var c in costs)
+        {
+            foreach (var t in types)
+                if (!c.Value.ContainsKey(t))
+                    c.Value.Add(t, 0);
+        }
     }
 
     public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)

@@ -818,14 +818,28 @@ public class GUIManager : MonoBehaviour
         {
             while(from.Resources[resource] > 0 && to.CountResources() < to.ResourceCapacity)
             {
-                HumanPlayer.Instance.RemoveResources(from, resource, 1);
-                HumanPlayer.Instance.AddResources(to, resource, 1);
+                if (from.IsDeployed == true)
+                    HumanPlayer.Instance.RemoveResources(from, resource, 1);
+                else
+                    from.Resources[resource] -= 1;
+
+                if (to.IsDeployed)
+                    HumanPlayer.Instance.AddResources(to, resource, 1);
+                else
+                    to.Resources[resource] += 1;
             }
         }
         else
         {
-            HumanPlayer.Instance.RemoveResources(from, resource, 1);
-            HumanPlayer.Instance.AddResources(to, resource, 1);
+            if (from.IsDeployed == true)
+                HumanPlayer.Instance.RemoveResources(from, resource, 1);
+            else
+                from.Resources[resource] -= 1;
+
+            if (to.IsDeployed)
+                HumanPlayer.Instance.AddResources(to, resource, 1);
+            else
+                to.Resources[resource] += 1;
         }
 
         UpdateTransferInterface(false, true, true, true);
