@@ -22,29 +22,35 @@ public class Research
         this.name = name;
     }
 
-    protected bool CanUpgrade(string name, int stations)
+    protected bool CanUpgrade(string name, Dictionary<Resource, int> resources, float reduction)
     {
         var invalidLevel = upgrades[name] >= 10;
-        var invalidStations = stations < (upgrades[name] + 1) * (level);
+        var invalidStations = resources[Resource.Stations] < (upgrades[name] + 1) * (level);
 
         if (invalidLevel || invalidStations)
             return false;
 
-        return true;
+        if (resources[Resource.Asterminium] >= costs[name][Resource.Asterminium] * (1.0f - reduction) &&
+           resources[Resource.Ore] >= costs[name][Resource.Ore] * (1.0f - reduction) &&
+           resources[Resource.Oil] >= costs[name][Resource.Oil] * (1.0f - reduction) &&
+           resources[Resource.Forest] >= costs[name][Resource.Forest] * (1.0f - reduction))
+            return true;
+
+        return false;
     }
 
-    public virtual Dictionary<Resource, int> UpgradeResearch(string name) { return new Dictionary<Resource, int>(); }
+    public virtual Dictionary<Resource, int> UpgradeResearch(string name, float reduction) { return new Dictionary<Resource, int>(); }
 
-    public virtual Dictionary<Resource, int> Unlock()
+    public virtual Dictionary<Resource, int> Unlock(float reduction)
     {
         unlocked = true;
         return new Dictionary<Resource, int>();
     }
 
-    public virtual bool CanUnlock(Dictionary<Resource, int> resources)
+    public virtual bool CanUnlock(Dictionary<Resource, int> resources, float reduction)
     {
         return true;
     }
 
-    public virtual void Display(GameObject panel, Dictionary<Resource, int> resources) { }
+    public virtual void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction) { }
 }

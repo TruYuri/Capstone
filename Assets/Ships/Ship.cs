@@ -18,11 +18,6 @@ public class Ship : ListableObject
     protected float protection;
     protected int resourceCapacity;
     protected int plating;
-    protected int baseResourceCapacity;
-    protected float baseHull;
-    protected float baseFirepower;
-    protected float baseSpeed;
-    protected int baseCapacity;
 
     protected Dictionary<Inhabitance, int> population;
     protected Dictionary<Resource, int> requiredResources;
@@ -83,17 +78,18 @@ public class Ship : ListableObject
     }
     public Sprite Icon { get { return icon; } }
     public Dictionary<Resource, int> Resources { get { return resources; } }
+    public Dictionary<Resource, int> RequiredResources { get { return requiredResources; } }
     public Dictionary<Inhabitance, int> Population { get { return population; } }
     public ShipProperties ShipProperties { get { return shipProperties; } }
 
     public Ship(Sprite icon, string name, float hull, float firepower, float speed, int capacity, int rCapacity, int plating, ShipProperties shipProperties)
     {
         this.name = name;
-        this.hull = this.baseHull = hull;
-        this.firepower = this.baseFirepower = firepower;
-        this.speed = this.baseSpeed = speed;
-        this.capacity = this.baseCapacity = capacity;
-        this.resourceCapacity = this.baseResourceCapacity = rCapacity;
+        this.hull = hull;
+        this.firepower = firepower;
+        this.speed = speed;
+        this.capacity = capacity;
+        this.resourceCapacity = rCapacity;
         this.shipProperties = shipProperties;
         this.icon = icon;
         this.plating = plating;
@@ -119,13 +115,25 @@ public class Ship : ListableObject
         };
     }
 
-    public bool CanConstruct(Dictionary<Resource, int> resources, int n)
+    public KeyValuePair<bool, Dictionary<Resource, int>> CanConstruct(Dictionary<Resource, int> resources, int n, float r)
     {
-        return unlocked && 
-            resources[Resource.Ore] >= requiredResources[Resource.Ore] * n &&
-            resources[Resource.Oil] >= requiredResources[Resource.Oil] * n &&
-            resources[Resource.Asterminium] >= requiredResources[Resource.Asterminium] * n &&
-            resources[Resource.Forest] >= requiredResources[Resource.Forest] * n;
+        var rs = new Dictionary<Resource, int>()
+        {
+            { Resource.Ore, Mathf.CeilToInt(requiredResources[Resource.Ore] * n * (1.0f - r)) },
+            { Resource.Oil, Mathf.CeilToInt(requiredResources[Resource.Oil] * n * (1.0f - r)) },
+            { Resource.Asterminium, Mathf.CeilToInt(requiredResources[Resource.Asterminium] * n * (1.0f - r)) },
+            { Resource.Forest, Mathf.CeilToInt(requiredResources[Resource.Forest] * n * (1.0f - r)) }
+        };
+
+        if (resources == null)
+            return new KeyValuePair<bool, Dictionary<Resource, int>>(false, rs);
+
+        return new KeyValuePair<bool, Dictionary<Resource, int>>(
+            resources[Resource.Ore] >= rs[Resource.Ore] &&
+            resources[Resource.Oil] >= rs[Resource.Oil] &&
+            resources[Resource.Asterminium] >= rs[Resource.Asterminium] &&
+            resources[Resource.Forest] >= rs[Resource.Forest],
+            rs);
     }
 
     public virtual void RecalculateResources()
@@ -154,7 +162,7 @@ public class Ship : ListableObject
 
     public virtual Ship Copy()
     {
-        var ship = new Ship(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, baseResourceCapacity, plating, shipProperties);
+        var ship = new Ship(icon, name, hull, firepower, speed, capacity, resourceCapacity, plating, shipProperties);
         ship.Hull = hull;
         ship.Firepower = firepower;
         ship.Speed = speed;
@@ -190,7 +198,7 @@ public class Ship : ListableObject
         entry.GetComponent<CustomUIAdvanced>().data = listName + "|" + name;
 
         var resources = data as Dictionary<Resource, int>;
-        if (CanConstruct(resources, 1))
+        if (CanConstruct(resources, 1, 0f).Key && unlocked)
             entry.GetComponent<Button>().interactable = true;
 
         return entry;

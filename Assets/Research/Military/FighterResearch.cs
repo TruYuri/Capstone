@@ -34,11 +34,11 @@ public class FighterResearch : Research
                 });
         }
 
-        Unlock();
-        RecalculateResourceCosts();
+        unlocked = fighterShip.Unlocked = true;
+        RecalculateResourceCosts(0);
     }
 
-    public override Dictionary<Resource, int> UpgradeResearch(string name) 
+    public override Dictionary<Resource, int> UpgradeResearch(string name, float reduction) 
     {
         switch(name)
         {
@@ -63,36 +63,36 @@ public class FighterResearch : Research
 
         fighterShip.RecalculateResources();
         var r = costs[name];
-        RecalculateResourceCosts();
+        RecalculateResourceCosts(reduction);
         return r;
     }
 
-    private void RecalculateResourceCosts()
+    private void RecalculateResourceCosts(float reduction)
     {
         costs[ARMOR] = new Dictionary<Resource, int>()
         {
-            { Resource.Ore, Mathf.CeilToInt((upgrades[ARMOR] + 1) * 0.25f * fighterShip.Hull) }
+            { Resource.Ore, Mathf.CeilToInt((upgrades[ARMOR] + 1) * 0.25f * fighterShip.Hull * (1.0f - reduction)) }
         };
 
         costs[PLATING] = new Dictionary<Resource, int>()
         {
-            { Resource.Asterminium, Mathf.CeilToInt((upgrades[PLATING] + 1) * fighterShip.Hull) }
+            { Resource.Asterminium, Mathf.CeilToInt((upgrades[PLATING] + 1) * fighterShip.Hull * (1.0f - reduction)) }
         };
 
         costs[PLASMAS] = new Dictionary<Resource, int>()
         {
-            { Resource.Ore, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 0.25f * fighterShip.Firepower) },
-            { Resource.Oil, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 0.25f * fighterShip.Firepower) }
+            { Resource.Ore, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 0.25f * fighterShip.Firepower * (1.0f - reduction)) },
+            { Resource.Oil, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 0.25f * fighterShip.Firepower * (1.0f - reduction)) }
         };
 
         costs[THRUSTERS] = new Dictionary<Resource, int>()
         {
-            { Resource.Ore, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 1f * fighterShip.Speed * 10f) },
-            { Resource.Oil, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 1f * fighterShip.Speed * 10f) }
+            { Resource.Ore, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 1f * fighterShip.Speed * 10f * (1.0f - reduction)) },
+            { Resource.Oil, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 1f * fighterShip.Speed * 10f * (1.0f - reduction)) }
         };
     }
 
-    public override void Display(GameObject panel, Dictionary<Resource, int> resources)
+    public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)
     {
         var items = new Dictionary<string, Transform>()
         {
@@ -112,7 +112,7 @@ public class FighterResearch : Research
         foreach (var item in items)
         {
             item.Value.FindChild("CountText").GetComponent<Text>().text = upgrades[item.Key].ToString() + "/10";
-            if (CanUpgrade(item.Key, resources[Resource.Stations]) && unlocked)
+            if (CanUpgrade(item.Key, resources, reduction) && unlocked)
                 item.Value.GetComponent<Button>().interactable = true;
             else
                 item.Value.GetComponent<Button>().interactable = false;

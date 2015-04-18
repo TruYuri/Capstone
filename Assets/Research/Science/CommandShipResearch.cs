@@ -34,11 +34,11 @@ public class CommandShipResearch : Research
                 });
         }
 
-        commandShip.Unlocked = true;
-        RecalculateResourceCosts();
+        commandShip.Unlocked = unlocked = true;
+        RecalculateResourceCosts(0);
     }
 
-    public override Dictionary<Resource, int> UpgradeResearch(string name)
+    public override Dictionary<Resource, int> UpgradeResearch(string name, float reduction)
     {
         switch (name)
         {
@@ -68,41 +68,41 @@ public class CommandShipResearch : Research
 
         commandShip.RecalculateResources();
         var r = costs[name];
-        RecalculateResourceCosts();
+        RecalculateResourceCosts(reduction);
         return r;
     }
 
-    private void RecalculateResourceCosts()
+    private void RecalculateResourceCosts(float reduction)
     {
         costs[ARMOR] = new Dictionary<Resource, int>()
         {
-            { Resource.Ore, Mathf.CeilToInt((upgrades[ARMOR] + 1) * 3 * commandShip.Hull) }
+            { Resource.Ore, Mathf.CeilToInt((upgrades[ARMOR] + 1) * 3 * commandShip.Hull * (1.0f - reduction)) }
         };
 
         costs[PLATING] = new Dictionary<Resource, int>()
         {
-            { Resource.Asterminium, Mathf.CeilToInt((upgrades[PLATING] + 1) * commandShip.Hull) }
+            { Resource.Asterminium, Mathf.CeilToInt((upgrades[PLATING] + 1) * commandShip.Hull * (1.0f - reduction)) }
         };
 
         costs[PLASMAS] = new Dictionary<Resource, int>()
         {
-            { Resource.Ore, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 2 * commandShip.Firepower) },
-            { Resource.Oil, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 2 * commandShip.Firepower) }
+            { Resource.Ore, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 2 * commandShip.Firepower * (1.0f - reduction)) },
+            { Resource.Oil, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 2 * commandShip.Firepower * (1.0f - reduction)) }
         };
 
         costs[TORPEDOES] = new Dictionary<Resource, int>()
         {
-            { Resource.Asterminium, Mathf.CeilToInt((upgrades[TORPEDOES] + 1) * commandShip.Firepower) }
+            { Resource.Asterminium, Mathf.CeilToInt((upgrades[TORPEDOES] + 1) * commandShip.Firepower * (1.0f - reduction)) }
         };
 
         costs[THRUSTERS] = new Dictionary<Resource, int>()
         {
-            { Resource.Ore, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 2f * commandShip.Speed * 10f) },
-            { Resource.Oil, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 2f * commandShip.Speed * 10f) }
+            { Resource.Ore, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 2f * commandShip.Speed * 10f * (1.0f - reduction)) },
+            { Resource.Oil, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 2f * commandShip.Speed * 10f * (1.0f - reduction)) }
         };
     }
 
-    public override void Display(GameObject panel, Dictionary<Resource, int> resources)
+    public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)
     {
         var items = new Dictionary<string, Transform>()
         {
@@ -123,7 +123,7 @@ public class CommandShipResearch : Research
         foreach (var item in items)
         {
             item.Value.FindChild("CountText").GetComponent<Text>().text = upgrades[item.Key].ToString() + "/10";
-            if (CanUpgrade(item.Key, resources[Resource.Stations]) && CanUnlock(resources))
+            if (CanUpgrade(item.Key, resources, reduction) && unlocked)
                 item.Value.GetComponent<Button>().interactable = true;
             else
                 item.Value.GetComponent<Button>().interactable = false;

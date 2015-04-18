@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
     protected List<Tile> _tiles;
     protected ResearchTree _militaryTree;
     protected ResearchTree _scienceTree;
+    protected float _rcostReduction;
 
     // these variables control messaging and command range
     protected bool _controlledIsWithinRange;
@@ -33,6 +34,11 @@ public class Player : MonoBehaviour
     public List<Squad> Squads { get { return _squads; } }
     public bool TurnEnded { get { return _turnEnded; } }
     public bool ControlledIsWithinRange { get { return _controlledIsWithinRange; } }
+    public float ResearchCostReduction
+    {
+        get { return _rcostReduction; }
+        set { _rcostReduction = value; }
+    }
 
     protected Squad _playerSquad;
     protected Squad _enemySquad;
@@ -46,7 +52,7 @@ public class Player : MonoBehaviour
         _tiles = new List<Tile>();
         _shipDefinitions = GameManager.Instance.GenerateShipDefs();
         _militaryTree = GameManager.Instance.GenerateMilitaryTree(_shipDefinitions);
-        _scienceTree = GameManager.Instance.GenerateScienceTree(_shipDefinitions);
+        _scienceTree = GameManager.Instance.GenerateScienceTree(_shipDefinitions, this);
         _shipRegistry = new Dictionary<string, HashSet<Ship>>();
         _soldierRegistry = new Dictionary<Inhabitance, int>();
         _resourceRegistry = new Dictionary<Resource, int>();
@@ -103,16 +109,16 @@ public class Player : MonoBehaviour
         if (property == "Unlock")
         {
             if (type == MILITARY)
-                change = _militaryTree.GetResearch(research).Unlock();
+                change = _militaryTree.GetResearch(research).Unlock(_rcostReduction);
             else if (type == SCIENCE)
-                change = _scienceTree.GetResearch(research).Unlock();
+                change = _scienceTree.GetResearch(research).Unlock(_rcostReduction);
         }
         else
         {
             if (type == MILITARY)
-                change = _militaryTree.GetResearch(research).UpgradeResearch(property);
+                change = _militaryTree.GetResearch(research).UpgradeResearch(property, _rcostReduction);
             else if (type == SCIENCE)
-                change = _scienceTree.GetResearch(research).UpgradeResearch(property);
+                change = _scienceTree.GetResearch(research).UpgradeResearch(property, _rcostReduction);
         }
 
         // subtract resources
@@ -136,6 +142,12 @@ public class Player : MonoBehaviour
     public void CreateBuildEvent(string shipName)
     {
         GameManager.Instance.AddEvent(new BuildEvent(_relayDistance + 1, this, _controlledTile, _shipDefinitions[shipName].Copy()), false);
+
+        foreach(var r in _shipDefinitions[shipName].RequiredResources)
+        {
+            RemoveResources(_controlledTile.Structure, r.Key, r.Value);
+        }
+
         EndTurn();
     }
 

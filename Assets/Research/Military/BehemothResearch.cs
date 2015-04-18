@@ -36,10 +36,10 @@ public class BehemothResearch : Research
                 });
         }
 
-        RecalculateResourceCosts();
+        RecalculateResourceCosts(0);
     }
 
-    public override Dictionary<Resource, int> UpgradeResearch(string name)
+    public override Dictionary<Resource, int> UpgradeResearch(string name, float reduction)
     {
         switch (name)
         {
@@ -73,54 +73,54 @@ public class BehemothResearch : Research
 
         behemothShip.RecalculateResources();
         var r = costs[name];
-        RecalculateResourceCosts();
+        RecalculateResourceCosts(reduction);
         return r;
     }
 
-    private void RecalculateResourceCosts()
+    private void RecalculateResourceCosts(float reduction)
     {
         costs[ARMOR] = new Dictionary<Resource, int>()
         {
-            { Resource.Ore, Mathf.CeilToInt((upgrades[ARMOR] + 1) * 3 * behemothShip.Hull) }
+            { Resource.Ore, Mathf.CeilToInt((upgrades[ARMOR] + 1) * 3 * behemothShip.Hull * (1.0f - reduction)) }
         };
 
         costs[PLATING] = new Dictionary<Resource, int>()
         {
-            { Resource.Asterminium, Mathf.CeilToInt((upgrades[PLATING] + 1) * behemothShip.Hull) }
+            { Resource.Asterminium, Mathf.CeilToInt((upgrades[PLATING] + 1) * behemothShip.Hull * (1.0f - reduction)) }
         };
 
         costs[PLASMAS] = new Dictionary<Resource, int>()
         {
-            { Resource.Ore, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 2 * behemothShip.Firepower) },
-            { Resource.Oil, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 2 * behemothShip.Firepower) }
+            { Resource.Ore, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 2 * behemothShip.Firepower * (1.0f - reduction)) },
+            { Resource.Oil, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 2 * behemothShip.Firepower * (1.0f - reduction)) }
         };
 
         costs[TORPEDOES] = new Dictionary<Resource, int>()
         {
-            { Resource.Asterminium, Mathf.CeilToInt((upgrades[TORPEDOES] + 1) * behemothShip.Firepower) }
+            { Resource.Asterminium, Mathf.CeilToInt((upgrades[TORPEDOES] + 1) * behemothShip.Firepower * (1.0f - reduction)) }
         };
 
         costs[THRUSTERS] = new Dictionary<Resource, int>()
         {
-            { Resource.Ore, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 0.25f * behemothShip.Speed * 10f) },
-            { Resource.Oil, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 0.25f * behemothShip.Speed * 10f) }
+            { Resource.Ore, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 0.25f * behemothShip.Speed * 10f * (1.0f - reduction)) },
+            { Resource.Oil, Mathf.CeilToInt((upgrades[THRUSTERS] + 1) * 0.25f * behemothShip.Speed * 10f * (1.0f - reduction)) }
         };
 
         costs[CAPACITY] = new Dictionary<Resource, int>()
         {
-            { Resource.Ore, Mathf.CeilToInt((upgrades[CAPACITY] + 1) * 50f * behemothShip.Hull / 2.0f) },
-            { Resource.Forest, Mathf.CeilToInt((upgrades[CAPACITY] + 1) * 50f * behemothShip.Hull / 2.0f) }
+            { Resource.Ore, Mathf.CeilToInt((upgrades[CAPACITY] + 1) * 50f * behemothShip.Hull / 2.0f * (1.0f - reduction)) },
+            { Resource.Forest, Mathf.CeilToInt((upgrades[CAPACITY] + 1) * 50f * behemothShip.Hull / 2.0f * (1.0f - reduction)) }
         };
     }
 
-    public override Dictionary<Resource, int> Unlock()
+    public override Dictionary<Resource, int> Unlock(float reduction)
     {
-        base.Unlock();
+        base.Unlock(reduction);
         behemothShip.Unlocked = true;
-        return new Dictionary<Resource, int>();
+        return behemothShip.CanConstruct(null, 5, reduction).Value;
     }
 
-    public override bool CanUnlock(Dictionary<Resource, int> resources)
+    public override bool CanUnlock(Dictionary<Resource, int> resources, float reduction)
     {
         if (unlocked || behemothShip.Unlocked)
             return true;
@@ -129,12 +129,12 @@ public class BehemothResearch : Research
 
         foreach (var p in prereqs)
             unlock = unlock && p.Unlocked;
-        unlock = unlock && behemothShip.CanConstruct(resources, 5);
+        unlock = unlock && behemothShip.CanConstruct(resources, 5, reduction).Key;
 
         return unlock;
     }
 
-    public override void Display(GameObject panel, Dictionary<Resource, int> resources)
+    public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)
     {
         var items = new Dictionary<string, Transform>()
         {
@@ -163,13 +163,13 @@ public class BehemothResearch : Research
         else
         {
             p1.gameObject.SetActive(true);
-            p1.GetComponentInChildren<Button>().interactable = CanUnlock(resources);
+            p1.GetComponentInChildren<Button>().interactable = CanUnlock(resources, reduction);
         }
 
         foreach(var item in items)
         {
             item.Value.FindChild("CountText").GetComponent<Text>().text = upgrades[item.Key].ToString() + "/10";
-            if (CanUpgrade(item.Key, resources[Resource.Stations]) && unlocked)
+            if (CanUpgrade(item.Key, resources, reduction) && unlocked)
                 item.Value.GetComponent<Button>().interactable = true;
             else
                 item.Value.GetComponent<Button>().interactable = false;

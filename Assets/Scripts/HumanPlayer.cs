@@ -34,7 +34,9 @@ public class HumanPlayer : Player
         base.Init(team);
         _currentCameraDistance = _cameraOffset;
         _exploredSectors = new Dictionary<Sector, bool>();
-        // create command ship, look at it, control it 
+        
+        
+        // debug
         var squad = CreateNewSquad(new Vector3(0, 0, 10.5f), null);
         AddShip(squad, "Base");
         AddShip(squad, "Gathering Complex");
@@ -70,6 +72,11 @@ public class HumanPlayer : Player
         AddSoldiers(t4, Inhabitance.Primitive, 5);
         AddSoldiers(t4, Inhabitance.Industrial, 10);
         AddSoldiers(t4, Inhabitance.SpaceAge, 15);
+
+        _resourceRegistry[Resource.Asterminium] = 10000;
+        _resourceRegistry[Resource.Forest] = 10000;
+        _resourceRegistry[Resource.Oil] = 10000;
+        _resourceRegistry[Resource.Ore] = 10000;
         /* debug */
 
         _controlledIsWithinRange = true;
@@ -223,11 +230,11 @@ public class HumanPlayer : Player
     {
         if(type == "Military")
         {
-            _militaryTree.GetResearch(name).Display(panel, _resourceRegistry);
+            _militaryTree.GetResearch(name).Display(panel, _resourceRegistry, _rcostReduction);
         }
         else if(type == "Scientific")
         {
-            _scienceTree.GetResearch(name).Display(panel, _resourceRegistry);
+            _scienceTree.GetResearch(name).Display(panel, _resourceRegistry, _rcostReduction);
         }
     }
 

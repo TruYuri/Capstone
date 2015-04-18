@@ -85,7 +85,7 @@ public class Structure : Ship, ListableObject
 
     public override Ship Copy()
     {
-        var ship = new Structure(icon, name, baseHull, baseFirepower, baseSpeed, baseCapacity, baseResourceCapacity,
+        var ship = new Structure(icon, name, hull, firepower, speed, capacity, resourceCapacity,
             defense, deployedCapacity, gatherRate, range, constructables, shipProperties, types);
         ship.Hull = hull;
         ship.Firepower = firepower;

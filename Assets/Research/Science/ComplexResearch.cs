@@ -41,21 +41,20 @@ public class ComplexResearch : Research
         shipDefinitions["Base"].Unlocked = true;
         shipDefinitions["Military Complex"].Unlocked = true;
         shipDefinitions["Resource Transport"].Unlocked = true;
+        unlocked = true;
 
-        RecalculateResourceCosts();
+        RecalculateResourceCosts(0);
     }
 
-    public override Dictionary<Resource, int> UpgradeResearch(string name)
+    public override Dictionary<Resource, int> UpgradeResearch(string name, float reduction)
     {
         switch (name)
         {
             case DEFENSE:
                 UpgradeDefense();
-                // subtract resources
                 break;
             case CAPACITY:
                 UpgradeCapacity();
-                // subtract resources
                 break;
         }
 
@@ -63,22 +62,22 @@ public class ComplexResearch : Research
             struc.Value.RecalculateResources();
 
         var r = costs[name];
-        RecalculateResourceCosts();
+        RecalculateResourceCosts(reduction);
         return r;
     }
 
-    private void RecalculateResourceCosts()
+    private void RecalculateResourceCosts(float reduction)
     {
         costs[DEFENSE] = new Dictionary<Resource, int>()
         {
-            { Resource.Ore, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * structureDefinitions["Base"].Defense * 2) },
-            { Resource.Forest, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * structureDefinitions["Base"].Defense * 2) }
+            { Resource.Ore, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * structureDefinitions["Base"].Defense * 2 * (1.0f - reduction)) },
+            { Resource.Forest, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * structureDefinitions["Base"].Defense * 2 * (1.0f - reduction)) }
         };
 
         costs[CAPACITY] = new Dictionary<Resource, int>()
         {
-            { Resource.Ore, Mathf.CeilToInt((upgrades[CAPACITY] + 1) * structureDefinitions["Base"].DeployedCapacity) },
-            { Resource.Forest, Mathf.CeilToInt((upgrades[CAPACITY] + 1) * structureDefinitions["Base"].DeployedCapacity) }
+            { Resource.Ore, Mathf.CeilToInt((upgrades[CAPACITY] + 1) * structureDefinitions["Base"].DeployedCapacity * (1.0f - reduction)) },
+            { Resource.Forest, Mathf.CeilToInt((upgrades[CAPACITY] + 1) * structureDefinitions["Base"].DeployedCapacity * (1.0f - reduction)) }
         };
     }
 
@@ -86,17 +85,19 @@ public class ComplexResearch : Research
     {
         upgrades[DEFENSE]++;
 
-        // upgrade complexes
+        foreach (var ship in structureDefinitions)
+            ship.Value.Defense += ship.Value.Defense * 0.1f;
     }
 
     private void UpgradeCapacity()
     {
         upgrades[CAPACITY]++;
 
-        // upgrade complexes
+        foreach (var ship in structureDefinitions)
+            ship.Value.DeployedCapacity += Mathf.CeilToInt(ship.Value.DeployedCapacity * 0.1f);
     }
 
-    public override void Display(GameObject panel, Dictionary<Resource, int> resources)
+    public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)
     {
         var items = new Dictionary<string, Transform>()
         {
@@ -112,7 +113,7 @@ public class ComplexResearch : Research
         foreach (var item in items)
         {
             item.Value.FindChild("CountText").GetComponent<Text>().text = upgrades[item.Key].ToString() + "/10";
-            if (CanUpgrade(item.Key, resources[Resource.Stations]) && CanUnlock(resources))
+            if (CanUpgrade(item.Key, resources, reduction) && unlocked)
                 item.Value.GetComponent<Button>().interactable = true;
             else
                 item.Value.GetComponent<Button>().interactable = false;

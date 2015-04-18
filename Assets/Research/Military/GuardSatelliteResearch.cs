@@ -32,10 +32,10 @@ public class GuardSatelliteResearch : Research
                 });
         }
 
-        RecalculateResourceCosts();
+        RecalculateResourceCosts(0);
     }
 
-    public override Dictionary<Resource, int> UpgradeResearch(string name)
+    public override Dictionary<Resource, int> UpgradeResearch(string name, float reduction)
     {
         switch (name)
         {
@@ -61,26 +61,26 @@ public class GuardSatelliteResearch : Research
 
         guardSatelliteShip.RecalculateResources();
         var r = costs[name];
-        RecalculateResourceCosts();
+        RecalculateResourceCosts(reduction);
         return r;
     }
 
-    private void RecalculateResourceCosts()
+    private void RecalculateResourceCosts(float reduction)
     {
         costs[ARMOR] = new Dictionary<Resource, int>()
         {
-            { Resource.Ore, Mathf.CeilToInt((upgrades[ARMOR] + 1) * 0.5f * guardSatelliteShip.Hull) }
+            { Resource.Ore, Mathf.CeilToInt((upgrades[ARMOR] + 1) * 0.5f * guardSatelliteShip.Hull * (1.0f - reduction)) }
         };
 
         costs[PLATING] = new Dictionary<Resource, int>()
         {
-            { Resource.Asterminium, Mathf.CeilToInt((upgrades[PLATING] + 1) * guardSatelliteShip.Hull) }
+            { Resource.Asterminium, Mathf.CeilToInt((upgrades[PLATING] + 1) * guardSatelliteShip.Hull * (1.0f - reduction)) }
         };
 
         costs[PLASMAS] = new Dictionary<Resource, int>()
         {
-            { Resource.Ore, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 1 * guardSatelliteShip.Firepower) },
-            { Resource.Oil, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 1 * guardSatelliteShip.Firepower) }
+            { Resource.Ore, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 1 * guardSatelliteShip.Firepower * (1.0f - reduction)) },
+            { Resource.Oil, Mathf.CeilToInt((upgrades[PLASMAS] + 1) * 1 * guardSatelliteShip.Firepower * (1.0f - reduction)) }
         };
 
         costs[TORPEDOES] = new Dictionary<Resource, int>()
@@ -89,14 +89,14 @@ public class GuardSatelliteResearch : Research
         };
     }
 
-    public override Dictionary<Resource, int> Unlock()
+    public override Dictionary<Resource, int> Unlock(float reduction)
     {
-        base.Unlock();
+        base.Unlock(reduction);
         guardSatelliteShip.Unlocked = true;
-        return new Dictionary<Resource, int>();
+        return guardSatelliteShip.CanConstruct(null, 5, reduction).Value;
     }
 
-    public override bool CanUnlock(Dictionary<Resource, int> resources)
+    public override bool CanUnlock(Dictionary<Resource, int> resources, float reduction)
     {
         if (unlocked || guardSatelliteShip.Unlocked)
             return true;
@@ -105,12 +105,12 @@ public class GuardSatelliteResearch : Research
 
         foreach (var p in prereqs)
             unlock = unlock && p.Unlocked;
-        unlock = unlock && guardSatelliteShip.CanConstruct(resources, 5);
+        unlock = unlock && guardSatelliteShip.CanConstruct(resources, 5, reduction).Key;
 
         return unlock;
     }
 
-    public override void Display(GameObject panel, Dictionary<Resource, int> resources)
+    public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)
     {
         var items = new Dictionary<string, Transform>()
         {
@@ -137,13 +137,13 @@ public class GuardSatelliteResearch : Research
         else
         {
             p1.gameObject.SetActive(true);
-            p1.GetComponentInChildren<Button>().interactable = CanUnlock(resources);
+            p1.GetComponentInChildren<Button>().interactable = CanUnlock(resources, reduction);
         }
 
         foreach (var item in items)
         {
             item.Value.FindChild("CountText").GetComponent<Text>().text = upgrades[item.Key].ToString() + "/10";
-            if (CanUpgrade(item.Key, resources[Resource.Stations]) && CanUnlock(resources))
+            if (CanUpgrade(item.Key, resources, reduction) && unlocked)
                 item.Value.GetComponent<Button>().interactable = true;
             else
                 item.Value.GetComponent<Button>().interactable = false;

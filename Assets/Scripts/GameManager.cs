@@ -183,11 +183,11 @@ public class GameManager : MonoBehaviour
         return tree;
     }
 
-    public ResearchTree GenerateScienceTree(Dictionary<string, Ship> shipDefs)
+    public ResearchTree GenerateScienceTree(Dictionary<string, Ship> shipDefs, Player player)
     {
         var tree = new ResearchTree(5);
         tree.AddResearch(1, new CommandShipResearch(shipDefs["Command Ship"], null));
-        tree.AddResearch(2, new EfficiencyResearch(shipDefs, null));
+        tree.AddResearch(2, new EfficiencyResearch(shipDefs, null, player));
         tree.AddResearch(3, new ComplexResearch(shipDefs, null));
         tree.AddResearch(4, new RelayResearch(shipDefs["Relay"] as Structure, null));
         tree.AddResearch(5, new WarpPortalResearch(shipDefs["Warp Portal"] as Structure, new List<Research>() { tree.GetResearch(4) }));

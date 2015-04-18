@@ -11,11 +11,13 @@ public class EfficiencyResearch : Research
     private const string RESOURCE_TRANSPORT = "Resource Transport";
 
     private Dictionary<string, Ship> shipDefinitions;
+    private Player player;
 
-    public EfficiencyResearch(Dictionary<string, Ship> shipDefinitions, List<Research> prereqs)
+    public EfficiencyResearch(Dictionary<string, Ship> shipDefinitions, List<Research> prereqs, Player player)
         : base("Efficiency", 2, prereqs)
     {
         this.shipDefinitions = shipDefinitions;
+        this.player = player;
         upgrades.Add(GATHERING, 0);
         upgrades.Add(RESEARCH, 0);
         upgrades.Add(MILITARY, 0);
@@ -33,26 +35,39 @@ public class EfficiencyResearch : Research
                 });
         }
 
-        RecalculateResourceCosts();
+        shipDefinitions["Resource Transport"].Unlocked = unlocked = true;
+        RecalculateResourceCosts(0);
     }
 
-    public override Dictionary<Resource, int> UpgradeResearch(string name)
+    public override Dictionary<Resource, int> UpgradeResearch(string name, float reduction)
     {
         switch(name)
         {
             case GATHERING:
                 upgrades[GATHERING]++;
-                // upgrade complexes
-                // subtract resources
+                var structureNames = new List<string>
+                {
+                    "Base",
+                    "Military Complex",
+                    "Research Complex",
+                    "Gathering Complex"
+                };
+
+                foreach (var struc in structureNames)
+                    ((Structure)shipDefinitions[struc]).GatherRate += Mathf.CeilToInt(((Structure)shipDefinitions[struc]).GatherRate * 0.02f);
                 break;
             case RESEARCH:
                 upgrades[RESEARCH]++;
-                // upgrade complexes
-                // subtract resources
+                player.ResearchCostReduction = upgrades[RESEARCH] * 0.01f;
                 break;
             case MILITARY:
-                UpgradeMilitary();
-                // subtract resources
+                foreach(var ship in shipDefinitions)
+                {
+                    ship.Value.Firepower += ship.Value.Firepower * 0.01f;
+                    ship.Value.Hull += ship.Value.Hull * 0.01f;
+                    ship.Value.Speed += ship.Value.Speed * 0.01f;
+                    ship.Value.Capacity += Mathf.CeilToInt(ship.Value.Capacity * 0.01f);
+                }
                 break;
             case RESOURCE_TRANSPORT:
                 upgrades[RESOURCE_TRANSPORT]++;
@@ -64,72 +79,46 @@ public class EfficiencyResearch : Research
         foreach (var ship in shipDefinitions)
             ship.Value.RecalculateResources();
         var r = costs[name];
-        RecalculateResourceCosts();
+        RecalculateResourceCosts(reduction);
         return r;
     }
 
-    private void RecalculateResourceCosts()
+    private void RecalculateResourceCosts(float reduction)
     {
         costs[GATHERING] = new Dictionary<Resource, int>()
         {
-            { Resource.Forest, ((upgrades[GATHERING] + 1) * 400) },
-            { Resource.Ore, ((upgrades[GATHERING] + 1) * 300) },
-            { Resource.Oil, ((upgrades[GATHERING] + 1) * 200) },
-            { Resource.Asterminium, ((upgrades[GATHERING] + 1) * 100) }
+            { Resource.Forest, Mathf.CeilToInt(((upgrades[GATHERING] + 1) * 400 * (1.0f - reduction))) },
+            { Resource.Ore, Mathf.CeilToInt(((upgrades[GATHERING] + 1) * 300 * (1.0f - reduction))) },
+            { Resource.Oil, Mathf.CeilToInt(((upgrades[GATHERING] + 1) * 200 * (1.0f - reduction))) },
+            { Resource.Asterminium, Mathf.CeilToInt(((upgrades[GATHERING] + 1) * 100 * (1.0f - reduction))) }
         };
 
         costs[RESEARCH] = new Dictionary<Resource, int>()
         {
-            { Resource.Forest, ((upgrades[RESEARCH] + 1) * 400) },
-            { Resource.Ore, ((upgrades[RESEARCH] + 1) * 300) },
-            { Resource.Oil, ((upgrades[RESEARCH] + 1) * 200) },
-            { Resource.Asterminium, ((upgrades[RESEARCH] + 1) * 100) }
+            { Resource.Forest, Mathf.CeilToInt(((upgrades[RESEARCH] + 1) * 400 * (1.0f - reduction))) },
+            { Resource.Ore, Mathf.CeilToInt(((upgrades[RESEARCH] + 1) * 300 * (1.0f - reduction))) },
+            { Resource.Oil, Mathf.CeilToInt(((upgrades[RESEARCH] + 1) * 200 * (1.0f - reduction))) },
+            { Resource.Asterminium, Mathf.CeilToInt(((upgrades[RESEARCH] + 1) * 100 * (1.0f - reduction))) }
         };
 
         costs[MILITARY] = new Dictionary<Resource, int>()
         {
-            { Resource.Forest, ((upgrades[MILITARY] + 1) * 400) },
-            { Resource.Ore, ((upgrades[MILITARY] + 1) * 300) },
-            { Resource.Oil, ((upgrades[MILITARY] + 1) * 200) },
-            { Resource.Asterminium, ((upgrades[MILITARY] + 1) * 100) }
+            { Resource.Forest, Mathf.CeilToInt(((upgrades[MILITARY] + 1) * 400 * (1.0f - reduction))) },
+            { Resource.Ore, Mathf.CeilToInt(((upgrades[MILITARY] + 1) * 300 * (1.0f - reduction))) },
+            { Resource.Oil, Mathf.CeilToInt(((upgrades[MILITARY] + 1) * 200 * (1.0f - reduction))) },
+            { Resource.Asterminium, Mathf.CeilToInt(((upgrades[MILITARY] + 1) * 100 * (1.0f - reduction))) }
         };
 
         costs[RESOURCE_TRANSPORT] = new Dictionary<Resource, int>()
         {
-            { Resource.Forest, ((upgrades[RESOURCE_TRANSPORT] + 1) * 400) },
-            { Resource.Ore, ((upgrades[RESOURCE_TRANSPORT] + 1) * 300) },
-            { Resource.Oil, ((upgrades[RESOURCE_TRANSPORT] + 1) * 200) },
-            { Resource.Asterminium, ((upgrades[RESOURCE_TRANSPORT] + 1) * 100) }
+            { Resource.Forest, Mathf.CeilToInt(((upgrades[RESOURCE_TRANSPORT] + 1) * 400 * (1.0f - reduction))) },
+            { Resource.Ore, Mathf.CeilToInt(((upgrades[RESOURCE_TRANSPORT] + 1) * 300 * (1.0f - reduction))) },
+            { Resource.Oil, Mathf.CeilToInt(((upgrades[RESOURCE_TRANSPORT] + 1) * 200 * (1.0f - reduction))) },
+            { Resource.Asterminium, Mathf.CeilToInt(((upgrades[RESOURCE_TRANSPORT] + 1) * 100 * (1.0f - reduction))) }
         };
     }
 
-    private void UpgradeMilitary()
-    {
-        List<string> militaryShipNames = new List<string> 
-        { 
-            "Fighter", 
-            "Transport", 
-            "Guard Satellite", 
-            "Heavy Fighter", 
-            "Behemoth" 
-        };
-
-        var oldBonus = upgrades[MILITARY] * 0.01f;
-        upgrades[MILITARY]++;
-        var newBonus = upgrades[MILITARY] * 0.01f;
-
-        // not sure if these are being calculated correctly
-        foreach(var ship in militaryShipNames)
-        {
-            // undo previous
-            shipDefinitions[ship].Hull += newBonus - oldBonus;
-            shipDefinitions[ship].Firepower += newBonus - oldBonus;
-            shipDefinitions[ship].Speed += newBonus - oldBonus;
-            // shipDefinitions[ship].Capacity += newBonus - oldBonus;
-        }
-    }
-
-    public override void Display(GameObject panel, Dictionary<Resource, int> resources)
+    public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)
     {
         var items = new Dictionary<string, Transform>()
         {
@@ -149,7 +138,7 @@ public class EfficiencyResearch : Research
         foreach (var item in items)
         {
             item.Value.FindChild("CountText").GetComponent<Text>().text = upgrades[item.Key].ToString() + "/10";
-            if (CanUpgrade(item.Key, resources[Resource.Stations]) && CanUnlock(resources))
+            if (CanUpgrade(item.Key, resources, reduction) && unlocked)
                 item.Value.GetComponent<Button>().interactable = true;
             else
                 item.Value.GetComponent<Button>().interactable = false;

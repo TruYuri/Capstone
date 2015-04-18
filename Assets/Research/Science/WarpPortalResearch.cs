@@ -30,7 +30,7 @@ public class WarpPortalResearch : Research
         }
     }
 
-    public override Dictionary<Resource, int> UpgradeResearch(string name)
+    public override Dictionary<Resource, int> UpgradeResearch(string name, float reduction)
     {
         switch(name)
         {
@@ -46,32 +46,32 @@ public class WarpPortalResearch : Research
 
         warpPortal.RecalculateResources();
         var r = costs[name];
-        RecalculateResourceCosts();
+        RecalculateResourceCosts(reduction);
         return r;
     }
 
-    private void RecalculateResourceCosts()
+    private void RecalculateResourceCosts(float reduction)
     {
         costs[DEFENSE] = new Dictionary<Resource, int>()
         {
-            { Resource.Ore, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * warpPortal.Hull * warpPortal.Firepower / 2.0f) },
-            { Resource.Oil, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * warpPortal.Hull * warpPortal.Firepower / 2.0f) }
+            { Resource.Ore, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * warpPortal.Hull * warpPortal.Firepower / 2.0f * (1.0f - reduction)) },
+            { Resource.Oil, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * warpPortal.Hull * warpPortal.Firepower / 2.0f * (1.0f - reduction)) }
         };
 
         costs[RANGE] = new Dictionary<Resource, int>()
         {
-            { Resource.Asterminium, (upgrades[RANGE] + 1) * warpPortal.Range * 5 }
+            { Resource.Asterminium, Mathf.CeilToInt((upgrades[RANGE] + 1) * warpPortal.Range * 5 * (1.0f - reduction)) }
         };
     }
 
-    public override Dictionary<Resource, int> Unlock()
+    public override Dictionary<Resource, int> Unlock(float reduction)
     {
-        base.Unlock();
+        base.Unlock(reduction);
         warpPortal.Unlocked = true;
-        return new Dictionary<Resource, int>();
+        return warpPortal.CanConstruct(null, 5, reduction).Value;
     }
 
-    public override bool CanUnlock(Dictionary<Resource, int> resources)
+    public override bool CanUnlock(Dictionary<Resource, int> resources, float reduction)
     {
         if (unlocked || warpPortal.Unlocked)
             return true;
@@ -80,13 +80,12 @@ public class WarpPortalResearch : Research
 
         foreach (var p in prereqs)
             unlock = unlock && p.Unlocked;
-        unlock = unlock && warpPortal.CanConstruct(resources, 5);
+        unlock = unlock && warpPortal.CanConstruct(resources, 5, reduction).Key;
 
-        warpPortal.Unlocked = unlocked = unlock;
         return unlock;
     }
 
-    public override void Display(GameObject panel, Dictionary<Resource, int> resources)
+    public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)
     {
         var items = new Dictionary<string, Transform>()
         {
@@ -109,13 +108,13 @@ public class WarpPortalResearch : Research
         else
         {
             p1.gameObject.SetActive(true);
-            p1.GetComponentInChildren<Button>().interactable = CanUnlock(resources);
+            p1.GetComponentInChildren<Button>().interactable = CanUnlock(resources, reduction);
         }
 
         foreach (var item in items)
         {
             item.Value.FindChild("CountText").GetComponent<Text>().text = upgrades[item.Key].ToString() + "/10";
-            if (CanUpgrade(item.Key, resources[Resource.Stations]) && CanUnlock(resources))
+            if (CanUpgrade(item.Key, resources, reduction) && unlocked)
                 item.Value.GetComponent<Button>().interactable = true;
             else
                 item.Value.GetComponent<Button>().interactable = false;
