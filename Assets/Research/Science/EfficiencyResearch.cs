@@ -128,6 +128,8 @@ public class EfficiencyResearch : Research
 
     public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)
     {
+        RecalculateResourceCosts(reduction);
+
         var items = new Dictionary<string, Transform>()
         {
             { GATHERING, panel.transform.FindChild("EfficiencyGatheringButton") },

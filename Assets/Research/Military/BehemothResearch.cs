@@ -144,6 +144,8 @@ public class BehemothResearch : Research
 
     public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)
     {
+        RecalculateResourceCosts(reduction);
+
         var items = new Dictionary<string, Transform>()
         {
             { TORPEDOES, panel.transform.FindChild("BehemothTorpedoesButton") },
