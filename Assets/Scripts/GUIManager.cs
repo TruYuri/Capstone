@@ -311,6 +311,14 @@ public class GUIManager : MonoBehaviour
                     break;
                 case "TileList":
                     break;
+                case "Scientific":
+                    HumanPlayer.Instance.PopulateResearchPanel(split[0], split[1], split[2], _interface["ScientificResearchInfo"].gameObject);
+                    _interface["ScientificResearchInfo"].gameObject.SetActive(true);
+                    break;
+                case "Military":
+                    HumanPlayer.Instance.PopulateResearchPanel(split[0], split[1], split[2], _interface["MilitaryResearchInfo"].gameObject);
+                    _interface["MilitaryResearchInfo"].gameObject.SetActive(true);
+                    break;
             }
         }
 
@@ -330,6 +338,12 @@ public class GUIManager : MonoBehaviour
                 _interface["SquadInfo"].transform.position = Input.mousePosition;
                 break;
             case "TileList":
+                break;
+            case "Scientific":
+                 _interface["ScientificResearchInfo"].transform.position = Input.mousePosition;
+                break;
+            case "Military":
+                _interface["MilitaryResearchInfo"].transform.position = Input.mousePosition;
                 break;
         }
     }
@@ -353,6 +367,12 @@ public class GUIManager : MonoBehaviour
                 _interface["SquadInfo"].gameObject.SetActive(false);
                 break;
             case "TileList":
+                break;
+            case "Scientific":
+                _interface["ScientificResearchInfo"].gameObject.SetActive(false);
+                break;
+            case "Military":
+                _interface["MilitaryResearchInfo"].gameObject.SetActive(false);
                 break;
         }
 

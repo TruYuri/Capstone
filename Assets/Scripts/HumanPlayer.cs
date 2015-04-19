@@ -225,6 +225,18 @@ public class HumanPlayer : Player
         return _shipDefinitions[name];
     }
 
+    public void PopulateResearchPanel(string type, string name, string property, GameObject panel)
+    {
+        if (type == "Military")
+        {
+            _militaryTree.GetResearch(name).DisplayPopup(panel, property, _rcostReduction);
+        }
+        else if (type == "Scientific")
+        {
+            _scienceTree.GetResearch(name).DisplayPopup(panel, property, _rcostReduction);
+        }
+    }
+
     public override void TurnEnd()
     {
         base.TurnEnd();

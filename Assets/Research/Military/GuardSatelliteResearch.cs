@@ -162,4 +162,19 @@ public class GuardSatelliteResearch : Research
         if (upgrades[ARMOR] < 5)
             items[PLATING].GetComponent<Button>().interactable = false;
     }
+
+    public override void DisplayPopup(GameObject panel, string upgrade, float reduction)
+    {
+        if (upgrade == "Unlock")
+        {
+            var r = guardSatelliteShip.CanConstruct(null, 5, reduction).Value;
+
+            if (!costs.ContainsKey("Unlock"))
+                costs.Add("Unlock", null);
+
+            costs["Unlock"] = r;
+        }
+
+        base.DisplayPopup(panel, upgrade, reduction);
+    }
 }
