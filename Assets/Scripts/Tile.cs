@@ -49,7 +49,7 @@ public class Tile : MonoBehaviour, ListableObject
     public Inhabitance PopulationType {  get { return _planetInhabitance; } }
 
 	// New Generation code - handled in Sector/GenerateTile, sent here
-    public void Init(Sector sector, string type, string name, Inhabitance pType, int p, Resource rType, int rCount, TileSize size)
+    public void Init(Sector sector, string type, string name, Inhabitance pType, int p, Resource rType, int rCount, TileSize size, Team team)
     {
         _squad = this.GetComponent<Squad>();
         _squad.Init(Team.Uninhabited, sector, _name);
@@ -62,6 +62,8 @@ public class Tile : MonoBehaviour, ListableObject
         _population = p;
         _resourceType = rType;
         _resourceCount = rCount;
+        _team = team;
+        _squad.Team = team;
 
         var mapManager = MapManager.Instance;
         var system = GetComponent<ParticleSystem>();
@@ -84,12 +86,9 @@ public class Tile : MonoBehaviour, ListableObject
         system.enableEmission = true;
         renderer.enabled = true;
 
-        if (_population > 0)
+        if (_population > 0 && team != Team.Uninhabited)
         {
-            _team = Team.Indigenous;
-            _squad.Team = Team.Indigenous;
-
-            if (!GameManager.Instance.Players.ContainsKey(_team))
+            if (!GameManager.Instance.Players.ContainsKey(_team) && HumanPlayer.Instance.Team != team)
                 GameManager.Instance.AddAIPlayer(_team);
             GameManager.Instance.Players[_team].AddSoldiers(this, _planetInhabitance, _population);
             GameManager.Instance.Players[_team].ClaimTile(this);

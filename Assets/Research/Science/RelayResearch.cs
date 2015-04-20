@@ -11,7 +11,7 @@ public class RelayResearch : Research
     private Structure relay;
 
     public RelayResearch(Structure relay, List<Research> prereqs) 
-        : base(relay.Name, 3, prereqs)
+        : base(relay.Name, 4, prereqs)
     {
         this.relay = relay;
         upgrades.Add(RANGE, 0);
@@ -56,8 +56,8 @@ public class RelayResearch : Research
     {
         costs[DEFENSE] = new Dictionary<Resource, int>()
         {
-            { Resource.Ore, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * relay.Hull * relay.Firepower / 2.0f * (1.0f - reduction)) },
-            { Resource.Oil, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * relay.Hull * relay.Firepower / 2.0f * (1.0f - reduction)) }
+            { Resource.Ore, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * relay.Hull * (1.0f - reduction)) },
+            { Resource.Oil, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * relay.Hull * (1.0f - reduction)) }
         };
 
         costs[RANGE] = new Dictionary<Resource, int>()

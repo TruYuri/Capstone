@@ -92,47 +92,78 @@ public class Sector : MonoBehaviour
         if (Tile == null)
             Tile = Resources.Load<GameObject>(TILE_PREFAB);
 
-        // Generate center columns
-        for (int i = -85, j = 0; i <= 85; i += 10, j++)
+        if (_gridPos.Key == 0 && _gridPos.Value == 0)
         {
-            if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(8, j), new Vector3(-5, 0, i)); count++; }
-            if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(9, j), new Vector3(5, 0, i)); count++; }
-        }
-
-        // Generate middle columns
-        for (int n = 0; n < 4; n++)
-        {
-            int shift = 2 * n * 10;
-            int nx1 = 8 - n * 2 - 1;
-            int px1 = 9 + n * 2 + 1;
-            int nx2 = 8 - n * 2 - 2;
-            int px2 = 9 + n * 2 + 2;
-
-            for (int i = -75 + n * 10, j = n; i <= 75 - n * 10; i += 10, j++)
+            int x = (int)(GameManager.Generator.NextDouble() * 18);
+            int y = (int)(GameManager.Generator.NextDouble() * 18);
+            while(!IsValidLocation(new KeyValuePair<int, int>(x, y)) || _tileGrid[x,y] != null)
             {
-                if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(nx1, j + 1), new Vector3(-15 - shift, 0, i)); count++; }
-                if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(nx2, j + 1), new Vector3(-25 - shift, 0, i)); count++; }
-                if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(px1, j + 1), new Vector3(15 + shift, 0, i)); count++; }
-                if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(px2, j + 1), new Vector3(25 + shift, 0, i)); count++; }
+                x = (int)(GameManager.Generator.NextDouble() * 18);
+                y = (int)(GameManager.Generator.NextDouble() * 18);
+            }
+
+            CreateTile(new KeyValuePair<int,int>(x, y), , "Terran", Resource.Forest, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
+
+            while(!IsValidLocation(new KeyValuePair<int, int>(x, y)) || _tileGrid[x,y] != null)
+            {
+                x = (int)(GameManager.Generator.NextDouble() * 18);
+                y = (int)(GameManager.Generator.NextDouble() * 18);
+            }
+
+            CreateTile(new KeyValuePair<int,int>(x, y), , null, Resource.Oil, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
+
+            while(!IsValidLocation(new KeyValuePair<int, int>(x, y)) || _tileGrid[x,y] != null)
+            {
+                x = (int)(GameManager.Generator.NextDouble() * 18);
+                y = (int)(GameManager.Generator.NextDouble() * 18);
+            }
+
+            CreateTile(new KeyValuePair<int,int>(x, y), , null, Resource.Ore, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
+        }
+        else // regular sector generation
+        {
+            // Generate center columns
+            for (int i = -85, j = 0; i <= 85; i += 10, j++)
+            {
+                if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(8, j), new Vector3(-5, 0, i)); count++; }
+                if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(9, j), new Vector3(5, 0, i)); count++; }
+            }
+
+            // Generate middle columns
+            for (int n = 0; n < 4; n++)
+            {
+                int shift = 2 * n * 10;
+                int nx1 = 8 - n * 2 - 1;
+                int px1 = 9 + n * 2 + 1;
+                int nx2 = 8 - n * 2 - 2;
+                int px2 = 9 + n * 2 + 2;
+
+                for (int i = -75 + n * 10, j = n; i <= 75 - n * 10; i += 10, j++)
+                {
+                    if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(nx1, j + 1), new Vector3(-15 - shift, 0, i)); count++; }
+                    if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(nx2, j + 1), new Vector3(-25 - shift, 0, i)); count++; }
+                    if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(px1, j + 1), new Vector3(15 + shift, 0, i)); count++; }
+                    if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(px2, j + 1), new Vector3(25 + shift, 0, i)); count++; }
+                }
             }
         }
     }
 
-    private void CreateTile(KeyValuePair<int, int> grid, Vector3 offset, string type = null)
+    private void CreateTile(KeyValuePair<int, int> grid, Vector3 offset, string type = null,
+        Resource rType = Resource.NoResource, Inhabitance pType = Inhabitance.Uninhabited, Team team = Team.Uninhabited)
     {
         var suffix = string.Empty;
         var mm = MapManager.Instance;
-        var pType = Inhabitance.Uninhabited;
         var population = 0;
-        var rType = Resource.NoResource;
         var rCount = 0;
         var size = TileSize.Small;
 
-        if (type == null)
+        // generate resource type
+        var chance = (float)GameManager.Generator.NextDouble();
+        var rates = mm.ResourceRates.Keys.OrderBy(r => mm.ResourceRates[r]).ToList();
+
+        if (rType == Resource.NoResource && !MapManager.Instance.DeploySpawnTable.ContainsKey(type))
         {
-            // generate resource type
-            var chance = (float)GameManager.Generator.NextDouble();
-            var rates = mm.ResourceRates.Keys.OrderBy(r => mm.ResourceRates[r]).ToList();
             foreach (var r in rates)
             {
                 if (chance <= mm.ResourceRates[r])
@@ -141,7 +172,10 @@ public class Sector : MonoBehaviour
                     break;
                 }
             }
+        }
 
+        if (type == null)
+        {
             // generate planet type from resource type
             chance = (float)GameManager.Generator.NextDouble();
             var step = 1.0f / mm.ResourcePlanetTypes[rType].Count();
@@ -149,7 +183,10 @@ public class Sector : MonoBehaviour
             while (chance > (i + 1) * step)
                 i++;
             type = mm.ResourcePlanetTypes[rType][i];
+        }
 
+        if (pType == Inhabitance.Uninhabited)
+        {
             // generate population type
             chance = (float)GameManager.Generator.NextDouble();
             var pt = mm.PlanetInhabitanceSpawnTable[type].Keys.OrderBy(p => mm.PlanetInhabitanceSpawnTable[type][p]).ToList();
@@ -161,7 +198,10 @@ public class Sector : MonoBehaviour
                     break;
                 }
             }
+        }
 
+        if(!MapManager.Instance.DeploySpawnTable.ContainsKey(type))
+        {
             // generate large/small
             chance = (float)GameManager.Generator.NextDouble();
             if (chance < float.Parse(mm.PlanetSpawnDetails[type][PLANET_SMALL_SPAWN_DETAIL]))
@@ -207,10 +247,6 @@ public class Sector : MonoBehaviour
             + Math.Abs(_gridPos.Key).ToString() + Math.Abs(_gridPos.Value).ToString()
             + PlanetSuffix(type, _planetCounts[type]);
         }
-        else
-        {
-
-        }
 
         if (MapManager.Instance.PlanetTextureTable[type].Texture == null)
             return;
@@ -219,7 +255,7 @@ public class Sector : MonoBehaviour
         var tileObj = Instantiate(Tile, this.transform.position + offset, Quaternion.identity) as GameObject;
 
         var tile = tileObj.GetComponent<Tile>();
-        tile.Init(this, type, name, pType, population, rType, rCount, size);
+        tile.Init(this, type, name, pType, population, rType, rCount, size, team);
         _tileGrid[grid.Key, grid.Value] = tile;
     }
 
@@ -336,7 +372,27 @@ public class Sector : MonoBehaviour
     // Y:
     // Same, actually.
 
-    private KeyValuePair<int, int> WorldToGridReal(Vector3 point)
+    public bool IsValidLocation(Vector3 pos)
+    {
+        var gridPos = WorldToGridArray(pos);
+
+        return IsValidLocation(gridPos);
+    }
+
+    public bool IsValidLocation(KeyValuePair<int, int> gridPos)
+    {
+        var x = gridPos.Key;
+        if (gridPos.Key > 9)
+            x = 17 - gridPos.Key;
+
+        var offset = (18 - (10 + (x / 2) * 2)) / 2;
+        if (gridPos.Value < 18 - offset && gridPos.Value > -1 + offset)
+            return true;
+
+        return false;
+    }
+
+    private KeyValuePair<int, int> RealWorldToGrid(Vector3 point)
     {
         var diff = point - this.transform.position;
         int x = 0, y = 0;
@@ -354,25 +410,10 @@ public class Sector : MonoBehaviour
         return new KeyValuePair<int, int>(x, y);
     }
 
-    public bool IsValidLocation(Vector3 pos)
-    {
-        var gridPos = WorldToGridArray(pos);
-        
-        var x = gridPos.Key;
-        if(gridPos.Key > 9)
-            x = 17 - gridPos.Key;
-
-        var offset = (18 - (10 + (x / 2) * 2)) / 2;
-        if (gridPos.Value < 18 - offset && gridPos.Value > -1 + offset)
-            return true;
-   
-        return false;
-    }
-
     private KeyValuePair<int, int> WorldToGridArray(Vector3 point)
     {
         var diffreal = point - this.transform.position;
-        var diff = WorldToGridReal(point);
+        var diff = RealWorldToGrid(point);
         var x = 0;
         var y = 0;
 
@@ -405,7 +446,7 @@ public class Sector : MonoBehaviour
     public Tile CreateTileAtPosition(string type, Vector3 pos)
     {
         var fixedPos = pos - this.transform.position;
-        var relativePos = WorldToGridReal(pos);
+        var relativePos = RealWorldToGrid(pos);
         var gridPos = WorldToGridArray(pos);
         var realPosition = new Vector3(relativePos.Key, 0f, relativePos.Value)
             + new Vector3(fixedPos.x >= 0 ? 5 : -5, 0.0f, fixedPos.z >= 0 ? 5 : -5);

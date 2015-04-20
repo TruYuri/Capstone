@@ -11,7 +11,7 @@ public class WarpPortalResearch : Research
     private Structure warpPortal;
 
     public WarpPortalResearch(Structure warpPortal, List<Research> prereqs)
-        : base(warpPortal.Name, 3, prereqs)
+        : base(warpPortal.Name, 5, prereqs)
     {
         this.warpPortal = warpPortal;
         upgrades.Add(RANGE, 0);
@@ -54,8 +54,8 @@ public class WarpPortalResearch : Research
     {
         costs[DEFENSE] = new Dictionary<Resource, int>()
         {
-            { Resource.Ore, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * warpPortal.Hull * warpPortal.Firepower / 2.0f * (1.0f - reduction)) },
-            { Resource.Oil, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * warpPortal.Hull * warpPortal.Firepower / 2.0f * (1.0f - reduction)) }
+            { Resource.Ore, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * warpPortal.Hull * (1.0f - reduction)) },
+            { Resource.Oil, Mathf.CeilToInt((upgrades[DEFENSE] + 1) * warpPortal.Hull * (1.0f - reduction)) }
         };
 
         costs[RANGE] = new Dictionary<Resource, int>()
