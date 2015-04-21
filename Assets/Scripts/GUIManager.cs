@@ -38,10 +38,7 @@ public class GUIManager : MonoBehaviour
     public void Init(Dictionary<string, string> descriptions)
     {
         _descriptions = descriptions;
-    }
 
-    void Awake()
-    {
         _instance = this;
 
         if (_interface == null)
@@ -77,14 +74,6 @@ public class GUIManager : MonoBehaviour
         };
     }
 
-    void Start()
-    {
-    }
-
-    void Update()
-    {
-    }
-
     public void Register(string name, CustomUI btn, bool disable)
     {
         if (_interface == null)
@@ -95,6 +84,14 @@ public class GUIManager : MonoBehaviour
             _interface.Add(name, btn);
             _interface[name].gameObject.SetActive(!disable);
         }
+    }
+
+    void Start()
+    {
+        var cuis = this.GetComponentsInChildren<CustomUI>();
+
+        foreach (var c in cuis)
+            c.Register();
     }
 
     public void SetScreen(string screen)

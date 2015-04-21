@@ -21,7 +21,20 @@ public class HumanPlayer : Player
     private Vector3 _currentCameraDistance;
     private Dictionary<Sector, bool> _exploredSectors;
 
-    public static HumanPlayer Instance { get { return _instance; } } // move this to a GameManager registry!
+    public static HumanPlayer Instance 
+    { 
+        get 
+        {
+            if (_instance == null)
+            {
+                GameManager.Instance.AddHumanPlayer(Team.Union);
+                _instance = GameManager.Instance.Players[Team.Union] as HumanPlayer;
+            }
+
+            return _instance; 
+        } 
+    } // move this to a GameManager registry!
+
     public Squad Squad { get { return _controlledSquad; } }
     public Tile Tile { get { return _controlledTile; } }
     public Dictionary<Sector, bool> ExploredSectors { get { return _exploredSectors; } }

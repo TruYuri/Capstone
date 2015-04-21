@@ -68,8 +68,7 @@ public class MapManager : MonoBehaviour
     public Dictionary<Resource, List<string>> ResourcePlanetTypes { get { return _resourcePlanetTypes; } } // new
     public Dictionary<Resource, float> ResourceRates { get { return _resourceRate; } } // new
 
-
-    void Awake()
+    public void Init()
     {
         _instance = this;
         _planetTypeSpawnTable = new Dictionary<string, float>();
@@ -201,11 +200,6 @@ public class MapManager : MonoBehaviour
 
         parser.CloseINI();
         GenerateSector(Vector3.zero, 0, 0);
-    }
-
-    // Use this for initialization
-    public void Start()
-    {
     }
 
     public void GenerateNewSectors(Vector3 realPosition, KeyValuePair<int, int> gridPosition)

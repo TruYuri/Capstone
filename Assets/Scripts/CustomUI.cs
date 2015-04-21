@@ -6,10 +6,16 @@ public class CustomUI : MonoBehaviour
 {
     public string data;
     public bool disableAtStart;
+    public bool dontRegister;
 
     void Start()
     {
-        GUIManager.Instance.Register(data, this, disableAtStart);
+    }
+    
+    public void Register()
+    {
+        if (!dontRegister)
+            GUIManager.Instance.Register(data, this, disableAtStart);
     }
 
     public void ClickUpgrade()
@@ -122,5 +128,12 @@ public class CustomUI : MonoBehaviour
     public void Unpause()
     {
         GameManager.Instance.Paused = false;
+    }
+
+    public void ClickTeam()
+    {
+        var gm = FindObjectOfType<GameManager>();
+        gm.Init((Team)Enum.Parse(typeof(Team), data));
+        this.transform.parent.gameObject.SetActive(false);
     }
 }

@@ -102,7 +102,10 @@ public class Sector : MonoBehaviour
                 y = (int)(GameManager.Generator.NextDouble() * 18);
             }
 
-            CreateTile(new KeyValuePair<int,int>(x, y), , "Terran", Resource.Forest, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
+            CreateTile(new KeyValuePair<int,int>(x, y), GridToWorld(x, y), "Terran", Resource.Forest, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
+            HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Base");
+            HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Resource Transport");
+            _tileGrid[x, y].Squad.Deploy(_tileGrid[x, y].Squad.Ships[0] as Structure, _tileGrid[x, y]);
 
             while(!IsValidLocation(new KeyValuePair<int, int>(x, y)) || _tileGrid[x,y] != null)
             {
@@ -110,7 +113,10 @@ public class Sector : MonoBehaviour
                 y = (int)(GameManager.Generator.NextDouble() * 18);
             }
 
-            CreateTile(new KeyValuePair<int,int>(x, y), , null, Resource.Oil, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
+            CreateTile(new KeyValuePair<int,int>(x, y), GridToWorld(x, y), null, Resource.Oil, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
+            HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Gathering Complex");
+            HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Resource Transport");
+            _tileGrid[x, y].Squad.Deploy(_tileGrid[x, y].Squad.Ships[0] as Structure, _tileGrid[x, y]);
 
             while(!IsValidLocation(new KeyValuePair<int, int>(x, y)) || _tileGrid[x,y] != null)
             {
@@ -118,7 +124,10 @@ public class Sector : MonoBehaviour
                 y = (int)(GameManager.Generator.NextDouble() * 18);
             }
 
-            CreateTile(new KeyValuePair<int,int>(x, y), , null, Resource.Ore, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
+            CreateTile(new KeyValuePair<int, int>(x, y), GridToWorld(x, y), null, Resource.Ore, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
+            HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Gathering Complex");
+            HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Resource Transport");
+            _tileGrid[x, y].Squad.Deploy(_tileGrid[x, y].Squad.Ships[0] as Structure, _tileGrid[x, y]);
         }
         else // regular sector generation
         {
@@ -162,14 +171,17 @@ public class Sector : MonoBehaviour
         var chance = (float)GameManager.Generator.NextDouble();
         var rates = mm.ResourceRates.Keys.OrderBy(r => mm.ResourceRates[r]).ToList();
 
-        if (rType == Resource.NoResource && !MapManager.Instance.DeploySpawnTable.ContainsKey(type))
+        if (rType == Resource.NoResource)
         {
-            foreach (var r in rates)
+            if (!(type != null && MapManager.Instance.DeploySpawnTable.ContainsKey(type)))
             {
-                if (chance <= mm.ResourceRates[r])
+                foreach (var r in rates)
                 {
-                    rType = r;
-                    break;
+                    if (chance <= mm.ResourceRates[r])
+                    {
+                        rType = r;
+                        break;
+                    }
                 }
             }
         }
@@ -390,6 +402,30 @@ public class Sector : MonoBehaviour
             return true;
 
         return false;
+    }
+
+    private Vector3 GridToWorld(int x, int y)
+    {
+        return GridToWorld(new KeyValuePair<int, int>(x, y));
+    }
+
+    private Vector3 GridToWorld(KeyValuePair<int, int> pos)
+    {
+        var x = pos.Key;
+        var y = pos.Value;
+
+        float fx, fy;
+        if (x <= 8)
+            fx = -5f - 10f * (8 - x);
+        else
+            fx = 5f + 10f * (x - 9);
+
+        if (y <= 8)
+            fy = -5f - 10f * (8 - y);
+        else
+            fy = 5f + 10f * (y - 9);
+
+        return new Vector3(fx, 0f, fy);
     }
 
     private KeyValuePair<int, int> RealWorldToGrid(Vector3 point)

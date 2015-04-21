@@ -37,7 +37,6 @@ public class GameManager : MonoBehaviour
     private Texture2D _shipTextureAtlas;
     private Dictionary<Team, Player> _players;
     private Dictionary<Team, Color> _playerColors;
-    private bool _gameStarted;
 
     public static GameManager Instance 
     { 
@@ -57,12 +56,10 @@ public class GameManager : MonoBehaviour
         set { _paused = value; }
     }
 
-    public bool GameStarted { get { return _gameStarted; } }
-
     public Dictionary<Team, Player> Players { get { return _players; } }
     public Dictionary<Team, Color> PlayerColors { get { return _playerColors; } }
 
-    void Awake()
+    public void Init(Team player)
     {
         _instance = this;
         _eventQueue = new Queue<GameEvent>();
@@ -76,6 +73,8 @@ public class GameManager : MonoBehaviour
             { Team.Plinthen, Color.green},
             { Team.Kharkyr, Color.red }
         };
+        AddHumanPlayer(player);
+        AddAIPlayer(Team.Indigenous);
 
         _shipDefinitions = new Dictionary<string, Ship>();
         var descriptions = new Dictionary<string, string>();
@@ -123,7 +122,7 @@ public class GameManager : MonoBehaviour
                 var range = int.Parse(shipDetails[section][RANGE_DETAIL]);
                 var gatherList = shipDetails[section][RESOURCE_TYPE_DETAIL].Split('|');
                 var gatherType = ResourceGatherType.None;
-                foreach(var t in gatherList)
+                foreach (var t in gatherList)
                     gatherType = gatherType | (ResourceGatherType)Enum.Parse(typeof(ResourceGatherType), t);
                 _shipDefinitions.Add(name, new Structure(icon, name, hull, firepower, speed, capacity, rCapacity, dDefense, dCapacity, rate, range, constructables, type, gatherType));
             }
@@ -135,13 +134,11 @@ public class GameManager : MonoBehaviour
 
         parser.CloseINI();
         GUIManager.Instance.Init(descriptions);
+        MapManager.Instance.Init();
 
-        // Research.ini
+        foreach (var p in _players)
+            p.Value.Init(p.Key);
     }
-	// Use this for initialization
-	void Start () 
-    {
-	}
 
     public void AddHumanPlayer(Team team)
     {
@@ -149,7 +146,6 @@ public class GameManager : MonoBehaviour
             _players.Add(team, null);
         var playerObj = Resources.Load<GameObject>(HUMAN_PLAYER_PREFAB);
         _players[team] = (Instantiate(playerObj) as GameObject).GetComponent<HumanPlayer>();
-        _players[team].Init(team);
     }
 
     public void AddAIPlayer(Team team)
@@ -158,7 +154,6 @@ public class GameManager : MonoBehaviour
             _players.Add(team, null);
         var playerObj = Resources.Load<GameObject>(AI_PLAYER_PREFAB);
         _players[team] = (Instantiate(playerObj) as GameObject).GetComponent<Player>();
-        _players[team].Init(team);
     }
 
     public Dictionary<string, Ship> GenerateShipDefs()
@@ -197,24 +192,8 @@ public class GameManager : MonoBehaviour
 	
 	void Update () 
     {
-        if (!_gameStarted)
-        {
-            AddHumanPlayer(Team.Union);
-
-            AddAIPlayer(Team.Kharkyr);
-            AddAIPlayer(Team.Plinthen);
-            //AddAIPlayer(Team.Indigenous);
-
-            // debug
-            var squad = _players[Team.Kharkyr].CreateNewSquad(new Vector3(0, 0, -10), null);
-            var defs = GenerateShipDefs();
-            squad.Ships.Add(defs["Fighter"]);
-            squad.Ships.Add(defs["Transport"]);
-            squad.Ships.Add(defs["Heavy Fighter"]);
-            squad.Ships.Add(defs["Behemoth"]);
-
-            _gameStarted = true;
-        }
+        if (_instance == null)
+            return;
 
         // debug
         foreach(var team in _players)

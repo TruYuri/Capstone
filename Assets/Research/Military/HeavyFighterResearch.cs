@@ -172,8 +172,19 @@ public class HeavyFighterResearch : Research
         }
         else
         {
+            var r = heavyFighterShip.CanConstruct(null, 5, reduction).Value;
+
+            if (!costs.ContainsKey("Unlock"))
+                costs.Add("Unlock", null);
+
+            costs["Unlock"] = r;
+
             p1.gameObject.SetActive(true);
             p1.GetComponentInChildren<Button>().interactable = CanUnlock(resources, reduction);
+            p1.FindChild("ForestText").GetComponent<Text>().text = costs["Unlock"][Resource.Forest].ToString();
+            p1.FindChild("OreText").GetComponent<Text>().text = costs["Unlock"][Resource.Ore].ToString();
+            p1.FindChild("OilText").GetComponent<Text>().text = costs["Unlock"][Resource.Oil].ToString();
+            p1.FindChild("AsterminiumText").GetComponent<Text>().text = costs["Unlock"][Resource.Asterminium].ToString();
         }
 
         foreach (var item in items)
