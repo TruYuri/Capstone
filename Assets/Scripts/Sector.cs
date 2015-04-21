@@ -102,7 +102,7 @@ public class Sector : MonoBehaviour
                 y = (int)(GameManager.Generator.NextDouble() * 18);
             }
 
-            CreateTile(new KeyValuePair<int,int>(x, y), , "Terran", Resource.Forest, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
+            //CreateTile(new KeyValuePair<int,int>(x, y), , "Terran", Resource.Forest, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
 
             while(!IsValidLocation(new KeyValuePair<int, int>(x, y)) || _tileGrid[x,y] != null)
             {
@@ -110,7 +110,7 @@ public class Sector : MonoBehaviour
                 y = (int)(GameManager.Generator.NextDouble() * 18);
             }
 
-            CreateTile(new KeyValuePair<int,int>(x, y), , null, Resource.Oil, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
+            //CreateTile(new KeyValuePair<int,int>(x, y), , null, Resource.Oil, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
 
             while(!IsValidLocation(new KeyValuePair<int, int>(x, y)) || _tileGrid[x,y] != null)
             {
@@ -118,7 +118,7 @@ public class Sector : MonoBehaviour
                 y = (int)(GameManager.Generator.NextDouble() * 18);
             }
 
-            CreateTile(new KeyValuePair<int,int>(x, y), , null, Resource.Ore, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
+            //CreateTile(new KeyValuePair<int,int>(x, y), , null, Resource.Ore, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
         }
         else // regular sector generation
         {
