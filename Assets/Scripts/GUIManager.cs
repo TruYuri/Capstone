@@ -13,7 +13,7 @@ public class GUIManager : MonoBehaviour
     private const string SQUAD_COUNT_PREFAB = "ShipCountListing";
 
     private static GUIManager _instance;
-    private Dictionary<string, CustomUI> _interface;
+    private Dictionary<string, CustomUI> _interface = new Dictionary<string, CustomUI>();
     private Dictionary<string, Sprite> _icons;
     private Dictionary<string, int> _indices;
     private Dictionary<string, string> _descriptions; // duplicating that much text for each ship is terrible for memory.
@@ -38,11 +38,7 @@ public class GUIManager : MonoBehaviour
     public void Init(Dictionary<string, string> descriptions)
     {
         _descriptions = descriptions;
-
         _instance = this;
-
-        if (_interface == null)
-            _interface = new Dictionary<string, CustomUI>();
 
         _indices = new Dictionary<string, int>()
         {
@@ -76,19 +72,13 @@ public class GUIManager : MonoBehaviour
 
     public void Register(string name, CustomUI btn, bool disable)
     {
-        if (_interface == null)
-            _interface = new Dictionary<string, CustomUI>();
-
-        if (!_interface.ContainsKey(name) && btn != null && btn.gameObject != null)
-        {
-            _interface.Add(name, btn);
-            _interface[name].gameObject.SetActive(!disable);
-        }
+        _interface.Add(name, btn);
+        _interface[name].gameObject.SetActive(!disable);
     }
 
     void Start()
     {
-        var cuis = this.GetComponentsInChildren<CustomUI>();
+        var cuis = this.gameObject.GetComponentsInChildren<CustomUI>();
 
         foreach (var c in cuis)
             c.Register();
@@ -316,6 +306,12 @@ public class GUIManager : MonoBehaviour
                     HumanPlayer.Instance.PopulateResearchPanel(split[0], split[1], split[2], _interface["MilitaryResearchInfo"].gameObject);
                     _interface["MilitaryResearchInfo"].gameObject.SetActive(true);
                     break;
+                case "MilHelp":
+                    _interface["MilitaryUnlockInfo"].gameObject.SetActive(true);
+                    break;
+                case "SciHelp":
+                    _interface["ScientificUnlockInfo"].gameObject.SetActive(true);
+                    break;
             }
         }
 
@@ -341,6 +337,12 @@ public class GUIManager : MonoBehaviour
                 break;
             case "Military":
                 _interface["MilitaryResearchInfo"].transform.position = Input.mousePosition;
+                break;
+            case "MilHelp":
+                _interface["MilitaryUnlockInfo"].transform.position = Input.mousePosition;
+                break;
+            case "SciHelp":
+                _interface["ScientificUnlockInfo"].transform.position = Input.mousePosition;
                 break;
         }
     }
@@ -370,6 +372,12 @@ public class GUIManager : MonoBehaviour
                 break;
             case "Military":
                 _interface["MilitaryResearchInfo"].gameObject.SetActive(false);
+                break;
+            case "MilHelp":
+                _interface["MilitaryUnlockInfo"].gameObject.SetActive(false);
+                break;
+            case "SciHelp":
+                _interface["ScientificUnlockInfo"].gameObject.SetActive(false);
                 break;
         }
 
