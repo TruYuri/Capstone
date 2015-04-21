@@ -94,18 +94,14 @@ public class Sector : MonoBehaviour
 
         if (_gridPos.Key == 0 && _gridPos.Value == 0)
         {
-            int x = (int)(GameManager.Generator.NextDouble() * 18);
-            int y = (int)(GameManager.Generator.NextDouble() * 18);
-            while(!IsValidLocation(new KeyValuePair<int, int>(x, y)) || _tileGrid[x,y] != null)
-            {
-                x = (int)(GameManager.Generator.NextDouble() * 18);
-                y = (int)(GameManager.Generator.NextDouble() * 18);
-            }
+            int x = 8 + (int)(GameManager.Generator.NextDouble() * 2);
+            int y = 8 + (int)(GameManager.Generator.NextDouble() * 2);
 
             CreateTile(new KeyValuePair<int,int>(x, y), GridToWorld(x, y), "Terran", Resource.Forest, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Base");
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Resource Transport");
             _tileGrid[x, y].Squad.Deploy(_tileGrid[x, y].Squad.Ships[0] as Structure, _tileGrid[x, y]);
+            HumanPlayer.Instance.CommandSquad.transform.position = _tileGrid[x, y].transform.position + new Vector3(-5f, 0, 0);
 
             while(!IsValidLocation(new KeyValuePair<int, int>(x, y)) || _tileGrid[x,y] != null)
             {
@@ -156,6 +152,10 @@ public class Sector : MonoBehaviour
                 }
             }
         }
+    }
+
+    void Update()
+    {
     }
 
     private void CreateTile(KeyValuePair<int, int> grid, Vector3 offset, string type = null,
@@ -210,6 +210,9 @@ public class Sector : MonoBehaviour
                     break;
                 }
             }
+
+            if (pType != Inhabitance.Uninhabited)
+                team = Team.Indigenous;
         }
 
         if(!MapManager.Instance.DeploySpawnTable.ContainsKey(type))
@@ -517,9 +520,4 @@ public class Sector : MonoBehaviour
 
         return owner;
     }
-
-	// Update is called once per frame
-	void Update () 
-    {
-	}
 }

@@ -112,21 +112,6 @@ public class Squad : MonoBehaviour, ListableObject
         }
     }
 
-    private void CheckSector(Sector sector)
-    {
-        if (_currentSector == null || (sector.transform.position - this.transform.position).sqrMagnitude
-            < (_currentSector.transform.position - this.transform.position).sqrMagnitude)
-        {
-            if (_currentSector != null)
-                _currentSector.GetComponent<Renderer>().material.color = Color.white;
-            _currentSector = sector;
-            CheckSectorTile();
-            _currentSector.GetComponent<Renderer>().material.color = Color.green;
-            _currentSector.GenerateNewSectors();
-            // GameManager.Instance.Players[this.Team].EndTurn();
-        }
-    }
-
     private void CheckSectorTile()
     {
         // raycast down to find sector
@@ -136,11 +121,12 @@ public class Squad : MonoBehaviour, ListableObject
             var sector = col.collider.GetComponent<Sector>();
             if (sector != null && _currentSector != sector)
             {
+                var oldSector = _currentSector;
                 _currentSector = col.collider.gameObject.GetComponent<Sector>();
                 var human = HumanPlayer.Instance;
                 if (_team == human.Team)
                 {
-                    if (human.CommandSquad == this)
+                    if (human.CommandSquad == this && oldSector != null)
                         human.EndTurn();
 
                     if(!human.ExploredSectors.ContainsKey(_currentSector))

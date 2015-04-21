@@ -327,19 +327,6 @@ public class Player : MonoBehaviour
 
     public void EndBattleConditions(bool win)
     {
-        if(win)
-        {
-            if (_currentBattleType == BattleType.Space)
-            {
-            }
-        }
-        else
-        {
-            if (_currentBattleType == BattleType.Space)
-            {
-            }
-        }
-
         GameManager.Instance.Paused = false;
 
         if (_controlledSquad != null)

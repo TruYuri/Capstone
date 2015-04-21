@@ -497,7 +497,7 @@ public class GUIManager : MonoBehaviour
             PopulateList<Ship>(buildList, "Constructables", ListingType.Build, tile.Structure.Resources);
         }
 
-        SetUIElements(true, false, true, false, true, true);
+        SetUIElements(true, false, true, false, true, false);
         SetSquadControls(squad);
     }
 

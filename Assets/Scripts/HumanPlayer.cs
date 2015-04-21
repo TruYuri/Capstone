@@ -48,7 +48,6 @@ public class HumanPlayer : Player
         _currentCameraDistance = _cameraOffset;
         _exploredSectors = new Dictionary<Sector, bool>();
         
-        
         // debug
         var squad = _commandShipSquad;
         AddShip(squad, "Base");
@@ -86,10 +85,6 @@ public class HumanPlayer : Player
 
     void Start()
     {
-        // claim a starting tile
-
-
-
     }
 
     void Update()

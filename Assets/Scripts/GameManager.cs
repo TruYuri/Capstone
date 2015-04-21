@@ -142,16 +142,12 @@ public class GameManager : MonoBehaviour
 
     public void AddHumanPlayer(Team team)
     {
-        if (!_players.ContainsKey(team))
-            _players.Add(team, null);
         var playerObj = Resources.Load<GameObject>(HUMAN_PLAYER_PREFAB);
         _players[team] = (Instantiate(playerObj) as GameObject).GetComponent<HumanPlayer>();
     }
 
     public void AddAIPlayer(Team team)
     {
-        if (!_players.ContainsKey(team))
-            _players.Add(team, null);
         var playerObj = Resources.Load<GameObject>(AI_PLAYER_PREFAB);
         _players[team] = (Instantiate(playerObj) as GameObject).GetComponent<Player>();
     }

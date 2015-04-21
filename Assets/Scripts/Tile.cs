@@ -52,14 +52,13 @@ public class Tile : MonoBehaviour, ListableObject
     public void Init(Sector sector, string type, string name, Inhabitance pType, int p, Resource rType, int rCount, TileSize size, Team team)
     {
         _squad = this.GetComponent<Squad>();
-        _squad.Init(Team.Uninhabited, sector, _name);
+        _squad.Init(Team.Uninhabited, sector, name);
         _diplomacy = new Dictionary<global::Team, bool>();
         transform.SetParent(sector.transform);
 
         _planetType = type;
         _name = name;
         _planetInhabitance = pType;
-        _population = p;
         _resourceType = rType;
         _resourceCount = rCount;
         _team = team;
@@ -86,11 +85,9 @@ public class Tile : MonoBehaviour, ListableObject
         system.enableEmission = true;
         renderer.enabled = true;
 
-        if (_population > 0 && team != Team.Uninhabited)
+        if (p > 0 && team != Team.Uninhabited)
         {
-            if (!GameManager.Instance.Players.ContainsKey(_team) && HumanPlayer.Instance.Team != team)
-                GameManager.Instance.AddAIPlayer(_team);
-            GameManager.Instance.Players[_team].AddSoldiers(this, _planetInhabitance, _population);
+            GameManager.Instance.Players[_team].AddSoldiers(this, _planetInhabitance, p);
             GameManager.Instance.Players[_team].ClaimTile(this);
             // generate random defenses if space age
         }
