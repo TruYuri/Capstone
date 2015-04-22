@@ -8,10 +8,6 @@ using System.Linq;
 
 public class GUIManager : MonoBehaviour 
 {
-    private const string INI_PATH = "/Resources/Ships.ini";
-    private const string SHIP_SECTION_HEADER = "[Ships]";
-    private const string SQUAD_COUNT_PREFAB = "ShipCountListing";
-
     private static GUIManager _instance;
     private Dictionary<string, CustomUI> _interface = new Dictionary<string, CustomUI>();
     private Dictionary<string, Sprite> _icons;
@@ -49,7 +45,8 @@ public class GUIManager : MonoBehaviour
             { "SelectedShipList", -1 },
             { "SquadList", -1 },
             { "TileList", -1 },
-            { "WarpList", -1 }
+            { "WarpList", -1 },
+            { "Zoom", -1 }
         };
 
         _icons = new Dictionary<string, Sprite>()
@@ -944,7 +941,7 @@ public class GUIManager : MonoBehaviour
 
             _interface["BattleWon"].gameObject.SetActive(true);
             ClearList("ShipsLostList");
-            var squadEntry = Resources.Load<GameObject>(SQUAD_COUNT_PREFAB);
+            var squadEntry = Resources.Load<GameObject>("ShipCountListing");
             foreach(var lost in winner.Value)
             {
                 var entry = Instantiate(squadEntry) as GameObject;
@@ -1008,21 +1005,51 @@ public class GUIManager : MonoBehaviour
         GameManager.Instance.Paused = false;
     }
 
+    public void SetZoom(string data)
+    {
+        if (data == "IncreaseZoom")
+            _indices["Zoom"]++;
+        else
+            _indices["Zoom"]--;
+
+        _indices["Zoom"] = Mathf.Clamp(_indices["Zoom"], 1, 4);
+
+        var i = _interface["IncreaseZoom"].GetComponent<Button>();
+        var d = _interface["DecreaseZoom"].GetComponent<Button>();
+
+        if (_indices["Zoom"] == 1)
+        {
+            i.interactable = false;
+            d.interactable = true;
+        }
+        else if (_indices["Zoom"] == 4)
+        {
+            i.interactable = true;
+            d.interactable = false;
+        }
+        else
+            i.interactable = d.interactable = true;
+    }
+
     public void UpdateMinimap(Texture2D texture, Vector3 position, Sector sector)
     {
         var image = _interface["Minimap"].GetComponent<RawImage>();
         image.texture = texture;
 
         var mapPos = MapManager.Instance.GetMiniMapPosition(texture as Texture2D, sector, position);
+        var zoom = 1f + _indices["Zoom"] * 0.25f;
 
-        var left = mapPos.x - (128 / (float)texture.width);
+        var maxw = Mathf.Clamp(256 * zoom, 256, texture.width);
+        var maxh = Mathf.Clamp(192 * zoom, 192, texture.height);
+
+        var left = mapPos.x - (maxw / 2 / (float)texture.width);
         if (left < 0f)
             left = 0f;
-        var top = mapPos.y - (96 / (float)texture.height);
+        var top = mapPos.y - (maxh / 2 / (float)texture.height);
         if (top < 0f)
             top = 0f;
 
         image.uvRect = new Rect(left, top,
-            256 / (float)texture.width, 192 / (float)texture.height);
+            maxw / (float)texture.width, maxh / (float)texture.height);
     }
 }

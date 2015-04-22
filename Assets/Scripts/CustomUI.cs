@@ -136,4 +136,9 @@ public class CustomUI : MonoBehaviour
         gm.Init((Team)Enum.Parse(typeof(Team), data));
         this.transform.parent.gameObject.SetActive(false);
     }
+
+    public void ClickZoom()
+    {
+        GUIManager.Instance.SetZoom(data);
+    }
 }

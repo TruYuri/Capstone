@@ -349,8 +349,6 @@ public class MapManager : MonoBehaviour
                 if(skip)
                     continue;
 
-                // this is a major performance hog, need to redo
-                // add to existing image, don't redo all
                 for (int y = 0; y < 64; y++)
                 {
                     var yn = y * 64;
