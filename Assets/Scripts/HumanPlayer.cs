@@ -64,6 +64,7 @@ public class HumanPlayer : Player
         GUIManager.Instance.SetTileList(false);
         GUIManager.Instance.SetWarpList(false);
         GUIManager.Instance.SetScreen("MainUI");
+        GUIManager.Instance.SetZoom(null, true);
     }
 
     void Start()
@@ -279,6 +280,7 @@ public class HumanPlayer : Player
                 colors.Add(_commandShipSquad.Sector, Color.magenta);
 
             var minimap = MapManager.Instance.GenerateMap(colors);
+            GUIManager.Instance.SetZoom(null, false);
             GUIManager.Instance.UpdateMinimap(minimap, _controlledSquad.transform.position, _controlledSquad.Sector);
         }
 

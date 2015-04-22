@@ -46,7 +46,7 @@ public class GUIManager : MonoBehaviour
             { "SquadList", -1 },
             { "TileList", -1 },
             { "WarpList", -1 },
-            { "Zoom", -1 }
+            { "Zoom", 0 }
         };
 
         _icons = new Dictionary<string, Sprite>()
@@ -440,7 +440,8 @@ public class GUIManager : MonoBehaviour
     {
         var keys = new List<string>(_indices.Keys);
         foreach (var index in keys)
-            _indices[index] = -1;
+            if(index != "Zoom")
+                _indices[index] = -1;
 
         PopulateList<Ship>(squad.Ships, "MainShipList", ListingType.Info, false);
         var text = _interface["SquadActionText"].GetComponent<Text>();
@@ -1005,30 +1006,42 @@ public class GUIManager : MonoBehaviour
         GameManager.Instance.Paused = false;
     }
 
-    public void SetZoom(string data)
+    public void SetZoom(string data, bool redraw)
     {
-        if (data == "IncreaseZoom")
-            _indices["Zoom"]++;
-        else
-            _indices["Zoom"]--;
-
-        _indices["Zoom"] = Mathf.Clamp(_indices["Zoom"], 1, 4);
-
-        var i = _interface["IncreaseZoom"].GetComponent<Button>();
-        var d = _interface["DecreaseZoom"].GetComponent<Button>();
-
-        if (_indices["Zoom"] == 1)
+        var z = _indices["Zoom"];
+        if (data != null)
         {
-            i.interactable = false;
-            d.interactable = true;
+            if (data == "ZoomOut")
+                z++;
+            else
+                z--;
         }
-        else if (_indices["Zoom"] == 4)
-        {
+
+        var m = MapManager.Instance.Minimap;
+
+        var maxw = 256 + 256 * z;
+        var maxh = 192 + 192 * z;
+
+        var maxedw = maxw > m.width;
+        var maxedh = maxh > m.height;
+        if(!maxedw && !maxedh)
+            _indices["Zoom"] = Mathf.Clamp(z, 0, 11);
+
+        var i = _interface["ZoomIn"].GetComponent<Button>();
+        var o = _interface["ZoomOut"].GetComponent<Button>();
+
+        if (z != 0 && z == _indices["Zoom"])
             i.interactable = true;
-            d.interactable = false;
-        }
         else
-            i.interactable = d.interactable = true;
+            i.interactable = false;
+
+        if (z != 10 && z == _indices["Zoom"])
+            o.interactable = true;
+        else
+            o.interactable = false;
+
+        if (redraw)
+            HumanPlayer.Instance.Control(HumanPlayer.Instance.Squad.gameObject);
     }
 
     public void UpdateMinimap(Texture2D texture, Vector3 position, Sector sector)
@@ -1037,10 +1050,10 @@ public class GUIManager : MonoBehaviour
         image.texture = texture;
 
         var mapPos = MapManager.Instance.GetMiniMapPosition(texture as Texture2D, sector, position);
-        var zoom = 1f + _indices["Zoom"] * 0.25f;
+        var zoom = _indices["Zoom"];
 
-        var maxw = Mathf.Clamp(256 * zoom, 256, texture.width);
-        var maxh = Mathf.Clamp(192 * zoom, 192, texture.height);
+        var maxw = 256 + 256 * zoom;
+        var maxh = 192 + 192 * zoom;
 
         var left = mapPos.x - (maxw / 2 / (float)texture.width);
         if (left < 0f)

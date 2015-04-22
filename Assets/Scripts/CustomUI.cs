@@ -139,6 +139,6 @@ public class CustomUI : MonoBehaviour
 
     public void ClickZoom()
     {
-        GUIManager.Instance.SetZoom(data);
+        GUIManager.Instance.SetZoom(data, true);
     }
 }

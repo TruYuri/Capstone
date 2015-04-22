@@ -69,6 +69,7 @@ public class MapManager : MonoBehaviour
     public Dictionary<int, Dictionary<int, Sector>> SectorMap { get { return _sectorMap; } }
     public Dictionary<Resource, List<string>> ResourcePlanetTypes { get { return _resourcePlanetTypes; } } // new
     public Dictionary<Resource, float> ResourceRates { get { return _resourceRate; } } // new
+    public Texture2D Minimap { get { return _minimap; } }
 
     public void Init()
     {
@@ -299,13 +300,20 @@ public class MapManager : MonoBehaviour
     {
         // update minimap
         // generate map so it'll always be able to center it on minimap.
-        var width = Math.Abs(_maxMapSectors.Value - _minMapSectors.Value + 1) * 64 + 128;
-        var height = Math.Abs(_maxMapSectors.Key - _minMapSectors.Key + 1) * 64 + 128;
+        var width = Math.Abs(_maxMapSectors.Value - _minMapSectors.Value + 1) * 64;
+        var height = Math.Abs(_maxMapSectors.Key - _minMapSectors.Key + 1) * 64;
+
+        // find nearest 192x256 multiples
+        if (width % 256 != 0)
+            width = ((width / 256) + 1) * 256;
+        if (height % 192 != 0)
+            height = ((height / 192) + 1) * 192;
+
+        width += 256;
+        height += 192;
 
         if (highlights == null)
             highlights = new Dictionary<Sector, Color>();
-
-        // find nearest 192x256 multiple
 
         var xdiff = (width - _minimap.width) / 2;
         var ydiff = (height - _minimap.height) / 2;
