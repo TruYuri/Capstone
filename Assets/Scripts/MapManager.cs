@@ -302,7 +302,7 @@ public class MapManager : MonoBehaviour
         // find nearest 192x256 multiple
 
         var miniMap = new Texture2D(width, height);
-        //miniMap.alphaIsTransparency = true;
+        miniMap.alphaIsTransparency = true;
         var centerX = miniMap.width / 2;
         var centerY = miniMap.height / 2;
         var color = _minimapTile[32 * 64 + 32];
