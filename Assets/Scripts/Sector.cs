@@ -255,7 +255,7 @@ public class Sector : MonoBehaviour
             }
 
             if (!_planetCounts.ContainsKey(type))
-                _planetCounts.Add(type, 0);
+                _planetCounts.Add(type, -1);
             _planetCounts[type]++;
 
             suffix = "-"
