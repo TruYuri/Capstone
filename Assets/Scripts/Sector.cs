@@ -102,7 +102,6 @@ public class Sector : MonoBehaviour
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Resource Transport");
             _tileGrid[x, y].Squad.Deploy(_tileGrid[x, y].Squad.Ships[0] as Structure, _tileGrid[x, y]);
             HumanPlayer.Instance.CommandSquad.transform.position = _tileGrid[x, y].transform.position + new Vector3(-5f, 0, 0);
-            HumanPlayer.Instance.ClaimTile(_tileGrid[x, y]);
 
             while(!IsValidLocation(new KeyValuePair<int, int>(x, y)) || _tileGrid[x,y] != null)
             {
@@ -114,7 +113,6 @@ public class Sector : MonoBehaviour
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Gathering Complex");
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Resource Transport");
             _tileGrid[x, y].Squad.Deploy(_tileGrid[x, y].Squad.Ships[0] as Structure, _tileGrid[x, y]);
-            HumanPlayer.Instance.ClaimTile(_tileGrid[x, y]);
 
             while(!IsValidLocation(new KeyValuePair<int, int>(x, y)) || _tileGrid[x,y] != null)
             {
@@ -126,7 +124,6 @@ public class Sector : MonoBehaviour
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Gathering Complex");
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Resource Transport");
             _tileGrid[x, y].Squad.Deploy(_tileGrid[x, y].Squad.Ships[0] as Structure, _tileGrid[x, y]);
-            HumanPlayer.Instance.ClaimTile(_tileGrid[x, y]);
         }
         else // regular sector generation
         {
