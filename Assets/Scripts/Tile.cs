@@ -22,6 +22,7 @@ public class Tile : MonoBehaviour, ListableObject
     */
 
     private const string TILE_LISTING_PREFAB = "TileListing";
+    private const string CIRCLE_PREFAB = "Circle";
 
     private float _radius;
     private float _clickRadius;
@@ -35,6 +36,7 @@ public class Tile : MonoBehaviour, ListableObject
     private Structure _structure;
     private Squad _squad;
     private Dictionary<Team, bool> _diplomacy;
+    private GameObject _circle;
 
     public string Name { get { return _name; } }
     public Team Team { get { return _team; } }
@@ -68,14 +70,14 @@ public class Tile : MonoBehaviour, ListableObject
         var system = GetComponent<ParticleSystem>();
         var renderer = system.GetComponent<Renderer>();
 
-        _radius = 4.0f;
+        _radius = 5.0f;
         _clickRadius = 1.5f;
         system.startSize = 5.0f;
         if (size == TileSize.Small)
         {
             system.startSize *= 0.5f;
-            _radius = 1.0f;
-            _clickRadius = 1.0f;
+            _radius *= 0.5f;
+            _clickRadius *= 0.5f;
         }
 
         renderer.material.mainTexture = mapManager.PlanetTextureTable[_planetType].Texture;
@@ -95,7 +97,11 @@ public class Tile : MonoBehaviour, ListableObject
 
     void Start()
     {
-
+        var circle = Resources.Load(CIRCLE_PREFAB);
+        _circle = GameObject.Instantiate(circle, this.transform.position, Quaternion.Euler(90f, 0, 0)) as GameObject;
+        _circle.transform.localScale = new Vector3(_radius * 2 + 0.5f, _radius * 2 + 0.5f, _radius * 2 + 0.5f);
+        _circle.transform.parent = this.transform.parent;
+        _circle.GetComponent<Renderer>().material.SetColor("_Color", GameManager.Instance.PlayerColors[_team]);
     }
 
    // Old Generation code - commenting out because it's too beautiful to delete.
@@ -245,6 +251,7 @@ public class Tile : MonoBehaviour, ListableObject
 
     public void Claim(Team team)
     {
+        _circle.GetComponent<Renderer>().material.color = GameManager.Instance.PlayerColors[team];
         if (_team != Team.Uninhabited)
         {
             GameManager.Instance.Players[_team].RelinquishTile(this);

@@ -93,13 +93,13 @@ public class GUIManager : MonoBehaviour
                 _interface["Main"].gameObject.SetActive(true);
                 _interface["ScientificResearch"].gameObject.SetActive(false);
                 _interface["MilitaryResearch"].gameObject.SetActive(false);
-                HumanPlayer.Instance.ReloadGameplayUI();
+                player.ReloadGameplayUI();
                 break;
             case "Scientific":
                 _interface["Main"].gameObject.SetActive(false);
                 _interface["ScientificResearch"].gameObject.SetActive(true);
                 _interface["MilitaryResearch"].gameObject.SetActive(false);
-
+                player.DisplayResources(_interface["SciResources"].gameObject);
                 player.DisplayResearch("Scientific", "Command Ship", _interface["Command Ship"].gameObject);
                 player.DisplayResearch("Scientific", "Efficiency", _interface["Efficiency"].gameObject);
                 player.DisplayResearch("Scientific", "Complex", _interface["Complex"].gameObject);
@@ -110,7 +110,7 @@ public class GUIManager : MonoBehaviour
                 _interface["Main"].gameObject.SetActive(false);
                 _interface["ScientificResearch"].gameObject.SetActive(false);
                 _interface["MilitaryResearch"].gameObject.SetActive(true);
-
+                player.DisplayResources(_interface["MilResources"].gameObject);
                 player.DisplayResearch("Military", "Fighter", _interface["Fighter"].gameObject);
                 player.DisplayResearch("Military", "Transport", _interface["Transport"].gameObject);
                 player.DisplayResearch("Military", "Guard Satellite", _interface["Guard Satellite"].gameObject);

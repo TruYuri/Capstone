@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,31 +48,6 @@ public class HumanPlayer : Player
         base.Init(team);
         _currentCameraDistance = _cameraOffset;
         _exploredSectors = new Dictionary<Sector, bool>();
-        
-        // debug
-        var squad = _commandShipSquad;
-        AddShip(squad, "Base");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        AddShip(squad, "Research Complex");
-        /* debug */
 
         _controlledIsWithinRange = true;
         Camera.main.transform.position = _commandShipSquad.transform.position + _currentCameraDistance;
@@ -216,6 +192,21 @@ public class HumanPlayer : Player
         GUIManager.Instance.SetSquadControls(_controlledSquad);
     }
 
+
+    public Ship GetShipDefinition(string name)
+    {
+        return _shipDefinitions[name];
+    }
+
+    public void DisplayResources(GameObject panel)
+    {
+        panel.transform.FindChild("OilText").GetComponent<Text>().text = _resourceRegistry[Resource.Oil].ToString();
+        panel.transform.FindChild("OreText").GetComponent<Text>().text = _resourceRegistry[Resource.Ore].ToString();
+        panel.transform.FindChild("AsterminiumText").GetComponent<Text>().text = _resourceRegistry[Resource.Asterminium].ToString();
+        panel.transform.FindChild("ForestText").GetComponent<Text>().text = _resourceRegistry[Resource.Forest].ToString();
+        // research complexes / bases
+    }
+
     public void DisplayResearch(string type, string name, GameObject panel)
     {
         if(type == "Military")
@@ -226,11 +217,6 @@ public class HumanPlayer : Player
         {
             _scienceTree.GetResearch(name).Display(panel, _resourceRegistry, _rcostReduction);
         }
-    }
-
-    public Ship GetShipDefinition(string name)
-    {
-        return _shipDefinitions[name];
     }
 
     public void PopulateResearchPanel(string type, string name, string property, GameObject panel)

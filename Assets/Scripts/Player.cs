@@ -130,7 +130,7 @@ public class Player : MonoBehaviour
                 foreach (var tile in _tiles)
                     if (tile.Structure != null && tile.Structure.Resources[t] > 0)
                     {
-                        tile.Structure.Resources[t] -= 1;
+                        RemoveResources(tile.Structure, t, 1);
                         change[t] -= 1;
 
                         if (change[t] == 0)
