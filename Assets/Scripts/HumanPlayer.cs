@@ -49,6 +49,9 @@ public class HumanPlayer : Player
         _currentCameraDistance = _cameraOffset;
         _exploredSectors = new Dictionary<Sector, bool>();
 
+        AddShip(_commandShipSquad, "Warp Portal");
+        AddShip(_commandShipSquad, "Warp Portal");
+
         _controlledIsWithinRange = true;
         Camera.main.transform.position = _commandShipSquad.transform.position + _currentCameraDistance;
         Camera.main.transform.LookAt(_commandShipSquad.transform);

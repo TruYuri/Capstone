@@ -93,15 +93,16 @@ public class Tile : MonoBehaviour, ListableObject
             GameManager.Instance.Players[_team].ClaimTile(this);
             // generate random defenses if space age
         }
-    }
 
-    void Start()
-    {
         var circle = Resources.Load(CIRCLE_PREFAB);
         _circle = GameObject.Instantiate(circle, this.transform.position, Quaternion.Euler(90f, 0, 0)) as GameObject;
         _circle.transform.localScale = new Vector3(_radius * 2 + 0.5f, _radius * 2 + 0.5f, _radius * 2 + 0.5f);
         _circle.transform.parent = this.transform.parent;
         _circle.GetComponent<Renderer>().material.SetColor("_Color", GameManager.Instance.PlayerColors[_team]);
+    }
+
+    void Start()
+    {
     }
 
    // Old Generation code - commenting out because it's too beautiful to delete.

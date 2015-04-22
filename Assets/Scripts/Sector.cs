@@ -482,7 +482,7 @@ public class Sector : MonoBehaviour
         return null;
     }
 	
-    public Tile CreateTileAtPosition(string type, Vector3 pos)
+    public Tile CreateTileAtPosition(string type, Vector3 pos, Team team)
     {
         var fixedPos = pos - this.transform.position;
         var relativePos = RealWorldToGrid(pos);
@@ -490,7 +490,7 @@ public class Sector : MonoBehaviour
         var realPosition = new Vector3(relativePos.Key, 0f, relativePos.Value)
             + new Vector3(fixedPos.x >= 0 ? 5 : -5, 0.0f, fixedPos.z >= 0 ? 5 : -5);
 
-        CreateTile(gridPos, realPosition, type);
+        CreateTile(gridPos, realPosition, type, Resource.NoResource, Inhabitance.SpaceAge, team);
         return _tileGrid[gridPos.Key, gridPos.Value];
     }
 
