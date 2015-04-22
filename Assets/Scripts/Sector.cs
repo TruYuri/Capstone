@@ -39,6 +39,7 @@ public class Sector : MonoBehaviour
         _deployedSpaceStructures = new Dictionary<Team, Dictionary<string, List<Structure>>>();
         _ownershipCounts = new Dictionary<Team, int>()
         {
+            { Team.Uninhabited, 0 },
             { Team.Indigenous, 0 },
             { Team.Kharkyr, 0 },
             { Team.Plinthen, 0 },
@@ -152,6 +153,8 @@ public class Sector : MonoBehaviour
                 }
             }
         }
+
+        DetermineOwner();
     }
 
     void Update()
@@ -498,6 +501,8 @@ public class Sector : MonoBehaviour
     {
         var grid = WorldToGridArray(tile.transform.position);
         _tileGrid[grid.Key, grid.Value] = null;
+        RelinquishTile(tile.Team);
+        GameObject.Destroy(tile.Ring);
         GameObject.Destroy(tile);
     }
 
@@ -505,27 +510,37 @@ public class Sector : MonoBehaviour
     {
         _ownershipCounts[team]++;
         DetermineOwner();
-        GetComponent<Renderer>().material.SetColor("_Color", GameManager.Instance.PlayerColors[_owner]);
     }
 
     public void RelinquishTile(Team team)
     {
         _ownershipCounts[team]--;
         DetermineOwner();
-        GetComponent<Renderer>().material.SetColor("_Color", GameManager.Instance.PlayerColors[_owner]);
     }
 
     private void DetermineOwner()
     {
+        // manage ties
+
         int n = 0;
+        int c = 0;
+
         foreach (var t in _ownershipCounts)
         {
             if (t.Value > n)
             {
                 _owner = t.Key;
                 n = t.Value;
+                c = 1;
             }
+            else if (t.Value == n)
+                c++;
         }
+
+        if (c > 1 || c == 0) // tie?
+            _owner = Team.Uninhabited;
+
+        GetComponent<Renderer>().material.SetColor("_Color", GameManager.Instance.PlayerColors[_owner]);
     }
 
     public Team GetOwner()

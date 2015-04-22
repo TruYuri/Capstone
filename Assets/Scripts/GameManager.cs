@@ -75,6 +75,7 @@ public class GameManager : MonoBehaviour
         };
         AddHumanPlayer(player);
         AddAIPlayer(Team.Indigenous);
+        AddAIPlayer(Team.Uninhabited);
 
         _shipDefinitions = new Dictionary<string, Ship>();
         var descriptions = new Dictionary<string, string>();

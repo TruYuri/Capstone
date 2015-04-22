@@ -71,7 +71,7 @@ public class Player : MonoBehaviour
         _resourceRegistry.Add(Resource.Asterminium, 0);
         _resourceRegistry.Add(Resource.Stations, 0);
 
-        if(_team != global::Team.Indigenous)
+        if(_team != Team.Indigenous && _team != Team.Uninhabited)
             CreateNewCommandShip();
     }
 

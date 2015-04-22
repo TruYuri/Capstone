@@ -49,6 +49,7 @@ public class Tile : MonoBehaviour, ListableObject
         set { _population = value; }
     }
     public Inhabitance PopulationType {  get { return _planetInhabitance; } }
+    public GameObject Ring { get { return _circle; } }
 
 	// New Generation code - handled in Sector/GenerateTile, sent here
     public void Init(Sector sector, string type, string name, Inhabitance pType, int p, Resource rType, int rCount, TileSize size, Team team)
@@ -87,12 +88,13 @@ public class Tile : MonoBehaviour, ListableObject
         system.enableEmission = true;
         renderer.enabled = true;
 
-        if (p > 0 && team != Team.Uninhabited)
+        if (p > 0)
         {
             GameManager.Instance.Players[_team].AddSoldiers(this, _planetInhabitance, p);
-            GameManager.Instance.Players[_team].ClaimTile(this);
             // generate random defenses if space age
         }
+
+        GameManager.Instance.Players[_team].ClaimTile(this);
 
         var circle = Resources.Load(CIRCLE_PREFAB);
         _circle = GameObject.Instantiate(circle, this.transform.position, Quaternion.Euler(90f, 0, 0)) as GameObject;
@@ -253,15 +255,12 @@ public class Tile : MonoBehaviour, ListableObject
     public void Claim(Team team)
     {
         _circle.GetComponent<Renderer>().material.SetColor("_Color", GameManager.Instance.PlayerColors[_team]);
-        if (_team != Team.Uninhabited)
-        {
-            GameManager.Instance.Players[_team].RelinquishTile(this);
+        GameManager.Instance.Players[_team].RelinquishTile(this);
 
-            if (_team == Team.Plinthen)
-            {
-                _resourceCount -= Mathf.CeilToInt(_resourceCount * 1.15f);
-                _resourceCount = (_resourceCount < 0 ? 0 : _resourceCount);
-            }
+        if (_team == Team.Plinthen)
+        {
+            _resourceCount -= Mathf.CeilToInt(_resourceCount * 1.15f);
+            _resourceCount = (_resourceCount < 0 ? 0 : _resourceCount);
         }
 
         _team = team;
@@ -291,13 +290,14 @@ public class Tile : MonoBehaviour, ListableObject
 
         if (destroyStructure)
             GameManager.Instance.Players[_team].RemoveShip(_squad, _structure);
-        _structure = null;
 
         if(MapManager.Instance.DeploySpawnTable.ContainsKey(_planetType))
         {
             _squad.Sector.UnregisterSpaceStructure(_team, _structure);
             _squad.Sector.DeleteTile(this);
         }
+
+        _structure = null;
 
         return _planetType;
     }
