@@ -51,6 +51,10 @@ public class HumanPlayer : Player
 
         AddShip(_commandShipSquad, "Warp Portal");
         AddShip(_commandShipSquad, "Warp Portal");
+        AddShip(_commandShipSquad, "Research Complex");
+        AddShip(_commandShipSquad, "Research Complex");
+        AddShip(_commandShipSquad, "Research Complex");
+        AddShip(_commandShipSquad, "Research Complex");
 
         _controlledIsWithinRange = true;
         Camera.main.transform.position = _commandShipSquad.transform.position + _currentCameraDistance;

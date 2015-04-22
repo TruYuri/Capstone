@@ -254,7 +254,7 @@ public class Tile : MonoBehaviour, ListableObject
 
     public void Claim(Team team)
     {
-        _circle.GetComponent<Renderer>().material.SetColor("_Color", GameManager.Instance.PlayerColors[_team]);
+        _circle.GetComponent<Renderer>().material.SetColor("_Color", GameManager.Instance.PlayerColors[team]);
         GameManager.Instance.Players[_team].RelinquishTile(this);
 
         if (_team == Team.Plinthen)
