@@ -318,6 +318,7 @@ public class MapManager : MonoBehaviour
                 var c = GameManager.Instance.PlayerColors[horizontal.Value.GetOwner()];
 
                 // this is a major performance hog, need to redo
+                // add to existing image, don't redo all
                 for (int y = 0; y < 64; y++)
                 {
                     var yn = y * 64;
