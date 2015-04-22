@@ -29,9 +29,9 @@ public class Sector : MonoBehaviour
     private Dictionary<string, int> _planetCounts = new Dictionary<string, int>();
     private Dictionary<Team, Dictionary<string, List<Structure>>> _deployedSpaceStructures;
     private Dictionary<Team, int> _ownershipCounts;
+    private Team _owner;
 
     public KeyValuePair<int, int> GridPosition { get { return _gridPos; } }
-    public Dictionary<Team, int> Ownership { get { return _ownershipCounts; } }
 
     public void Init(KeyValuePair<int, int> gridPos)
     {
@@ -102,6 +102,7 @@ public class Sector : MonoBehaviour
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Resource Transport");
             _tileGrid[x, y].Squad.Deploy(_tileGrid[x, y].Squad.Ships[0] as Structure, _tileGrid[x, y]);
             HumanPlayer.Instance.CommandSquad.transform.position = _tileGrid[x, y].transform.position + new Vector3(-5f, 0, 0);
+            HumanPlayer.Instance.ClaimTile(_tileGrid[x, y]);
 
             while(!IsValidLocation(new KeyValuePair<int, int>(x, y)) || _tileGrid[x,y] != null)
             {
@@ -113,6 +114,7 @@ public class Sector : MonoBehaviour
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Gathering Complex");
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Resource Transport");
             _tileGrid[x, y].Squad.Deploy(_tileGrid[x, y].Squad.Ships[0] as Structure, _tileGrid[x, y]);
+            HumanPlayer.Instance.ClaimTile(_tileGrid[x, y]);
 
             while(!IsValidLocation(new KeyValuePair<int, int>(x, y)) || _tileGrid[x,y] != null)
             {
@@ -124,6 +126,7 @@ public class Sector : MonoBehaviour
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Gathering Complex");
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Resource Transport");
             _tileGrid[x, y].Squad.Deploy(_tileGrid[x, y].Squad.Ships[0] as Structure, _tileGrid[x, y]);
+            HumanPlayer.Instance.ClaimTile(_tileGrid[x, y]);
         }
         else // regular sector generation
         {
@@ -501,6 +504,33 @@ public class Sector : MonoBehaviour
         GameObject.Destroy(tile);
     }
 
+    public void ClaimTile(Team team)
+    {
+        _ownershipCounts[team]++;
+        DetermineOwner();
+        GetComponent<Renderer>().material.SetColor("_Color", GameManager.Instance.PlayerColors[_owner]);
+    }
+
+    public void RelinquishTile(Team team)
+    {
+        _ownershipCounts[team]--;
+        DetermineOwner();
+        GetComponent<Renderer>().material.SetColor("_Color", GameManager.Instance.PlayerColors[_owner]);
+    }
+
+    private void DetermineOwner()
+    {
+        int n = 0;
+        foreach (var t in _ownershipCounts)
+        {
+            if (t.Value > n)
+            {
+                _owner = t.Key;
+                n = t.Value;
+            }
+        }
+    }
+
     public Team GetOwner()
     {
         Team owner = Team.Uninhabited;
@@ -508,16 +538,6 @@ public class Sector : MonoBehaviour
         if (!HumanPlayer.Instance.ExploredSectors.ContainsKey(this))
             return owner;
 
-        int n = 0;
-        foreach(var team in Ownership)
-        {
-            if(team.Value > n)
-            {
-                owner = team.Key;
-                n = team.Value;
-            }
-        }
-
-        return owner;
+        return _owner;
     }
 }

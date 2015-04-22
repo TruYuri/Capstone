@@ -43,8 +43,10 @@ public class MapManager : MonoBehaviour
     private Dictionary<Resource, float> _resourceRate; // new
     private Texture2D _textureAtlas;
     private Dictionary<int, Dictionary<int, Sector>> _sectorMap;
-    private KeyValuePair<int, int> minMapSectors;
-    private KeyValuePair<int, int> maxMapSectors;
+    private Dictionary<Sector, KeyValuePair<Color, Color>> _drawnSectors;
+    private KeyValuePair<int, int> _minMapSectors;
+    private KeyValuePair<int, int> _maxMapSectors;
+    private Texture2D _minimap;
 
     public static MapManager Instance
     {
@@ -80,6 +82,9 @@ public class MapManager : MonoBehaviour
         _sectorMap = new Dictionary<int, Dictionary<int, Sector>>();
         _planetSpawnDetails = new Dictionary<string, Dictionary<string, string>>();
         _resourceRate = new Dictionary<Resource, float>();
+        _drawnSectors = new Dictionary<Sector, KeyValuePair<Color, Color>>();
+        _minimap = new Texture2D(0, 0);
+
         _resourcePlanetTypes = new Dictionary<Resource, List<string>>()
         {
             { Resource.NoResource, new List<string>() },
@@ -89,8 +94,9 @@ public class MapManager : MonoBehaviour
             { Resource.Forest, new List<string>() },
             { Resource.Stations, new List<string>() },
         };
-        minMapSectors = new KeyValuePair<int, int>();
-        maxMapSectors = new KeyValuePair<int, int>();
+
+        _minMapSectors = new KeyValuePair<int, int>();
+        _maxMapSectors = new KeyValuePair<int, int>();
         var tex = Resources.Load<Texture2D>(MINIMAP_TILE_TEXTURE);
         _minimapTile = tex.GetPixels();
         tex = Resources.Load<Texture2D>(MINIMAP_HIGHLIGHT);
@@ -293,16 +299,20 @@ public class MapManager : MonoBehaviour
     {
         // update minimap
         // generate map so it'll always be able to center it on minimap.
-        var width = Math.Abs(maxMapSectors.Value - minMapSectors.Value + 1) * 64 + 64;
-        var height = Math.Abs(maxMapSectors.Key - minMapSectors.Key + 1) * 64 + 64;
+        var width = Math.Abs(_maxMapSectors.Value - _minMapSectors.Value + 1) * 64 + 128;
+        var height = Math.Abs(_maxMapSectors.Key - _minMapSectors.Key + 1) * 64 + 128;
 
         if (highlights == null)
             highlights = new Dictionary<Sector, Color>();
 
         // find nearest 192x256 multiple
 
+        var xdiff = (width - _minimap.width) / 2;
+        var ydiff = (height - _minimap.height) / 2;
+
         var miniMap = new Texture2D(width, height);
-        miniMap.alphaIsTransparency = true;
+        miniMap.SetPixels(xdiff, ydiff, _minimap.width, _minimap.height, _minimap.GetPixels());
+
         var centerX = miniMap.width / 2;
         var centerY = miniMap.height / 2;
         var color = _minimapTile[32 * 64 + 32];
@@ -317,7 +327,30 @@ public class MapManager : MonoBehaviour
                 var pixels = _minimapTile;
                 var c = GameManager.Instance.PlayerColors[horizontal.Value.GetOwner()];
 
+                bool skip = true;
+                if (_drawnSectors[horizontal.Value].Key != c)
+                {
+                    _drawnSectors[horizontal.Value] = new KeyValuePair<Color, Color>(c, _drawnSectors[horizontal.Value].Value);
+                    skip = false;
+                }
+
+                if (highlights.ContainsKey(horizontal.Value) && _drawnSectors[horizontal.Value].Value != highlights[horizontal.Value])
+                {
+                    _drawnSectors[horizontal.Value] = new KeyValuePair<Color, Color>(_drawnSectors[horizontal.Value].Key, highlights[horizontal.Value]);
+                    skip = false;
+                }
+
+                if (!highlights.ContainsKey(horizontal.Value) && _drawnSectors[horizontal.Value].Value != new Color())
+                {
+                    _drawnSectors[horizontal.Value] = new KeyValuePair<Color, Color>(_drawnSectors[horizontal.Value].Key, new Color());
+                    skip = false;
+                }
+
+                if(skip)
+                    continue;
+
                 // this is a major performance hog, need to redo
+                // add to existing image, don't redo all
                 for (int y = 0; y < 64; y++)
                 {
                     var yn = y * 64;
@@ -345,9 +378,11 @@ public class MapManager : MonoBehaviour
                 }
             }
         }
+
         // grab rectangle so the texture doesn't shrink/etc
         miniMap.Apply();
-        return miniMap;
+        _minimap = miniMap;
+        return _minimap;
     }
 
     // return relative coordinates
@@ -379,15 +414,16 @@ public class MapManager : MonoBehaviour
             component.Init(new KeyValuePair<int, int>(vertical, horizontal));
             _sectorMap[vertical].Add(horizontal, component);
 
-            if (vertical < minMapSectors.Key)
-                minMapSectors = new KeyValuePair<int, int>(vertical, minMapSectors.Value);
-            if (horizontal < minMapSectors.Value)
-                minMapSectors = new KeyValuePair<int,int>(minMapSectors.Key, horizontal);
-            if (vertical > maxMapSectors.Key)
-                maxMapSectors = new KeyValuePair<int, int>(vertical, maxMapSectors.Value);
-            if (horizontal > maxMapSectors.Value)
-                maxMapSectors = new KeyValuePair<int, int>(maxMapSectors.Key, horizontal);
+            if (vertical < _minMapSectors.Key)
+                _minMapSectors = new KeyValuePair<int, int>(vertical, _minMapSectors.Value);
+            if (horizontal < _minMapSectors.Value)
+                _minMapSectors = new KeyValuePair<int,int>(_minMapSectors.Key, horizontal);
+            if (vertical > _maxMapSectors.Key)
+                _maxMapSectors = new KeyValuePair<int, int>(vertical, _maxMapSectors.Value);
+            if (horizontal > _maxMapSectors.Value)
+                _maxMapSectors = new KeyValuePair<int, int>(_maxMapSectors.Key, horizontal);
 
+            _drawnSectors.Add(component, new KeyValuePair<Color, Color>());
             return 1;
         }
 

@@ -413,13 +413,13 @@ public class Player : MonoBehaviour
     public void ClaimTile(Tile tile)
     {
         _tiles.Add(tile);
-        tile.transform.parent.GetComponent<Sector>().Ownership[tile.Team]++;
+        tile.transform.parent.GetComponent<Sector>().ClaimTile(_team);
     }
 
     public void RelinquishTile(Tile tile)
     {
         _tiles.Remove(tile);
-        tile.transform.parent.GetComponent<Sector>().Ownership[tile.Team]--;
+        tile.transform.parent.GetComponent<Sector>().RelinquishTile(_team);
     }
 
     public Ship AddShip(Squad squad, string name)

@@ -176,7 +176,7 @@ public class HumanPlayer : Player
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, float.PositiveInfinity, ~LayerMask.NameToLayer("Sector")))
+            if (Physics.Raycast(ray, out hit))
             {
                 float speed = 25.0f;
 
