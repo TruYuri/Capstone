@@ -502,9 +502,7 @@ public class GUIManager : MonoBehaviour
         var playerStructure = tile.Team == HumanPlayer.Instance.Team && tile.Structure != null;
         var deployText = playerStructure ? "Undeploy" : "Deploy";
 
-        _interface["ConstBar"].gameObject.SetActive(playerStructure);
         _interface["Structure"].gameObject.SetActive(playerStructure);
-        _interface["ConstructionList"].gameObject.SetActive(playerStructure);
         _interface["SquadActionText"].GetComponent<Text>().text = deployText;
         _interface["SquadAction"].GetComponent<CustomUI>().data = deployText;
 
@@ -514,10 +512,21 @@ public class GUIManager : MonoBehaviour
             tile.Structure.Resources.Remove(Resource.Stations);
             tile.Structure.PopulateStructurePanel(_interface["Structure"].gameObject);
 
-            var buildList = new List<Ship>();
-            foreach(var construct in tile.Structure.Constructables)
-                buildList.Add(defs[construct]);
-            PopulateList<Ship>(buildList, "Constructables", ListingType.Build, tile.Structure.Resources);
+            if (tile.Structure.Constructables.Count > 0)
+            {
+                _interface["ConstructionList"].gameObject.SetActive(true);
+                _interface["ConstBar"].gameObject.SetActive(true);
+
+                var buildList = new List<Ship>();
+                foreach (var construct in tile.Structure.Constructables)
+                    buildList.Add(defs[construct]);
+                PopulateList<Ship>(buildList, "Constructables", ListingType.Build, tile.Structure.Resources);
+            }
+            else
+            {
+                _interface["ConstructionList"].gameObject.SetActive(false);
+                _interface["ConstBar"].gameObject.SetActive(false);
+            }
         }
 
         SetUIElements(true, true, false, true, false, true, false);
