@@ -8,8 +8,8 @@ public class CommandShipLostEvent : GameEvent
     {
         _player = player;
 
-        if (squad != null)
-            squad.Init(_player.Team, squad.Sector, "Squad");
+        if (player == HumanPlayer.Instance)
+            GUIManager.Instance.AddEvent("Command Ship lost!");
     }
 
     public override void Progress()
@@ -21,10 +21,5 @@ public class CommandShipLostEvent : GameEvent
             return;
 
         _player.CreateNewCommandShip();
-    }
-
-    public override void Update()
-    {
-        _player.EndTurn();
     }
 }

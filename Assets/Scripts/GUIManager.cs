@@ -212,9 +212,10 @@ public class GUIManager : MonoBehaviour
         PopulateList<Tile>(HumanPlayer.Instance.Tiles, "TileList", ListingType.Info, null);
     }
 
-    public void SetUIElements(bool squad, bool battle, bool tile, bool manage, bool lists, bool minimap)
+    public void SetUIElements(bool squad, bool events, bool battle, bool tile, bool manage, bool lists, bool minimap)
     {
         _interface["SquadMenu"].gameObject.SetActive(squad);
+        _interface["EventControl"].gameObject.SetActive(events);
         _interface["BattleMenu"].gameObject.SetActive(battle);
         _interface["PlanetInfo"].gameObject.SetActive(tile);
         _interface["ManageMenu"].gameObject.SetActive(manage);
@@ -407,7 +408,7 @@ public class GUIManager : MonoBehaviour
 
     public void PopulateManageLists()
     {
-        SetUIElements(false, false, false, true, false, false);
+        SetUIElements(false, false, false, false, true, false, false);
         _indices["MainShipList"] = -1;
         ClearList("MainShipList");
 
@@ -483,7 +484,7 @@ public class GUIManager : MonoBehaviour
 
         _interface["SquadTeamIcon"].GetComponent<Image>().sprite = _icons[squad.Team.ToString()];
         _interface["SquadTeamName"].GetComponent<Text>().text = squad.name;
-        SetUIElements(true, false, false, false, true, true);
+        SetUIElements(true, true, false, false, false, true, true);
         SetSquadControls(squad);
 
         ReloadSquadList();
@@ -519,7 +520,7 @@ public class GUIManager : MonoBehaviour
             PopulateList<Ship>(buildList, "Constructables", ListingType.Build, tile.Structure.Resources);
         }
 
-        SetUIElements(true, false, true, false, true, false);
+        SetUIElements(true, true, false, true, false, true, false);
         SetSquadControls(squad);
     }
 
@@ -948,7 +949,7 @@ public class GUIManager : MonoBehaviour
 
         }
 
-        SetUIElements(false, true, false, false, false, false);
+        SetUIElements(false, false, true, false, false, false, false);
     }
 
     public void Battle()
@@ -958,15 +959,6 @@ public class GUIManager : MonoBehaviour
 
         if(winner.Key.Key == HumanPlayer.Instance.Team)
         {
-            if(winner.Key.Value == BattleType.Invasion)
-            {
-
-            }
-            else if(winner.Key.Value == BattleType.Space)
-            {
-
-            }
-
             _interface["BattleWon"].gameObject.SetActive(true);
             ClearList("ShipsLostList");
             var squadEntry = Resources.Load<GameObject>("ShipCountListing");
@@ -1013,15 +1005,19 @@ public class GUIManager : MonoBehaviour
             }
         }
 
-        SetUIElements(false, false, false, false, false, false);
+        SetUIElements(false, false, false, false, false, false, false);
     }
 
     public void ContinueAfterBattle(bool win)
     {
-        if(win)
+        if (win)
+        {
             _interface["BattleWon"].gameObject.SetActive(false);
+        }
         else
+        {
             _interface["BattleLost"].gameObject.SetActive(false);
+        }
         HumanPlayer.Instance.EndBattleConditions(win);
     }
 
@@ -1091,5 +1087,17 @@ public class GUIManager : MonoBehaviour
 
         image.uvRect = new Rect(left, top,
             maxw / (float)texture.width, maxh / (float)texture.height);
+    }
+
+    public void AddEvent(string e)
+    {
+        var l = _interface["EventList"];
+        if (l.transform.childCount == 50)
+            GameObject.Destroy(l.transform.GetChild(0));
+
+        var eventEntry = Resources.Load<GameObject>("EventListing");
+        var entry = Instantiate(eventEntry) as GameObject;
+        entry.transform.FindChild("Text").GetComponent<Text>().text = e;
+        entry.transform.SetParent(l.transform);
     }
 }

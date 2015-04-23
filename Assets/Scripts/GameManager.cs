@@ -213,7 +213,6 @@ public class GameManager : MonoBehaviour
         {
             _eventQueue = _nextEventQueue;
             _nextEventQueue = new Queue<GameEvent>();
-            ProcessEvents();
 
             foreach (var player in _players)
                 player.Value.TurnEnd();

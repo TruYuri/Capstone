@@ -342,7 +342,41 @@ public class HumanPlayer : Player
 
     public override KeyValuePair<KeyValuePair<Team, BattleType>, Dictionary<string, int>> Battle(float playerChance, BattleType battleType, Squad player, Squad enemy)
     {
-        return base.Battle(_winChance, _currentBattleType, _playerSquad, _enemySquad);
+        var w = base.Battle(_winChance, _currentBattleType, _playerSquad, _enemySquad);
+
+        enemy = _enemySquad;
+        player = _playerSquad;
+
+        if(w.Key.Key == _team)
+        {
+            if(w.Key.Value == BattleType.Invasion)
+            {
+                GUIManager.Instance.AddEvent("Invasion victory at " + enemy.Tile.Name + "!");
+            }
+            else
+            {
+                if(_enemySquad.Tile != null)
+                    GUIManager.Instance.AddEvent("Orbital victory at " + enemy.Tile.Name + "!");
+                else
+                    GUIManager.Instance.AddEvent("Space victory against " + enemy.Team.ToString() + "!");
+            }
+        }
+        else
+        {
+            if (w.Key.Value == BattleType.Invasion)
+            {
+                GUIManager.Instance.AddEvent("Invasion defeated at " + enemy.Tile.Name + "!");
+            }
+            else
+            {
+                if (_enemySquad.Tile != null)
+                    GUIManager.Instance.AddEvent("Orbital defeat at " + enemy.Tile.Name + "!");
+                else
+                    GUIManager.Instance.AddEvent("Space defeat against " + enemy.Team.ToString() + "!");
+            }
+        }
+
+        return w;
     }
 }
 
