@@ -41,6 +41,11 @@ public class GUIManager : MonoBehaviour
         
         _audio.Add("Click", GetComponents<AudioSource>().Where(s => s.clip.name == "sfx_button").ToList()[0]);
         _audio.Add("Warp", GetComponents<AudioSource>().Where(s => s.clip.name == "warp").ToList()[0]);
+        _audio.Add("BuildStart", GetComponents<AudioSource>().Where(s => s.clip.name == "arc-welding").ToList()[0]);
+        _audio.Add("SquadSelect", GetComponents<AudioSource>().Where(s => s.clip.name == "squad_select").ToList()[0]);
+        _audio.Add("Battle", GetComponents<AudioSource>().Where(s => s.clip.name == "Lasers").ToList()[0]);
+        _audio.Add("Deploy", GetComponents<AudioSource>().Where(s => s.clip.name == "Deploy").ToList()[0]);
+        _audio.Add("Undeploy", GetComponents<AudioSource>().Where(s => s.clip.name == "hover-engine").ToList()[0]);
 
         _indices = new Dictionary<string, int>()
         {
@@ -236,6 +241,7 @@ public class GUIManager : MonoBehaviour
                 break;
             case "Constructables":
                 HumanPlayer.Instance.CreateBuildEvent(split[1]);
+                PlaySound("BuildStart");
                 break;
             case "SquadList":
                 _indices[split[0]] = int.Parse(split[1]);
@@ -516,9 +522,11 @@ public class GUIManager : MonoBehaviour
         {
             case "Deploy":
                 HumanPlayer.Instance.CreateDeployEvent(_indices["MainShipList"]);
+                PlaySound("Deploy");
                 break;
             case "Undeploy":
                 HumanPlayer.Instance.CreateUndeployEvent(false);
+                PlaySound("Undeploy");
                 break;
             case "Invade":
                 HumanPlayer.Instance.CreateBattleEvent(HumanPlayer.Instance.Squad, HumanPlayer.Instance.Squad.Tile);
@@ -938,6 +946,7 @@ public class GUIManager : MonoBehaviour
 
     public void Battle()
     {
+        PlaySound("Battle");
         var winner = HumanPlayer.Instance.Battle(0f, BattleType.Invasion, null, null);
 
         if(winner.Key.Key == HumanPlayer.Instance.Team)

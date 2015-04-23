@@ -81,13 +81,12 @@ public class CustomUI : MonoBehaviour
     public void ClickSquadAction()
     {
         GUIManager.Instance.SquadAction(data);
-        GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickListItem()
     {
         GUIManager.Instance.ItemClicked(data);
-        GUIManager.Instance.PlaySound("Click");
+        // GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickNewSquad()

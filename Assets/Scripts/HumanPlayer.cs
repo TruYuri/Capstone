@@ -51,6 +51,8 @@ public class HumanPlayer : Player
 
         AddShip(_commandShipSquad, "Warp Portal");
         AddShip(_commandShipSquad, "Warp Portal");
+        var t = AddShip(_commandShipSquad, "Transport");
+        AddSoldiers(t, Inhabitance.SpaceAge, 100);
         AddShip(_commandShipSquad, "Research Complex");
         AddShip(_commandShipSquad, "Research Complex");
         AddShip(_commandShipSquad, "Research Complex");
@@ -87,6 +89,8 @@ public class HumanPlayer : Player
                 switch(hit.collider.tag)
                 {
                     case SQUAD_TAG:
+                        if (hit.collider.gameObject.GetComponent<Squad>() != _controlledSquad)
+                            GUIManager.Instance.PlaySound("SquadSelect");
                         Control(hit.collider.gameObject);
                         break;
                     case SECTOR_TAG:

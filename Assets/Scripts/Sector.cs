@@ -523,22 +523,29 @@ public class Sector : MonoBehaviour
         // manage ties
 
         int n = 0;
-        int c = 0;
+
+        List<Team> owners = new List<Team>();
 
         foreach (var t in _ownershipCounts)
         {
             if (t.Value > n)
             {
+                owners.Clear();
+                owners.Add(t.Key);
                 _owner = t.Key;
                 n = t.Value;
-                c = 1;
             }
             else if (t.Value == n)
-                c++;
+                owners.Add(t.Key);
         }
 
-        if (c > 1 || c == 0) // tie?
+        if (owners.Count < 1 || owners.Count > 2) // tie?
             _owner = Team.Uninhabited;
+        else if(owners.Count == 2 && owners.Contains(Team.Uninhabited))
+        {
+            owners.Remove(Team.Uninhabited);
+            _owner = owners[0];
+        }
 
         GetComponent<Renderer>().material.SetColor("_Color", GameManager.Instance.PlayerColors[_owner]);
     }

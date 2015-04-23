@@ -342,7 +342,7 @@ public class Player : MonoBehaviour
                 Squad.CleanSquadsFromList(this, sq.Colliders);
         Squad.CleanSquadsFromList(this, squad.Colliders);
 
-        if ((squad != null && squad.Ships.Count == 0 && _controlledTile == null))
+        if ((squad != null && squad.Ships.Count == 0 && squad.GetComponent<Tile>() == null))
             DeleteSquad(squad);
 
         if(_controlledSquad == null || (_controlledSquad.Ships.Count == 0 && _controlledTile == null))
