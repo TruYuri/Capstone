@@ -5,13 +5,17 @@ public class WarpEvent : GameEvent
 {
     private Tile _exitPortal;
     private Squad _squad;
+    private Player _player;
 
-    public WarpEvent(int turns, Squad squad, Tile exit) 
+    public WarpEvent(int turns, Player player, Squad squad, Tile exit) 
         : base(turns)
     {
         _exitPortal = exit;
         _squad = squad;
         _squad.Mission = this;
+        _player = player;
+        if (_player == HumanPlayer.Instance)
+            GUIManager.Instance.AddEvent("Warping " + _squad.name + ".");
     }
 
     public override void Progress()
@@ -26,6 +30,9 @@ public class WarpEvent : GameEvent
         var val = GameManager.Generator.Next(2);
         var offset = val == 0 ? new Vector3(r, 0, 0) : new Vector3(0, 0, r);
         _squad.transform.position = _exitPortal.transform.position + offset;
+
+        if (_player == HumanPlayer.Instance)
+            GUIManager.Instance.AddEvent(_squad.name + " warped.");
     }
 
     public override bool AssertValid()

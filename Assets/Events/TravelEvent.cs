@@ -10,10 +10,11 @@ public class TravelEvent : GameEvent
     private List<Vector3> _turnDestinations;
     private int _travelTurns;
     private AudioSource _engine;
+    private Player _player;
 
     // turn parameter = turns until command begins. 
     // calculate travel turns - 1 turn per sector, swap out remaining turns when initial == 0
-    public TravelEvent(int turns, Squad squad, Sector destinationSector, Vector3 destination, float velocity) : base(turns)
+    public TravelEvent(int turns, Player player, Squad squad, Sector destinationSector, Vector3 destination, float velocity) : base(turns)
     {
         _squad = squad;
         _destination = destination;
@@ -22,6 +23,10 @@ public class TravelEvent : GameEvent
         _destinationSectors = MapManager.Instance.AStarSearch(squad.Sector, destinationSector);
         _travelTurns = _destinationSectors.Count;
         _engine = _squad.GetComponent<AudioSource>();
+        _player = player;
+
+        if (player == HumanPlayer.Instance)
+            GUIManager.Instance.AddEvent("Sending command to move squad.");
     }
 
     // when travelling, travel between planets (x = 10x, y = 10y)
@@ -39,11 +44,18 @@ public class TravelEvent : GameEvent
             _remainingTurns = _travelTurns;
             _travelTurns = 0;
             _stage = GameEventStage.Continue;
+
+            if (_player == HumanPlayer.Instance)
+                GUIManager.Instance.AddEvent("Command received, " + _squad.name + " travelling to destination.");
         }
         else if(_remainingTurns <= 0)
         {
             _squad.transform.position = _destination;
             _squad.Mission = null;
+
+            if (_player == HumanPlayer.Instance)
+                GUIManager.Instance.AddEvent(_squad.name + " has reached its destination.");
+
             return;
         }
 

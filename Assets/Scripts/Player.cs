@@ -154,7 +154,7 @@ public class Player : MonoBehaviour
 
     public void CreateRetreatEvent(Squad squad)
     {
-        GameManager.Instance.AddEvent(new RetreatEvent(squad), true);
+        GameManager.Instance.AddEvent(new RetreatEvent(this, squad), true);
     }
 
     public void CreateBuildEvent(string shipName)
@@ -182,7 +182,7 @@ public class Player : MonoBehaviour
 
     public void CreateUndeployEvent(Tile tile, bool destroy)
     {
-        GameManager.Instance.AddEvent(new UndeployEvent(_relayDistance, _team, tile, destroy), false);
+        GameManager.Instance.AddEvent(new UndeployEvent(_relayDistance, this, tile, destroy), false);
         EndTurn();
     }
 
@@ -194,7 +194,7 @@ public class Player : MonoBehaviour
 
     public void CreateTravelEvent(Squad squad, Sector toSector, Vector3 dest, float speed)
     {
-        GameManager.Instance.AddEvent(new TravelEvent(_relayDistance, squad, toSector, dest, speed), false);
+        GameManager.Instance.AddEvent(new TravelEvent(_relayDistance, this, squad, toSector, dest, speed), false);
         EndTurn();
     }
 
@@ -205,7 +205,7 @@ public class Player : MonoBehaviour
 
     public void CreateWarpEvent(Tile exitGate, Squad squad)
     {
-        GameManager.Instance.AddEvent(new WarpEvent(_relayDistance, squad, exitGate), false);
+        GameManager.Instance.AddEvent(new WarpEvent(_relayDistance, this, squad, exitGate), false);
         EndTurn();
     }
 
@@ -280,11 +280,16 @@ public class Player : MonoBehaviour
 
         if (DP < DC) // we won!
         {
+            if (this == HumanPlayer.Instance)
+                GUIManager.Instance.AddEvent("Diplomacy successful at " + tile.Name + "!");
+
             tile.Claim(_team);
             tile.Population += Mathf.FloorToInt(IP * DC * ((float)GameManager.Generator.NextDouble() * (0.75f - 0.25f) + 0.25f));
             AddSoldiers(tile, tile.PopulationType, tile.Population);
             return true;
         }
+        else if (this == HumanPlayer.Instance)
+            GUIManager.Instance.AddEvent("Diplomacy failed at " + tile.Name + ".");
 
         tile.EndDiplomaticEffort(_team);
 
@@ -314,13 +319,13 @@ public class Player : MonoBehaviour
             // do nothing / undeploy as necessary
             if (win.Key == _team && et != null)
             {
+                et.Undeploy(true);
                 et.Claim(_team);
-                GameManager.Instance.Players[et.Team].CreateUndeployEvent(et, true);
             }
             else if (win.Key == enemy.Team && pt != null)
             {
+                pt.Undeploy(true);
                 pt.Claim(enemy.Team);
-                GameManager.Instance.Players[pt.Team].CreateUndeployEvent(pt, true);
             }
 
             winner = new KeyValuePair<KeyValuePair<Team, BattleType>, Dictionary<string, int>>

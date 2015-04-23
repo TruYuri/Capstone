@@ -7,20 +7,6 @@ using System.Collections.Generic;
 
 public class Tile : MonoBehaviour, ListableObject
 {
-    /*
-    private const string PLANET_SMALL_SPAWN_DETAIL = "SmallSizeSpawnRate";
-    private const string PLANET_SMALL_RESOURCE_MIN_DETAIL = "ResourceAmountSmallMinimum";
-    private const string PLANET_SMALL_RESOURCE_MAX_DETAIL = "ResourceAmountSmallMaximum";
-    private const string PLANET_SMALL_POPULATION_MIN_DETAIL = "PopulationAmountSmallMinimum";
-    private const string PLANET_SMALL_POPULATION_MAX_DETAIL = "PopulationAmountSmallMaximum";
-
-    private const string PLANET_LARGE_SPAWN_DETAIL = "LargeSizeSpawnRate";
-    private const string PLANET_LARGE_RESOURCE_MIN_DETAIL = "ResourceAmountLargeMinimum";
-    private const string PLANET_LARGE_RESOURCE_MAX_DETAIL = "ResourceAmountLargeMaximum";
-    private const string PLANET_LARGE_POPULATION_MIN_DETAIL = "PopulationAmountLargeMinimum";
-    private const string PLANET_LARGE_POPULATION_MAX_DETAIL = "PopulationAmountLargeMaximum";
-    */
-
     private const string TILE_LISTING_PREFAB = "TileListing";
     private const string CIRCLE_PREFAB = "Circle";
 

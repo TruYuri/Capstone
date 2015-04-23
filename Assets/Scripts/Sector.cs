@@ -278,44 +278,6 @@ public class Sector : MonoBehaviour
         _tileGrid[grid.Key, grid.Value] = tile;
     }
 
-    // Old tile generation - keeping because it's beautiful
-    /*
-    private void CreateTile(KeyValuePair<int, int> grid, Vector3 offset, string type = null)
-    {
-        var suffix = string.Empty;
-        if (type == null)
-        {
-            var chance = (float)GameManager.Generator.NextDouble();
-            foreach (var planet in MapManager.Instance.PlanetTypeSpawnTable)
-            {
-                if (chance <= planet.Value)
-                {
-                    type = planet.Key;
-                    break;
-                }
-            }
-
-            if (!_planetCounts.ContainsKey(type))
-                _planetCounts.Add(type, 0);
-            _planetCounts[type]++;
-
-            suffix = "-"
-            + Math.Abs(_gridPos.Key).ToString() + Math.Abs(_gridPos.Value).ToString()
-            + PlanetSuffix(type, _planetCounts[type]);
-        }
-
-        // crappy way to check if it's empty space, but it works for now
-        if (MapManager.Instance.PlanetTextureTable[type].Texture == null)
-            return;
-
-        var name = MapManager.Instance.PlanetSpawnDetails[type][PLANET_NAME] + suffix;
-        var tileObj = Instantiate(Tile, this.transform.position + offset, Quaternion.identity) as GameObject;
-
-        var tile = tileObj.GetComponent<Tile>();
-        tile.Init(type, name, this);
-        _tileGrid[grid.Key, grid.Value] = tile;
-    } */
-
     public void GenerateNewSectors()
     {
         MapManager.Instance.GenerateNewSectors(transform.position, _gridPos);
@@ -333,16 +295,6 @@ public class Sector : MonoBehaviour
         }
 
         val += (char)('a' + count);
-
-        /*
-        if (_gridPos.Key >= 0 && _gridPos.Value >= 0)
-            val += "-q1";
-        else if (_gridPos.Key < 0 && _gridPos.Value >= 0)
-            val += "-q2";
-        else if (_gridPos.Key < 0 && _gridPos.Value < 0)
-            val += "-q3";
-        else
-            val += "-q4";*/
 
         return val;
     }
@@ -531,24 +483,21 @@ public class Sector : MonoBehaviour
 
         foreach (var t in _ownershipCounts)
         {
-            if (t.Value > n)
+            if (t.Value > n && t.Key != Team.Uninhabited)
             {
                 owners.Clear();
                 owners.Add(t.Key);
                 _owner = t.Key;
                 n = t.Value;
             }
-            else if (t.Value == n)
+            else if (t.Value == n && t.Key != Team.Uninhabited)
                 owners.Add(t.Key);
         }
 
-        if (owners.Count < 1 || owners.Count > 2) // tie?
-            _owner = Team.Uninhabited;
-        else if(owners.Count == 2 && owners.Contains(Team.Uninhabited))
-        {
-            owners.Remove(Team.Uninhabited);
+        if (owners.Count == 1)
             _owner = owners[0];
-        }
+        else
+            _owner = Team.Uninhabited;
 
         GetComponent<Renderer>().material.SetColor("_Color", GameManager.Instance.PlayerColors[_owner]);
     }

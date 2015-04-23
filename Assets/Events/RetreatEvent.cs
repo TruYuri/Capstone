@@ -7,10 +7,13 @@ public class RetreatEvent : GameEvent
 
     // turn parameter = turns until command begins. 
     // calculate travel turns - 1 turn per sector, swap out remaining turns when initial == 0
-    public RetreatEvent(Squad squad) : base(1)
+    public RetreatEvent(Player player, Squad squad) : base(1)
     {
         _squad = squad;
         _squad.Mission = this;
+
+        if (player == HumanPlayer.Instance)
+            GUIManager.Instance.AddEvent("Squad retreated!");
     }
 
     // when travelling, travel between planets (x = 10x, y = 10y)

@@ -1093,11 +1093,12 @@ public class GUIManager : MonoBehaviour
     {
         var l = _interface["EventList"];
         if (l.transform.childCount == 50)
-            GameObject.Destroy(l.transform.GetChild(0));
+            GameObject.Destroy(l.transform.GetChild(49));
 
         var eventEntry = Resources.Load<GameObject>("EventListing");
         var entry = Instantiate(eventEntry) as GameObject;
         entry.transform.FindChild("Text").GetComponent<Text>().text = e;
         entry.transform.SetParent(l.transform);
+        entry.transform.SetSiblingIndex(0);
     }
 }

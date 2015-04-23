@@ -16,6 +16,14 @@ public class DeployEvent : GameEvent
         _tile = tile;
         _player = player;
         _squad.Mission = this;
+
+        if (player == HumanPlayer.Instance)
+        {
+            if(tile != null)
+                GUIManager.Instance.AddEvent("Deploying " + ship.Name + " at " + tile.Name + ".");
+            else
+                GUIManager.Instance.AddEvent("Deploying " + ship.Name + ".");
+        }
     }
 
     public override void Progress()
@@ -25,6 +33,7 @@ public class DeployEvent : GameEvent
         if (_remainingTurns > 0)
             return;
 
+        var orig = _tile;
         _tile = _squad.Deploy(_structure, _tile);
         _squad.Mission = null;
         if(_squad.Ships.Count == 0 && _tile.Squad != _squad)
@@ -34,6 +43,14 @@ public class DeployEvent : GameEvent
             _player.CleanSquad(_squad);
             _player.DeleteSquad(_squad);
         }
+        
+        if (HumanPlayer.Instance == _player && orig != null)
+            GUIManager.Instance.AddEvent(_structure.Name + " deployed at " + _tile.Name + ".");
+        else if (HumanPlayer.Instance == _player && orig == null)
+            GUIManager.Instance.AddEvent(_structure.Name + " deployed.");
+
+        HumanPlayer.Instance.ReloadGameplayUI();
+
     }
 
     public override bool AssertValid()

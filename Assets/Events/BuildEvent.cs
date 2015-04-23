@@ -15,6 +15,9 @@ public class BuildEvent : GameEvent
         _ship = ship;
         _structure = tile.Structure;
         _player = player;
+
+        if (player == HumanPlayer.Instance)
+            GUIManager.Instance.AddEvent("Building " + ship.Name + " at " + tile.Name + ".");
     }
 
     public override void Progress()
@@ -25,6 +28,8 @@ public class BuildEvent : GameEvent
             return;
 
         _player.AddShip(_tile.Squad, _ship);
+        if (_player == HumanPlayer.Instance)
+            GUIManager.Instance.AddEvent(_ship.Name + " built at " + _tile.Name + ".");
     }
 
     public override bool AssertValid()
