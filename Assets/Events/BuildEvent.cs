@@ -29,7 +29,12 @@ public class BuildEvent : GameEvent
 
         _player.AddShip(_tile.Squad, _ship);
         if (_player == HumanPlayer.Instance)
+        {
             GUIManager.Instance.AddEvent(_ship.Name + " built at " + _tile.Name + ".");
+
+            if (_tile == HumanPlayer.Instance.Tile)
+                HumanPlayer.Instance.ReloadGameplayUI();
+        }
     }
 
     public override bool AssertValid()
