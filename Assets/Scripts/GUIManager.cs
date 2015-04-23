@@ -982,7 +982,7 @@ public class GUIManager : MonoBehaviour
                     case "Industrial":
                         entry.transform.FindChild("Icon").GetComponent<Image>().sprite = _icons["Industrial"];
                         break;
-                    case "Space Age":
+                    case "SpaceAge":
                         entry.transform.FindChild("Icon").GetComponent<Image>().sprite = _icons["Space Age"];
                         break;
                     default:

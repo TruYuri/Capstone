@@ -171,7 +171,7 @@ public class Structure : Ship, ListableObject
         if (HumanPlayer.Instance.Squad.Tile != null && this == HumanPlayer.Instance.Squad.Tile.Structure)
             name = "(Deployed) " + name;
         entry.transform.FindChild("Name").GetComponent<Text>().text = name;
-        entry.transform.FindChild("Population").GetComponent<Text>().text = CountPopulation().ToString() + " / " + capacity;
+        entry.transform.FindChild("Population").GetComponent<Text>().text = CountPopulation().ToString() + "/" + capacity;
         entry.GetComponent<CustomUIAdvanced>().data = listName + "|" + index.ToString();
 
         return entry;

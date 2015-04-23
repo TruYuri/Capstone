@@ -179,7 +179,7 @@ public class Ship : ListableObject
         var icon = entry.transform.FindChild("Icon").GetComponent<Image>();
         icon.sprite = this.icon;
         entry.transform.FindChild("Name").GetComponent<Text>().text = name;
-        entry.transform.FindChild("Population").GetComponent<Text>().text = CountPopulation().ToString() + " / " + capacity;
+        entry.transform.FindChild("Population").GetComponent<Text>().text = CountPopulation().ToString() + "/" + capacity;
         entry.GetComponent<CustomUIAdvanced>().data = listName + "|" + index.ToString();
 
         return entry;

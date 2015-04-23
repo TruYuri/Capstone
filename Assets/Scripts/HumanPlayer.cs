@@ -50,15 +50,32 @@ public class HumanPlayer : Player
         _currentCameraDistance = _cameraOffset;
         _exploredSectors = new Dictionary<Sector, bool>();
         _move = GetComponents<AudioSource>().Where(s => s.clip.name == "Engine Move").ToList()[0];
-        AddShip(_commandShipSquad, "Warp Portal");
-        AddShip(_commandShipSquad, "Warp Portal");
-        AddShip(_commandShipSquad, "Relay");
-        var t = AddShip(_commandShipSquad, "Transport");
+
+        var squad = CreateNewSquad(Vector3.zero, _commandShipSquad.Sector);
+        AddShip(squad, "Warp Portal");
+        AddShip(squad, "Warp Portal");
+        AddShip(squad, "Relay");
+        AddShip(squad, "Base");
+        AddShip(squad, "Research Complex");
+        AddShip(squad, "Gathering Complex");
+        AddShip(squad, "Military Complex");
+        var t = AddShip(squad, "Transport");
+        var t2 = AddShip(squad, "Transport");
+        var t3 = AddShip(squad, "Transport");
+        var t4 = AddShip(squad, "Transport");
+        var t5 = AddShip(squad, "Transport");
+        var t6 = AddShip(squad, "Transport");
+        var t7 = AddShip(squad, "Transport");
+        var t8 = AddShip(squad, "Transport");
+
         AddSoldiers(t, Inhabitance.SpaceAge, 100);
-        AddShip(_commandShipSquad, "Research Complex");
-        AddShip(_commandShipSquad, "Research Complex");
-        AddShip(_commandShipSquad, "Research Complex");
-        AddShip(_commandShipSquad, "Research Complex");
+        AddSoldiers(t2, Inhabitance.SpaceAge, 100);
+        AddSoldiers(t3, Inhabitance.SpaceAge, 100);
+        AddSoldiers(t4, Inhabitance.SpaceAge, 100);
+        AddSoldiers(t5, Inhabitance.SpaceAge, 100);
+        AddSoldiers(t6, Inhabitance.SpaceAge, 100);
+        AddSoldiers(t7, Inhabitance.SpaceAge, 100);
+        AddSoldiers(t8, Inhabitance.SpaceAge, 100);
 
         _controlledIsWithinRange = true;
         Camera.main.transform.position = _commandShipSquad.transform.position + _currentCameraDistance;

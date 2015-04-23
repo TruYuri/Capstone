@@ -96,23 +96,23 @@ public class Tile : MonoBehaviour, ListableObject
             if(_planetInhabitance == Inhabitance.SpaceAge && _team != HumanPlayer.Instance.Team)
             {
                 var pl = GameManager.Instance.Players[_team];
-                int n = GameManager.Generator.Next(5, 31);
+                int n = GameManager.Generator.Next(5, 26);
                 for (int i = 0; i < n; i++)
                     pl.AddShip(_squad, "Fighter");
 
-                n = GameManager.Generator.Next(0, 21);
+                n = GameManager.Generator.Next(0, 11);
                 for (int i = 0; i < n; i++)
                     pl.AddShip(_squad, "Transport");
 
-                n = GameManager.Generator.Next(2, 21);
+                n = GameManager.Generator.Next(2, 16);
                 for (int i = 0; i < n; i++)
                     pl.AddShip(_squad, "Guard Satellite");
 
-                n = GameManager.Generator.Next(0, 21);
+                n = GameManager.Generator.Next(0, 11);
                 for (int i = 0; i < n; i++)
                     pl.AddShip(_squad, "Heavy Fighter");
 
-                n = GameManager.Generator.Next(0, 11);
+                n = GameManager.Generator.Next(0, 6);
                 for (int i = 0; i < n; i++)
                     pl.AddShip(_squad, "Behemoth");
             }
@@ -130,137 +130,6 @@ public class Tile : MonoBehaviour, ListableObject
     void Start()
     {
     }
-
-   // Old Generation code - commenting out because it's too beautiful to delete.
-        /*
-    public void Init(string type, string name, Sector sector)
-    {
-        _name = name;
-        _planetType = type;
-        _squad = this.GetComponent<Squad>();
-        _squad.Init(Team.Uninhabited, sector, _name);
-        _diplomacy = new Dictionary<global::Team, bool>();
-        transform.SetParent(sector.transform);
-    }
-
-	void Start () 
-    {
-        // Determine tile type
-        var mapManager = MapManager.Instance;
-         
-        var chance = (float)GameManager.Generator.NextDouble();
-            foreach (var planet in MapManager.Instance.PlanetTypeSpawnTable)
-            {
-                if (chance <= planet.Value)
-                {
-                    type = planet.Key;
-                    break;
-                }
-            }
-
-            if (!_planetCounts.ContainsKey(type))
-                _planetCounts.Add(type, 0);
-            _planetCounts[type]++;
-
-            suffix = "-"
-            + Math.Abs(_gridPos.Key).ToString() + Math.Abs(_gridPos.Value).ToString()
-            + PlanetSuffix(type, _planetCounts[type]);
-          
-         
-        // Determine Inhabitance
-        var chance = (float)GameManager.Generator.NextDouble();
-        foreach (var inhabit in mapManager.PlanetInhabitanceSpawnTable[_planetType])
-        {
-            if (chance <= inhabit.Value)
-            {
-                _planetInhabitance = inhabit.Key;
-                break;
-            }
-        }
-
-        chance = (float)GameManager.Generator.NextDouble();
-        var small = true;
-        int population = 0;
-        if (chance < float.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_SPAWN_DETAIL]))
-        {
-            small = true;
-
-            int minimum, maximum;
-            if (_planetInhabitance != Inhabitance.Uninhabited)
-            {
-                minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_POPULATION_MIN_DETAIL]);
-                maximum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_POPULATION_MAX_DETAIL]);
-                population = GameManager.Generator.Next(minimum, maximum + 1);
-            }
-
-            minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_RESOURCE_MIN_DETAIL]);
-            maximum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_SMALL_RESOURCE_MAX_DETAIL]);
-            _resourceCount = GameManager.Generator.Next(minimum, maximum + 1);
-        }
-        else
-        {
-            small = false;
-
-            int minimum, maximum;
-            if (_planetInhabitance != Inhabitance.Uninhabited)
-            {
-                minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_POPULATION_MIN_DETAIL]);
-                maximum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_POPULATION_MAX_DETAIL]);
-                population = GameManager.Generator.Next(minimum, maximum + 1);
-            }
-
-            minimum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_RESOURCE_MIN_DETAIL]);
-            maximum = int.Parse(mapManager.PlanetSpawnDetails[_planetType][PLANET_LARGE_RESOURCE_MAX_DETAIL]);
-            _resourceCount = GameManager.Generator.Next(minimum, maximum + 1);
-        }
-
-        // Determine Resource Type
-        _resourceType = Resource.NoResource;
-        chance = (float)GameManager.Generator.NextDouble();
-        foreach (var resource in mapManager.PlanetResourceSpawnTable[_planetType])
-        {
-            if (chance <= resource.Value)
-            {
-                _resourceType = resource.Key;
-                break;
-            }
-        }
-
-        if (mapManager.PlanetTextureTable[_planetType].Texture != null)
-        {
-            var system = GetComponent<ParticleSystem>();
-            var renderer = system.GetComponent<Renderer>();
-
-            _radius = 2.0f;
-            _clickRadius = 1.5f;
-            if (small)
-            {
-                system.startSize *= 0.5f;
-                _radius = 1.0f;
-                _clickRadius = 1.0f;
-            }
-
-            renderer.material.mainTexture = mapManager.PlanetTextureTable[_planetType].Texture;
-            renderer.material.mainTextureOffset = mapManager.PlanetTextureTable[_planetType].TextureOffset;
-            renderer.material.mainTextureScale = mapManager.PlanetTextureTable[_planetType].TextureScale;
-
-            system.enableEmission = true;
-            renderer.enabled = true;
-
-            if (population > 0)
-            {
-                _team = Team.Indigenous;
-                _squad.Team = Team.Indigenous;
-
-                if (!GameManager.Instance.Players.ContainsKey(_team))
-                    GameManager.Instance.AddAIPlayer(_team);
-                GameManager.Instance.Players[_team].AddSoldiers(this, _planetInhabitance, population);
-                GameManager.Instance.Players[_team].ClaimTile(this);
-                // generate random defenses if space age
-            }
-        }
-	}
-         */
 
 	// Update is called once per frame
 	void Update () 
@@ -336,10 +205,17 @@ public class Tile : MonoBehaviour, ListableObject
 
     public void GatherAndGrow()
     {
-        _population += Mathf.CeilToInt(_population * 0.05f);
+        int tpop = _population;
 
         if (_structure == null)
+        {
+            _population += Mathf.CeilToInt(_population * 0.05f);
             return;
+        }
+        else
+        {
+            _population += Mathf.CeilToInt((_population + _structure.Population[_planetInhabitance]) * 0.05f);
+        }
 
         var gathered = _structure.Gather(_resourceType, _resourceCount, _planetInhabitance, _population, _team);
 

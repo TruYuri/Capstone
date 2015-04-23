@@ -55,11 +55,13 @@ public class Player : MonoBehaviour
         _scienceTree = GameManager.Instance.GenerateScienceTree(_shipDefinitions, this);
         _shipRegistry = new Dictionary<string, HashSet<Ship>>();
         _soldierRegistry = new Dictionary<Inhabitance, int>();
+        _shipRegistry = new Dictionary<string, HashSet<Ship>>();
         _resourceRegistry = new Dictionary<Resource, int>();
         foreach(var ship in _shipDefinitions)
         {
             ship.Value.RecalculateResources();
-            _shipRegistry.Add(ship.Key, new HashSet<Ship>());
+            if(!_shipRegistry.ContainsKey(ship.Key))
+                _shipRegistry.Add(ship.Key, new HashSet<Ship>());
         }
 
         _soldierRegistry.Add(Inhabitance.Primitive, 0);

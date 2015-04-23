@@ -177,7 +177,7 @@ public class Squad : MonoBehaviour, ListableObject
             _inTileRange = false;
         }
 
-        if(_inTileRange != wasInRange && HumanPlayer.Instance.Squad == this)
+        if(_inTileRange != wasInRange && HumanPlayer.Instance.Squad == this && !GameManager.Instance.Paused)
             HumanPlayer.Instance.ReloadGameplayUI();
     }
 
@@ -295,10 +295,9 @@ public class Squad : MonoBehaviour, ListableObject
 
         if (winner) // remove random soldiers from random ships in the fleet
         {
-            GameManager.Instance.Players[enemy.Team].RemoveSoldiers(enemy, true, enemy.PopulationType, enemy.Population);
-            GameManager.Instance.Players[_team].AddSoldiers(enemy, enemy.PopulationType, enemy.Population / 2);
-
-            enemy.Population /= 2; // squad won, so halve the planet population.
+            var p = enemy.Population;
+            GameManager.Instance.Players[enemy.Team].RemoveSoldiers(enemy, true, enemy.PopulationType, p);
+            GameManager.Instance.Players[_team].AddSoldiers(enemy, enemy.PopulationType, p / 2);
 
             int nTroops = 0;
             foreach (var ship in _ships)
