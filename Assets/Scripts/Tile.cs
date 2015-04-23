@@ -91,7 +91,31 @@ public class Tile : MonoBehaviour, ListableObject
         if (p > 0)
         {
             GameManager.Instance.Players[_team].AddSoldiers(this, _planetInhabitance, p);
+            
             // generate random defenses if space age
+            if(_planetInhabitance == Inhabitance.SpaceAge && _team != HumanPlayer.Instance.Team)
+            {
+                var pl = GameManager.Instance.Players[_team];
+                int n = GameManager.Generator.Next(5, 31);
+                for (int i = 0; i < n; i++)
+                    pl.AddShip(_squad, "Fighter");
+
+                n = GameManager.Generator.Next(0, 21);
+                for (int i = 0; i < n; i++)
+                    pl.AddShip(_squad, "Transport");
+
+                n = GameManager.Generator.Next(2, 21);
+                for (int i = 0; i < n; i++)
+                    pl.AddShip(_squad, "Guard Satellite");
+
+                n = GameManager.Generator.Next(0, 21);
+                for (int i = 0; i < n; i++)
+                    pl.AddShip(_squad, "Heavy Fighter");
+
+                n = GameManager.Generator.Next(0, 11);
+                for (int i = 0; i < n; i++)
+                    pl.AddShip(_squad, "Behemoth");
+            }
         }
 
         GameManager.Instance.Players[_team].ClaimTile(this);

@@ -52,6 +52,7 @@ public class HumanPlayer : Player
         _move = GetComponents<AudioSource>().Where(s => s.clip.name == "Engine Move").ToList()[0];
         AddShip(_commandShipSquad, "Warp Portal");
         AddShip(_commandShipSquad, "Warp Portal");
+        AddShip(_commandShipSquad, "Relay");
         var t = AddShip(_commandShipSquad, "Transport");
         AddSoldiers(t, Inhabitance.SpaceAge, 100);
         AddShip(_commandShipSquad, "Research Complex");
