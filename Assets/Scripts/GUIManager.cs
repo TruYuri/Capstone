@@ -14,6 +14,7 @@ public class GUIManager : MonoBehaviour
     private Dictionary<string, int> _indices;
     private Dictionary<string, string> _descriptions; // duplicating that much text for each ship is terrible for memory.
     private float _popUpTimer;
+    private AudioSource _btnClick;
 
     // when done with GUIManager, add a ton more of these
     private const string UI_ICONS_PATH = "UI Icons/";
@@ -35,6 +36,7 @@ public class GUIManager : MonoBehaviour
     {
         _descriptions = descriptions;
         _instance = this;
+        _btnClick = GetComponent<AudioSource>();
 
         _indices = new Dictionary<string, int>()
         {
@@ -79,6 +81,11 @@ public class GUIManager : MonoBehaviour
 
         foreach (var c in cuis)
             c.Register();
+    }
+
+    public void PlayButtonClick()
+    {
+        _btnClick.Play();
     }
 
     public void SetScreen(string screen)
