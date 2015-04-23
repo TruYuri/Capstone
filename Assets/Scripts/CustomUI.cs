@@ -21,102 +21,101 @@ public class CustomUI : MonoBehaviour
     public void ClickUpgrade()
     {
         GUIManager.Instance.UpdateResearch(data);
-        GUIManager.Instance.PlayButtonClick();
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickBattle()
     {
         GUIManager.Instance.Battle();
-        GUIManager.Instance.PlayButtonClick();
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickRetreat()
     {
         GUIManager.Instance.Retreat();
-        GUIManager.Instance.PlayButtonClick();
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickWarp()
     {
         GUIManager.Instance.Warp();
-        GUIManager.Instance.PlayButtonClick();
+        GUIManager.Instance.PlaySound("Warp");
     }
 
     public void SetScreen()
     {
         GUIManager.Instance.SetScreen(data);
-        GUIManager.Instance.PlayButtonClick();
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickSwapManager()
     {
         GUIManager.Instance.SwapManager(data);
-        GUIManager.Instance.PlayButtonClick();
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickDiplomacy()
     {
         HumanPlayer.Instance.CreateDiplomacyEvent();
-        GUIManager.Instance.PlayButtonClick();
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickContinue()
     {
         GUIManager.Instance.ContinueAfterBattle(Convert.ToBoolean(data));
-        GUIManager.Instance.PlayButtonClick();
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickManage()
     {
         GUIManager.Instance.PopulateManageLists();
-        GUIManager.Instance.PlayButtonClick();
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void CloseManage()
     {
         GUIManager.Instance.ExitManage();
-        GUIManager.Instance.PlayButtonClick();
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickSquadAction()
     {
         GUIManager.Instance.SquadAction(data);
-        GUIManager.Instance.PlayButtonClick();
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickListItem()
     {
         GUIManager.Instance.ItemClicked(data);
-        GUIManager.Instance.PlayButtonClick();
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickNewSquad()
     {
         GUIManager.Instance.NewSquad();
-        GUIManager.Instance.PlayButtonClick();
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickShipTransfer()
     {
         GUIManager.Instance.ShipTransfer(data);
-        GUIManager.Instance.PlayButtonClick();
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickSoldierTransfer()
     {
         GUIManager.Instance.SoldierTransfer(data);
-        GUIManager.Instance.PlayButtonClick();
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickResourceTransfer()
     {
         GUIManager.Instance.ResourceTransfer(data);
-        GUIManager.Instance.PlayButtonClick();
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickSquadsList()
     {
-        GUIManager.Instance.PlayButtonClick();
         var split = data.Split('|');
         GUIManager.Instance.SetSquadList(Convert.ToBoolean(split[1]));
 
@@ -124,11 +123,11 @@ public class CustomUI : MonoBehaviour
             data = split[0] + "|false";
         else
             data = split[0] + "|true";
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickTileList()
     {
-        GUIManager.Instance.PlayButtonClick();
         var split = data.Split('|');
         GUIManager.Instance.SetTileList(Convert.ToBoolean(split[1]));
 
@@ -136,6 +135,7 @@ public class CustomUI : MonoBehaviour
             data = split[0] + "|false";
         else
             data = split[0] + "|true";
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void Pause()
@@ -153,12 +153,12 @@ public class CustomUI : MonoBehaviour
         var gm = FindObjectOfType<GameManager>();
         gm.Init((Team)Enum.Parse(typeof(Team), data));
         this.transform.parent.gameObject.SetActive(false);
-        GUIManager.Instance.PlayButtonClick();
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickZoom()
     {
         GUIManager.Instance.SetZoom(data, true);
-        GUIManager.Instance.PlayButtonClick();
+        GUIManager.Instance.PlaySound("Click");
     }
 }

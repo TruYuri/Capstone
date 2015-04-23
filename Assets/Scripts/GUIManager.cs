@@ -14,7 +14,7 @@ public class GUIManager : MonoBehaviour
     private Dictionary<string, int> _indices;
     private Dictionary<string, string> _descriptions; // duplicating that much text for each ship is terrible for memory.
     private float _popUpTimer;
-    private AudioSource _btnClick;
+    private Dictionary<string, AudioSource> _audio;
 
     // when done with GUIManager, add a ton more of these
     private const string UI_ICONS_PATH = "UI Icons/";
@@ -36,7 +36,11 @@ public class GUIManager : MonoBehaviour
     {
         _descriptions = descriptions;
         _instance = this;
-        _btnClick = GetComponent<AudioSource>();
+        _audio = new Dictionary<string, AudioSource>();
+
+        
+        _audio.Add("Click", GetComponents<AudioSource>().Where(s => s.clip.name == "sfx_button").ToList()[0]);
+        _audio.Add("Warp", GetComponents<AudioSource>().Where(s => s.clip.name == "warp").ToList()[0]);
 
         _indices = new Dictionary<string, int>()
         {
@@ -83,9 +87,9 @@ public class GUIManager : MonoBehaviour
             c.Register();
     }
 
-    public void PlayButtonClick()
+    public void PlaySound(string name)
     {
-        _btnClick.Play();
+        _audio[name].Play();
     }
 
     public void SetScreen(string screen)
