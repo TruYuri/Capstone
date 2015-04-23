@@ -9,6 +9,7 @@ public class TravelEvent : GameEvent
     private List<Sector> _destinationSectors;
     private List<Vector3> _turnDestinations;
     private int _travelTurns;
+    private AudioSource _engine;
 
     // turn parameter = turns until command begins. 
     // calculate travel turns - 1 turn per sector, swap out remaining turns when initial == 0
@@ -20,6 +21,7 @@ public class TravelEvent : GameEvent
         _squad.Mission = this;
         _destinationSectors = MapManager.Instance.AStarSearch(squad.Sector, destinationSector);
         _travelTurns = _destinationSectors.Count;
+        _engine = _squad.GetComponent<AudioSource>();
     }
 
     // when travelling, travel between planets (x = 10x, y = 10y)
@@ -81,8 +83,13 @@ public class TravelEvent : GameEvent
     public override void Update()
     {
         if (_travelTurns > 0 || _turnDestinations == null || _turnDestinations.Count == 0)
+        {
+            _engine.Stop();
             return;
+        }
 
+        if (!_engine.isPlaying)
+            _engine.Play();
         _squad.transform.position = Vector3.MoveTowards(_squad.transform.position, _turnDestinations[0], _velocity * Time.deltaTime);
 
         var diff = _squad.transform.position - _turnDestinations[0];

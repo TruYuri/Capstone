@@ -125,6 +125,9 @@ public class Sector : MonoBehaviour
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Gathering Complex");
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Resource Transport");
             _tileGrid[x, y].Squad.Deploy(_tileGrid[x, y].Squad.Ships[0] as Structure, _tileGrid[x, y]);
+
+            HumanPlayer.Instance.CountStations();
+            HumanPlayer.Instance.ReloadGameplayUI();
         }
         else // regular sector generation
         {

@@ -212,11 +212,16 @@ public class Player : MonoBehaviour
         _turnEnded = true;
     }
 
-    // DON'T CALL THIS FROM HERE - for GameManager!
-    public virtual void TurnEnd()
+    public void CountStations()
     {
         _resourceRegistry[Resource.Stations] = _shipRegistry["Research Complex"].Count(r => r.IsDeployed == true);
         _resourceRegistry[Resource.Stations] += _shipRegistry["Base"].Count(r => r.IsDeployed == true);
+    }
+
+    // DON'T CALL THIS FROM HERE - for GameManager!
+    public virtual void TurnEnd()
+    {
+        CountStations();
 
         foreach (var tile in _tiles)
             tile.GatherAndGrow();

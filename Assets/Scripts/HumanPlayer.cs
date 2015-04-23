@@ -21,6 +21,7 @@ public class HumanPlayer : Player
 
     private Vector3 _currentCameraDistance;
     private Dictionary<Sector, bool> _exploredSectors;
+    private AudioSource _move;
 
     public static HumanPlayer Instance 
     { 
@@ -48,7 +49,7 @@ public class HumanPlayer : Player
         base.Init(team);
         _currentCameraDistance = _cameraOffset;
         _exploredSectors = new Dictionary<Sector, bool>();
-
+        _move = GetComponents<AudioSource>().Where(s => s.clip.name == "Engine Move").ToList()[0];
         AddShip(_commandShipSquad, "Warp Portal");
         AddShip(_commandShipSquad, "Warp Portal");
         var t = AddShip(_commandShipSquad, "Transport");
@@ -96,8 +97,12 @@ public class HumanPlayer : Player
                     case SECTOR_TAG:
                         var sector = hit.collider.gameObject.GetComponent<Sector>();
                         var tile = sector.GetTileAtPosition(hit.point);
-                        if(tile != null)
+                        if (tile != null)
+                        {
+                            if (tile != _controlledTile)
+                                GUIManager.Instance.PlaySound("TileSelect");
                             Control(tile.gameObject);
+                        }
                         break;
                 }
 
@@ -166,9 +171,11 @@ public class HumanPlayer : Player
                 {
                     case SQUAD_TAG:
                         sector = hit.collider.GetComponent<Squad>().Sector;
+                        GUIManager.Instance.PlaySound("Command");
                         break;
                     case SECTOR_TAG:
                         sector = hit.collider.GetComponent<Sector>();
+                        GUIManager.Instance.PlaySound("Command");
                         break;
                 }
 
@@ -190,6 +197,9 @@ public class HumanPlayer : Player
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
             {
+                if (!_move.isPlaying)
+                    _move.Play();
+
                 float speed = 25.0f;
 
                 var dir = hit.point - _commandShipSquad.transform.position;
@@ -199,7 +209,11 @@ public class HumanPlayer : Player
                 _commandShipSquad.transform.position = new Vector3(_commandShipSquad.transform.position.x, 0.0f, _commandShipSquad.transform.position.z);
                 _commandShipSquad.transform.LookAt(hit.point);
             }
+            else
+                _move.Stop();            
         }
+        else
+            _move.Stop();
 
         GUIManager.Instance.SetSquadControls(_controlledSquad);
     }
@@ -217,6 +231,15 @@ public class HumanPlayer : Player
         panel.transform.FindChild("AsterminiumText").GetComponent<Text>().text = _resourceRegistry[Resource.Asterminium].ToString();
         panel.transform.FindChild("ForestText").GetComponent<Text>().text = _resourceRegistry[Resource.Forest].ToString();
         // research complexes / bases
+    }
+
+    public void UpdateResourceDisplay(GameObject panel)
+    {
+        panel.transform.FindChild("OilText").GetComponent<Text>().text = _resourceRegistry[Resource.Oil].ToString();
+        panel.transform.FindChild("OreText").GetComponent<Text>().text = _resourceRegistry[Resource.Ore].ToString();
+        panel.transform.FindChild("ForestText").GetComponent<Text>().text = _resourceRegistry[Resource.Forest].ToString();
+        panel.transform.FindChild("AsterminiumText").GetComponent<Text>().text = _resourceRegistry[Resource.Asterminium].ToString();
+        panel.transform.FindChild("ResearchText").GetComponent<Text>().text = _resourceRegistry[Resource.Stations].ToString();
     }
 
     public void DisplayResearch(string type, string name, GameObject panel)

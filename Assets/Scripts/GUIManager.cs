@@ -38,7 +38,6 @@ public class GUIManager : MonoBehaviour
         _instance = this;
         _audio = new Dictionary<string, AudioSource>();
 
-        
         _audio.Add("Click", GetComponents<AudioSource>().Where(s => s.clip.name == "sfx_button").ToList()[0]);
         _audio.Add("Warp", GetComponents<AudioSource>().Where(s => s.clip.name == "warp").ToList()[0]);
         _audio.Add("BuildStart", GetComponents<AudioSource>().Where(s => s.clip.name == "arc-welding").ToList()[0]);
@@ -46,6 +45,8 @@ public class GUIManager : MonoBehaviour
         _audio.Add("Battle", GetComponents<AudioSource>().Where(s => s.clip.name == "Lasers").ToList()[0]);
         _audio.Add("Deploy", GetComponents<AudioSource>().Where(s => s.clip.name == "Deploy").ToList()[0]);
         _audio.Add("Undeploy", GetComponents<AudioSource>().Where(s => s.clip.name == "hover-engine").ToList()[0]);
+        _audio.Add("TileSelect", GetComponents<AudioSource>().Where(s => s.clip.name == "Select").ToList()[0]);
+        _audio.Add("Command", GetComponents<AudioSource>().Where(s => s.clip.name == "Send Command").ToList()[0]);
 
         _indices = new Dictionary<string, int>()
         {
@@ -118,6 +119,7 @@ public class GUIManager : MonoBehaviour
                 player.DisplayResearch("Scientific", "Complex", _interface["Complex"].gameObject);
                 player.DisplayResearch("Scientific", "Relay", _interface["Relay"].gameObject);
                 player.DisplayResearch("Scientific", "Warp Portal", _interface["Warp Portal"].gameObject);
+                player.UpdateResourceDisplay(_interface["SciResources"].gameObject);
                 break;
             case "Military":
                 _interface["Main"].gameObject.SetActive(false);
@@ -129,6 +131,7 @@ public class GUIManager : MonoBehaviour
                 player.DisplayResearch("Military", "Guard Satellite", _interface["Guard Satellite"].gameObject);
                 player.DisplayResearch("Military", "Heavy Fighter", _interface["Heavy Fighter"].gameObject);
                 player.DisplayResearch("Military", "Behemoth", _interface["Behemoth"].gameObject);
+                player.UpdateResourceDisplay(_interface["MilResources"].gameObject);
                 break;
         }
     }
@@ -216,6 +219,10 @@ public class GUIManager : MonoBehaviour
         _interface["PlanetInfo"].gameObject.SetActive(tile);
         _interface["ManageMenu"].gameObject.SetActive(manage);
         _interface["MenuControl"].gameObject.SetActive(lists);
+
+        if (lists)
+            HumanPlayer.Instance.UpdateResourceDisplay(_interface["MainResources"].gameObject);
+
         _interface["MapInfo"].gameObject.SetActive(minimap);
     }
 
