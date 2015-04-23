@@ -22,4 +22,9 @@ public class CommandShipLostEvent : GameEvent
 
         _player.CreateNewCommandShip();
     }
+
+    public override void Update()
+    {
+        _player.EndTurn();
+    }
 }

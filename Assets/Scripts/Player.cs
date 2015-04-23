@@ -362,7 +362,7 @@ public class Player : MonoBehaviour
                         Control(colliders[0].gameObject);
             }
 
-            if (_commandShipSquad == null || !_commandShipSquad.Ships.Contains(_commandShip))
+            if ((_commandShipSquad == null || !_commandShipSquad.Ships.Contains(_commandShip)) && _team != Team.Uninhabited && _team != Team.Indigenous)
                 CreateCommandShipLostEvent(_commandShipSquad);
             else if (_squads.Count > 0 && _controlledSquad == null)
                 Control(_squads[GameManager.Generator.Next(0, _squads.Count)].gameObject);
