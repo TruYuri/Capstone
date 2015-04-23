@@ -205,14 +205,12 @@ public class Tile : MonoBehaviour, ListableObject
 
     public void GatherAndGrow()
     {
-        int tpop = _population;
-
         if (_structure == null)
         {
             _population += Mathf.CeilToInt(_population * 0.05f);
             return;
         }
-        else
+        else if(_planetInhabitance != Inhabitance.Uninhabited)
         {
             _population += Mathf.CeilToInt((_population + _structure.Population[_planetInhabitance]) * 0.05f);
         }
