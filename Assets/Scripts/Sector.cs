@@ -264,9 +264,7 @@ public class Sector : MonoBehaviour
                 _planetCounts.Add(type, -1);
             _planetCounts[type]++;
 
-            suffix = "-"
-            + Math.Abs(_gridPos.Key).ToString() + Math.Abs(_gridPos.Value).ToString()
-            + PlanetSuffix(type, _planetCounts[type]);
+            suffix = PlanetSuffix(type, _planetCounts[type]);
         }
 
         if (MapManager.Instance.PlanetTextureTable[type].Texture == null)
@@ -325,7 +323,8 @@ public class Sector : MonoBehaviour
   
     private string PlanetSuffix(string type, int count)
     {
-        string val = string.Empty;
+        string val = (_gridPos.Key < 0 ? _gridPos.Key.ToString() : "+" + _gridPos.Key.ToString());
+        val += (_gridPos.Value < 0 ? _gridPos.Value.ToString() : "+" + _gridPos.Value.ToString());
 
         if(count > 26)
         {
@@ -335,6 +334,7 @@ public class Sector : MonoBehaviour
 
         val += (char)('a' + count);
 
+        /*
         if (_gridPos.Key >= 0 && _gridPos.Value >= 0)
             val += "-q1";
         else if (_gridPos.Key < 0 && _gridPos.Value >= 0)
@@ -342,7 +342,7 @@ public class Sector : MonoBehaviour
         else if (_gridPos.Key < 0 && _gridPos.Value < 0)
             val += "-q3";
         else
-            val += "-q4";
+            val += "-q4";*/
 
         return val;
     }
