@@ -56,7 +56,12 @@ public class Squad : MonoBehaviour, ListableObject
         this.name = name;
 
         if(_currentTile == null)
-            this.GetComponent<MeshRenderer>().material.color = GameManager.Instance.PlayerColors[_team];
+        {
+            var c = GameManager.Instance.PlayerColors[_team];
+            this.GetComponent<Renderer>().material.SetColor("_Color", new Color(c.r, c.g, c.b, 0.5f));
+            var icon = this.transform.FindChild("Icon").GetComponent<ParticleSystem>();
+            icon.GetComponent<Renderer>().material.mainTexture = GUIManager.Instance.Icons[_team.ToString()].texture;
+        }
     }
 
     // Update is called once per frame
