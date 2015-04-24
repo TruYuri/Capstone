@@ -15,7 +15,7 @@ public class WarpEvent : GameEvent
         _squad.Mission = this;
         _player = player;
         if (_player == HumanPlayer.Instance)
-            GUIManager.Instance.AddEvent("Sending command to warp " + _squad.name + ".");
+            GUIManager.Instance.AddEvent("Transmitting command to warp " + _squad.name + ".");
     }
 
     public override void Progress()

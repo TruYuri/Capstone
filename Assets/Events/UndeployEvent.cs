@@ -16,9 +16,9 @@ public class UndeployEvent : GameEvent
         if (_player == HumanPlayer.Instance)
         {
             if(_tile.Type != _tile.Structure.Name)
-                GUIManager.Instance.AddEvent("Sending command to undeploy " + _tile.Structure.Name + " at " + _tile.Name);
+                GUIManager.Instance.AddEvent("Transmitting command to undeploy " + _tile.Structure.Name + " at " + _tile.Name);
             else
-                GUIManager.Instance.AddEvent("Sending command to undeploy " + _tile.Structure.Name);
+                GUIManager.Instance.AddEvent("Transmitting command to undeploy " + _tile.Structure.Name);
         }
     }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine.UI;
 using UnityEngine;
 using System.Collections;
 
@@ -159,5 +160,21 @@ public class CustomUI : MonoBehaviour
     {
         GUIManager.Instance.SetZoom(data, true);
         GUIManager.Instance.PlaySound("Click");
+    }
+
+    public void ClickMusic()
+    {
+        if(data == "on")
+        {
+            this.transform.FindChild("Text").GetComponent<Text>().text = "Music - off";
+            data = "off";
+            HumanPlayer.Instance.GetComponent<AudioSource>().Pause();
+        }
+        else
+        {
+            this.transform.FindChild("Text").GetComponent<Text>().text = "Music - on";
+            data = "on";
+            HumanPlayer.Instance.GetComponent<AudioSource>().UnPause();
+        }
     }
 }

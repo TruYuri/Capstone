@@ -24,7 +24,7 @@ public class BattleEvent : GameEvent
 
         if (squad.Team == HumanPlayer.Instance.Team)
         {
-            GUIManager.Instance.AddEvent("Sending command to invade " + tile.Name + ".");
+            GUIManager.Instance.AddEvent("Transmitting command to invade " + tile.Name + ".");
 
             if (turns <= 0)
                 Progress();

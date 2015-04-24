@@ -20,9 +20,9 @@ public class DeployEvent : GameEvent
         if (player == HumanPlayer.Instance)
         {
             if(tile != null)
-                GUIManager.Instance.AddEvent("Sending command to deploy " + ship.Name + " at " + tile.Name + ".");
+                GUIManager.Instance.AddEvent("Transmitting command to deploy " + ship.Name + " at " + tile.Name + ".");
             else
-                GUIManager.Instance.AddEvent("Sending command to deploy " + ship.Name + ".");
+                GUIManager.Instance.AddEvent("Transmitting command to deploy " + ship.Name + ".");
         }
     }
 

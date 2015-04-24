@@ -254,10 +254,12 @@ public class GUIManager : MonoBehaviour
             case "SquadList":
                 _indices[split[0]] = int.Parse(split[1]);
                 HumanPlayer.Instance.Control(HumanPlayer.Instance.Squads[_indices[split[0]]].gameObject);
+                GUIManager.Instance.PlaySound("SquadSelect");
                 break;
             case "TileList":
                 _indices[split[0]] = int.Parse(split[1]);
                 HumanPlayer.Instance.Control(HumanPlayer.Instance.Tiles[_indices[split[0]]].gameObject);
+                GUIManager.Instance.PlaySound("TileSelect");
                 break;
             case "WarpList":
                 _indices[split[0]] = int.Parse(split[1]);

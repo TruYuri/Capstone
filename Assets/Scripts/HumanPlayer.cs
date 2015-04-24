@@ -131,6 +131,7 @@ public class HumanPlayer : Player
         if (Input.GetKey(KeyCode.C))
         {
             Control(_commandShipSquad.gameObject);
+            GUIManager.Instance.PlaySound("SquadSelect");
             ReloadGameplayUI();
         }
 

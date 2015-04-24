@@ -26,7 +26,7 @@ public class TravelEvent : GameEvent
         _player = player;
 
         if (player == HumanPlayer.Instance)
-            GUIManager.Instance.AddEvent("Sending command to move squad.");
+            GUIManager.Instance.AddEvent("Transmitting command to move squad.");
     }
 
     // when travelling, travel between planets (x = 10x, y = 10y)
