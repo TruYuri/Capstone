@@ -17,7 +17,7 @@ public class DiplomacyEvent : GameEvent
         tile.SetDiplomaticEffort(player.Team);
 
         if (player == HumanPlayer.Instance)
-            GUIManager.Instance.AddEvent("Beginning diplomacy at " + tile.Name + ".");
+            GUIManager.Instance.AddEvent("Sending command to begin diplomacy at " + tile.Name + ".");
     }
 
     // when travelling, travel between planets (x = 10x, y = 10y)
@@ -35,6 +35,8 @@ public class DiplomacyEvent : GameEvent
             _remainingTurns = _diplomacyTurns;
             _diplomacyTurns = 0;
             _stage = GameEventStage.Continue;
+            if (_player == HumanPlayer.Instance)
+                GUIManager.Instance.AddEvent("Beginning diplomacy at " + _tile.Name + ".");
         }
         else if(_remainingTurns <= 0)
         {

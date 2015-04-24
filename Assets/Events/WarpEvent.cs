@@ -15,7 +15,7 @@ public class WarpEvent : GameEvent
         _squad.Mission = this;
         _player = player;
         if (_player == HumanPlayer.Instance)
-            GUIManager.Instance.AddEvent("Warping " + _squad.name + ".");
+            GUIManager.Instance.AddEvent("Sending command to warp " + _squad.name + ".");
     }
 
     public override void Progress()
@@ -32,7 +32,10 @@ public class WarpEvent : GameEvent
         _squad.transform.position = _exitPortal.transform.position + offset;
 
         if (_player == HumanPlayer.Instance)
+        {
             GUIManager.Instance.AddEvent(_squad.name + " warped.");
+            GUIManager.Instance.PlaySound("Warp");
+        }
     }
 
     public override bool AssertValid()

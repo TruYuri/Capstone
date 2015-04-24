@@ -14,7 +14,7 @@ public class UndeployEvent : GameEvent
         _destroy = destroy;
         _player = player;
         if (_player == HumanPlayer.Instance)
-            GUIManager.Instance.AddEvent("Undeploying " + _tile.Structure.Name + " at " + _tile.Name);
+            GUIManager.Instance.AddEvent("Sending command to undeploy " + _tile.Structure.Name + " at " + _tile.Name);
     }
 
     public override void Progress()
@@ -39,13 +39,16 @@ public class UndeployEvent : GameEvent
             _player.Tiles.Remove(_tile);
         }
 
-        if (_player == HumanPlayer.Instance && _tile != null)
-            GUIManager.Instance.AddEvent(name + " undeployed at " + _tile.Name + ".");
-        else if (_player == HumanPlayer.Instance && _tile == null)
-            GUIManager.Instance.AddEvent(name + " undeployed.");
-
         if (_player == HumanPlayer.Instance)
-            HumanPlayer.Instance.ReloadGameplayUI();
+        {
+            GUIManager.Instance.PlaySound("Undeploy");
+            if (_tile != null)
+                GUIManager.Instance.AddEvent(name + " undeployed at " + _tile.Name + ".");
+            else
+                GUIManager.Instance.AddEvent(name + " undeployed.");
+        }
+
+        HumanPlayer.Instance.ReloadGameplayUI();
     }
 
     public override bool AssertValid()

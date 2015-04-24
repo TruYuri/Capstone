@@ -75,7 +75,7 @@ public class GUIManager : MonoBehaviour
             { "Kharkyr", Resources.Load<Sprite>(UI_ICONS_PATH + "KharkyrIcon") },
             { "Primitive", Resources.Load<Sprite>(UI_ICONS_PATH + "PrimitivePopulationIcon") },
             { "Industrial", Resources.Load<Sprite>(UI_ICONS_PATH + "IndustrialPopulationIcon") },
-            { "Space Age", Resources.Load<Sprite>(UI_ICONS_PATH + "SpaceAgePopulationIcon") }
+            { "SpaceAge", Resources.Load<Sprite>(UI_ICONS_PATH + "SpaceAgePopulationIcon") }
         };
     }
 
@@ -539,11 +539,9 @@ public class GUIManager : MonoBehaviour
         {
             case "Deploy":
                 HumanPlayer.Instance.CreateDeployEvent(_indices["MainShipList"]);
-                PlaySound("Deploy");
                 break;
             case "Undeploy":
                 HumanPlayer.Instance.CreateUndeployEvent(false);
-                PlaySound("Undeploy");
                 break;
             case "Invade":
                 HumanPlayer.Instance.CreateBattleEvent(HumanPlayer.Instance.Squad, HumanPlayer.Instance.Squad.Tile);
@@ -919,7 +917,7 @@ public class GUIManager : MonoBehaviour
         AutoSelectIndex<Ship>("MainShipList", HumanPlayer.Instance.Squad.Ships);
     }
 
-    public void ConfigureBattleScreen(float WC, Squad squad1, Squad squad2)
+    public void ConfigureBattleScreen(float WC, Squad squad1, Squad squad2, BattleType battleType)
     {
         var t1 = squad1.Team;
 
@@ -940,22 +938,34 @@ public class GUIManager : MonoBehaviour
         _interface["EnemyBattleIcon"].GetComponent<Image>().sprite = _icons[enemy.Team.ToString()];
 
         ClearList("PlayerSquadInfoList");
-        player.PopulateCountList(_interface["PlayerSquadInfoList"].gameObject);
         ClearList("EnemySquadInfoList");
-        enemy.PopulateCountList(_interface["EnemySquadInfoList"].gameObject);
 
-        // for detailed battle screen - current blows
-        if(pt != null)
-        {
-            // player tile vs. enemy squad
-        }
-        else if(et != null)
-        {
-            // player squad vs. enemy tile
-        }
-        else // squad vs. squad
-        {
+        var ptext = _interface["BattleMenu"].transform.FindChild("PlayerShipText").GetComponent<Text>();
+        var etext = _interface["BattleMenu"].transform.FindChild("EnemyShipText").GetComponent<Text>();
 
+        if (battleType == BattleType.Invasion)
+        {
+            ptext.text = "Your Soldiers";
+            etext.text = "Their Soldiers";
+
+            if (pt != null)
+            {
+                pt.PopulateCountList(_interface["PlayerSquadInfoList"].gameObject, battleType);
+                enemy.PopulateCountList(_interface["EnemySquadInfoList"].gameObject, battleType);
+            }
+            else
+            {
+                et.PopulateCountList(_interface["EnemySquadInfoList"].gameObject, battleType);
+                player.PopulateCountList(_interface["PlayerSquadInfoList"].gameObject, battleType);
+            }
+        }
+        else
+        {
+            ptext.text = "Your Ships";
+            etext.text = "Their Ships";
+
+            player.PopulateCountList(_interface["PlayerSquadInfoList"].gameObject, battleType);
+            enemy.PopulateCountList(_interface["EnemySquadInfoList"].gameObject, battleType);
         }
 
         SetUIElements(false, false, true, false, false, false, false);

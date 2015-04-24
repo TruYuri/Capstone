@@ -39,7 +39,6 @@ public class CustomUI : MonoBehaviour
     public void ClickWarp()
     {
         GUIManager.Instance.Warp();
-        GUIManager.Instance.PlaySound("Warp");
     }
 
     public void SetScreen()
@@ -81,12 +80,13 @@ public class CustomUI : MonoBehaviour
     public void ClickSquadAction()
     {
         GUIManager.Instance.SquadAction(data);
+        GUIManager.Instance.PlaySound("Command");
     }
 
     public void ClickListItem()
     {
         GUIManager.Instance.ItemClicked(data);
-        // GUIManager.Instance.PlaySound("Click");
+        GUIManager.Instance.PlaySound("Click");
     }
 
     public void ClickNewSquad()

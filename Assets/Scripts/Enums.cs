@@ -19,5 +19,5 @@ public enum ShipProperties
     SpaceStructure = 1 << 2, 
     ResourceTransport = 1 << 3 
 }
-public enum BattleType { Space, Invasion }
+public enum BattleType { Space = 1, Invasion = 2 }
 public enum ListingType { Info, Build }

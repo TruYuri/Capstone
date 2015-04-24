@@ -9,6 +9,7 @@ public class Tile : MonoBehaviour, ListableObject
 {
     private const string TILE_LISTING_PREFAB = "TileListing";
     private const string CIRCLE_PREFAB = "Circle";
+    private const string SQUAD_COUNT_PREFAB = "ShipCountListing";
 
     private float _radius;
     private float _clickRadius;
@@ -331,6 +332,34 @@ public class Tile : MonoBehaviour, ListableObject
     public bool IsInClickRange(Vector3 click)
     {
         return (click - transform.position).sqrMagnitude <= (_clickRadius * _clickRadius);
+    }
+
+    public void PopulateCountList(GameObject list, BattleType bType)
+    {
+        var squadEntry = Resources.Load<GameObject>(SQUAD_COUNT_PREFAB);
+
+        var counts = new Dictionary<string, int>()
+        {
+            { _planetInhabitance.ToString(), _population }
+        };
+
+        if(_structure != null)
+            foreach (var i in _structure.Population)
+            {
+                if (!counts.ContainsKey(i.Key.ToString()) && i.Value > 0)
+                    counts.Add(i.Key.ToString(), i.Value);
+                else if (counts.ContainsKey(i.Key.ToString()))
+                    counts[i.Key.ToString()] += i.Value;
+            }
+
+        foreach (var count in counts)
+        {
+            var entry = Instantiate(squadEntry) as GameObject;
+            entry.transform.FindChild("Name").GetComponent<Text>().text = count.Key;
+            entry.transform.FindChild("Icon").GetComponent<Image>().sprite = GUIManager.Instance.Icons[count.Key];
+            entry.transform.FindChild("Count").FindChild("Number").GetComponent<Text>().text = count.Value.ToString();
+            entry.transform.SetParent(list.transform);
+        }
     }
 
     // for info lists later

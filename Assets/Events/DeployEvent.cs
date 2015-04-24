@@ -20,9 +20,9 @@ public class DeployEvent : GameEvent
         if (player == HumanPlayer.Instance)
         {
             if(tile != null)
-                GUIManager.Instance.AddEvent("Deploying " + ship.Name + " at " + tile.Name + ".");
+                GUIManager.Instance.AddEvent("Sending command to deploy " + ship.Name + " at " + tile.Name + ".");
             else
-                GUIManager.Instance.AddEvent("Deploying " + ship.Name + ".");
+                GUIManager.Instance.AddEvent("Sending command to deploy " + ship.Name + ".");
         }
     }
 
@@ -38,19 +38,23 @@ public class DeployEvent : GameEvent
         _squad.Mission = null;
         if(_squad.Ships.Count == 0 && _tile.Squad != _squad)
         {
-            if (HumanPlayer.Instance == _player)
+            if (HumanPlayer.Instance == _player && HumanPlayer.Instance.Squad == _squad)
                 _player.Control(_tile.gameObject);
             _player.CleanSquad(_squad);
             _player.DeleteSquad(_squad);
         }
         
-        if (HumanPlayer.Instance == _player && orig != null)
-            GUIManager.Instance.AddEvent(_structure.Name + " deployed at " + _tile.Name + ".");
-        else if (HumanPlayer.Instance == _player && orig == null)
-            GUIManager.Instance.AddEvent(_structure.Name + " deployed.");
+        if(HumanPlayer.Instance == _player)
+        {
+            if (orig != null)
+                GUIManager.Instance.AddEvent(_structure.Name + " deployed at " + _tile.Name + ".");
+            else
+                GUIManager.Instance.AddEvent(_structure.Name + " deployed.");
+       
+            GUIManager.Instance.PlaySound("Deploy");
+        }
 
-        HumanPlayer.Instance.ReloadGameplayUI();
-
+        HumanPlayer.Instance.ReloadGameplayUI(); 
     }
 
     public override bool AssertValid()

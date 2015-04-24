@@ -336,7 +336,7 @@ public class HumanPlayer : Player
     {
         _winChance = base.PrepareBattleConditions(squad1, squad2, battleType);
         Control(_playerSquad.gameObject);
-        GUIManager.Instance.ConfigureBattleScreen(_winChance, _playerSquad, _enemySquad);
+        GUIManager.Instance.ConfigureBattleScreen(_winChance, _playerSquad, _enemySquad, battleType);
         return _winChance;
     }
 

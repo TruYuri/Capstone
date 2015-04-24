@@ -17,7 +17,7 @@ public class BuildEvent : GameEvent
         _player = player;
 
         if (player == HumanPlayer.Instance)
-            GUIManager.Instance.AddEvent("Building " + ship.Name + " at " + tile.Name + ".");
+            GUIManager.Instance.AddEvent("Sending command to build " + ship.Name + " at " + tile.Name + ".");
     }
 
     public override void Progress()

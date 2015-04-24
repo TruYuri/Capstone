@@ -16,19 +16,31 @@ public class BattleEvent : GameEvent
         Progress();
     }
 
-    public BattleEvent(Squad squad, Tile tile) : base(1)
+    public BattleEvent(int turns, Squad squad, Tile tile) : base(turns)
     {
         _squad1 = squad;
         _squad2 = tile.GetComponent<Squad>();
         _battleType = BattleType.Invasion;
-        GameManager.Instance.Paused = true;
-        Progress();
+
+        if (squad.Team == HumanPlayer.Instance.Team)
+        {
+            GUIManager.Instance.AddEvent("Sending command to invade " + tile.Name + ".");
+
+            if (turns <= 0)
+                Progress();
+        }
+        else if (tile.Team == HumanPlayer.Instance.Team)
+            Progress();
     }
 
     public override void Progress()
     {
         base.Progress();
 
+        if (_remainingTurns > 0)
+            return;
+
+        GameManager.Instance.Paused = true;
         if (HumanPlayer.Instance.Team == _squad1.Team || HumanPlayer.Instance.Team == _squad2.Team) // if player involved
         {
             // note: unpause when the battle result screen is closed

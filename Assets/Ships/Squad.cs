@@ -445,10 +445,10 @@ public class Squad : MonoBehaviour, ListableObject
 
     void ListableObject.PopulateGeneralInfo(GameObject popUp, System.Object data)
     {
-        PopulateCountList(popUp.transform.FindChild("ShipCounts").FindChild("ShipCountsList").gameObject);
+        PopulateCountList(popUp.transform.FindChild("ShipCounts").FindChild("ShipCountsList").gameObject, BattleType.Space | BattleType.Invasion);
     }
 
-    public Dictionary<string, int> CountShips()
+    private Dictionary<string, int> CountShips()
     {
         var counts = new Dictionary<string, int>();
         foreach (var ship in _ships)
@@ -461,18 +461,54 @@ public class Squad : MonoBehaviour, ListableObject
         return counts;
     }
 
-    public void PopulateCountList(GameObject list)
+    private Dictionary<string, int> CountSoldiers()
+    {
+        var counts = new Dictionary<string, int>();
+
+        foreach (var ship in _ships)
+        {
+            foreach (var i in ship.Population)
+            {
+                if (!counts.ContainsKey(i.Key.ToString()) && i.Value > 0)
+                    counts.Add(i.Key.ToString(), i.Value);
+                else if (counts.ContainsKey(i.Key.ToString()))
+                    counts[i.Key.ToString()] += i.Value;
+            }
+        }
+
+        return counts;
+    }
+
+    public void PopulateCountList(GameObject list, BattleType bType)
     {
         var squadEntry = Resources.Load<GameObject>(SQUAD_COUNT_PREFAB);
-        var counts = CountShips();
 
-        foreach (var count in counts)
+        if ((bType & BattleType.Space) != 0)
         {
-            var entry = Instantiate(squadEntry) as GameObject;
-            entry.transform.FindChild("Name").GetComponent<Text>().text = count.Key;
-            entry.transform.FindChild("Icon").GetComponent<Image>().sprite = HumanPlayer.Instance.GetShipDefinition(count.Key).Icon;
-            entry.transform.FindChild("Count").FindChild("Number").GetComponent<Text>().text = count.Value.ToString();
-            entry.transform.SetParent(list.transform);
+            var counts = CountShips();
+
+            foreach (var count in counts)
+            {
+                var entry = Instantiate(squadEntry) as GameObject;
+                entry.transform.FindChild("Name").GetComponent<Text>().text = count.Key;
+                entry.transform.FindChild("Icon").GetComponent<Image>().sprite = HumanPlayer.Instance.GetShipDefinition(count.Key).Icon;
+                entry.transform.FindChild("Count").FindChild("Number").GetComponent<Text>().text = count.Value.ToString();
+                entry.transform.SetParent(list.transform);
+            }
+        }
+
+        if ((bType & BattleType.Invasion) != 0)
+        {
+            var counts = CountSoldiers();
+
+            foreach (var count in counts)
+            {
+                var entry = Instantiate(squadEntry) as GameObject;
+                entry.transform.FindChild("Name").GetComponent<Text>().text = count.Key;
+                entry.transform.FindChild("Icon").GetComponent<Image>().sprite = GUIManager.Instance.Icons[count.Key];
+                entry.transform.FindChild("Count").FindChild("Number").GetComponent<Text>().text = count.Value.ToString();
+                entry.transform.SetParent(list.transform);
+            }
         }
     }
 }

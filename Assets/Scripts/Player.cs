@@ -93,7 +93,7 @@ public class Player : MonoBehaviour
         // check range here
         var path = MapManager.Instance.AStarSearch(_commandShipSquad.Sector, _controlledSquad.Sector, 5, _team, "Relay");
         _controlledIsWithinRange = path != null;
-        _relayDistance = path != null ? (path.Count - 1) : 0;
+        _relayDistance = path != null ? (path.Count) : 0;
     }
 
 	// Update is called once per frame
@@ -144,7 +144,7 @@ public class Player : MonoBehaviour
 
     public void CreateBattleEvent(Squad squad1, Tile tile)
     {
-        GameManager.Instance.AddEvent(new BattleEvent(squad1, tile), true);
+        GameManager.Instance.AddEvent(new BattleEvent(_relayDistance, squad1, tile), true);
     }
 
     public void CreateBattleEvent(Squad squad1, Squad squad2)
@@ -159,7 +159,7 @@ public class Player : MonoBehaviour
 
     public void CreateBuildEvent(string shipName)
     {
-        GameManager.Instance.AddEvent(new BuildEvent(_relayDistance + 1, this, _controlledTile, _shipDefinitions[shipName].Copy()), false);
+        GameManager.Instance.AddEvent(new BuildEvent(_relayDistance, this, _controlledTile, _shipDefinitions[shipName].Copy()), false);
 
         foreach(var r in _shipDefinitions[shipName].RequiredResources)
         {
