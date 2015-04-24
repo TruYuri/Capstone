@@ -181,7 +181,7 @@ public class HumanPlayer : Player
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             EventSystem eventSystem = EventSystem.current;
             if (Physics.Raycast(ray, out hit) && !eventSystem.IsPointerOverGameObject()
-                && _controlledSquad.Team == _team && _controlledSquad.Mission == null)
+                && _controlledSquad.Team == _team && _controlledSquad.Mission == null && _controlledIsWithinRange)
             {
                 Sector sector = null;
 
@@ -219,6 +219,8 @@ public class HumanPlayer : Player
                     _move.Play();
 
                 float speed = 25.0f;
+                if(Input.GetKey(KeyCode.Space))
+                    speed = 100f;
 
                 var dir = hit.point - _commandShipSquad.transform.position;
                 dir.Normalize();
