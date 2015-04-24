@@ -64,6 +64,7 @@ public class Player : MonoBehaviour
                 _shipRegistry.Add(ship.Key, new HashSet<Ship>());
         }
 
+        _soldierRegistry.Add(Inhabitance.Uninhabited, 0);
         _soldierRegistry.Add(Inhabitance.Primitive, 0);
         _soldierRegistry.Add(Inhabitance.Industrial, 0);
         _soldierRegistry.Add(Inhabitance.SpaceAge, 0);
@@ -286,6 +287,14 @@ public class Player : MonoBehaviour
             tile.Claim(_team);
             tile.Population += Mathf.FloorToInt(IP * DC * ((float)GameManager.Generator.NextDouble() * (0.75f - 0.25f) + 0.25f));
             AddSoldiers(tile, tile.PopulationType, tile.Population);
+            foreach(var ship in tile.Squad.Ships)
+            {
+                _shipRegistry[ship.Name].Add(ship);
+                foreach(var p in ship.Population)
+                {
+                    AddSoldiers(p.Key, p.Value);
+                }
+            }
             return true;
         }
         else if (this == HumanPlayer.Instance)
@@ -481,6 +490,11 @@ public class Player : MonoBehaviour
     public void AddSoldiers(Ship ship, Inhabitance type, int count)
     {
         ship.Population[type] += count;
+        _soldierRegistry[type] += count;
+    }
+
+    public void AddSoldiers(Inhabitance type, int count)
+    {
         _soldierRegistry[type] += count;
     }
 
