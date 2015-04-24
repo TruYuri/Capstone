@@ -14,7 +14,12 @@ public class UndeployEvent : GameEvent
         _destroy = destroy;
         _player = player;
         if (_player == HumanPlayer.Instance)
-            GUIManager.Instance.AddEvent("Sending command to undeploy " + _tile.Structure.Name + " at " + _tile.Name);
+        {
+            if(_tile.Type != _tile.Structure.Name)
+                GUIManager.Instance.AddEvent("Sending command to undeploy " + _tile.Structure.Name + " at " + _tile.Name);
+            else
+                GUIManager.Instance.AddEvent("Sending command to undeploy " + _tile.Structure.Name);
+        }
     }
 
     public override void Progress()
@@ -42,7 +47,7 @@ public class UndeployEvent : GameEvent
         if (_player == HumanPlayer.Instance)
         {
             GUIManager.Instance.PlaySound("Undeploy");
-            if (_tile != null)
+            if (_tile != null && _tile.Type != name)
                 GUIManager.Instance.AddEvent(name + " undeployed at " + _tile.Name + ".");
             else
                 GUIManager.Instance.AddEvent(name + " undeployed.");

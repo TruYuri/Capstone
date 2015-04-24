@@ -28,6 +28,7 @@ public class Tile : MonoBehaviour, ListableObject
     public string Name { get { return _name; } }
     public Team Team { get { return _team; } }
     public Structure Structure { get { return _structure; } }
+    public string Type { get { return _planetType; } }
     public Squad Squad { get { return _squad; } }
     public float Radius { get { return _radius; } }
     public int Population 
