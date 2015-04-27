@@ -84,6 +84,7 @@ public class GameManager : MonoBehaviour
 
         _shipDefinitions = new Dictionary<string, Ship>();
         var descriptions = new Dictionary<string, string>();
+        var shipIcons = new Dictionary<string, Sprite>();
         var parser = new INIParser(Application.dataPath + INI_PATH);
         var shipDetails = parser.ParseINI();
         var textures = new Texture2D[shipDetails.Count - 1]; // to ensure order
@@ -104,6 +105,7 @@ public class GameManager : MonoBehaviour
         {
             var rect = new Rect(atlasEntries[i].xMin * _shipTextureAtlas.width, atlasEntries[i].yMin * _shipTextureAtlas.height, textures[i].width, textures[i].height);
             var icon = Sprite.Create(_shipTextureAtlas, rect, new Vector2(0.5f, 0.5f));
+            shipIcons.Add(shipNames[i], icon);
             var section = "[" + shipNames[i] + "]";
             var typeList = shipDetails[SHIP_SECTION_HEADER][shipNames[i]].Split('|');
             var type = ShipProperties.None;
@@ -130,16 +132,16 @@ public class GameManager : MonoBehaviour
                 var gatherType = ResourceGatherType.None;
                 foreach (var t in gatherList)
                     gatherType = gatherType | (ResourceGatherType)Enum.Parse(typeof(ResourceGatherType), t);
-                _shipDefinitions.Add(name, new Structure(icon, name, hull, firepower, speed, capacity, rCapacity, dDefense, dCapacity, rate, range, constructables, type, gatherType));
+                _shipDefinitions.Add(name, new Structure(name, hull, firepower, speed, capacity, rCapacity, dDefense, dCapacity, rate, range, constructables, type, gatherType));
             }
             else
-                _shipDefinitions.Add(name, new Ship(icon, name, hull, firepower, speed, capacity, rCapacity, 0, type));
+                _shipDefinitions.Add(name, new Ship(name, hull, firepower, speed, capacity, rCapacity, 0, type));
 
             descriptions.Add(name, shipDetails[section][DESCRIPTION_DETAIL]);
         }
 
         parser.CloseINI();
-        GUIManager.Instance.Init(descriptions);
+        GUIManager.Instance.Init(descriptions, shipIcons);
         MapManager.Instance.Init();
 
         foreach (var p in _players)

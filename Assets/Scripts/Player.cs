@@ -245,7 +245,9 @@ public class Player : MonoBehaviour
         var et = _enemySquad.GetComponent<Tile>();
 
         float WC = 0f;
-        if (pt == null && et == null)
+        if ((pt == null && et == null) ||
+            (pt != null && pt.Squad.Ships.Count > 0) ||
+            (et != null && et.Squad.Ships.Count > 0))
             WC = _playerSquad.GenerateWinChance(_enemySquad);
         else if (pt != null && et == null)
             WC = 1.0f - _enemySquad.GenerateWinChance(pt);
@@ -373,7 +375,7 @@ public class Player : MonoBehaviour
                         Control(colliders[0].gameObject);
             }
 
-            if ((_commandShipSquad == null || !_commandShipSquad.Ships.Contains(_commandShip)) && _team != Team.Uninhabited && _team != Team.Indigenous)
+            if ((_commandShipSquad == null || !_commandShipSquad.Ships.Contains(_commandShip)) && _team == HumanPlayer.Instance.Team)
                 CreateCommandShipLostEvent(_commandShipSquad);
             else if (_squads.Count > 0 && _controlledSquad == null)
                 Control(_squads[GameManager.Generator.Next(0, _squads.Count)].gameObject);
@@ -459,8 +461,9 @@ public class Player : MonoBehaviour
         _shipRegistry[ship.Name].Remove(ship);
         squad.Ships.Remove(ship);
 
-        foreach (var type in ship.Population)
-            RemoveSoldiers(ship, type.Key, type.Value);
+        var pops = ship.Population.Keys.ToList();
+        foreach (var type in pops)
+            RemoveSoldiers(ship, type, ship.Population[type]);
     }
 
     public void RemoveAllShips(Squad squad)

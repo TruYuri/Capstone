@@ -242,7 +242,10 @@ public class HumanPlayer : Player
 
     public Ship GetShipDefinition(string name)
     {
-        return _shipDefinitions[name];
+        if(_shipDefinitions.ContainsKey(name))
+            return _shipDefinitions[name];
+
+        return null;
     }
 
     public void DisplayResources(GameObject panel)

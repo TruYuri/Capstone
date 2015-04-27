@@ -32,7 +32,7 @@ public class GUIManager : MonoBehaviour
         }
     }
 
-    public void Init(Dictionary<string, string> descriptions)
+    public void Init(Dictionary<string, string> descriptions, Dictionary<string, Sprite> extraIcons)
     {
         _descriptions = descriptions;
         _instance = this;
@@ -77,6 +77,9 @@ public class GUIManager : MonoBehaviour
             { "Industrial", Resources.Load<Sprite>(UI_ICONS_PATH + "IndustrialPopulationIcon") },
             { "SpaceAge", Resources.Load<Sprite>(UI_ICONS_PATH + "SpaceAgePopulationIcon") }
         };
+
+        foreach (var icon in extraIcons)
+            _icons.Add(icon.Key, icon.Value);
     }
 
     public void Register(string name, CustomUI btn, bool disable)
@@ -987,21 +990,8 @@ public class GUIManager : MonoBehaviour
             {
                 var entry = Instantiate(squadEntry) as GameObject;
                 entry.transform.FindChild("Name").GetComponent<Text>().text = lost.Key;
-                switch(lost.Key)
-                {
-                    case "Primitive":
-                        entry.transform.FindChild("Icon").GetComponent<Image>().sprite = _icons["Primitive"];
-                        break;
-                    case "Industrial":
-                        entry.transform.FindChild("Icon").GetComponent<Image>().sprite = _icons["Industrial"];
-                        break;
-                    case "SpaceAge":
-                        entry.transform.FindChild("Icon").GetComponent<Image>().sprite = _icons["Space Age"];
-                        break;
-                    default:
-                        entry.transform.FindChild("Icon").GetComponent<Image>().sprite = HumanPlayer.Instance.GetShipDefinition(lost.Key).Icon;
-                        break;
-                }
+
+                entry.transform.FindChild("Icon").GetComponent<Image>().sprite = _icons[lost.Key];
                 entry.transform.FindChild("Count").FindChild("Number").GetComponent<Text>().text = lost.Value.ToString();
                 entry.transform.SetParent(_interface["ShipsLostList"].transform);
             }

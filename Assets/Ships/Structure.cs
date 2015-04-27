@@ -47,9 +47,9 @@ public class Structure : Ship, ListableObject
 
     public List<string> Constructables { get { return constructables; } }
 
-    public Structure(Sprite icon, string name, float hull, float firepower, float speed, int capacity, int rCapacity,
+    public Structure(string name, float hull, float firepower, float speed, int capacity, int rCapacity,
         float defense, int deployedCapacity, int gatherRate, int range, List<string> constructables, ShipProperties shipProperties, ResourceGatherType type)
-        : base(icon, name, hull, firepower, speed, capacity, rCapacity, 0, shipProperties)
+        : base(name, hull, firepower, speed, capacity, rCapacity, 0, shipProperties)
     {
         this.defense = defense;
         this.deployedCapacity = deployedCapacity;
@@ -85,7 +85,7 @@ public class Structure : Ship, ListableObject
 
     public override Ship Copy()
     {
-        var ship = new Structure(icon, name, hull, firepower, speed, capacity, resourceCapacity,
+        var ship = new Structure(name, hull, firepower, speed, capacity, resourceCapacity,
             defense, deployedCapacity, gatherRate, range, constructables, shipProperties, types);
         ship.Hull = hull;
         ship.Firepower = firepower;
@@ -149,7 +149,7 @@ public class Structure : Ship, ListableObject
 
     public void PopulateStructurePanel(GameObject list)
     {
-        list.transform.FindChild("StructureIcon").GetComponent<Image>().sprite = icon;
+        list.transform.FindChild("StructureIcon").GetComponent<Image>().sprite = GUIManager.Instance.Icons[name];
         list.transform.FindChild("StructureName").GetComponent<Text>().text = name;
         list.transform.FindChild("Capacity").GetComponent<Text>().text = CountPopulation().ToString() + " / " + deployedCapacity.ToString();
         list.transform.FindChild("Defense").GetComponent<Text>().text = defense.ToString();
@@ -165,9 +165,10 @@ public class Structure : Ship, ListableObject
         var shipEntry = UnityEngine.Resources.Load<GameObject>(LIST_PREFAB);
         var entry = GameObject.Instantiate(shipEntry) as GameObject;
         var icon = entry.transform.FindChild("Icon").GetComponent<Image>();
-        icon.sprite = this.icon;
 
         var name = this.name;
+        icon.sprite = GUIManager.Instance.Icons[name];
+
         if (HumanPlayer.Instance.Squad.Tile != null && this == HumanPlayer.Instance.Squad.Tile.Structure)
             name = "(Deployed) " + name;
         entry.transform.FindChild("Name").GetComponent<Text>().text = name;

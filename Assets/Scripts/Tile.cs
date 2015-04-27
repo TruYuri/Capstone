@@ -107,7 +107,7 @@ public class Tile : MonoBehaviour, ListableObject
         for (int i = 0; i < n; i++)
             pl.AddShip(_squad, "Transport");
 
-        n = GameManager.Generator.Next(2, 16);
+        n = GameManager.Generator.Next(2, 5);
         for (int i = 0; i < n; i++)
             pl.AddShip(_squad, "Guard Satellite");
 
@@ -115,9 +115,10 @@ public class Tile : MonoBehaviour, ListableObject
         for (int i = 0; i < n; i++)
             pl.AddShip(_squad, "Heavy Fighter");
 
+        /*
         n = GameManager.Generator.Next(0, 6);
         for (int i = 0; i < n; i++)
-            pl.AddShip(_squad, "Behemoth");
+            pl.AddShip(_squad, "Behemoth");*/
     }
 
     void Start()
@@ -232,6 +233,7 @@ public class Tile : MonoBehaviour, ListableObject
         var power = 0f;
         var bonuses = new Dictionary<Inhabitance, float>()
         {
+            { Inhabitance.Uninhabited, 0f },
             { Inhabitance.Primitive, 1f },
             { Inhabitance.Industrial, 1.5f },
             { Inhabitance.SpaceAge, 1.75f }
@@ -348,6 +350,9 @@ public class Tile : MonoBehaviour, ListableObject
         {
             { _planetInhabitance.ToString(), _population }
         };
+
+        if (_planetInhabitance == Inhabitance.Uninhabited)
+            counts.Remove(_planetInhabitance.ToString());
 
         if(_structure != null)
             foreach (var i in _structure.Population)

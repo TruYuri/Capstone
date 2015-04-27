@@ -9,7 +9,6 @@ public class Ship : ListableObject
     private const string PLATING = "Asterminium Plating";
 
     protected bool unlocked;
-    protected Sprite icon;
     protected string name;
     protected float hull;
     protected float firepower;
@@ -76,13 +75,13 @@ public class Ship : ListableObject
         get { return unlocked; }
         set { unlocked = value; }
     }
-    public Sprite Icon { get { return icon; } }
+
     public Dictionary<Resource, int> Resources { get { return resources; } }
     public Dictionary<Resource, int> RequiredResources { get { return requiredResources; } }
     public Dictionary<Inhabitance, int> Population { get { return population; } }
     public ShipProperties ShipProperties { get { return shipProperties; } }
 
-    public Ship(Sprite icon, string name, float hull, float firepower, float speed, int capacity, int rCapacity, int plating, ShipProperties shipProperties)
+    public Ship(string name, float hull, float firepower, float speed, int capacity, int rCapacity, int plating, ShipProperties shipProperties)
     {
         this.name = name;
         this.hull = hull;
@@ -91,10 +90,10 @@ public class Ship : ListableObject
         this.capacity = capacity;
         this.resourceCapacity = rCapacity;
         this.shipProperties = shipProperties;
-        this.icon = icon;
         this.plating = plating;
         this.population = new Dictionary<Inhabitance, int>()
         {
+            { Inhabitance.Uninhabited, 0 },
             { Inhabitance.Primitive, 0 },
             { Inhabitance.Industrial, 0 },
             { Inhabitance.SpaceAge, 0 }
@@ -162,7 +161,7 @@ public class Ship : ListableObject
 
     public virtual Ship Copy()
     {
-        var ship = new Ship(icon, name, hull, firepower, speed, capacity, resourceCapacity, plating, shipProperties);
+        var ship = new Ship(name, hull, firepower, speed, capacity, resourceCapacity, plating, shipProperties);
         ship.Hull = hull;
         ship.Firepower = firepower;
         ship.Speed = speed;
@@ -177,7 +176,7 @@ public class Ship : ListableObject
         var shipEntry = UnityEngine.Resources.Load<GameObject>(LIST_PREFAB);
         var entry = GameObject.Instantiate(shipEntry) as GameObject;
         var icon = entry.transform.FindChild("Icon").GetComponent<Image>();
-        icon.sprite = this.icon;
+        icon.sprite = GUIManager.Instance.Icons[name];
         entry.transform.FindChild("Name").GetComponent<Text>().text = name;
         entry.transform.FindChild("Population").GetComponent<Text>().text = CountPopulation().ToString() + "/" + capacity;
         entry.GetComponent<CustomUIAdvanced>().data = listName + "|" + index.ToString();
@@ -190,7 +189,7 @@ public class Ship : ListableObject
         var buildEntry = UnityEngine.Resources.Load<GameObject>(CONSTRUCT_PREFAB);
         var entry = GameObject.Instantiate(buildEntry) as GameObject;
         entry.transform.FindChild("Name").GetComponent<Text>().text = name;
-        entry.transform.FindChild("Icon").GetComponent<Image>().sprite = icon;
+        entry.transform.FindChild("Icon").GetComponent<Image>().sprite = GUIManager.Instance.Icons[name];
         entry.transform.FindChild("OilText").GetComponent<Text>().text = requiredResources[Resource.Oil].ToString();
         entry.transform.FindChild("OreText").GetComponent<Text>().text = requiredResources[Resource.Ore].ToString();
         entry.transform.FindChild("ForestText").GetComponent<Text>().text = requiredResources[Resource.Forest].ToString();

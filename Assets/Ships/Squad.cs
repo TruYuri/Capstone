@@ -277,7 +277,7 @@ public class Squad : MonoBehaviour, ListableObject
         if (ind > 0)
             lost.Value.Add("Industrial", ind);
         if (space > 0)
-            lost.Value.Add("Space Age", space);
+            lost.Value.Add("SpaceAge", space);
 
         return lost;
     }
@@ -487,7 +487,7 @@ public class Squad : MonoBehaviour, ListableObject
             {
                 var entry = Instantiate(squadEntry) as GameObject;
                 entry.transform.FindChild("Name").GetComponent<Text>().text = count.Key;
-                entry.transform.FindChild("Icon").GetComponent<Image>().sprite = HumanPlayer.Instance.GetShipDefinition(count.Key).Icon;
+                entry.transform.FindChild("Icon").GetComponent<Image>().sprite = GUIManager.Instance.Icons[count.Key];
                 entry.transform.FindChild("Count").FindChild("Number").GetComponent<Text>().text = count.Value.ToString();
                 entry.transform.SetParent(list.transform);
             }
