@@ -241,13 +241,13 @@ public class Tile : MonoBehaviour, ListableObject
         var power = 0f;
         var bonuses = new Dictionary<Inhabitance, float>()
         {
-            { Inhabitance.Uninhabited, 0f },
             { Inhabitance.Primitive, 1f },
             { Inhabitance.Industrial, 1.5f },
             { Inhabitance.SpaceAge, 1.75f }
         };
         
-        power += _population * bonuses[_planetInhabitance];
+        if(_planetInhabitance != Inhabitance.Uninhabited)
+            power += _population * bonuses[_planetInhabitance];
         if (_structure != null)
         {
             foreach(var bonus in bonuses)
