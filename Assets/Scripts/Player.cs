@@ -275,8 +275,13 @@ public class Player : MonoBehaviour
                 break;
         }
 
-        var DC = ((PP - IP) / 100.0f * 0.5f + 0.5f) * (_team == Team.Union ? 1.5f : 1f);
+        //var DC = ((PP - IP) / 100.0f * 0.5f + 0.5f) * (_team == Team.Union ? 1.5f : 1f);
+		var DC = (((double)PP / (PP + IP))  - ((double)IP / (PP + IP))) * (_team == Team.Union ? 1.5f : 1f);
         var DP = GameManager.Generator.NextDouble();
+		Debug.Log("PP is "+PP);
+		Debug.Log("IP is "+IP);
+		Debug.Log("DC is "+DC);
+		Debug.Log("DP is "+DP);
 
         if (DP < DC) // we won!
         {
@@ -284,7 +289,7 @@ public class Player : MonoBehaviour
                 GUIManager.Instance.AddEvent("Diplomacy successful at " + tile.Name + "!");
 
             tile.Claim(_team);
-            // tile.Population += Mathf.FloorToInt(IP * DC * ((float)GameManager.Generator.NextDouble() * (0.75f - 0.25f) + 0.25f)); // this is very broken
+            tile.Population += Mathf.FloorToInt(tile.Population * ((float)GameManager.Generator.NextDouble() * (0.1f - 0.3f) + 0.25f)); // this is very broken
             // AddSoldiers(tile, tile.PopulationType, tile.Population);
             foreach(var ship in tile.Squad.Ships)
             {
