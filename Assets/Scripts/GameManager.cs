@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
     private Texture2D _shipTextureAtlas;
     private Dictionary<Team, Player> _players;
     private Dictionary<Team, Color> _playerColors;
-    private int _turns;
+    private int _turns = 0;
 
     public static GameManager Instance 
     { 
@@ -220,7 +220,7 @@ public class GameManager : MonoBehaviour
         {
             _eventQueue = _nextEventQueue;
             _nextEventQueue = new Queue<GameEvent>();
-
+            _turns++;
             foreach (var player in _players)
                 player.Value.TurnEnd();
         }
