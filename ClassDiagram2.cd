@@ -1,0 +1,345 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="BattleEvent" Collapsed="true">
+    <Position X="1.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAwAAAAAAAAAACACAAAA=</HashCode>
+      <FileName>Assets\Events\BattleEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BuildEvent" Collapsed="true">
+    <Position X="5.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAABAAAAACAAACAAAAAAAAAAAAAAAAgCAAAA=</HashCode>
+      <FileName>Assets\Events\BuildEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CommandShipLostEvent" Collapsed="true">
+    <Position X="10.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>Assets\Events\CommandShipLostEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DeployEvent" Collapsed="true">
+    <Position X="14.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAACAAACAAAAAAAAAAABAAAAgCAAAA=</HashCode>
+      <FileName>Assets\Events\DeployEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DiplomacyEvent" Collapsed="true">
+    <Position X="17" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAABAAAAACAAACAAAAAAAAAAAAAAAAECAAAA=</HashCode>
+      <FileName>Assets\Events\DiplomacyEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameEvent" Collapsed="true">
+    <Position X="10.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAACAABAAAAAAAAAAAAAAgACACAAAA=</HashCode>
+      <FileName>Assets\Events\GameEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RetreatEvent" Collapsed="true">
+    <Position X="19.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAACAAAAAAAAAAAAAAABAAAAACAAAA=</HashCode>
+      <FileName>Assets\Events\RetreatEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TravelEvent" Collapsed="true">
+    <Position X="3.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAIAACAACAQACACEAAAAAAAIBAAAAACAAAA=</HashCode>
+      <FileName>Assets\Events\TravelEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UndeployEvent" Collapsed="true">
+    <Position X="8" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAACAAACAAAAAAAAAAAAAAAAACAAEA=</HashCode>
+      <FileName>Assets\Events\UndeployEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WarpEvent" Collapsed="true">
+    <Position X="12.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAACAAACAAAAAAAAAAABAAAAACAAAA=</HashCode>
+      <FileName>Assets\Events\WarpEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BehemothResearch" Collapsed="true">
+    <Position X="6" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>iAAABAEAgAQAAAAEAIABAQAAAAAQAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Research\Military\BehemothResearch.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FighterResearch" Collapsed="true">
+    <Position X="10.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAABAAAAAAAAAAEAAABAQAAAAAQAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Research\Military\FighterResearch.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GuardSatelliteResearch" Collapsed="true">
+    <Position X="15" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAABAEAgAAAAAAEAIABAQAAAAAQAgCAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Research\Military\GuardSatelliteResearch.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HeavyFighterResearch" Collapsed="true">
+    <Position X="19.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>iAAABAEAgAAAAAAEAIABAQAAAAAQAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Research\Military\HeavyFighterResearch.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TransportResearch" Collapsed="true">
+    <Position X="1.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>iAAABAACgAAAAAAEAIABAQAAAAAQAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Research\Military\TransportResearch.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Research" Collapsed="true">
+    <Position X="11.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAgAAAAEIEAIBAAQQABAEEAAAAAAAIAAAAAAA=</HashCode>
+      <FileName>Assets\Research\Research.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ResearchTree" Collapsed="true">
+    <Position X="26" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAgAAAAQAAAgAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>Assets\Research\ResearchTree.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CommandShipResearch" Collapsed="true">
+    <Position X="8.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAEBAEAAAAAAAAEAAABAQAAAAAQAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Research\Science\CommandShipResearch.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ComplexResearch" Collapsed="true">
+    <Position X="12.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAEAEAAABAQAAAEAAAgAAAAAAAAABAAA=</HashCode>
+      <FileName>Assets\Research\Science\ComplexResearch.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EfficiencyResearch" Collapsed="true">
+    <Position X="17.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAAAEBAABAQAAAAAAAAAhAEAAAAAAAAE=</HashCode>
+      <FileName>Assets\Research\Science\EfficiencyResearch.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RelayResearch" Collapsed="true">
+    <Position X="21.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAIAggAAAAAAEAIgBAQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Research\Science\RelayResearch.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WarpPortalResearch" Collapsed="true">
+    <Position X="3.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAIAAgAAAAAAEAIgBAQAAAAAAAAAAAAAAABAAAAA=</HashCode>
+      <FileName>Assets\Research\Science\WarpPortalResearch.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AIPlayer" Collapsed="true">
+    <Position X="0.5" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\AIPlayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CustomUI" Collapsed="true">
+    <Position X="8.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAIAACAACQAAiIAQQQAWYAABEAMAAAAQAiQEAQg=</HashCode>
+      <FileName>Assets\Scripts\CustomUI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CustomUIAdvanced" Collapsed="true">
+    <Position X="8.5" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACAAAAAAAAAAAAAAAAAgAAAACAAAAQAAAAA=</HashCode>
+      <FileName>Assets\Scripts\CustomUIAdvanced.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GameManager" Collapsed="true">
+    <Position X="24.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACQkBAEgkAAQAAFAAQABCEAAEBRkAhAASYwKAAGUAAI=</HashCode>
+      <FileName>Assets\Scripts\GameManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GUIManager" Collapsed="true">
+    <Position X="26" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AhIkQAAKQihAJHBQACBAiAxkQAwFAKCiSSASAgYEoAA=</HashCode>
+      <FileName>Assets\Scripts\GUIManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HumanPlayer" Collapsed="true">
+    <Position X="2.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UAQEAAAkAKIgAgAAEAYICwACCJACABEA0AACAAABAQA=</HashCode>
+      <FileName>Assets\Scripts\HumanPlayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="INIParser" Collapsed="true">
+    <Position X="27.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABEAAAAAAAAAAAAAAQAAAAQAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\INIParser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MapManager" Collapsed="true">
+    <Position X="24.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>4RMHFgA0IAAKQgAAQwxAgQCN4CAMgwAAQDyLCRAlABA=</HashCode>
+      <FileName>Assets\Scripts\MapManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Player" Collapsed="true">
+    <Position X="1.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EASEBgAH5GpAlAGMJBQRWAAgYCCCACIAMcAiGAaEUkA=</HashCode>
+      <FileName>Assets\Scripts\Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sector" Collapsed="true">
+    <Position X="27.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQSgAEABLAAYKAIIAQABAIAACEMBjgCAQAGEAQUAQg=</HashCode>
+      <FileName>Assets\Scripts\Sector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StartManagerScript" Collapsed="true">
+    <Position X="26" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\StartManagerScript.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tile" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="27.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CBQMNyASICJBgAAIYAAAAEQFgEAAAAAQFQBCAggQABg=</HashCode>
+      <FileName>Assets\Scripts\Tile.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Ship" Collapsed="true">
+    <Position X="5.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BIAABCQAIEgAgGooIAJIIARjAgAEAQEAQQAFAMGABBA=</HashCode>
+      <FileName>Assets\Ships\Ship.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Squad" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="24.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IEQiQiRACKIAgAABMAAAAAJBAMAAIAEcMAAiBAABARE=</HashCode>
+      <FileName>Assets\Ships\Squad.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Structure" Collapsed="true">
+    <Position X="5.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABEAAIACAAiCAgBSAIAAFBAgAAAAICAAAAAgIAARI=</HashCode>
+      <FileName>Assets\Ships\Structure.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Struct Name="TextureAtlasDetails" Collapsed="true">
+    <Position X="24.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\TextureAtlasDetails.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Interface Name="ListableObject" Collapsed="true">
+    <Position X="24.25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAEAAAAAAAAAgCAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\ListableObject.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Inhabitance" Collapsed="true">
+    <Position X="27.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAIgAAAIAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Enums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Resource" Collapsed="true">
+    <Position X="26" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAgAAAAAAAAAQAAAAAAAAAABCAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Enums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ResourceGatherType" Collapsed="true">
+    <Position X="27.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAABAAAAAEAAAA=</HashCode>
+      <FileName>Assets\Scripts\Enums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="TileSize" Collapsed="true">
+    <Position X="27.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Enums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Team" Collapsed="true">
+    <Position X="26" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAQAACAAAAAAgAAAQAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Enums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="GameEventStage" Collapsed="true">
+    <Position X="26" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIACAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Enums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ShipProperties" Collapsed="true">
+    <Position X="24.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgIAAAAAAAAAEAAAAAAEAAIAAAAEAAAA=</HashCode>
+      <FileName>Assets\Scripts\Enums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="BattleType" Collapsed="true">
+    <Position X="24.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>Assets\Scripts\Enums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ListingType" Collapsed="true">
+    <Position X="24.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAEAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Enums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -29,8 +29,7 @@ public class HumanPlayer : Player
         {
             if (_instance == null)
             {
-                GameManager.Instance.AddHumanPlayer(Team.Union);
-                _instance = GameManager.Instance.Players[Team.Union] as HumanPlayer;
+                _instance = GameObject.FindObjectOfType<HumanPlayer>();
             }
 
             return _instance; 
@@ -47,6 +46,7 @@ public class HumanPlayer : Player
         _instance = this;
 
         base.Init(team);
+        CreateNewCommandShip();
         _currentCameraDistance = _cameraOffset;
         _exploredSectors = new Dictionary<Sector, bool>();
         _move = GetComponents<AudioSource>().Where(s => s.clip.name == "Engine Move").ToList()[0];

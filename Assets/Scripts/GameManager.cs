@@ -73,9 +73,12 @@ public class GameManager : MonoBehaviour
             { Team.Plinthen, Color.green},
             { Team.Kharkyr, Color.red }
         };
+
         AddHumanPlayer(player);
-        AddAIPlayer(Team.Indigenous);
-        AddAIPlayer(Team.Uninhabited);
+        var teams = Enum.GetValues(typeof(Team)).Cast<Team>().ToList();
+        teams.Remove(player);
+        foreach (var t in teams)
+            AddAIPlayer(t);
 
         _shipDefinitions = new Dictionary<string, Ship>();
         var descriptions = new Dictionary<string, string>();
@@ -144,13 +147,15 @@ public class GameManager : MonoBehaviour
     public void AddHumanPlayer(Team team)
     {
         var playerObj = Resources.Load<GameObject>(HUMAN_PLAYER_PREFAB);
-        _players[team] = (Instantiate(playerObj) as GameObject).GetComponent<HumanPlayer>();
+        var p = (Instantiate(playerObj) as GameObject).GetComponent<HumanPlayer>();
+        _players.Add(team, p);
     }
 
     public void AddAIPlayer(Team team)
     {
         var playerObj = Resources.Load<GameObject>(AI_PLAYER_PREFAB);
-        _players[team] = (Instantiate(playerObj) as GameObject).GetComponent<Player>();
+        var p = (Instantiate(playerObj) as GameObject).GetComponent<AIPlayer>();
+        _players.Add(team, p);
     }
 
     public Dictionary<string, Ship> GenerateShipDefs()

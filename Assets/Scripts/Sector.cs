@@ -47,41 +47,6 @@ public class Sector : MonoBehaviour
         };
     }
 
-    /* Old
-	void Start () 
-    {
-        this.transform.parent = MapManager.Instance.transform;
-
-        if(Tile == null)
-            Tile = Resources.Load<GameObject>(TILE_PREFAB);
-
-        // Generate center columns
-        for(int i = -85, j = 0; i <= 85; i += 10, j++)
-        {
-            CreateTile(new KeyValuePair<int, int>(8, j), new Vector3(-5, 0, i));
-            CreateTile(new KeyValuePair<int, int>(9, j), new Vector3(5, 0, i));
-        }
-
-        // Generate middle columns
-        for (int n = 0; n < 4; n++)
-        {
-            int shift = 2 * n * 10;
-            int nx1 = 8 - n * 2 - 1;
-            int px1 = 9 + n * 2 + 1;
-            int nx2 = 8 - n * 2 - 2;
-            int px2 = 9 + n * 2 + 2;
-
-            for (int i = -75 + n * 10, j = n; i <= 75 - n * 10; i += 10, j++)
-            {
-                CreateTile(new KeyValuePair<int, int>(nx1, j + 1), new Vector3(-15 - shift, 0, i));
-                CreateTile(new KeyValuePair<int, int>(nx2, j + 1), new Vector3(-25 - shift, 0, i));
-                CreateTile(new KeyValuePair<int, int>(px1, j + 1), new Vector3(15 + shift, 0, i));
-                CreateTile(new KeyValuePair<int, int>(px2, j + 1), new Vector3(25 + shift, 0, i));
-            }
-        }
-	}
-     */
-
     void Start()
     {
         this.transform.parent = MapManager.Instance.transform;
@@ -93,7 +58,7 @@ public class Sector : MonoBehaviour
         if (Tile == null)
             Tile = Resources.Load<GameObject>(TILE_PREFAB);
 
-        if (_gridPos.Key == 0 && _gridPos.Value == 0)
+        if (_gridPos.Key == 0 && _gridPos.Value == 0) // sector zero
         {
             int x = 8 + (int)(GameManager.Generator.NextDouble() * 2);
             int y = 8 + (int)(GameManager.Generator.NextDouble() * 2);
@@ -131,11 +96,21 @@ public class Sector : MonoBehaviour
         }
         else // regular sector generation
         {
+            var c = (float)GameManager.Generator.NextDouble();
+            var t = Team.Uninhabited;
+            var teams = new List<Team>() { Team.Kharkyr, Team.Plinthen, Team.Union };
+            teams.Remove(HumanPlayer.Instance.Team);
+
+            if (c < 0.05f)
+                t = teams[0];
+            else if (c < 0.1f)
+                t = teams[1];
+
             // Generate center columns
             for (int i = -85, j = 0; i <= 85; i += 10, j++)
             {
-                if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(8, j), new Vector3(-5, 0, i)); count++; }
-                if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(9, j), new Vector3(5, 0, i)); count++; }
+                if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(8, j), new Vector3(-5, 0, i), null, Resource.NoResource, Inhabitance.Uninhabited, t); count++; }
+                if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(9, j), new Vector3(5, 0, i), null, Resource.NoResource, Inhabitance.Uninhabited, t); count++; }
             }
 
             // Generate middle columns
@@ -149,10 +124,10 @@ public class Sector : MonoBehaviour
 
                 for (int i = -75 + n * 10, j = n; i <= 75 - n * 10; i += 10, j++)
                 {
-                    if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(nx1, j + 1), new Vector3(-15 - shift, 0, i)); count++; }
-                    if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(nx2, j + 1), new Vector3(-25 - shift, 0, i)); count++; }
-                    if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(px1, j + 1), new Vector3(15 + shift, 0, i)); count++; }
-                    if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(px2, j + 1), new Vector3(25 + shift, 0, i)); count++; }
+                    if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(nx1, j + 1), new Vector3(-15 - shift, 0, i), null, Resource.NoResource, Inhabitance.Uninhabited, t); count++; }
+                    if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(nx2, j + 1), new Vector3(-25 - shift, 0, i), null, Resource.NoResource, Inhabitance.Uninhabited, t); count++; }
+                    if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(px1, j + 1), new Vector3(15 + shift, 0, i), null, Resource.NoResource, Inhabitance.Uninhabited, t); count++; }
+                    if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(px2, j + 1), new Vector3(25 + shift, 0, i), null, Resource.NoResource, Inhabitance.Uninhabited, t); count++; }
                 }
             }
         }
@@ -217,7 +192,7 @@ public class Sector : MonoBehaviour
                 }
             }
 
-            if (pType != Inhabitance.Uninhabited)
+            if (pType != Inhabitance.Uninhabited && team == Team.Uninhabited)
                 team = Team.Indigenous;
         }
 
