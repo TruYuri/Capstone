@@ -76,33 +76,14 @@ public class Tile : MonoBehaviour, ListableObject
         system.enableEmission = true;
         renderer.enabled = true;
 
-        if (p > 0)
+        if (_team != Team.Uninhabited)
         {
             GameManager.Instance.Players[_team].AddSoldiers(this, _planetInhabitance, p);
             
-            // generate random defenses if space age
-            if(_planetInhabitance == Inhabitance.SpaceAge && _team != HumanPlayer.Instance.Team)
+            // generate random defenses if space age or non-player team
+            if((_team == Team.Indigenous && _planetInhabitance == Inhabitance.SpaceAge) || (_team != HumanPlayer.Instance.Team && _team != Team.Indigenous))
             {
-                var pl = GameManager.Instance.Players[_team];
-                int n = GameManager.Generator.Next(5, 26);
-                for (int i = 0; i < n; i++)
-                    pl.AddShip(_squad, "Fighter");
-
-                n = GameManager.Generator.Next(0, 11);
-                for (int i = 0; i < n; i++)
-                    pl.AddShip(_squad, "Transport");
-
-                n = GameManager.Generator.Next(2, 16);
-                for (int i = 0; i < n; i++)
-                    pl.AddShip(_squad, "Guard Satellite");
-
-                n = GameManager.Generator.Next(0, 11);
-                for (int i = 0; i < n; i++)
-                    pl.AddShip(_squad, "Heavy Fighter");
-
-                n = GameManager.Generator.Next(0, 6);
-                for (int i = 0; i < n; i++)
-                    pl.AddShip(_squad, "Behemoth");
+                PopulateRandomSquad(_squad);
             }
         }
 
@@ -113,6 +94,30 @@ public class Tile : MonoBehaviour, ListableObject
         _circle.transform.localScale = new Vector3(_radius * 2 + 0.5f, _radius * 2 + 0.5f, _radius * 2 + 0.5f);
         _circle.transform.parent = this.transform.parent;
         _circle.GetComponent<Renderer>().material.SetColor("_Color", GameManager.Instance.PlayerColors[_team]);
+    }
+
+    private void PopulateRandomSquad(Squad squad)
+    {
+        var pl = GameManager.Instance.Players[_team];
+        int n = GameManager.Generator.Next(5, 26);
+        for (int i = 0; i < n; i++)
+            pl.AddShip(_squad, "Fighter");
+
+        n = GameManager.Generator.Next(0, 11);
+        for (int i = 0; i < n; i++)
+            pl.AddShip(_squad, "Transport");
+
+        n = GameManager.Generator.Next(2, 16);
+        for (int i = 0; i < n; i++)
+            pl.AddShip(_squad, "Guard Satellite");
+
+        n = GameManager.Generator.Next(0, 11);
+        for (int i = 0; i < n; i++)
+            pl.AddShip(_squad, "Heavy Fighter");
+
+        n = GameManager.Generator.Next(0, 6);
+        for (int i = 0; i < n; i++)
+            pl.AddShip(_squad, "Behemoth");
     }
 
     void Start()

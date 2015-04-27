@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
     private Texture2D _shipTextureAtlas;
     private Dictionary<Team, Player> _players;
     private Dictionary<Team, Color> _playerColors;
+    private int _turns;
 
     public static GameManager Instance 
     { 
@@ -58,6 +59,7 @@ public class GameManager : MonoBehaviour
 
     public Dictionary<Team, Player> Players { get { return _players; } }
     public Dictionary<Team, Color> PlayerColors { get { return _playerColors; } }
+    public int Turns { get { return _turns; } }
 
     public void Init(Team player)
     {

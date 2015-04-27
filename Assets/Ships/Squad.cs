@@ -94,10 +94,6 @@ public class Squad : MonoBehaviour, ListableObject
         }
     }
 
-    void OnCollisionStay(Collision collision)
-    {
-    }
-
     void OnCollisionExit(Collision collision)
     {
         if (GameManager.Instance.Paused)
