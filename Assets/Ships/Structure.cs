@@ -151,7 +151,7 @@ public class Structure : Ship, ListableObject
     {
         list.transform.FindChild("StructureIcon").GetComponent<Image>().sprite = GUIManager.Instance.Icons[name];
         list.transform.FindChild("StructureName").GetComponent<Text>().text = name;
-        list.transform.FindChild("Capacity").GetComponent<Text>().text = CountPopulation().ToString() + " / " + deployedCapacity.ToString();
+        list.transform.FindChild("Capacity").GetComponent<Text>().text = CountPopulation().ToString() + "/" + deployedCapacity.ToString();
         list.transform.FindChild("Defense").GetComponent<Text>().text = defense.ToString();
         list.transform.FindChild("GatherRate").GetComponent<Text>().text = gatherRate.ToString();
         list.transform.FindChild("OilAmount").GetComponent<Text>().text = resources[Resource.Oil].ToString();

@@ -297,8 +297,12 @@ public class Squad : MonoBehaviour, ListableObject
         if (winner) // remove random soldiers from random ships in the fleet
         {
             var p = enemy.Population;
-            GameManager.Instance.Players[enemy.Team].RemoveSoldiers(enemy, true, enemy.PopulationType, p);
-            GameManager.Instance.Players[_team].AddSoldiers(enemy, enemy.PopulationType, p / 2);
+
+            if (enemy.PopulationType != Inhabitance.Uninhabited)
+            {
+                GameManager.Instance.Players[enemy.Team].RemoveSoldiers(enemy, true, enemy.PopulationType, p);
+                GameManager.Instance.Players[_team].AddSoldiers(enemy, enemy.PopulationType, p / 2);
+            }
 
             int nTroops = 0;
             foreach (var ship in _ships)

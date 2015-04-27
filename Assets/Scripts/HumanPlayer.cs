@@ -239,15 +239,6 @@ public class HumanPlayer : Player
         GUIManager.Instance.SetSquadControls(_controlledSquad);
     }
 
-
-    public Ship GetShipDefinition(string name)
-    {
-        if(_shipDefinitions.ContainsKey(name))
-            return _shipDefinitions[name];
-
-        return null;
-    }
-
     public void DisplayResources(GameObject panel)
     {
         panel.transform.FindChild("OilText").GetComponent<Text>().text = _resourceRegistry[Resource.Oil].ToString();

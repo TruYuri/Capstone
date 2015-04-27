@@ -130,6 +130,8 @@ public class Sector : MonoBehaviour
                     if (gen.NextDouble() < chance && count < MAX) { CreateTile(new KeyValuePair<int, int>(px2, j + 1), new Vector3(25 + shift, 0, i), null, Resource.NoResource, Inhabitance.Uninhabited, t); count++; }
                 }
             }
+
+            // populate random space structures
         }
 
         DetermineOwner();

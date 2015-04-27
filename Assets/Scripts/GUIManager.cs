@@ -305,7 +305,7 @@ public class GUIManager : MonoBehaviour
                     _interface["ShipInfo"].gameObject.SetActive(true);
                     break;
                 case "Constructables":
-                    (HumanPlayer.Instance.GetShipDefinition(split[1]) as ListableObject).PopulateBuildInfo(
+                    (HumanPlayer.Instance.ShipDefinitions[split[1]] as ListableObject).PopulateBuildInfo(
                         _interface["ConstructionInfo"].gameObject, _descriptions[split[1]]);
                     _interface["ConstructionInfo"].gameObject.SetActive(true);
                     break;
@@ -504,20 +504,20 @@ public class GUIManager : MonoBehaviour
         tile.PopulateInfoPanel(_interface["PlanetInfo"].gameObject);
 
         // move to structure
-        var playerStructure = tile.Team == HumanPlayer.Instance.Team && tile.Structure != null;
-        var deployText = playerStructure ? "Undeploy" : "Deploy";
+        var structure = tile.Structure != null;
+        var deployText = structure ? "Undeploy" : "Deploy";
 
-        _interface["Structure"].gameObject.SetActive(playerStructure);
+        _interface["Structure"].gameObject.SetActive(structure);
         _interface["SquadActionText"].GetComponent<Text>().text = deployText;
         _interface["SquadAction"].GetComponent<CustomUI>().data = deployText;
 
-        if (playerStructure)
+        if (structure)
         {
             // populate structure info
             tile.Structure.Resources.Remove(Resource.Stations);
             tile.Structure.PopulateStructurePanel(_interface["Structure"].gameObject);
 
-            if (tile.Structure.Constructables.Count > 0)
+            if (tile.Structure.Constructables.Count > 0 && tile.Team == HumanPlayer.Instance.Team)
             {
                 _interface["ConstructionList"].gameObject.SetActive(true);
                 _interface["ConstBar"].gameObject.SetActive(true);

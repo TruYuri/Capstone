@@ -93,7 +93,6 @@ public class Ship : ListableObject
         this.plating = plating;
         this.population = new Dictionary<Inhabitance, int>()
         {
-            { Inhabitance.Uninhabited, 0 },
             { Inhabitance.Primitive, 0 },
             { Inhabitance.Industrial, 0 },
             { Inhabitance.SpaceAge, 0 }

@@ -34,6 +34,7 @@ public class Player : MonoBehaviour
     public List<Squad> Squads { get { return _squads; } }
     public bool TurnEnded { get { return _turnEnded; } }
     public bool ControlledIsWithinRange { get { return _controlledIsWithinRange; } }
+    public Dictionary<string, Ship> ShipDefinitions { get { return _shipDefinitions; } }
     public float ResearchCostReduction
     {
         get { return _rcostReduction; }
@@ -64,7 +65,6 @@ public class Player : MonoBehaviour
                 _shipRegistry.Add(ship.Key, new HashSet<Ship>());
         }
 
-        _soldierRegistry.Add(Inhabitance.Uninhabited, 0);
         _soldierRegistry.Add(Inhabitance.Primitive, 0);
         _soldierRegistry.Add(Inhabitance.Industrial, 0);
         _soldierRegistry.Add(Inhabitance.SpaceAge, 0);
@@ -284,8 +284,8 @@ public class Player : MonoBehaviour
                 GUIManager.Instance.AddEvent("Diplomacy successful at " + tile.Name + "!");
 
             tile.Claim(_team);
-            tile.Population += Mathf.FloorToInt(IP * DC * ((float)GameManager.Generator.NextDouble() * (0.75f - 0.25f) + 0.25f));
-            AddSoldiers(tile, tile.PopulationType, tile.Population);
+            // tile.Population += Mathf.FloorToInt(IP * DC * ((float)GameManager.Generator.NextDouble() * (0.75f - 0.25f) + 0.25f)); // this is very broken
+            // AddSoldiers(tile, tile.PopulationType, tile.Population);
             foreach(var ship in tile.Squad.Ships)
             {
                 _shipRegistry[ship.Name].Add(ship);

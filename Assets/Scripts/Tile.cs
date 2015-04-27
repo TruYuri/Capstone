@@ -78,12 +78,22 @@ public class Tile : MonoBehaviour, ListableObject
 
         if (_team != Team.Uninhabited)
         {
-            GameManager.Instance.Players[_team].AddSoldiers(this, _planetInhabitance, p);
+            var pl = GameManager.Instance.Players[_team];
+            if(_planetInhabitance != Inhabitance.Uninhabited)
+                pl.AddSoldiers(this, _planetInhabitance, p);
             
             // generate random defenses if space age or non-player team
             if((_team == Team.Indigenous && _planetInhabitance == Inhabitance.SpaceAge) || (_team != HumanPlayer.Instance.Team && _team != Team.Indigenous))
             {
                 PopulateRandomSquad(_squad);
+
+                var strs = pl.ShipDefinitions.Where(t => (t.Value.ShipProperties & ShipProperties.GroundStructure) != 0).ToList();
+                var s = GameManager.Generator.Next(0, strs.Count);
+                var sh = pl.AddShip(_squad, strs[s].Key);
+                _squad.Deploy(sh as Structure, this);
+
+                // populate structure
+                // pl.AddSoldiers(_structure)
             }
         }
 
@@ -217,8 +227,6 @@ public class Tile : MonoBehaviour, ListableObject
             {
                 case ResourceGatherType.None:
                 case ResourceGatherType.Soldiers:
-                    GameManager.Instance.Players[_team].RemoveSoldiers(this, false, PopulationType, resource.Value);
-                    break;
                 case ResourceGatherType.Research:
                     break;
                 case ResourceGatherType.Natural:
