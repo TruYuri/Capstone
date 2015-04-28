@@ -215,7 +215,8 @@ public class Squad : MonoBehaviour, ListableObject
         var power = CalculateShipPower();
         var enemyPower = enemy.CalculateShipPower();
 
-        return (power - enemyPower) / 100.0f * 0.5f + 0.5f;
+        //return (power - enemyPower) / 100.0f * 0.5f + 0.5f;
+		return power / (power + enemyPower);
     }
 
     public float GenerateWinChance(Tile enemy)
@@ -223,7 +224,8 @@ public class Squad : MonoBehaviour, ListableObject
         var power = CalculateTroopPower();
         var enemyPower = enemy.CalculateDefensivePower();
 
-        return (power - enemyPower) / 100.0f * 0.5f + 0.5f;
+        //return (power - enemyPower) / 100.0f * 0.5f + 0.5f;
+		return power / (power + enemyPower);
     }
 
     public KeyValuePair<Team, Dictionary<string, int>> Combat(Squad enemy, float winChance)
