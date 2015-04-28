@@ -379,10 +379,23 @@ public class Player : MonoBehaviour
                     if(colliders[i].Team == _team)
                         Control(colliders[0].gameObject);
             }
-
-            if ((_commandShipSquad == null || !_commandShipSquad.Ships.Contains(_commandShip)) && _team == HumanPlayer.Instance.Team)
+         
+            if (_squads.Count > 0 && _controlledSquad == null)
+                Control(_squads[GameManager.Generator.Next(0, _squads.Count)].gameObject);
+        }
+        
+        if(_team == HumanPlayer.Instance.Team)
+        {
+            if(_commandShipSquad == null || _commandShipSquad.gameObject == null)
                 CreateCommandShipLostEvent(_commandShipSquad);
-            else if (_squads.Count > 0 && _controlledSquad == null)
+            else if (!_commandShipSquad.Ships.Contains(_commandShip))
+            {
+                _commandShipSquad.name = "Squad";
+                _commandShipSquad = null;
+                CreateCommandShipLostEvent(_commandShipSquad);
+            }
+
+            if (_squads.Count > 0 && _controlledSquad == null && _commandShipSquad != null)
                 Control(_squads[GameManager.Generator.Next(0, _squads.Count)].gameObject);
         }
     }
