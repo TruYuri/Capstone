@@ -24,6 +24,7 @@ public class Tile : MonoBehaviour, ListableObject
     private Squad _squad;
     private Dictionary<Team, bool> _diplomacy;
     private GameObject _circle;
+    private float _defensiveRange;
 
     public string Name { get { return _name; } }
     public Team Team { get { return _team; } }
@@ -31,6 +32,7 @@ public class Tile : MonoBehaviour, ListableObject
     public string Type { get { return _planetType; } }
     public Squad Squad { get { return _squad; } }
     public float Radius { get { return _radius; } }
+    public float DefensiveRange { get { return _defensiveRange; } }
     public int Population 
     { 
         get { return _population; }
@@ -62,6 +64,7 @@ public class Tile : MonoBehaviour, ListableObject
         _radius = 5.0f;
         _clickRadius = 1.5f;
         system.startSize = 5.0f;
+        _defensiveRange = 50f;
         if (size == TileSize.Small)
         {
             system.startSize *= 0.5f;
@@ -99,7 +102,8 @@ public class Tile : MonoBehaviour, ListableObject
                 {
                     var sq = pl.CreateNewSquad(_squad);
                     PopulateRandomSquad(sq);
-                    pl.CreateChaseEvent(sq, HumanPlayer.Instance.CommandSquad, sector, this, 50.0f, 25f);
+                    ((AIPlayer)pl).RegisterDefensiveSquad(sector, this, sq);
+                    // pl.CreateChaseEvent(sq, HumanPlayer.Instance.CommandSquad, sector, this, 50.0f, 25f);
                 }
             }
         }

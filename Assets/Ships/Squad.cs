@@ -153,6 +153,13 @@ public class Squad : MonoBehaviour, ListableObject
 
         var wasInRange = _inTileRange;
 
+        foreach (var t in GameManager.Instance.Players)
+        {
+            if (t.Key == HumanPlayer.Instance.Team || t.Key == _team)
+                continue;
+            ((AIPlayer)t.Value).SetPotentialChase(_currentSector, this);
+        }
+
         _currentTile = tile;
         if (_currentTile == null)
             return;
