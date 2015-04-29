@@ -436,6 +436,34 @@ public class MapManager : MonoBehaviour
         return 0;
     }
 
+    public List<Sector> GetNeighbors(Sector sector)
+    {
+        var n = new List<Sector>();
+        var v = sector.GridPosition.Key;
+        var h = sector.GridPosition.Value;
+
+        if (Math.Abs(v) % 2 == 0)
+        {
+            if (_sectorMap.ContainsKey(v + 1) && _sectorMap[v + 1].ContainsKey(h)) n.Add(_sectorMap[v + 1][h]);
+            if (_sectorMap.ContainsKey(v) && _sectorMap[v].ContainsKey(h + 1)) n.Add(_sectorMap[v][h + 1]);
+            if (_sectorMap.ContainsKey(v - 1) && _sectorMap[v - 1].ContainsKey(h)) n.Add(_sectorMap[v - 1][h]);
+            if (_sectorMap.ContainsKey(v - 1) && _sectorMap[v - 1].ContainsKey(h - 1)) n.Add(_sectorMap[v - 1][h - 1]);
+            if (_sectorMap.ContainsKey(v) && _sectorMap[v].ContainsKey(h - 1)) n.Add(_sectorMap[v][h - 1]);
+            if (_sectorMap.ContainsKey(v + 1) && _sectorMap[v + 1].ContainsKey(h - 1)) n.Add(_sectorMap[v + 1][h - 1]);
+        }
+        else
+        {
+            if (_sectorMap.ContainsKey(v + 1) && _sectorMap[v + 1].ContainsKey(h + 1)) n.Add(_sectorMap[v + 1][h + 1]);
+            if (_sectorMap.ContainsKey(v) && _sectorMap[v].ContainsKey(h + 1)) n.Add(_sectorMap[v][h + 1]);
+            if (_sectorMap.ContainsKey(v - 1) && _sectorMap[v - 1].ContainsKey(h + 1)) n.Add(_sectorMap[v - 1][h + 1]);
+            if (_sectorMap.ContainsKey(v - 1) && _sectorMap[v - 1].ContainsKey(h)) n.Add(_sectorMap[v - 1][h]);
+            if (_sectorMap.ContainsKey(v) && _sectorMap[v].ContainsKey(h - 1)) n.Add(_sectorMap[v][h - 1]);
+            if (_sectorMap.ContainsKey(v + 1) && _sectorMap[v + 1].ContainsKey(h)) n.Add(_sectorMap[v + 1][h]);
+        }
+
+        return n;
+    }
+
     public Dictionary<Structure, Sector> FindPortals(Team team, Structure portal, Sector start)
     {
         var sectors = FindWarpsRecursive(team, start.GridPosition.Key, start.GridPosition.Value, portal.Range);

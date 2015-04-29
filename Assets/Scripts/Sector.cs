@@ -101,9 +101,28 @@ public class Sector : MonoBehaviour
             var teams = new List<Team>() { Team.Kharkyr, Team.Plinthen, Team.Union };
             teams.Remove(HumanPlayer.Instance.Team);
 
-            if (c < 0.05f)
+            var tt = new Dictionary<Team, float>()
+            {
+                { Team.Uninhabited, 0f },
+                { Team.Indigenous, 0f },
+                { Team.Kharkyr, 0f },
+                { Team.Plinthen, 0f },
+                { Team.Union, 0f }
+            };
+
+            var nb = MapManager.Instance.GetNeighbors(this);
+
+            foreach (var s in nb)
+                tt[s.GetOwner()] += (tt[s.GetOwner()] == 0f ? 0.15f : -0.15f / tt[s.GetOwner()]);
+
+            tt.Remove(HumanPlayer.Instance.Team);
+
+            var t1 = 0.05f + tt[teams[0]];
+            var t2 = t1 + 0.05f + tt[teams[1]];
+
+            if (c < t1)
                 t = teams[0];
-            else if (c < 0.1f)
+            else if (c < t2)
                 t = teams[1];
 
             // Generate center columns
@@ -481,10 +500,10 @@ public class Sector : MonoBehaviour
 
     public Team GetOwner()
     {
-        Team owner = Team.Uninhabited;
+        //Team owner = Team.Uninhabited;
 
-        if (!HumanPlayer.Instance.ExploredSectors.ContainsKey(this))
-            return owner;
+        //if (!HumanPlayer.Instance.ExploredSectors.ContainsKey(this))
+            //return owner;
 
         return _owner;
     }
