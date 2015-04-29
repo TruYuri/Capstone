@@ -233,9 +233,6 @@ public class MapManager : MonoBehaviour
             gen += GenerateSector(position + LEFT_OFFSET, v, h - 1);
             gen += GenerateSector(position + TOP_LEFT_OFFSET, v + 1, h);
         }
-
-        if (gen == 0)
-            return;
     }
 
     public Sector FindNearestSector(Sector sector, Vector3 detail)

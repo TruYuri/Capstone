@@ -922,19 +922,8 @@ public class GUIManager : MonoBehaviour
         AutoSelectIndex<Ship>("MainShipList", HumanPlayer.Instance.Squad.Ships);
     }
 
-    public void ConfigureBattleScreen(float WC, Squad squad1, Squad squad2, BattleType battleType)
+    public void ConfigureBattleScreen(float WC, Squad player, Squad enemy, BattleType battleType)
     {
-        var t1 = squad1.Team;
-
-        Squad player = squad2;
-        Squad enemy = squad1;
-
-        if (t1 == HumanPlayer.Instance.Team)
-        {
-            player = squad1;
-            enemy = squad2;
-        }
-
         var pt = player.GetComponent<Tile>();
         var et = enemy.GetComponent<Tile>();
 
@@ -947,6 +936,11 @@ public class GUIManager : MonoBehaviour
 
         var ptext = _interface["BattleMenu"].transform.FindChild("PlayerShipText").GetComponent<Text>();
         var etext = _interface["BattleMenu"].transform.FindChild("EnemyShipText").GetComponent<Text>();
+
+        if (battleType == BattleType.Invasion && pt != null)
+            _interface["Retreat"].GetComponent<Button>().interactable = false;
+        else
+            _interface["Retreat"].GetComponent<Button>().interactable = true;
 
         if (battleType == BattleType.Invasion)
         {

@@ -415,8 +415,6 @@ public class Player : MonoBehaviour
 
     public Squad CreateNewSquad(Squad fromSquad, string name = "Squad")
     {
-        var val = GameManager.Generator.Next(2);
-
         float dist;
         var tile = fromSquad.GetComponent<Tile>();
         if (tile != null)
@@ -448,8 +446,6 @@ public class Player : MonoBehaviour
 
     public void CreateNewCommandShip(Tile tile)
     {
-        // determine location
-        var position = new Vector3(GameManager.Generator.Next() % 20 - 10, 0, GameManager.Generator.Next() % 20 - 10);
         if(tile != null)
             _commandShipSquad = CreateNewSquad(tile.Squad, "Command Squad");
         else
