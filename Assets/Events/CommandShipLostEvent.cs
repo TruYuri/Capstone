@@ -20,6 +20,6 @@ public class CommandShipLostEvent : GameEvent
         if (_remainingTurns > 0)
             return;
 
-        _player.CreateNewCommandShip();
+        _player.CreateNewCommandShip(_player.Tiles[0]);
     }
 }

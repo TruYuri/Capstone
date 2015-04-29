@@ -190,6 +190,11 @@ public class Player : MonoBehaviour
         EndTurn();
     }
 
+    public void CreateChaseEvent(Squad squad, Squad chase, Sector hs, Tile ht, float range, float speed)
+    {
+        GameManager.Instance.AddEvent(new ChaseEvent(squad, chase, hs, ht, range, speed), true);
+    }
+
     public void CreateTravelEvent(Squad squad, Sector toSector, Vector3 dest, float speed)
     {
         GameManager.Instance.AddEvent(new TravelEvent(_relayDistance, this, squad, toSector, dest, speed), false);
@@ -415,10 +420,15 @@ public class Player : MonoBehaviour
         float dist;
         var tile = fromSquad.GetComponent<Tile>();
         if (tile != null)
-            dist = tile.Radius / 2.0f;
+            dist = tile.Radius;
         else
-            dist = fromSquad.GetComponent<SphereCollider>().radius / 2.0f;
-        var offset = val == 0 ? new Vector3(dist, 0, 0) : new Vector3(0, 0, dist);
+            dist = fromSquad.GetComponent<SphereCollider>().radius;
+
+        var angle = (float)GameManager.Generator.NextDouble() * Mathf.PI * 2;
+        var x = Mathf.Cos(angle) * dist;
+        var z = Mathf.Sin(angle) * dist;
+
+        var offset = new Vector3(x, 0, z);
         var squad = CreateNewSquad(fromSquad.transform.position + offset, fromSquad.Sector, name);
         fromSquad.Colliders.Add(squad);
         squad.Colliders.Add(fromSquad);
@@ -436,11 +446,14 @@ public class Player : MonoBehaviour
         return component;
     }
 
-    public void CreateNewCommandShip()
+    public void CreateNewCommandShip(Tile tile)
     {
         // determine location
         var position = new Vector3(GameManager.Generator.Next() % 20 - 10, 0, GameManager.Generator.Next() % 20 - 10);
-        _commandShipSquad = CreateNewSquad(position, null, "Command Squad");
+        if(tile != null)
+            _commandShipSquad = CreateNewSquad(tile.Squad, "Command Squad");
+        else
+            _commandShipSquad = CreateNewSquad(Vector3.zero, null, "Command Squad");
         _commandShipSquad.Ships.Add(_commandShip = _shipDefinitions["Command Ship"]);
         _shipRegistry[_commandShip.Name].Add(_commandShip);
         Control(_commandShipSquad.gameObject);

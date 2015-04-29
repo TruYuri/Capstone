@@ -122,7 +122,7 @@ public class GUIManager : MonoBehaviour
                 player.DisplayResearch("Scientific", "Complex", _interface["Complex"].gameObject);
                 player.DisplayResearch("Scientific", "Relay", _interface["Relay"].gameObject);
                 player.DisplayResearch("Scientific", "Warp Portal", _interface["Warp Portal"].gameObject);
-                player.UpdateResourceDisplay(_interface["SciResources"].gameObject);
+                player.DisplayResources(_interface["SciResources"].gameObject);
                 break;
             case "Military":
                 _interface["Main"].gameObject.SetActive(false);
@@ -134,7 +134,7 @@ public class GUIManager : MonoBehaviour
                 player.DisplayResearch("Military", "Guard Satellite", _interface["Guard Satellite"].gameObject);
                 player.DisplayResearch("Military", "Heavy Fighter", _interface["Heavy Fighter"].gameObject);
                 player.DisplayResearch("Military", "Behemoth", _interface["Behemoth"].gameObject);
-                player.UpdateResourceDisplay(_interface["MilResources"].gameObject);
+                player.DisplayResources(_interface["MilResources"].gameObject);
                 break;
         }
     }
@@ -225,7 +225,7 @@ public class GUIManager : MonoBehaviour
         _interface["MenuControl"].gameObject.SetActive(lists);
 
         if (lists)
-            HumanPlayer.Instance.UpdateResourceDisplay(_interface["MainResources"].gameObject);
+            HumanPlayer.Instance.DisplayResources(_interface["MainResources"].gameObject);
 
         _interface["MapInfo"].gameObject.SetActive(minimap);
     }

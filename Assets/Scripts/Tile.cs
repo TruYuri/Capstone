@@ -94,6 +94,13 @@ public class Tile : MonoBehaviour, ListableObject
 
                 // populate structure
                 // pl.AddSoldiers(_structure)
+
+                if(_team != HumanPlayer.Instance.Team && _team != Team.Indigenous)
+                {
+                    var sq = pl.CreateNewSquad(_squad);
+                    PopulateRandomSquad(sq);
+                    pl.CreateChaseEvent(sq, HumanPlayer.Instance.CommandSquad, sector, this, 50.0f, 25f);
+                }
             }
         }
 
@@ -111,19 +118,19 @@ public class Tile : MonoBehaviour, ListableObject
         var pl = GameManager.Instance.Players[_team];
         int n = GameManager.Generator.Next(5, 26);
         for (int i = 0; i < n; i++)
-            pl.AddShip(_squad, "Fighter");
+            pl.AddShip(squad, "Fighter");
 
         n = GameManager.Generator.Next(0, 11);
         for (int i = 0; i < n; i++)
-            pl.AddShip(_squad, "Transport");
+            pl.AddShip(squad, "Transport");
 
         n = GameManager.Generator.Next(2, 5);
         for (int i = 0; i < n; i++)
-            pl.AddShip(_squad, "Guard Satellite");
+            pl.AddShip(squad, "Guard Satellite");
 
         n = GameManager.Generator.Next(0, 11);
         for (int i = 0; i < n; i++)
-            pl.AddShip(_squad, "Heavy Fighter");
+            pl.AddShip(squad, "Heavy Fighter");
 
         /*
         n = GameManager.Generator.Next(0, 6);

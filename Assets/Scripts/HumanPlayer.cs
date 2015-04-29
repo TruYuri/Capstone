@@ -46,7 +46,8 @@ public class HumanPlayer : Player
         _instance = this;
 
         base.Init(team);
-        CreateNewCommandShip();
+        CreateNewCommandShip(null);
+
         _currentCameraDistance = _cameraOffset;
         _exploredSectors = new Dictionary<Sector, bool>();
         _move = GetComponents<AudioSource>().Where(s => s.clip.name == "Engine Move").ToList()[0];
@@ -199,7 +200,7 @@ public class HumanPlayer : Player
                 }
 
                 if(sector != null)
-                    CreateTravelEvent(_controlledSquad, sector, hit.point, 10.0f);
+                    CreateTravelEvent(_controlledSquad, sector, hit.point, 25.0f);
             }
             
         }
@@ -245,15 +246,6 @@ public class HumanPlayer : Player
         panel.transform.FindChild("OreText").GetComponent<Text>().text = _resourceRegistry[Resource.Ore].ToString();
         panel.transform.FindChild("AsterminiumText").GetComponent<Text>().text = _resourceRegistry[Resource.Asterminium].ToString();
         panel.transform.FindChild("ForestText").GetComponent<Text>().text = _resourceRegistry[Resource.Forest].ToString();
-        // research complexes / bases
-    }
-
-    public void UpdateResourceDisplay(GameObject panel)
-    {
-        panel.transform.FindChild("OilText").GetComponent<Text>().text = _resourceRegistry[Resource.Oil].ToString();
-        panel.transform.FindChild("OreText").GetComponent<Text>().text = _resourceRegistry[Resource.Ore].ToString();
-        panel.transform.FindChild("ForestText").GetComponent<Text>().text = _resourceRegistry[Resource.Forest].ToString();
-        panel.transform.FindChild("AsterminiumText").GetComponent<Text>().text = _resourceRegistry[Resource.Asterminium].ToString();
         panel.transform.FindChild("ResearchText").GetComponent<Text>().text = _resourceRegistry[Resource.Stations].ToString();
     }
 
