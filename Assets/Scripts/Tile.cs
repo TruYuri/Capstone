@@ -88,7 +88,7 @@ public class Tile : MonoBehaviour, ListableObject
             // generate random defenses if space age or non-player team
             if((_team == Team.Indigenous && _planetInhabitance == Inhabitance.SpaceAge) || (_team != HumanPlayer.Instance.Team && _team != Team.Indigenous))
             {
-                PopulateRandomSquad(_squad);
+                ((AIPlayer)pl).PopulateRandomSquad(_squad);
 
                 var strs = pl.ShipDefinitions.Where(t => (t.Value.ShipProperties & ShipProperties.GroundStructure) != 0).ToList();
                 var s = GameManager.Generator.Next(0, strs.Count);
@@ -101,7 +101,7 @@ public class Tile : MonoBehaviour, ListableObject
                 if(_team != HumanPlayer.Instance.Team && _team != Team.Indigenous)
                 {
                     var sq = pl.CreateNewSquad(_squad);
-                    PopulateRandomSquad(sq);
+                    ((AIPlayer)pl).PopulateRandomSquad(sq);
                     ((AIPlayer)pl).RegisterDefensiveSquad(sector, this, sq);
                     // pl.CreateChaseEvent(sq, HumanPlayer.Instance.CommandSquad, sector, this, 50.0f, 25f);
                 }
@@ -115,31 +115,6 @@ public class Tile : MonoBehaviour, ListableObject
         _circle.transform.localScale = new Vector3(_radius * 2 + 0.5f, _radius * 2 + 0.5f, _radius * 2 + 0.5f);
         _circle.transform.parent = this.transform.parent;
         _circle.GetComponent<Renderer>().material.SetColor("_Color", GameManager.Instance.PlayerColors[_team]);
-    }
-
-    private void PopulateRandomSquad(Squad squad)
-    {
-        var pl = GameManager.Instance.Players[_team];
-        int n = GameManager.Generator.Next(5, 26);
-        for (int i = 0; i < n; i++)
-            pl.AddShip(squad, "Fighter");
-
-        n = GameManager.Generator.Next(0, 11);
-        for (int i = 0; i < n; i++)
-            pl.AddShip(squad, "Transport");
-
-        n = GameManager.Generator.Next(2, 5);
-        for (int i = 0; i < n; i++)
-            pl.AddShip(squad, "Guard Satellite");
-
-        n = GameManager.Generator.Next(0, 11);
-        for (int i = 0; i < n; i++)
-            pl.AddShip(squad, "Heavy Fighter");
-
-        /*
-        n = GameManager.Generator.Next(0, 6);
-        for (int i = 0; i < n; i++)
-            pl.AddShip(_squad, "Behemoth");*/
     }
 
     void Start()

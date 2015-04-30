@@ -58,6 +58,9 @@ public class Sector : MonoBehaviour
         if (Tile == null)
             Tile = Resources.Load<GameObject>(TILE_PREFAB);
 
+        var teams = new List<Team>() { Team.Kharkyr, Team.Plinthen, Team.Union };
+        teams.Remove(HumanPlayer.Instance.Team);
+
         if (_gridPos.Key == 0 && _gridPos.Value == 0) // sector zero
         {
             int x = 8 + (int)(GameManager.Generator.NextDouble() * 2);
@@ -65,6 +68,8 @@ public class Sector : MonoBehaviour
 
             CreateTile(new KeyValuePair<int,int>(x, y), GridToWorld(x, y), "Terran", Resource.Forest, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Base");
+            HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Guard Satellite");
+            HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Guard Satellite");
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Resource Transport");
             _tileGrid[x, y].Squad.Deploy(_tileGrid[x, y].Squad.Ships[0] as Structure, _tileGrid[x, y]);
             HumanPlayer.Instance.CommandSquad.transform.position = _tileGrid[x, y].transform.position + new Vector3(-5f, 0, 0);
@@ -78,6 +83,7 @@ public class Sector : MonoBehaviour
             CreateTile(new KeyValuePair<int,int>(x, y), GridToWorld(x, y), null, Resource.Oil, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Gathering Complex");
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Resource Transport");
+            HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Guard Satellite");
             _tileGrid[x, y].Squad.Deploy(_tileGrid[x, y].Squad.Ships[0] as Structure, _tileGrid[x, y]);
 
             while(!IsValidLocation(new KeyValuePair<int, int>(x, y)) || _tileGrid[x,y] != null)
@@ -89,6 +95,7 @@ public class Sector : MonoBehaviour
             CreateTile(new KeyValuePair<int, int>(x, y), GridToWorld(x, y), null, Resource.Ore, Inhabitance.SpaceAge, HumanPlayer.Instance.Team);
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Gathering Complex");
             HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Resource Transport");
+            HumanPlayer.Instance.AddShip(_tileGrid[x, y].Squad, "Guard Satellite");
             _tileGrid[x, y].Squad.Deploy(_tileGrid[x, y].Squad.Ships[0] as Structure, _tileGrid[x, y]);
 
             HumanPlayer.Instance.CountStations();
@@ -97,10 +104,6 @@ public class Sector : MonoBehaviour
         else // regular sector generation
         {
             var c = (float)GameManager.Generator.NextDouble();
-            var t = Team.Uninhabited;
-            var teams = new List<Team>() { Team.Kharkyr, Team.Plinthen, Team.Union };
-            teams.Remove(HumanPlayer.Instance.Team);
-
             var tt = new Dictionary<Team, float>()
             {
                 { Team.Uninhabited, 0f },
@@ -117,6 +120,7 @@ public class Sector : MonoBehaviour
 
             tt.Remove(HumanPlayer.Instance.Team);
 
+            var t = Team.Uninhabited;
             var t1 = 0.05f + tt[teams[0]];
             var t2 = t1 + 0.05f + tt[teams[1]];
 
@@ -154,6 +158,18 @@ public class Sector : MonoBehaviour
         }
 
         DetermineOwner();
+
+        if(teams.Contains(_owner))
+        {
+            var pl = GameManager.Instance.Players[_owner];
+            var sq = ((AIPlayer)pl).CreateNewSquad(transform.position, this);
+            ((AIPlayer)pl).PopulateRandomSquad(sq);
+            var tile = HumanPlayer.Instance.Tiles
+                .Where(t => t.Structure != null)
+                .OrderBy(t => (t.transform.position - transform.position).sqrMagnitude)
+                .ToList()[0];
+            ((AIPlayer)pl).CreateTravelEvent(sq, tile.Squad.Sector, tile.transform.position, 25f);
+        }
     }
 
     void Update()

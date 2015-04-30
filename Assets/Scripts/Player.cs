@@ -150,9 +150,9 @@ public class Player : MonoBehaviour
         GameManager.Instance.AddEvent(new BattleEvent(squad1, squad2), true);
     }
 
-    public void CreateRetreatEvent(Squad squad)
+    public void CreateRetreatEvent()
     {
-        GameManager.Instance.AddEvent(new RetreatEvent(this, squad), true);
+        GameManager.Instance.AddEvent(new RetreatEvent(this, _playerSquad, _enemySquad), true);
     }
 
     public void CreateBuildEvent(string shipName)
@@ -190,9 +190,9 @@ public class Player : MonoBehaviour
         EndTurn();
     }
 
-    public void CreateChaseEvent(Squad squad, Squad chase, Sector hs, Tile ht, float range, float speed)
+    public void CreateChaseEvent(Squad squad, Squad chase, Tile ht, float range, float speed)
     {
-        GameManager.Instance.AddEvent(new ChaseEvent(squad, chase, hs, ht, range, speed), true);
+        GameManager.Instance.AddEvent(new ChaseEvent(squad, chase, ht, range, speed), true);
     }
 
     public void CreateTravelEvent(Squad squad, Sector toSector, Vector3 dest, float speed)

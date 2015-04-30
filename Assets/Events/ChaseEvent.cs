@@ -5,7 +5,6 @@ public class ChaseEvent : GameEvent
 {
     private Squad _squad;
     private Squad _chase;
-    private Sector _sTether;
     private Tile _tTeather;
     private float _range;
     private float _velocity;
@@ -13,14 +12,13 @@ public class ChaseEvent : GameEvent
 
     // turn parameter = turns until command begins. 
     // calculate travel turns - 1 turn per sector, swap out remaining turns when initial == 0
-    public ChaseEvent(Squad squad, Squad chase, Sector homeSector, Tile homeTile, float range, float velocity) : base(1)
+    public ChaseEvent(Squad squad, Squad chase, Tile homeTile, float range, float velocity) : base(1)
     {
         _squad = squad;
         _chase = chase;
         _squad.Mission = this;
         _velocity = velocity;
         _range = range;
-        _sTether = homeSector;
         _tTeather = homeTile;
         _timeElapsedSpeedIncrease = 1f;
     }

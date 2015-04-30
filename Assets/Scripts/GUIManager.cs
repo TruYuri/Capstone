@@ -940,7 +940,14 @@ public class GUIManager : MonoBehaviour
         if (battleType == BattleType.Invasion && pt != null)
             _interface["Retreat"].GetComponent<Button>().interactable = false;
         else
-            _interface["Retreat"].GetComponent<Button>().interactable = true;
+        {
+            var unmoveable = player.Ships.Count(s => (s.ShipProperties & ShipProperties.Untransferable) != 0);
+
+            if(unmoveable < player.Ships.Count)
+                _interface["Retreat"].GetComponent<Button>().interactable = true;
+            else
+                _interface["Retreat"].GetComponent<Button>().interactable = false;
+        }
 
         if (battleType == BattleType.Invasion)
         {
@@ -1029,7 +1036,7 @@ public class GUIManager : MonoBehaviour
 
     public void Retreat()
     {
-        HumanPlayer.Instance.CreateRetreatEvent(HumanPlayer.Instance.Squad);
+        HumanPlayer.Instance.CreateRetreatEvent();
         HumanPlayer.Instance.ReloadGameplayUI();
         GameManager.Instance.Paused = false;
     }
