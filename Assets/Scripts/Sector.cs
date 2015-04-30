@@ -119,14 +119,15 @@ public class Sector : MonoBehaviour
                 tt[s.GetOwner()] += (tt[s.GetOwner()] == 0f ? 0.15f : -0.15f / tt[s.GetOwner()]);
 
             tt.Remove(HumanPlayer.Instance.Team);
-
+            
             var t = Team.Uninhabited;
             var t1 = 0.05f + tt[teams[0]];
             var t2 = t1 + 0.05f + tt[teams[1]];
 
-            if (c < t1)
+            var z = nb.Count(s => s.GridPosition.Key == 0 && s.GridPosition.Value == 0);
+            if (c < t1 && z == 0)
                 t = teams[0];
-            else if (c < t2)
+            else if (c < t2 && z == 0)
                 t = teams[1];
 
             // Generate center columns
