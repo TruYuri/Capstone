@@ -308,10 +308,13 @@ public class HumanPlayer : Player
         {
             var colors = new Dictionary<Sector, Color>() { { _controlledSquad.Sector, Color.black } };
 
-            if (colors.ContainsKey(_commandShipSquad.Sector))
-                colors[_commandShipSquad.Sector] = Color.magenta;
-            else
-                colors.Add(_commandShipSquad.Sector, Color.magenta);
+            if (_commandShipSquad != null)
+            {
+                if (colors.ContainsKey(_commandShipSquad.Sector))
+                    colors[_commandShipSquad.Sector] = Color.magenta;
+                else
+                    colors.Add(_commandShipSquad.Sector, Color.magenta);
+            }
 
             var minimap = MapManager.Instance.GenerateMap(colors);
             GUIManager.Instance.SetZoom(null, false);

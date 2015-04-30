@@ -201,9 +201,9 @@ public class Player : MonoBehaviour
         EndTurn();
     }
 
-    public void CreateCommandShipLostEvent(Squad squad)
+    public void CreateCommandShipLostEvent(Vector3 pos, Squad squad)
     {
-        GameManager.Instance.AddEvent(new CommandShipLostEvent(squad, this), true);
+        GameManager.Instance.AddEvent(new CommandShipLostEvent(pos, squad, this), true);
     }
 
     public void CreateWarpEvent(Tile exitGate, Squad squad)
@@ -367,6 +367,8 @@ public class Player : MonoBehaviour
 
     public virtual void CleanSquad(Squad squad)
     {
+        var p = squad.transform.position;
+
         foreach(var sq in squad.Colliders)
             if(sq != null && sq.gameObject != null)
                 Squad.CleanSquadsFromList(this, sq.Colliders);
@@ -392,12 +394,12 @@ public class Player : MonoBehaviour
         if(_team == HumanPlayer.Instance.Team)
         {
             if(_commandShipSquad == null || _commandShipSquad.gameObject == null)
-                CreateCommandShipLostEvent(_commandShipSquad);
+                CreateCommandShipLostEvent(p, _commandShipSquad);
             else if (!_commandShipSquad.Ships.Contains(_commandShip))
             {
                 _commandShipSquad.name = "Squad";
                 _commandShipSquad = null;
-                CreateCommandShipLostEvent(_commandShipSquad);
+                CreateCommandShipLostEvent(p, _commandShipSquad);
             }
 
             if (_squads.Count > 0 && _controlledSquad == null && _commandShipSquad != null)

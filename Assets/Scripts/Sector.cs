@@ -168,7 +168,12 @@ public class Sector : MonoBehaviour
                 .Where(t => t.Structure != null)
                 .OrderBy(t => (t.transform.position - transform.position).sqrMagnitude)
                 .ToList()[0];
-            ((AIPlayer)pl).CreateTravelEvent(sq, tile.Squad.Sector, tile.transform.position, 25f);
+            var dist = tile.Radius;
+
+            var angle = (float)GameManager.Generator.NextDouble() * Mathf.PI * 2;
+            var x = Mathf.Cos(angle) * (dist * 0.25f);
+            var z = Mathf.Sin(angle) * (dist * 0.25f);
+            ((AIPlayer)pl).CreateTravelEvent(sq, tile.Squad.Sector, tile.transform.position + new Vector3(x, 0, z), 25f);
         }
     }
 
