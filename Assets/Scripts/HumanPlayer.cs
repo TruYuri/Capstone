@@ -313,11 +313,9 @@ public class HumanPlayer : Player
                     colors.Add(_commandShipSquad.Sector, Color.magenta);
             }
 
-            /*
-            var minimap = MapManager.Instance.GenerateMap(colors);
+            var minimap = MapManager.Instance.GenerateMap(_controlledSquad.Sector, colors);
             GUIManager.Instance.SetZoom(null, false);
             GUIManager.Instance.UpdateMinimap(minimap, _controlledSquad.transform.position, _controlledSquad.Sector);
-             */
         }
 
         ReloadGameplayUI();

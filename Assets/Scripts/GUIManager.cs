@@ -596,12 +596,11 @@ public class GUIManager : MonoBehaviour
             colors.Add(warpList[portals[i]], Color.magenta);
 
         var image = _interface["WarpMap"].GetComponent<RawImage>();
-        var texture = MapManager.Instance.GenerateMap(colors);
-
-        var center = MapManager.Instance.GetMiniMapPosition(texture, sq.Sector, sq.transform.position);     
+        var texture = MapManager.Instance.GenerateMap(HumanPlayer.Instance.Squad.Sector, colors);    
 
         image.texture = texture;
 
+        /*
         var minw = Math.Min(texture.width, 390);
         var miny = Math.Min(texture.height, 390);
 
@@ -615,6 +614,7 @@ public class GUIManager : MonoBehaviour
         _interface["WarpButton"].GetComponent<Button>().interactable = i != -1;
         image.uvRect = new Rect(left, top,
             minw / (float)texture.width, miny / (float)texture.height);
+         * */
     }
 
     private void UpdateTransferInterface(bool squads, bool squadShips, bool ships, bool other)
@@ -1060,7 +1060,7 @@ public class GUIManager : MonoBehaviour
         var maxedw = maxw > m.width;
         var maxedh = maxh > m.height;
         if(!maxedw && !maxedh)
-            _indices["Zoom"] = Mathf.Clamp(z, 0, 11);
+            _indices["Zoom"] = Mathf.Clamp(z, 0, 5);
 
         var i = _interface["ZoomIn"].GetComponent<Button>();
         var o = _interface["ZoomOut"].GetComponent<Button>();
@@ -1070,7 +1070,7 @@ public class GUIManager : MonoBehaviour
         else
             i.interactable = false;
 
-        if (z != 10 && z == _indices["Zoom"])
+        if (z != 4 && z == _indices["Zoom"])
             o.interactable = true;
         else
             o.interactable = false;
@@ -1084,16 +1084,15 @@ public class GUIManager : MonoBehaviour
         var image = _interface["Minimap"].GetComponent<RawImage>();
         image.texture = texture;
 
-        var mapPos = MapManager.Instance.GetMiniMapPosition(texture as Texture2D, sector, position);
         var zoom = _indices["Zoom"];
 
         var maxw = 256 + 256 * zoom;
         var maxh = 192 + 192 * zoom;
 
-        var left = mapPos.x - (maxw / 2 / (float)texture.width);
+        var left = 0.5f - (maxw / 2 / (float)texture.width);
         if (left < 0f)
             left = 0f;
-        var top = mapPos.y - (maxh / 2 / (float)texture.height);
+        var top = 0.5f - (maxh / 2 / (float)texture.height);
         if (top < 0f)
             top = 0f;
 

@@ -214,6 +214,9 @@ public class GameManager : MonoBehaviour
 
         ProcessEvents();
 
+        if (_paused)
+            return;
+
         int count = 0;
         foreach (var player in _players)
             if (player.Value.TurnEnded)
@@ -238,7 +241,7 @@ public class GameManager : MonoBehaviour
 
     private void ProcessEvents()
     {
-        while (_eventQueue.Count > 0)
+        while (_eventQueue.Count > 0 && !_paused)
         {
             if (_eventQueue.Peek().AssertValid())
             {

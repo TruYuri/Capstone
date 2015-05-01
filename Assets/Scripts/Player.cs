@@ -281,12 +281,8 @@ public class Player : MonoBehaviour
         }
 
         //var DC = ((PP - IP) / 100.0f * 0.5f + 0.5f) * (_team == Team.Union ? 1.5f : 1f);
-		var DC = (((double)PP / (PP + IP))  - ((double)IP / (PP + IP))) * (_team == Team.Union ? 1.5f : 1f);
-        var DP = GameManager.Generator.NextDouble();
-		Debug.Log("PP is "+PP);
-		Debug.Log("IP is "+IP);
-		Debug.Log("DC is "+DC);
-		Debug.Log("DP is "+DP);
+		var DC = (((float)PP / (PP + IP))  - ((float)IP / (PP + IP))) * (_team == Team.Union ? 1.5f : 1f);
+        var DP = (float)GameManager.Generator.NextDouble();
 
         if (DP < DC) // we won!
         {
@@ -358,6 +354,11 @@ public class Player : MonoBehaviour
     public void EndBattleConditions(bool win)
     {
         GameManager.Instance.Paused = false;
+
+        if (_playerSquad != null)
+            ((BattleEvent)_playerSquad.Mission).ReplaceMission(_playerSquad);
+        if(_enemySquad != null)
+            ((BattleEvent)_enemySquad.Mission).ReplaceMission(_enemySquad);
 
         if (_controlledSquad != null)
             Control(_controlledSquad.gameObject);

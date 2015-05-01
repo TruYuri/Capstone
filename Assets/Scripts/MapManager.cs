@@ -43,7 +43,7 @@ public class MapManager : MonoBehaviour
     private Dictionary<Resource, float> _resourceRate; // new
     private Texture2D _textureAtlas;
     private Dictionary<int, Dictionary<int, Sector>> _sectorMap;
-    private Dictionary<Sector, KeyValuePair<Color, Color>> _drawnSectors;
+    //private Dictionary<Sector, KeyValuePair<Color, Color>> _drawnSectors;
     private KeyValuePair<int, int> _minMapSectors;
     private KeyValuePair<int, int> _maxMapSectors;
     private Texture2D _minimap;
@@ -83,7 +83,6 @@ public class MapManager : MonoBehaviour
         _sectorMap = new Dictionary<int, Dictionary<int, Sector>>();
         _planetSpawnDetails = new Dictionary<string, Dictionary<string, string>>();
         _resourceRate = new Dictionary<Resource, float>();
-        _drawnSectors = new Dictionary<Sector, KeyValuePair<Color, Color>>();
         _minimap = new Texture2D(0, 0);
 
         _resourcePlanetTypes = new Dictionary<Resource, List<string>>()
@@ -276,83 +275,60 @@ public class MapManager : MonoBehaviour
         return closest;
     }
 
-    private KeyValuePair<int, int> GenerateCenter(int centerX, int centerY, int v, int h)
+    private KeyValuePair<int, int> GenerateCenter(int centerX, int centerY, int v, int h, bool even)
     {
         // offset stuff
-        var even = Mathf.Abs(v) % 2 == 0;
-        var paddingY = (v < 0 ? 1 : -1) * 15 * Math.Abs(v);
-        var paddingX = (h < 0 ? 1 : -1) * 6 * Math.Abs(h);
-        if (!even)
+        var ev = Mathf.Abs(v) % 2 == 0;
+        var paddingY = (v < 0 ? 1 : -1) * 15 * Math.Abs(v) + (even ? 0 : 32);
+        var paddingX = (h < 0 ? 1 : -1) * 6 * Math.Abs(h) - (even ? 0 : 32);
+        if (!ev)
             paddingX -= 3;
 
-        var xoffset = even ? 0 : 32;
+        var xoffset = ev ? 0 : 32;
         var yoffset = v * 64;
-        var posX = centerX + h * 64 + xoffset + paddingX;
-        var posY = centerY + yoffset + paddingY;
+        var posX = centerX + h * 64 + xoffset +paddingX;
+        var posY = centerY + yoffset +paddingY;
 
         return new KeyValuePair<int, int>(posX, posY);
     }
 
-    public Texture2D GenerateMap(Dictionary<Sector, Color> highlights)
+    public Texture2D GenerateMap(Sector center, Dictionary<Sector, Color> highlights)
     {
-        // update minimap
-        // generate map so it'll always be able to center it on minimap.
-        var width = Math.Abs(_maxMapSectors.Value - _minMapSectors.Value + 1) * 64;
-        var height = Math.Abs(_maxMapSectors.Key - _minMapSectors.Key + 1) * 64;
-
-        // find nearest 192x256 multiples
-        if (width % 256 != 0)
-            width = ((width / 256) + 1) * 256;
-        if (height % 192 != 0)
-            height = ((height / 192) + 1) * 192;
-
-        width += 256;
-        height += 192;
+        var width = 256 * 5;
+        var height = 192 * 5;
 
         if (highlights == null)
             highlights = new Dictionary<Sector, Color>();
 
-        var xdiff = (width - _minimap.width) / 2;
-        var ydiff = (height - _minimap.height) / 2;
-
-        var miniMap = new Texture2D(width, height);
-        miniMap.SetPixels(xdiff, ydiff, _minimap.width, _minimap.height, _minimap.GetPixels());
-
-        var centerX = miniMap.width / 2;
-        var centerY = miniMap.height / 2;
+        DestroyImmediate(_minimap);
+        _minimap = new Texture2D(width, height);
+        var centerX = _minimap.width / 2;
+        var centerY = _minimap.height / 2;
         var color = _minimapTile[32 * 64 + 32];
-        foreach (var vertical in _sectorMap)
+
+        var bv = center.GridPosition.Key;
+        var bh = center.GridPosition.Value;
+
+        var even = bv % 2 == 0;
+        bv += even ? 0 : 1;
+        for (int v = bv - 6; v < bv + 6; v++ )
         {
-            foreach (var horizontal in vertical.Value)
+            for(int h = bh - 10; h < bh + 10; h++)
             {
-                var center = GenerateCenter(centerX, centerY, vertical.Key, horizontal.Key);
-                var posX = center.Key - 32;
-                var posY = center.Value - 32;
+                // check if this falls outside of the minimap boundaries
+
+                Sector sec = null;
+                if (_sectorMap.ContainsKey(v) && _sectorMap[v].ContainsKey(h))
+                    sec = _sectorMap[v][h];
+                else
+                    continue;
+
+                var centerp = GenerateCenter(centerX, centerY, v - bv, h - bh, even);
+                var posX = centerp.Key - 32;
+                var posY = centerp.Value - 32;
 
                 var pixels = _minimapTile;
-                var c = GameManager.Instance.PlayerColors[horizontal.Value.GetOwner()];
-
-                bool skip = true;
-                if (_drawnSectors[horizontal.Value].Key != c)
-                {
-                    _drawnSectors[horizontal.Value] = new KeyValuePair<Color, Color>(c, _drawnSectors[horizontal.Value].Value);
-                    skip = false;
-                }
-
-                if (highlights.ContainsKey(horizontal.Value) && _drawnSectors[horizontal.Value].Value != highlights[horizontal.Value])
-                {
-                    _drawnSectors[horizontal.Value] = new KeyValuePair<Color, Color>(_drawnSectors[horizontal.Value].Key, highlights[horizontal.Value]);
-                    skip = false;
-                }
-
-                if (!highlights.ContainsKey(horizontal.Value) && _drawnSectors[horizontal.Value].Value != new Color())
-                {
-                    _drawnSectors[horizontal.Value] = new KeyValuePair<Color, Color>(_drawnSectors[horizontal.Value].Key, new Color());
-                    skip = false;
-                }
-
-                if(skip)
-                    continue;
+                var c = GameManager.Instance.PlayerColors[sec.GetOwner()];
 
                 for (int y = 0; y < 64; y++)
                 {
@@ -360,13 +336,13 @@ public class MapManager : MonoBehaviour
                     for (int x = 0; x < 64; x++)
                     {
                         if (pixels[yn + x] == color)
-                            miniMap.SetPixel(posX + x, posY + y, c);
+                            _minimap.SetPixel(posX + x, posY + y, c);
                     }
                 }
 
-                if (highlights.ContainsKey(horizontal.Value))
+                if (highlights.ContainsKey(sec))
                 {
-                    c = highlights[horizontal.Value];
+                    c = highlights[sec];
                     pixels = _minimapHighlight;
 
                     for (int y = 0; y < 64; y++)
@@ -375,7 +351,7 @@ public class MapManager : MonoBehaviour
                         for (int x = 0; x < 64; x++)
                         {
                             if (pixels[yn + x] == color)
-                                miniMap.SetPixel(posX + x, posY + y, c);
+                                _minimap.SetPixel(posX + x, posY + y, c);
                         }
                     }
                 }
@@ -383,25 +359,8 @@ public class MapManager : MonoBehaviour
         }
 
         // grab rectangle so the texture doesn't shrink/etc
-        miniMap.Apply();
-        _minimap = miniMap;
+        _minimap.Apply();
         return _minimap;
-    }
-
-    // return relative coordinates
-    public Vector2 GetMiniMapPosition(Texture2D map, Sector center, Vector3 pos)
-    {
-        // center of map is center tile, so...
-        int v = center.GridPosition.Key;
-        int h = center.GridPosition.Value;
-        var centerX = map.width / 2;
-        var centerY = map.height / 2;
-
-        var c = GenerateCenter(centerX, centerY, v, h);
-
-        // positional math here
-
-        return new Vector2(c.Key / (float)map.width, c.Value / (float)map.height);
     }
 
     private int GenerateSector(Vector3 position, int vertical, int horizontal)
@@ -426,7 +385,6 @@ public class MapManager : MonoBehaviour
             if (horizontal > _maxMapSectors.Value)
                 _maxMapSectors = new KeyValuePair<int, int>(_maxMapSectors.Key, horizontal);
 
-            _drawnSectors.Add(component, new KeyValuePair<Color, Color>());
             return 1;
         }
 
