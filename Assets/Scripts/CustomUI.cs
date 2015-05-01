@@ -177,4 +177,9 @@ public class CustomUI : MonoBehaviour
             HumanPlayer.Instance.GetComponent<AudioSource>().UnPause();
         }
     }
+
+    public void ClickExit()
+    {
+        Application.Quit();
+    }
 }
