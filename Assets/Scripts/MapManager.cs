@@ -561,6 +561,7 @@ public class MapManager : MonoBehaviour
                 children.Add(New(v + 1, h));
             }
 
+            children.RemoveAll(s => s == null);
             return children;
         }
 
@@ -568,11 +569,18 @@ public class MapManager : MonoBehaviour
         {
             var list = new List<KeyValuePair<int, int>>(sectorPath);
             list.Add(new KeyValuePair<int, int>(x, y));
+            var sm = MapManager.Instance.SectorMap;
 
-            var extension = 0;
-            if (type != "" && MapManager.Instance.SectorMap.ContainsKey(x) && MapManager.Instance.SectorMap[x].ContainsKey(y))
-                extension = MapManager.Instance.SectorMap[x][y].GetBestRangeExtension(team, "Relay"); // if sector has a relay, extend range;
-            return new AStarSectorNode(list, g + 1, r - 1 + extension, team, type);
+            if (sm.ContainsKey(x) && sm[x].ContainsKey(y))
+            {
+                var extension = 0;
+                if (type != "")
+                    extension = sm[x][y].GetBestRangeExtension(team, "Relay"); // if sector has a relay, extend range;
+
+                return new AStarSectorNode(list, g + 1, r - 1 + extension, team, type);
+            }
+
+            return null;
         }
     }
 

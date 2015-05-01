@@ -69,6 +69,8 @@ public class Squad : MonoBehaviour, ListableObject
     {
         if(!_permanentSquad && !GameManager.Instance.Paused)
             CheckSectorTile();
+        if (!_permanentSquad && _team != HumanPlayer.Instance.Team)
+            ((AIPlayer)GameManager.Instance.Players[_team]).UpdateAI(this);
     }
 
     void OnCollisionEnter(Collision collision)
@@ -130,8 +132,6 @@ public class Squad : MonoBehaviour, ListableObject
                     if (human.CommandSquad == this && oldSector != null)
                         human.EndTurn();
 
-                    if(!human.ExploredSectors.ContainsKey(_currentSector))
-                        human.ExploredSectors.Add(_currentSector, true);
                     _currentSector.GenerateNewSectors();
 
                     if(human.Squad == this)
@@ -157,7 +157,7 @@ public class Squad : MonoBehaviour, ListableObject
         {
             if (t.Key == HumanPlayer.Instance.Team || t.Key == _team)
                 continue;
-            ((AIPlayer)t.Value).SetPotentialChase(_currentSector, this);
+            ((AIPlayer)t.Value).SetSquadBehaviors(_currentSector, this);
         }
 
         _currentTile = tile;
@@ -470,7 +470,7 @@ public class Squad : MonoBehaviour, ListableObject
         return counts;
     }
 
-    private Dictionary<string, int> CountSoldiers()
+    public Dictionary<string, int> CountSoldiers()
     {
         var counts = new Dictionary<string, int>();
 

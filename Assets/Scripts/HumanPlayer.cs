@@ -20,7 +20,6 @@ public class HumanPlayer : Player
     [SerializeField] private float _maxCamDistance = 0;
 
     private Vector3 _currentCameraDistance;
-    private Dictionary<Sector, bool> _exploredSectors;
     private AudioSource _move;
 
     public static HumanPlayer Instance 
@@ -38,7 +37,6 @@ public class HumanPlayer : Player
 
     public Squad Squad { get { return _controlledSquad; } }
     public Tile Tile { get { return _controlledTile; } }
-    public Dictionary<Sector, bool> ExploredSectors { get { return _exploredSectors; } }
     public Squad CommandSquad { get { return _commandShipSquad; } }
 
     public override void Init(Team team)
@@ -49,7 +47,6 @@ public class HumanPlayer : Player
         CreateNewCommandShip(null);
 
         _currentCameraDistance = _cameraOffset;
-        _exploredSectors = new Dictionary<Sector, bool>();
         _move = GetComponents<AudioSource>().Where(s => s.clip.name == "Engine Move").ToList()[0];
 
         var squad = CreateNewSquad(Vector3.zero, _commandShipSquad.Sector);
@@ -316,9 +313,11 @@ public class HumanPlayer : Player
                     colors.Add(_commandShipSquad.Sector, Color.magenta);
             }
 
+            /*
             var minimap = MapManager.Instance.GenerateMap(colors);
             GUIManager.Instance.SetZoom(null, false);
             GUIManager.Instance.UpdateMinimap(minimap, _controlledSquad.transform.position, _controlledSquad.Sector);
+             */
         }
 
         ReloadGameplayUI();

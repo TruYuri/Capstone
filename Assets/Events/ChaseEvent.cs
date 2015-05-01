@@ -10,8 +10,6 @@ public class ChaseEvent : GameEvent
     private float _velocity;
     private float _timeElapsedSpeedIncrease;
 
-    // turn parameter = turns until command begins. 
-    // calculate travel turns - 1 turn per sector, swap out remaining turns when initial == 0
     public ChaseEvent(Squad squad, Squad chase, Tile homeTile, float range, float velocity) : base(1)
     {
         _squad = squad;
@@ -23,9 +21,6 @@ public class ChaseEvent : GameEvent
         _timeElapsedSpeedIncrease = 1f;
     }
 
-    // when travelling, travel between planets (x = 10x, y = 10y)
-    // travel from one waypoint to the next
-
     public override void Progress()
     {
         _remainingTurns++;
@@ -34,7 +29,14 @@ public class ChaseEvent : GameEvent
 
     public override void Update()
     {
-        if ((_tTeather.transform.position - _chase.transform.position).sqrMagnitude < _range * _range)
+        if (_tTeather != null && (_tTeather.transform.position - _chase.transform.position).sqrMagnitude < _range * _range 
+            && _chase.Sector == _squad.Sector)
+        {
+            _timeElapsedSpeedIncrease += Time.deltaTime;
+            _squad.transform.position = Vector3.MoveTowards(_squad.transform.position, _chase.transform.position, _velocity * _timeElapsedSpeedIncrease * Time.deltaTime);
+        }
+        else if(_tTeather == null && (_squad.transform.position - _chase.transform.position).sqrMagnitude < _range * _range 
+            && _chase.Sector == _squad.Sector)
         {
             _timeElapsedSpeedIncrease += Time.deltaTime;
             _squad.transform.position = Vector3.MoveTowards(_squad.transform.position, _chase.transform.position, _velocity * _timeElapsedSpeedIncrease * Time.deltaTime);

@@ -165,6 +165,7 @@ public class Sector : MonoBehaviour
             var pl = GameManager.Instance.Players[_owner];
             var sq = ((AIPlayer)pl).CreateNewSquad(transform.position, this);
             ((AIPlayer)pl).PopulateRandomSquad(sq);
+            ((AIPlayer)pl).RegisterSectorSquad(this, sq);
             var tile = HumanPlayer.Instance.Tiles
                 .Where(t => t.Structure != null)
                 .OrderBy(t => (t.transform.position - transform.position).sqrMagnitude)
