@@ -29,7 +29,7 @@ public class BattleEvent : GameEvent
         {
             GUIManager.Instance.AddEvent("Transmitting command to invade " + tile.Name + ".");
 
-            if (turns <= 0)
+            if (turns <= 1)
                 Progress();
         }
         else if (tile.Team == HumanPlayer.Instance.Team)
