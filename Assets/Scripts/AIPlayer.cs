@@ -57,7 +57,7 @@ class AIPlayer : Player
 
     public void UpdateAI(Squad sq)
     {
-        if (_squadSector.ContainsKey(sq) && sq.Mission == null)
+        if (_squadSector.ContainsKey(sq) && (sq.Mission == null || sq.Mission.GetType() == typeof(BattleEvent)))
         {
             var sc = sq.CountSoldiers();
 

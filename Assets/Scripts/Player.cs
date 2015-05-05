@@ -43,6 +43,8 @@ public class Player : MonoBehaviour
 
     protected Squad _playerSquad;
     protected Squad _enemySquad;
+    protected GameEvent _p1Mission;
+    protected GameEvent _p2Mission;
     protected float _winChance;
     protected BattleType _currentBattleType;
 
@@ -246,6 +248,9 @@ public class Player : MonoBehaviour
             _enemySquad = squad2;
         }
 
+        _p1Mission = _playerSquad.Mission;
+        _p2Mission = _enemySquad.Mission;
+
         var pt = _playerSquad.GetComponent<Tile>();
         var et = _enemySquad.GetComponent<Tile>();
 
@@ -356,9 +361,9 @@ public class Player : MonoBehaviour
         GameManager.Instance.Paused = false;
 
         if (_playerSquad != null)
-            ((BattleEvent)_playerSquad.Mission).ReplaceMission(_playerSquad);
-        if(_enemySquad != null)
-            ((BattleEvent)_enemySquad.Mission).ReplaceMission(_enemySquad);
+            _playerSquad.Mission = _p1Mission;
+        if (_enemySquad != null)
+            _enemySquad.Mission = _p2Mission;
 
         if (_controlledSquad != null)
             Control(_controlledSquad.gameObject);

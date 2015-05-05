@@ -69,7 +69,7 @@ public class Squad : MonoBehaviour, ListableObject
     {
         if(!_permanentSquad && !GameManager.Instance.Paused)
             CheckSectorTile();
-        if (!_permanentSquad && _team != HumanPlayer.Instance.Team)
+        if (!_permanentSquad && _team != HumanPlayer.Instance.Team && !GameManager.Instance.Paused)
             ((AIPlayer)GameManager.Instance.Players[_team]).UpdateAI(this);
     }
 
