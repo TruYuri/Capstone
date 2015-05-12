@@ -2,13 +2,16 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+/// <summary>
+/// Ship definition class.
+/// </summary>
 public class Ship : ListableObject
 {
     private const string LIST_PREFAB = "ShipListing";
     private const string CONSTRUCT_PREFAB = "Constructable";
     private const string PLATING = "Asterminium Plating";
 
-    protected bool unlocked;
+    protected bool unlocked; // indicates that this ship is unlocked via research or not
     protected string name;
     protected float hull;
     protected float firepower;
@@ -22,7 +25,7 @@ public class Ship : ListableObject
     protected Dictionary<Resource, int> requiredResources;
     protected Dictionary<Resource, int> resources;
 
-    protected ShipProperties shipProperties;
+    protected ShipProperties shipProperties; // the bitfield properties that define this ship's behavior.
 
     protected bool isDeployed;
 
@@ -81,6 +84,17 @@ public class Ship : ListableObject
     public Dictionary<Inhabitance, int> Population { get { return population; } }
     public ShipProperties ShipProperties { get { return shipProperties; } }
 
+    /// <summary>
+    /// Constructor for a ship
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="hull"></param>
+    /// <param name="firepower"></param>
+    /// <param name="speed"></param>
+    /// <param name="capacity">Soldier capacity</param>
+    /// <param name="rCapacity">Resource capacity</param>
+    /// <param name="plating">Current plating research level</param>
+    /// <param name="shipProperties">Bitfield properties determining ship behavior</param>
     public Ship(string name, float hull, float firepower, float speed, int capacity, int rCapacity, int plating, ShipProperties shipProperties)
     {
         this.name = name;
@@ -113,6 +127,13 @@ public class Ship : ListableObject
         };
     }
 
+    /// <summary>
+    /// Indicates if this ship can be constructed.
+    /// </summary>
+    /// <param name="resources">The resource pool being used.</param>
+    /// <param name="n">The number of this ship to build.</param>
+    /// <param name="r">The cost reduction by percentage.</param>
+    /// <returns>A boolean indicating if the resources were adequate, and the resources to build if so.</returns>
     public KeyValuePair<bool, Dictionary<Resource, int>> CanConstruct(Dictionary<Resource, int> resources, int n, float r)
     {
         var rs = new Dictionary<Resource, int>()
@@ -134,6 +155,9 @@ public class Ship : ListableObject
             rs);
     }
 
+    /// <summary>
+    /// Updates the resources needed to build this ship.
+    /// </summary>
     public virtual void RecalculateResources()
     {
         requiredResources[Resource.Ore] = Mathf.CeilToInt(hull * 5);
@@ -142,6 +166,10 @@ public class Ship : ListableObject
         requiredResources[Resource.Forest] = capacity;
     }
 
+    /// <summary>
+    /// Sums this ship's populations.
+    /// </summary>
+    /// <returns></returns>
     public int CountPopulation()
     {
         int i = 0;
@@ -150,6 +178,10 @@ public class Ship : ListableObject
         return i;
     }
 
+    /// <summary>
+    /// Sums this ship's total resources.
+    /// </summary>
+    /// <returns></returns>
     public int CountResources()
     {
         int i = 0;
@@ -158,6 +190,10 @@ public class Ship : ListableObject
         return i;
     }
 
+    /// <summary>
+    /// Creates a copy of this ship. For construction.
+    /// </summary>
+    /// <returns></returns>
     public virtual Ship Copy()
     {
         var ship = new Ship(name, hull, firepower, speed, capacity, resourceCapacity, plating, shipProperties);
@@ -170,6 +206,13 @@ public class Ship : ListableObject
         return ship;
     }
 
+    /// <summary>
+    /// Populates a UI element with this ship's info.
+    /// </summary>
+    /// <param name="listName">The internal name of the list the element belongs to.</param>
+    /// <param name="index">The index in the list</param>
+    /// <param name="data">Optional data</param>
+    /// <returns>A new UI element for a list.</returns>
     GameObject ListableObject.CreateListEntry(string listName, int index, System.Object data)
     {
         var shipEntry = UnityEngine.Resources.Load<GameObject>(LIST_PREFAB);
@@ -183,6 +226,13 @@ public class Ship : ListableObject
         return entry;
     }
 
+    /// <summary>
+    /// Populates a construction UI element with this ship's info.
+    /// </summary>
+    /// <param name="listName">The name of the UI list.</param>
+    /// <param name="index">The index in the list.</param>
+    /// <param name="data">Optional data.</param>
+    /// <returns></returns>
     GameObject ListableObject.CreateBuildListEntry(string listName, int index, System.Object data) 
     {
         var buildEntry = UnityEngine.Resources.Load<GameObject>(CONSTRUCT_PREFAB);
@@ -202,6 +252,11 @@ public class Ship : ListableObject
         return entry;
     }
 
+    /// <summary>
+    /// Populates a pop-up info panel for buildable items.
+    /// </summary>
+    /// <param name="popUp">The gameobject to populate.</param>
+    /// <param name="data">Optional data.</param>
     void ListableObject.PopulateBuildInfo(GameObject popUp, System.Object data)
     {
         var go = popUp; // construction info only
@@ -219,6 +274,11 @@ public class Ship : ListableObject
         go.transform.FindChild("GatherRateText").gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Populates a popup that summarizes the current state of this ship.
+    /// </summary>
+    /// <param name="popUp">The popup to populate.</param>
+    /// <param name="data">Optional data.</param>
     void ListableObject.PopulateGeneralInfo(GameObject popUp, System.Object data)
     {
         var go = popUp;

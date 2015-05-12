@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Handles a deploy request.
+/// </summary>
 public class DeployEvent : GameEvent
 {
     private Player _player;
@@ -8,6 +11,14 @@ public class DeployEvent : GameEvent
     private Squad _squad;
     private Tile _tile;
 
+    /// <summary>
+    /// Constructor for the DeployEvent
+    /// </summary>
+    /// <param name="turns"></param>
+    /// <param name="player"></param>
+    /// <param name="ship"></param>
+    /// <param name="squad"></param>
+    /// <param name="tile"></param>
     public DeployEvent(int turns, Player player, Structure ship, Squad squad, Tile tile) 
         : base(turns)
     {
@@ -26,6 +37,9 @@ public class DeployEvent : GameEvent
         }
     }
 
+    /// <summary>
+    /// Progresses the deploy event until its time to deploy
+    /// </summary>
     public override void Progress()
     {
         base.Progress();
@@ -57,6 +71,10 @@ public class DeployEvent : GameEvent
         HumanPlayer.Instance.ReloadGameplayUI(); 
     }
 
+    /// <summary>
+    /// Ensures that the deploy request is still valid.
+    /// </summary>
+    /// <returns></returns>
     public override bool AssertValid()
     {
         if (_squad != null && _squad.gameObject != null && _squad.Mission == this)

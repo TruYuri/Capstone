@@ -1,13 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// Handles a retreat.
+/// </summary>
 public class RetreatEvent : GameEvent 
 {
     private Squad _squad;
     private Squad _from;
     private Player _player;
-    // turn parameter = turns until command begins. 
-    // calculate travel turns - 1 turn per sector, swap out remaining turns when initial == 0
+    
+    /// <summary>
+    /// Constructor for RetreatEvent.
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="squad"></param>
+    /// <param name="from"></param>
     public RetreatEvent(Player player, Squad squad, Squad from) : base(1)
     {
         _squad = squad;
@@ -18,9 +26,9 @@ public class RetreatEvent : GameEvent
             GUIManager.Instance.AddEvent("Squad retreated!");
     }
 
-    // when travelling, travel between planets (x = 10x, y = 10y)
-    // travel from one waypoint to the next
-
+    /// <summary>
+    /// Finds the best location to retreat to, and proceeds with it.
+    /// </summary>
     public override void Progress()
     {
         base.Progress();
@@ -56,10 +64,10 @@ public class RetreatEvent : GameEvent
         _squad.Mission = null;
     }
 
-    public override void Update()
-    {
-    }
-
+    /// <summary>
+    /// Ensures the retreat event is still valid.
+    /// </summary>
+    /// <returns></returns>
     public override bool AssertValid()
     {
         if (_squad != null && _squad.gameObject != null && _squad.Mission == this)

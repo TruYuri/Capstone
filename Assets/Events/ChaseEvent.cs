@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// Handles one squad chasing another.
+/// </summary>
 public class ChaseEvent : GameEvent 
 {
     private Squad _squad;
@@ -10,6 +13,14 @@ public class ChaseEvent : GameEvent
     private float _velocity;
     private float _timeElapsedSpeedIncrease;
 
+    /// <summary>
+    /// Constructor for the chase event.
+    /// </summary>
+    /// <param name="squad"></param>
+    /// <param name="chase"></param>
+    /// <param name="homeTile"></param>
+    /// <param name="range"></param>
+    /// <param name="velocity"></param>
     public ChaseEvent(Squad squad, Squad chase, Tile homeTile, float range, float velocity) : base(1)
     {
         _squad = squad;
@@ -21,12 +32,18 @@ public class ChaseEvent : GameEvent
         _timeElapsedSpeedIncrease = 1f;
     }
 
+    /// <summary>
+    /// Keeps the chase in constant progression until invalid.
+    /// </summary>
     public override void Progress()
     {
         _remainingTurns++;
         base.Progress();
     }
 
+    /// <summary>
+    /// Physically moves the chasing squad closer to its target.
+    /// </summary>
     public override void Update()
     {
         if (_tTeather != null && (_tTeather.transform.position - _chase.transform.position).sqrMagnitude < _range * _range 
@@ -45,6 +62,10 @@ public class ChaseEvent : GameEvent
             _squad.Mission = null;
     }
 
+    /// <summary>
+    /// Ensures the chase is still valid.
+    /// </summary>
+    /// <returns></returns>
     public override bool AssertValid()
     {
         if (_squad != null && _squad.gameObject != null && _chase != null && _chase.gameObject != null && _squad.Mission == this)

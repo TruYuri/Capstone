@@ -14,6 +14,15 @@ public class TravelEvent : GameEvent
 
     // turn parameter = turns until command begins. 
     // calculate travel turns - 1 turn per sector, swap out remaining turns when initial == 0
+    /// <summary>
+    /// Constructor for a TravelEvent.
+    /// </summary>
+    /// <param name="turns"></param>
+    /// <param name="player"></param>
+    /// <param name="squad"></param>
+    /// <param name="destinationSector"></param>
+    /// <param name="destination"></param>
+    /// <param name="velocity"></param>
     public TravelEvent(int turns, Player player, Squad squad, Sector destinationSector, Vector3 destination, float velocity) : base(turns)
     {
         _squad = squad;
@@ -32,6 +41,9 @@ public class TravelEvent : GameEvent
     // when travelling, travel between planets (x = 10x, y = 10y)
     // travel from one waypoint to the next
 
+    /// <summary>
+    /// Advances the TravelEvent to the next stage.
+    /// </summary>
     public override void Progress()
     {
         base.Progress();
@@ -92,6 +104,9 @@ public class TravelEvent : GameEvent
         }
     }
 
+    /// <summary>
+    /// Visual updates for the TravelEvent, moves the associated squad.
+    /// </summary>
     public override void Update()
     {
         if (_travelTurns > 0 || _turnDestinations == null || _turnDestinations.Count == 0)
@@ -109,6 +124,10 @@ public class TravelEvent : GameEvent
             _turnDestinations.RemoveAt(0);
     }
 
+    /// <summary>
+    /// Asserts validity of the TravelEvent.
+    /// </summary>
+    /// <returns></returns>
     public override bool AssertValid()
     {
         if (_squad != null && _squad.gameObject != null && _squad.Mission == this)

@@ -5,11 +5,12 @@ using System.Linq;
 
 class AIPlayer : Player
 {
-    private Dictionary<Sector, Dictionary<Tile, Squad>> _defensiveSquads;
-    private Dictionary<Sector, Squad> _sectorDefensiveSquads;
+    private Dictionary<Sector, Dictionary<Tile, Squad>> _defensiveSquads; // map of owned sectors and their defending tile squads
+    private Dictionary<Sector, Squad> _sectorDefensiveSquads; 
     private Dictionary<Sector, Squad> _sectorSquad;
     private Dictionary<Squad, Sector> _squadSector;
 
+    /// Initializes the AI Player.
     public override void Init(Team team)
     {
         base.Init(team);
@@ -19,12 +20,7 @@ class AIPlayer : Player
         _squadSector = new Dictionary<Squad, Sector>();
     }
 
-    void Update()
-    {
-        if (GameManager.Instance.Paused || _turnEnded)
-            return;
-    }
-
+    // Adds a new squad for this AI to manage in a sector
     public void RegisterSectorSquad(Sector s, Squad sq)
     {
         if (!_sectorSquad.ContainsKey(s))
@@ -35,6 +31,7 @@ class AIPlayer : Player
         _squadSector.Add(sq, s);
     }
 
+    // Adds a new squad for this AI to manage in a sector, around a tile
     public void RegisterDefensiveSquad(Sector s, Tile t, Squad sq)
     {
         if (t != null)
@@ -55,6 +52,7 @@ class AIPlayer : Player
         }
     }
 
+    // Updates the parameter squad with 
     public void UpdateAI(Squad sq)
     {
         if (_squadSector.ContainsKey(sq) && (sq.Mission == null || sq.Mission.GetType() == typeof(BattleEvent)))

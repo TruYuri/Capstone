@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Handles a build request.
+/// </summary>
 public class BuildEvent : GameEvent
 {
     private Tile _tile;
@@ -8,6 +11,13 @@ public class BuildEvent : GameEvent
     private Player _player;
     private Structure _structure;
 
+    /// <summary>
+    /// Constructor for a BuildEvent.
+    /// </summary>
+    /// <param name="turns"></param>
+    /// <param name="player"></param>
+    /// <param name="tile"></param>
+    /// <param name="ship"></param>
     public BuildEvent(int turns, Player player, Tile tile, Ship ship)
         : base(turns)
     {
@@ -20,6 +30,9 @@ public class BuildEvent : GameEvent
             GUIManager.Instance.AddEvent("Transmitting command to build " + ship.Name + " at " + tile.Name + ".");
     }
 
+    /// <summary>
+    /// Progresses the build event until it's time to build.
+    /// </summary>
     public override void Progress()
     {
         base.Progress();
@@ -37,6 +50,10 @@ public class BuildEvent : GameEvent
         }
     }
 
+    /// <summary>
+    /// Ensures the build event is still valid.
+    /// </summary>
+    /// <returns></returns>
     public override bool AssertValid()
     {
         if (_tile.Team == _player.Team && _tile.Structure == _structure)

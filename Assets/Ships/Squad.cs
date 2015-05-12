@@ -4,6 +4,9 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
+/// <summary>
+/// The squad class. One of the most important classes in the game.
+/// </summary>
 public class Squad : MonoBehaviour, ListableObject
 {
     private const string SQUAD_LIST_PREFAB = "SquadListing";
@@ -37,11 +40,12 @@ public class Squad : MonoBehaviour, ListableObject
     public Tile Tile { get { return _currentTile; } }
     public Sector Sector { get { return _currentSector; } }
 
-	// Use this for initialization
-	void Start () 
-    {
-	}
-
+    /// <summary>
+    /// Initializes the squad.
+    /// </summary>
+    /// <param name="team">The squad's team.</param>
+    /// <param name="sector">The sector it originates from.</param>
+    /// <param name="name">The squad's name.</param>
     public void Init(Team team, Sector sector, string name)
     {
         var tile = this.GetComponent<Tile>();
@@ -64,7 +68,9 @@ public class Squad : MonoBehaviour, ListableObject
         }
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// Updates the squad's position and behavior.
+    /// </summary>
     void Update()
     {
         if(!_permanentSquad && !GameManager.Instance.Paused)
@@ -73,6 +79,10 @@ public class Squad : MonoBehaviour, ListableObject
             ((AIPlayer)GameManager.Instance.Players[_team]).UpdateAI(this);
     }
 
+    /// <summary>
+    /// Checks if the squad has collided with another, and handles it appropriately.
+    /// </summary>
+    /// <param name="collision"></param>
     void OnCollisionEnter(Collision collision)
     {
         if (GameManager.Instance.Paused)
@@ -96,6 +106,10 @@ public class Squad : MonoBehaviour, ListableObject
         }
     }
 
+    /// <summary>
+    /// Handles squad interaction when they no longer are colliding.
+    /// </summary>
+    /// <param name="collision"></param>
     void OnCollisionExit(Collision collision)
     {
         if (GameManager.Instance.Paused)
@@ -115,6 +129,11 @@ public class Squad : MonoBehaviour, ListableObject
         }
     }
 
+    /// <summary>
+    /// Checks for and updates collision with the current sector (raycast) and current tile (real coords to local grid coords).
+    /// If colliding with a tile, check if the squad is within interactable range and handle appropriately.
+    /// The current sector is checked with each AI for appropriate behavior updates.
+    /// </summary>
     private void CheckSectorTile()
     {
         // raycast down to find sector
@@ -189,6 +208,10 @@ public class Squad : MonoBehaviour, ListableObject
             HumanPlayer.Instance.ReloadGameplayUI();
     }
 
+    /// <summary>
+    /// Calculates the invasion/troop power this squad contains.
+    /// </summary>
+    /// <returns>The troop power.</returns>
     public float CalculateTroopPower()
     {
         float primitive = 0, industrial = 0, spaceAge = 0;
@@ -203,6 +226,10 @@ public class Squad : MonoBehaviour, ListableObject
         return (primitive + industrial * 1.5f + spaceAge * 1.75f) * (_team == Team.Kharkyr ? 1.15f : 1f);
     }
 
+    /// <summary>
+    /// Calculates the orbital/space/ship power this squad contains.
+    /// </summary>
+    /// <returns>The ship power.</returns>
     public float CalculateShipPower()
     {
         float hull = 0, firepower = 0, speed = 0;
@@ -217,6 +244,11 @@ public class Squad : MonoBehaviour, ListableObject
         return (firepower * 2.0f + speed * 1.5f + hull) * (_team == Team.Kharkyr ? 1.15f : 1f);
     }
 
+    /// <summary>
+    /// Generates the chance this squad will win against a chosen enemy squad (space).
+    /// </summary>
+    /// <param name="enemy">The combating squad.</param>
+    /// <returns>The chance of success/victory.</returns>
     public float GenerateWinChance(Squad enemy)
     {
         var power = CalculateShipPower();
@@ -226,6 +258,11 @@ public class Squad : MonoBehaviour, ListableObject
 		return power / (power + enemyPower);
     }
 
+    /// <summary>
+    /// Calculates the chance this squad will win against a chosen enemy tile (invasion).
+    /// </summary>
+    /// <param name="enemy"></param>
+    /// <returns>The chance of success/victory.</returns>
     public float GenerateWinChance(Tile enemy)
     {
         var power = CalculateTroopPower();
@@ -235,6 +272,12 @@ public class Squad : MonoBehaviour, ListableObject
 		return power / (power + enemyPower);
     }
 
+    /// <summary>
+    /// Performs combat with an enemy squad.
+    /// </summary>
+    /// <param name="enemy">The enemy squad.</param>
+    /// <param name="winChance">The odds of survival.</param>
+    /// <returns>The winning team and a list of units lost in combat.</returns>
     public KeyValuePair<Team, Dictionary<string, int>> Combat(Squad enemy, float winChance)
     {
         float winP = (float)GameManager.Generator.NextDouble();
@@ -291,6 +334,12 @@ public class Squad : MonoBehaviour, ListableObject
         return lost;
     }
 
+    /// <summary>
+    /// Performs combat with an enemy tile (invasion)
+    /// </summary>
+    /// <param name="enemy">The enemy tile to combat.</param>
+    /// <param name="winChance">The odds of survival.</param>
+    /// <returns>The winning team, and a list of soldiers lost.</returns>
     public KeyValuePair<Team, Dictionary<string, int>> Combat(Tile enemy, float winChance) // planet combat
     {
         float winP = (float)GameManager.Generator.NextDouble();
@@ -398,6 +447,12 @@ public class Squad : MonoBehaviour, ListableObject
         return lost;
     }
 
+    /// <summary>
+    /// Deploys a structure in this fleet to the specified tile.
+    /// </summary>
+    /// <param name="structure">The ship to deploy.</param>
+    /// <param name="tile">The tile to deploy at.</param>
+    /// <returns>The newly deployed tile.</returns>
     public Tile Deploy(Structure structure, Tile tile)
     {
         _currentTile = tile;
@@ -414,6 +469,11 @@ public class Squad : MonoBehaviour, ListableObject
         return _currentTile;
     }
 
+    /// <summary>
+    /// Utility; Does cleanup of some squads if some were removed from play.
+    /// </summary>
+    /// <param name="player">The player that owns the squad list.</param>
+    /// <param name="squads">The squads to clean.</param>
     public static void CleanSquadsFromList(Player player, List<Squad> squads)
     {
         var emptySquads = new List<Squad>();
@@ -430,6 +490,13 @@ public class Squad : MonoBehaviour, ListableObject
         }
     }
 
+    /// <summary>
+    /// Populates a simple list entry for this squad with name and counts.
+    /// </summary>
+    /// <param name="listName">Internal list name.</param>
+    /// <param name="index">Index in the list.</param>
+    /// <param name="data">Optional data.</param>
+    /// <returns>The new list UI object.</returns>
     GameObject ListableObject.CreateListEntry(string listName, int index, System.Object data)
     {
         var squadEntry = Resources.Load<GameObject>(SQUAD_LIST_PREFAB);
@@ -447,16 +514,22 @@ public class Squad : MonoBehaviour, ListableObject
     }
 
     GameObject ListableObject.CreateBuildListEntry(string listName, int index, System.Object data) { return null; }
+    void ListableObject.PopulateBuildInfo(GameObject popUp, System.Object data) { }
 
-    void ListableObject.PopulateBuildInfo(GameObject popUp, System.Object data)
-    {
-    }
-
+    /// <summary>
+    /// Populates a popup with count info for ships and soldiers in this squad.
+    /// </summary>
+    /// <param name="popUp">The popup to populate.</param>
+    /// <param name="data">Optional data.</param>
     void ListableObject.PopulateGeneralInfo(GameObject popUp, System.Object data)
     {
         PopulateCountList(popUp.transform.FindChild("ShipCounts").FindChild("ShipCountsList").gameObject, BattleType.Space | BattleType.Invasion);
     }
 
+    /// <summary>
+    /// Counts the ships in this squad.
+    /// </summary>
+    /// <returns>The total number of ships of each type.</returns>
     private Dictionary<string, int> CountShips()
     {
         var counts = new Dictionary<string, int>();
@@ -470,6 +543,10 @@ public class Squad : MonoBehaviour, ListableObject
         return counts;
     }
 
+    /// <summary>
+    /// Counts the soldiers in this squad.
+    /// </summary>
+    /// <returns>The total number of soldiers of each type.</returns>
     public Dictionary<string, int> CountSoldiers()
     {
         var counts = new Dictionary<string, int>();
@@ -488,6 +565,11 @@ public class Squad : MonoBehaviour, ListableObject
         return counts;
     }
 
+    /// <summary>
+    /// Populates a UI info about ships and soldiers in this squad.
+    /// </summary>
+    /// <param name="list">The internal list name.</param>
+    /// <param name="bType">The battle type to consider for counting.</param>
     public void PopulateCountList(GameObject list, BattleType bType)
     {
         var squadEntry = Resources.Load<GameObject>(SQUAD_COUNT_PREFAB);

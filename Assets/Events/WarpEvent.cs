@@ -1,12 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Handles a warp request through two Warp Portals.
+/// </summary>
 public class WarpEvent : GameEvent
 {
     private Tile _exitPortal;
     private Squad _squad;
     private Player _player;
 
+    /// <summary>
+    /// Constructor for the WarpEvent
+    /// </summary>
+    /// <param name="turns"></param>
+    /// <param name="player"></param>
+    /// <param name="squad"></param>
+    /// <param name="exit"></param>
     public WarpEvent(int turns, Player player, Squad squad, Tile exit) 
         : base(turns)
     {
@@ -18,6 +28,9 @@ public class WarpEvent : GameEvent
             GUIManager.Instance.AddEvent("Transmitting command to warp " + _squad.name + ".");
     }
 
+    /// <summary>
+    /// Progresses until the Warp should actually occur.
+    /// </summary>
     public override void Progress()
     {
         base.Progress();
@@ -38,6 +51,10 @@ public class WarpEvent : GameEvent
         }
     }
 
+    /// <summary>
+    /// Ensures the warping is still valid.
+    /// </summary>
+    /// <returns></returns>
     public override bool AssertValid()
     {
         if (_squad != null && _squad.gameObject != null && _exitPortal != null && _exitPortal.gameObject != null && _squad.Mission == this)

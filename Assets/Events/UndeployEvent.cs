@@ -1,12 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Handles an undeploy request.
+/// </summary>
 public class UndeployEvent : GameEvent
 {
     private Tile _tile;
     private bool _destroy;
     private Player _player;
 
+    /// <summary>
+    /// Constructor for UndeployEvent
+    /// </summary>
+    /// <param name="turns"></param>
+    /// <param name="player"></param>
+    /// <param name="tile"></param>
+    /// <param name="destroy"></param>
     public UndeployEvent(int turns, Player player, Tile tile, bool destroy)
         : base(turns)
     {
@@ -22,6 +32,9 @@ public class UndeployEvent : GameEvent
         }
     }
 
+    /// <summary>
+    /// Progresses turns until the undeploy should occur.
+    /// </summary>
     public override void Progress()
     {
         base.Progress();
@@ -56,6 +69,10 @@ public class UndeployEvent : GameEvent
         HumanPlayer.Instance.ReloadGameplayUI();
     }
 
+    /// <summary>
+    /// Ensures the undeploy request is still valid.
+    /// </summary>
+    /// <returns></returns>
     public override bool AssertValid()
     {
         if (_destroy && _tile != null && _tile.Structure != null)

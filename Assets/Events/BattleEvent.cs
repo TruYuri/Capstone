@@ -2,12 +2,20 @@
 using System.Reflection;
 using System.Collections;
 
+/// <summary>
+/// Handles a registered battle.
+/// </summary>
 public class BattleEvent : GameEvent
 {
     private Squad _squad1;
     private Squad _squad2;
     private BattleType _battleType;
 
+    /// <summary>
+    /// Establishes a battle between two squads.
+    /// </summary>
+    /// <param name="squad1"></param>
+    /// <param name="squad2"></param>
     public BattleEvent(Squad squad1, Squad squad2) : base(1)
     {
         _squad1 = squad1;
@@ -17,6 +25,12 @@ public class BattleEvent : GameEvent
         Progress();
     }
 
+    /// <summary>
+    /// Establishes a battle between a squad and a tile.
+    /// </summary>
+    /// <param name="turns"></param>
+    /// <param name="squad"></param>
+    /// <param name="tile"></param>
     public BattleEvent(int turns, Squad squad, Tile tile) : base(turns)
     {
         _squad1 = squad;
@@ -34,6 +48,9 @@ public class BattleEvent : GameEvent
             Progress();
     }
 
+    /// <summary>
+    /// Starts the battle. Pauses the game if the human player is involved, and instead enables the appropriate battle screens.
+    /// </summary>
     public override void Progress()
     {
         base.Progress();
@@ -56,6 +73,10 @@ public class BattleEvent : GameEvent
         }
     }
 
+    /// <summary>
+    /// Asserts the validity of the battle.
+    /// </summary>
+    /// <returns></returns>
     public override bool AssertValid()
     {
         if(_remainingTurns > 0 && _squad1 != null && _squad2 != null &&

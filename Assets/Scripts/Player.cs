@@ -3,6 +3,10 @@ using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System.Linq;
 
+/// <summary>
+/// The base class for both player types (human and AI).
+/// Contains many base functions that the player types can use or expand.
+/// </summary>
 public class Player : MonoBehaviour
 {
     private const string MILITARY = "Military";
@@ -48,6 +52,11 @@ public class Player : MonoBehaviour
     protected float _winChance;
     protected BattleType _currentBattleType;
 
+    /// <summary>
+    /// Initializes the player. 
+    /// Asks the GameManager for new player definitions.
+    /// </summary>
+    /// <param name="team">This player's team.</param>
     public virtual void Init(Team team)
     {
         _team = team;
@@ -77,10 +86,10 @@ public class Player : MonoBehaviour
         _resourceRegistry.Add(Resource.Stations, 0);
     }
 
-	void Start () 
-    {
-	}
-
+    /// <summary>
+    /// Sets this player's current controlled object. Calculates if the new squad is in range of the command squad.
+    /// </summary>
+    /// <param name="gameObject">The object to control.</param>
     public virtual void Control(GameObject gameObject)
     {
         if (gameObject.GetComponent<Squad>() == null)
@@ -96,7 +105,9 @@ public class Player : MonoBehaviour
         _relayDistance = path != null ? (path.Count) : 0;
     }
 
-	// Update is called once per frame
+	/// <summary>
+	/// Updates base player behavior.
+	/// </summary>
 	void Update () 
     {
         if (GameManager.Instance.Paused || _turnEnded)
@@ -105,6 +116,12 @@ public class Player : MonoBehaviour
         EndTurn();
 	}
 
+    /// <summary>
+    /// Upgrades the research of the specified type, name, and detail.
+    /// </summary>
+    /// <param name="type">Military or Scientific</param>
+    /// <param name="research">The name of the research to upgrade.</param>
+    /// <param name="property">The specific property of that research to upgrade.</param>
     public void UpgradeResearch(string type, string research, string property)
     {
         Dictionary<Resource, int> change = null;
@@ -142,21 +159,38 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Instantiates a battle event for this player.
+    /// </summary>
+    /// <param name="squad1">The combating squad.</param>
+    /// <param name="tile">The combating tile.</param>
     public void CreateBattleEvent(Squad squad1, Tile tile)
     {
         GameManager.Instance.AddEvent(new BattleEvent(_relayDistance, squad1, tile), true);
     }
 
+    /// <summary>
+    /// Instantiates a battle event for this player.
+    /// </summary>
+    /// <param name="squad1">The first combating squad.</param>
+    /// <param name="squad2">The second combating squad.</param>
     public void CreateBattleEvent(Squad squad1, Squad squad2)
     {
         GameManager.Instance.AddEvent(new BattleEvent(squad1, squad2), true);
     }
 
+    /// <summary>
+    /// Instantiates a retreat event for this player's controlled squad.
+    /// </summary>
     public void CreateRetreatEvent()
     {
         GameManager.Instance.AddEvent(new RetreatEvent(this, _playerSquad, _enemySquad), true);
     }
 
+    /// <summary>
+    /// Instantiates a build event for this player at the controlled tile.
+    /// </summary>
+    /// <param name="shipName">The name of the ship to build.</param>
     public void CreateBuildEvent(string shipName)
     {
         GameManager.Instance.AddEvent(new BuildEvent(_relayDistance, this, _controlledTile, _shipDefinitions[shipName].Copy()), false);
@@ -169,56 +203,103 @@ public class Player : MonoBehaviour
         EndTurn();
     }
 
+    /// <summary>
+    /// Instantiates a deploy event for this player.
+    /// </summary>
+    /// <param name="shipIndex">The index of the ship in the controlled squad's ship list to deploy.</param>
     public void CreateDeployEvent(int shipIndex)
     {
         GameManager.Instance.AddEvent(new DeployEvent(_relayDistance, this, _controlledSquad.Ships[shipIndex] as Structure, _controlledSquad, _controlledSquad.Tile), false);
         EndTurn();
     }
 
+    /// <summary>
+    /// Instantiates an undeploy event for this player at the controlled tile.
+    /// </summary>
+    /// <param name="destroy">Indicates whether the deployed structure should be destroyed.</param>
     public void CreateUndeployEvent(bool destroy)
     {
         CreateUndeployEvent(_controlledTile, destroy);
     }
 
+    /// <summary>
+    /// Instantiates an undeploy event for this player at a specified tile.
+    /// </summary>
+    /// <param name="tile">The tile to undeploy from.</param>
+    /// <param name="destroy">Indicates whether the deployed structure should be destroyed.</param>
     public void CreateUndeployEvent(Tile tile, bool destroy)
     {
         GameManager.Instance.AddEvent(new UndeployEvent(_relayDistance, this, tile, destroy), false);
         EndTurn();
     }
 
+    /// <summary>
+    /// Instantiates a diplomacy event for this player at the controlled tile.
+    /// </summary>
     public void CreateDiplomacyEvent()
     {
         GameManager.Instance.AddEvent(new DiplomacyEvent(_relayDistance, this, _controlledTile), false);
         EndTurn();
     }
 
+    /// <summary>
+    /// Instantiates a chase event for this player.
+    /// </summary>
+    /// <param name="squad">The player's squad.</param>
+    /// <param name="chase">The squad to chase.</param>
+    /// <param name="ht">The squad's anchor tile (can be null).</param>
+    /// <param name="range">The range from the possible anchor it can go.</param>
+    /// <param name="speed">The velocity at which to chase.</param>
     public void CreateChaseEvent(Squad squad, Squad chase, Tile ht, float range, float speed)
     {
         GameManager.Instance.AddEvent(new ChaseEvent(squad, chase, ht, range, speed), true);
     }
 
+    /// <summary>
+    /// Instantiates a travel event for this player.
+    /// </summary>
+    /// <param name="squad">The squad to travel.</param>
+    /// <param name="toSector">The sector to travel to.</param>
+    /// <param name="dest">The specific coordinates to reach.</param>
+    /// <param name="speed">The speed at which to travel between turns.</param>
     public void CreateTravelEvent(Squad squad, Sector toSector, Vector3 dest, float speed)
     {
         GameManager.Instance.AddEvent(new TravelEvent(_relayDistance, this, squad, toSector, dest, speed), false);
         EndTurn();
     }
 
+    /// <summary>
+    /// Instantiates a Command Ship Lost event for this player.
+    /// </summary>
+    /// <param name="pos">The position the command ship was destroyed.</param>
+    /// <param name="squad">The command ship's former squad, if it still exists.</param>
     public void CreateCommandShipLostEvent(Vector3 pos, Squad squad)
     {
         GameManager.Instance.AddEvent(new CommandShipLostEvent(pos, squad, this), true);
     }
 
+    /// <summary>
+    /// Instantiates a warp event for this player.
+    /// </summary>
+    /// <param name="exitGate">The tile/portal to exit from.</param>
+    /// <param name="squad">The squad to warp.</param>
     public void CreateWarpEvent(Tile exitGate, Squad squad)
     {
         GameManager.Instance.AddEvent(new WarpEvent(_relayDistance, this, squad, exitGate), false);
         EndTurn();
     }
 
+    /// <summary>
+    /// Simply ends this player's turn.
+    /// </summary>
     public void EndTurn()
     {
         _turnEnded = true;
     }
 
+    /// <summary>
+    /// Sums the number of applicable research resources.
+    /// </summary>
     public void CountStations()
     {
         _resourceRegistry[Resource.Stations] = _shipRegistry["Research Complex"].Count(r => r.IsDeployed == true);
@@ -226,6 +307,9 @@ public class Player : MonoBehaviour
     }
 
     // DON'T CALL THIS FROM HERE - for GameManager!
+    /// <summary>
+    /// Used by GameManager at the end of each turn. Progresses any owned tile growth.
+    /// </summary>
     public virtual void TurnEnd()
     {
         CountStations();
@@ -236,6 +320,13 @@ public class Player : MonoBehaviour
         _turnEnded = false;
     }
 
+    /// <summary>
+    /// Initializes battle between two squads.
+    /// </summary>
+    /// <param name="squad1">The first battle squad.</param>
+    /// <param name="squad2">The second battle squad.</param>
+    /// <param name="battleType">The type of battle to start.</param>
+    /// <returns>The clamped win chance for this player.</returns>
     public virtual float PrepareBattleConditions(Squad squad1, Squad squad2, BattleType battleType)
     {
         _playerSquad = squad2;
@@ -267,6 +358,11 @@ public class Player : MonoBehaviour
         return Mathf.Clamp01(WC);
     }
 
+    /// <summary>
+    /// Attempts a diplomatic effort.
+    /// </summary>
+    /// <param name="tile">The tile to attempt diplomacy upon.</param>
+    /// <returns>A boolean indicating success.</returns>
     public bool DiplomaticEffort(Tile tile)
     {
         var IP = tile.Population * 2;
@@ -315,6 +411,14 @@ public class Player : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Battles two squads.
+    /// </summary>
+    /// <param name="playerChance">The odds of this player's success.</param>
+    /// <param name="battleType">The type of battle.</param>
+    /// <param name="player">This player's squad.</param>
+    /// <param name="enemy">The combating squad.</param>
+    /// <returns>The winning team and battle type, as well as the list of units lost.</returns>
     public virtual KeyValuePair<KeyValuePair<Team, BattleType>, Dictionary<string, int>> Battle(float playerChance, BattleType battleType, Squad player, Squad enemy)
     {
         KeyValuePair<KeyValuePair<Team, BattleType>, Dictionary<string, int>> winner = new KeyValuePair<KeyValuePair<Team, BattleType>, Dictionary<string, int>>();
@@ -356,6 +460,10 @@ public class Player : MonoBehaviour
         return winner;
     }
 
+    /// <summary>
+    /// Cleans up variables post-battle.
+    /// </summary>
+    /// <param name="win">Whether or not this player won the ending battle.</param>
     public void EndBattleConditions(bool win)
     {
         GameManager.Instance.Paused = false;
@@ -371,6 +479,10 @@ public class Player : MonoBehaviour
         _enemySquad = null;
     }
 
+    /// <summary>
+    /// Utility; cleans up squads around the selected if they have been removed from play.
+    /// </summary>
+    /// <param name="squad">The squad to clean up.</param>
     public virtual void CleanSquad(Squad squad)
     {
         var p = squad.transform.position;
@@ -413,6 +525,10 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Removes a squad from this player's registry.
+    /// </summary>
+    /// <param name="squad">The squad to remove.</param>
     public void DeleteSquad(Squad squad)
     {
         _squads.Remove(squad);
@@ -421,6 +537,12 @@ public class Player : MonoBehaviour
             GameObject.Destroy(squad.gameObject);
     }
 
+    /// <summary>
+    /// Creates a new squad for this player.
+    /// </summary>
+    /// <param name="fromSquad">Squad to branch from.</param>
+    /// <param name="name">Name of the new squad.</param>
+    /// <returns>The new squad.</returns>
     public Squad CreateNewSquad(Squad fromSquad, string name = "Squad")
     {
         float dist;
@@ -441,6 +563,13 @@ public class Player : MonoBehaviour
         return squad;
     }
 
+    /// <summary>
+    /// Creates a new squad for this player.
+    /// </summary>
+    /// <param name="position">Position to create this squad at.</param>
+    /// <param name="sector">The sector for the new squad.</param>
+    /// <param name="name">The new squad's name.</param>
+    /// <returns>The new squad.</returns>
     public Squad CreateNewSquad(Vector3 position, Sector sector, string name = "Squad")
     {
         var squadobj = Resources.Load<GameObject>(SQUAD_PREFAB);
@@ -452,6 +581,10 @@ public class Player : MonoBehaviour
         return component;
     }
 
+    /// <summary>
+    /// Instantiates a new command ship for this player.
+    /// </summary>
+    /// <param name="tile">The tile at which to spawn.</param>
     public void CreateNewCommandShip(Tile tile)
     {
         if(tile != null)
@@ -465,18 +598,32 @@ public class Player : MonoBehaviour
 
     // Utility functions to ensure proper management of resources
 
+    /// <summary>
+    /// Claims a tile for this player.
+    /// </summary>
+    /// <param name="tile">The tile to claim.</param>
     public void ClaimTile(Tile tile)
     {
         _tiles.Add(tile);
         tile.transform.parent.GetComponent<Sector>().ClaimTile(_team);
     }
 
+    /// <summary>
+    /// Removes a tile from this player.
+    /// </summary>
+    /// <param name="tile">The tile to remove.</param>
     public void RelinquishTile(Tile tile)
     {
         _tiles.Remove(tile);
         tile.transform.parent.GetComponent<Sector>().RelinquishTile(_team);
     }
 
+    /// <summary>
+    /// Adds a ship to a squad.
+    /// </summary>
+    /// <param name="squad">The squad to add to.</param>
+    /// <param name="name">The name of the ship to add.</param>
+    /// <returns>The new ship.</returns>
     public Ship AddShip(Squad squad, string name)
     {
         var ship = _shipDefinitions[name].Copy();
@@ -484,6 +631,12 @@ public class Player : MonoBehaviour
         return ship;
     }
 
+    /// <summary>
+    /// Adds an existing ship to a squad.
+    /// </summary>
+    /// <param name="squad">The squad to add to.</param>
+    /// <param name="ship">The ship to add.</param>
+    /// <returns>The added ship.</returns>
     public Ship AddShip(Squad squad, Ship ship)
     {
         _shipRegistry[ship.Name].Add(ship);
@@ -491,6 +644,11 @@ public class Player : MonoBehaviour
         return ship;
     }
 
+    /// <summary>
+    /// Removes a ship from a squad.
+    /// </summary>
+    /// <param name="squad">The squad to remove from.</param>
+    /// <param name="ship">The ship to remove.</param>
     public void RemoveShip(Squad squad, Ship ship)
     {
         _shipRegistry[ship.Name].Remove(ship);
@@ -501,6 +659,10 @@ public class Player : MonoBehaviour
             RemoveSoldiers(ship, type, ship.Population[type]);
     }
 
+    /// <summary>
+    /// Removes all ships from a squad.
+    /// </summary>
+    /// <param name="squad">The squad to remove from.</param>
     public void RemoveAllShips(Squad squad)
     {
         var types = _soldierRegistry.Keys.ToList();
@@ -516,23 +678,47 @@ public class Player : MonoBehaviour
         squad.Ships.Clear();
     }
 
+    /// <summary>
+    /// Adds soldiers to a tile.
+    /// </summary>
+    /// <param name="tile">The tile to add to.</param>
+    /// <param name="type">The type of soldier.</param>
+    /// <param name="count">The amount of soldiers to add.</param>
     public void AddSoldiers(Tile tile, Inhabitance type, int count)
     {
         tile.Population += count;
         _soldierRegistry[type] += count;
     }
 
+    /// <summary>
+    /// Adds soldiers to a ship.
+    /// </summary>
+    /// <param name="ship">The ship to add to.</param>
+    /// <param name="type">The type of soldier.</param>
+    /// <param name="count">The amount of soldiers to add.</param>
     public void AddSoldiers(Ship ship, Inhabitance type, int count)
     {
         ship.Population[type] += count;
         _soldierRegistry[type] += count;
     }
 
+    /// <summary>
+    /// Adds soldiers to the general registry.
+    /// </summary>
+    /// <param name="type">The soldier type to add.</param>
+    /// <param name="count">The amount of soldiers to add.</param>
     public void AddSoldiers(Inhabitance type, int count)
     {
         _soldierRegistry[type] += count;
     }
 
+    /// <summary>
+    /// Removes soldiers from a tile.
+    /// </summary>
+    /// <param name="tile">The tile to remove from.</param>
+    /// <param name="structure">Indicates if the planet structure should be considered.</param>
+    /// <param name="type">The soldier type.</param>
+    /// <param name="count">The soldier count.</param>
     public void RemoveSoldiers(Tile tile, bool structure, Inhabitance type, int count)
     {
         if(structure && tile.Structure != null)
@@ -550,18 +736,36 @@ public class Player : MonoBehaviour
         _soldierRegistry[type] -= count;
     }
 
+    /// <summary>
+    /// Removes soldiers from a ship.
+    /// </summary>
+    /// <param name="ship">The ship to remove from.</param>
+    /// <param name="type">The soldier type.</param>
+    /// <param name="count">The amount of soldiers to remove.</param>
     public void RemoveSoldiers(Ship ship, Inhabitance type, int count)
     {
         ship.Population[type] -= count;
         _soldierRegistry[type] -= count;
     }
 
+    /// <summary>
+    /// Adds resources to a ship.
+    /// </summary>
+    /// <param name="ship">The ship to add to.</param>
+    /// <param name="type">The resource type.</param>
+    /// <param name="count">The amount of resoures to add.</param>
     public void AddResources(Ship ship, Resource type, int count)
     {
         ship.Resources[type] += count;
         _resourceRegistry[type] += count;
     }
 
+    /// <summary>
+    /// Removes resources from a ship.
+    /// </summary>
+    /// <param name="ship">The ship to remove from.</param>
+    /// <param name="type">The resource type.</param>
+    /// <param name="count">The amount of resources to remove.</param>
     public void RemoveResources(Ship ship, Resource type, int count)
     {
         ship.Resources[type] -= count;

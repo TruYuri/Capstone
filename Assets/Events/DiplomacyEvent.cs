@@ -1,14 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// Handles a diplomacy request.
+/// </summary>
 public class DiplomacyEvent : GameEvent 
 {
     private Tile _tile;
     private int _diplomacyTurns;
     private Player _player;
 
-    // turn parameter = turns until command begins. 
-    // calculate travel turns - 1 turn per sector, swap out remaining turns when initial == 0
+    /// <summary>
+    /// Constructor for the DiplomacyEvent
+    /// </summary>
+    /// <param name="turns"></param>
+    /// <param name="player"></param>
+    /// <param name="tile"></param>
     public DiplomacyEvent(int turns, Player player, Tile tile) : base(turns)
     {
         _player = player;
@@ -20,9 +27,9 @@ public class DiplomacyEvent : GameEvent
             GUIManager.Instance.AddEvent("Transmitting command to begin diplomacy at " + tile.Name + ".");
     }
 
-    // when travelling, travel between planets (x = 10x, y = 10y)
-    // travel from one waypoint to the next
-
+    /// <summary>
+    /// Continues the diplomacy attempt until finished.
+    /// </summary>
     public override void Progress()
     {
         base.Progress();
@@ -45,10 +52,10 @@ public class DiplomacyEvent : GameEvent
         }
     }
 
-    public override void Update()
-    {
-    }
-
+    /// <summary>
+    /// Ensures the diplomacy is still worth pursuing.
+    /// </summary>
+    /// <returns></returns>
     public override bool AssertValid()
     {
         if (_tile.Team == Team.Indigenous)
