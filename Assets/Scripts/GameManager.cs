@@ -4,9 +4,12 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// Primary manager. Handles players and events.
+/// </summary>
 public class GameManager : MonoBehaviour 
 {
-    public static System.Random Generator = new System.Random();
+    public static System.Random Generator = new System.Random(); // The consistent random number generated used throughout the game.
     private const string HUMAN_PLAYER_PREFAB = "HumanPlayer";
     private const string AI_PLAYER_PREFAB = "AIPlayer";
     private const string PLAYER_PREFAB = "Player";
@@ -61,6 +64,10 @@ public class GameManager : MonoBehaviour
     public Dictionary<Team, Color> PlayerColors { get { return _playerColors; } }
     public int Turns { get { return _turns; } }
 
+    /// <summary>
+    /// Initializes the game.
+    /// </summary>
+    /// <param name="player">The team to set the human as.</param>
     public void Init(Team player)
     {
         _instance = this;
@@ -148,6 +155,10 @@ public class GameManager : MonoBehaviour
             p.Value.Init(p.Key);
     }
 
+    /// <summary>
+    /// Adds a human player to the player registry.
+    /// </summary>
+    /// <param name="team">The human player team.</param>
     public void AddHumanPlayer(Team team)
     {
         var playerObj = Resources.Load<GameObject>(HUMAN_PLAYER_PREFAB);
@@ -155,6 +166,10 @@ public class GameManager : MonoBehaviour
         _players.Add(team, p);
     }
 
+    /// <summary>
+    /// Adds an AI player to the player registry.
+    /// </summary>
+    /// <param name="team">The AI player team.</param>
     public void AddAIPlayer(Team team)
     {
         var playerObj = Resources.Load<GameObject>(AI_PLAYER_PREFAB);
@@ -162,6 +177,10 @@ public class GameManager : MonoBehaviour
         _players.Add(team, p);
     }
 
+    /// <summary>
+    /// Generates a new copy of the ship definitions read in at init()
+    /// </summary>
+    /// <returns>New player ship definitions.</returns>
     public Dictionary<string, Ship> GenerateShipDefs()
     {
         var defs = new Dictionary<string, Ship>();
@@ -172,6 +191,11 @@ public class GameManager : MonoBehaviour
         return defs;
     }
 
+    /// <summary>
+    /// Generates a new military research tree.
+    /// </summary>
+    /// <param name="shipDefs">The ship definitions to base the research upon.</param>
+    /// <returns>A new military research tree.</returns>
     public ResearchTree GenerateMilitaryTree(Dictionary<string, Ship> shipDefs)
     {
         var tree = new ResearchTree(5);
@@ -184,6 +208,12 @@ public class GameManager : MonoBehaviour
         return tree;
     }
 
+    /// <summary>
+    /// Generates a new scientific research tree.
+    /// </summary>
+    /// <param name="shipDefs">The ship definitions to base the research on.</param>
+    /// <param name="player">The player this tree will belong to.</param>
+    /// <returns>A new scientific research tree.</returns>
     public ResearchTree GenerateScienceTree(Dictionary<string, Ship> shipDefs, Player player)
     {
         var tree = new ResearchTree(5);
@@ -196,6 +226,10 @@ public class GameManager : MonoBehaviour
         return tree;
     }
 	
+    /// <summary>
+    /// Processes player turns.
+    /// Processes any events in the queue.
+    /// </summary>
 	void Update () 
     {
         if (_instance == null)
@@ -231,6 +265,11 @@ public class GameManager : MonoBehaviour
         }
 	}
 
+    /// <summary>
+    /// Registers a new event to process.
+    /// </summary>
+    /// <param name="gameEvent">The event to process.</param>
+    /// <param name="immediate">Indicates whether this event should begin this turn or the next.</param>
     public void AddEvent(GameEvent gameEvent, bool immediate)
     {
         if (immediate)
@@ -239,6 +278,9 @@ public class GameManager : MonoBehaviour
             _nextEventQueue.Enqueue(gameEvent);
     }
 
+    /// <summary>
+    /// Updates all events in the queue.
+    /// </summary>
     private void ProcessEvents()
     {
         while (_eventQueue.Count > 0 && !_paused)

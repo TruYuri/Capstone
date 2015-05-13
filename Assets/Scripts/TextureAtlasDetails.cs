@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Details regarding a texture in a texture atlas. Used for optimization.
+/// </summary>
 public struct TextureAtlasDetails
 {
     public Texture2D Texture;

@@ -4,6 +4,9 @@ using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System.Linq;
 
+/// <summary>
+/// The Human player override of the Player class.
+/// </summary>
 public class HumanPlayer : Player
 {
     public static HumanPlayer _instance;
@@ -33,12 +36,16 @@ public class HumanPlayer : Player
 
             return _instance; 
         } 
-    } // move this to a GameManager registry!
+    }
 
     public Squad Squad { get { return _controlledSquad; } }
     public Tile Tile { get { return _controlledTile; } }
     public Squad CommandSquad { get { return _commandShipSquad; } }
 
+    /// <summary>
+    /// Initializes the human player.
+    /// </summary>
+    /// <param name="team">The human player's team.</param>
     public override void Init(Team team)
     {
         _instance = this;
@@ -86,10 +93,9 @@ public class HumanPlayer : Player
         GUIManager.Instance.SetZoom(null, true);
     }
 
-    void Start()
-    {
-    }
-
+    /// <summary>
+    /// Updates the human player based on UI interaction.
+    /// </summary>
     void Update()
     {
         if (GameManager.Instance.Paused || _turnEnded)
@@ -167,11 +173,17 @@ public class HumanPlayer : Player
         }
     }
 
+    /// <summary>
+    /// Updates the UI for the selected planet.
+    /// </summary>
     private void UpdateSelectedPlanet()
     {
         GUIManager.Instance.SetSquadControls(_controlledSquad);
     }
 
+    /// <summary>
+    /// Updates the movement behavior and UI for the selected squad.
+    /// </summary>
     private void UpdateSquad()
     {
         if (Input.GetMouseButtonDown(0))
@@ -205,6 +217,9 @@ public class HumanPlayer : Player
         GUIManager.Instance.SetSquadControls(_controlledSquad);
     }
 
+    /// <summary>
+    /// Updates the behavior and UI for the selected command ship.
+    /// </summary>
     private void UpdateCommandShip()
     {
         EventSystem eventSystem = EventSystem.current;
@@ -237,6 +252,10 @@ public class HumanPlayer : Player
         GUIManager.Instance.SetSquadControls(_controlledSquad);
     }
 
+    /// <summary>
+    /// Populates a UI panel with this player's resource counts.
+    /// </summary>
+    /// <param name="panel"></param>
     public void DisplayResources(GameObject panel)
     {
         panel.transform.FindChild("OilText").GetComponent<Text>().text = _resourceRegistry[Resource.Oil].ToString();
@@ -246,6 +265,12 @@ public class HumanPlayer : Player
         panel.transform.FindChild("ResearchText").GetComponent<Text>().text = _resourceRegistry[Resource.Stations].ToString();
     }
 
+    /// <summary>
+    /// Populates a UI panel with new info about a research branch.
+    /// </summary>
+    /// <param name="type">The research type (military, scientific)</param>
+    /// <param name="name">The specific research to update.</param>
+    /// <param name="panel">The UI panel to update.</param>
     public void DisplayResearch(string type, string name, GameObject panel)
     {
         if(type == "Military")
@@ -258,6 +283,13 @@ public class HumanPlayer : Player
         }
     }
 
+    /// <summary>
+    /// Populates a popup with info about a particular research.
+    /// </summary>
+    /// <param name="type">The research type (military, scientific)</param>
+    /// <param name="name">The specific research to get info on.</param>
+    /// <param name="property">The research's details to get info on.</param>
+    /// <param name="panel">The UI panel to update.</param>
     public void PopulateResearchPanel(string type, string name, string property, GameObject panel)
     {
         if (type == "Military")
@@ -270,12 +302,18 @@ public class HumanPlayer : Player
         }
     }
 
+    /// <summary>
+    /// Ends the player's turn. Overrides to reload the UI.
+    /// </summary>
     public override void TurnEnd()
     {
         base.TurnEnd();
         ReloadGameplayUI();
     }
 
+    /// <summary>
+    /// Calls appropriate GUIManager functionality to reload the current UI.
+    /// </summary>
     public void ReloadGameplayUI()
     {
         if (_controlledSquad == null)
@@ -293,6 +331,10 @@ public class HumanPlayer : Player
         }
     }
 
+    /// <summary>
+    /// Controls a selected gameobject. Redraws the minimap if necessary.
+    /// </summary>
+    /// <param name="gameObject">The object to control.</param>
     public override void Control(GameObject gameObject)
     {
         if (_controlledSquad == null || (_controlledSquad != null && gameObject != _controlledSquad.gameObject))
@@ -321,6 +363,13 @@ public class HumanPlayer : Player
         ReloadGameplayUI();
     }
 
+    /// <summary>
+    /// Establish human-specific battle conditions.
+    /// </summary>
+    /// <param name="squad1">The first battle squad.</param>
+    /// <param name="squad2">The second battle squad.</param>
+    /// <param name="battleType">The type of battle.</param>
+    /// <returns>The player's chance of winning.</returns>
     public override float PrepareBattleConditions(Squad squad1, Squad squad2, BattleType battleType)
     {
         _winChance = base.PrepareBattleConditions(squad1, squad2, battleType);
@@ -329,6 +378,14 @@ public class HumanPlayer : Player
         return _winChance;
     }
 
+    /// <summary>
+    /// Extends the battle functionality in Player to update certain UI elements.
+    /// </summary>
+    /// <param name="playerChance">The odds of this player's success.</param>
+    /// <param name="battleType">The type of battle.</param>
+    /// <param name="player">This player's squad.</param>
+    /// <param name="enemy">The combating squad.</param>
+    /// <returns>The winning team and battle type, as well as the list of units lost.</returns>
     public override KeyValuePair<KeyValuePair<Team, BattleType>, Dictionary<string, int>> Battle(float playerChance, BattleType battleType, Squad player, Squad enemy)
     {
         var w = base.Battle(_winChance, _currentBattleType, _playerSquad, _enemySquad);

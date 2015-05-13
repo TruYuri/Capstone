@@ -3,6 +3,9 @@ using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System.Linq;
 
+/// <summary>
+/// Override of the Player class for AI behavior.
+/// </summary>
 class AIPlayer : Player
 {
     private Dictionary<Sector, Dictionary<Tile, Squad>> _defensiveSquads; // map of owned sectors and their defending tile squads
@@ -10,7 +13,10 @@ class AIPlayer : Player
     private Dictionary<Sector, Squad> _sectorSquad;
     private Dictionary<Squad, Sector> _squadSector;
 
-    /// Initializes the AI Player.
+    /// <summary>
+    /// Initializes the AI Player
+    /// </summary>
+    /// <param name="team">The AI player's team.</param>
     public override void Init(Team team)
     {
         base.Init(team);
@@ -20,7 +26,11 @@ class AIPlayer : Player
         _squadSector = new Dictionary<Squad, Sector>();
     }
 
-    // Adds a new squad for this AI to manage in a sector
+    /// <summary>
+    /// Adds a new squad for this AI to manage in a sector
+    /// </summary>
+    /// <param name="s">The sector to register in.</param>
+    /// <param name="sq">The squad to register.</param>
     public void RegisterSectorSquad(Sector s, Squad sq)
     {
         if (!_sectorSquad.ContainsKey(s))
@@ -31,7 +41,12 @@ class AIPlayer : Player
         _squadSector.Add(sq, s);
     }
 
-    // Adds a new squad for this AI to manage in a sector, around a tile
+    /// <summary>
+    /// Adds a new squad for this AI to manage in a sector, around a tile
+    /// </summary>
+    /// <param name="s">The sector to register in.</param>
+    /// <param name="t">The tile to register at.</param>
+    /// <param name="sq">The squad to register.</param>
     public void RegisterDefensiveSquad(Sector s, Tile t, Squad sq)
     {
         if (t != null)
@@ -52,7 +67,10 @@ class AIPlayer : Player
         }
     }
 
-    // Updates the parameter squad with 
+    /// <summary>
+    /// Updates an AI squad's behavior.
+    /// </summary>
+    /// <param name="sq">The squad to update.</param>
     public void UpdateAI(Squad sq)
     {
         if (_squadSector.ContainsKey(sq) && (sq.Mission == null || sq.Mission.GetType() == typeof(BattleEvent)))
@@ -86,6 +104,11 @@ class AIPlayer : Player
         }
     }
 
+    /// <summary>
+    /// Updates player squad behaviors based on an enemy squad and location.
+    /// </summary>
+    /// <param name="s">The active sector to use squads in.</param>
+    /// <param name="sq">The enemy squad to consider.</param>
     public void SetSquadBehaviors(Sector s, Squad sq)
     {
         if(_defensiveSquads.ContainsKey(s))
@@ -114,7 +137,10 @@ class AIPlayer : Player
             _sectorSquad.Remove(s);
     }
 
-
+    /// <summary>
+    /// Populates a squad with random numbers of ships based on rules.
+    /// </summary>
+    /// <param name="squad">The squad to populate.</param>
     public void PopulateRandomSquad(Squad squad)
     {
         int n = GameManager.Generator.Next(5, 26);
