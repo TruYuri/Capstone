@@ -3,7 +3,9 @@ using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
 
-[System.Serializable] 
+[System.Serializable]
+
+ 
 public class Sector : MonoBehaviour
 {
     private static UnityEngine.Object Tile;
@@ -33,6 +35,10 @@ public class Sector : MonoBehaviour
 
     public KeyValuePair<int, int> GridPosition { get { return _gridPos; } }
 
+    /// <summary>
+    /// Initialize the program values
+    /// </summary>
+    /// <param name="gridPos"></param>
     public void Init(KeyValuePair<int, int> gridPos)
     {
         _gridPos = gridPos;
@@ -47,6 +53,9 @@ public class Sector : MonoBehaviour
         };
     }
 
+    /// <summary>
+    /// Starts creation of sectors
+    /// </summary>
     void Start()
     {
         this.transform.parent = MapManager.Instance.transform;
@@ -179,10 +188,22 @@ public class Sector : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates sectors
+    /// </summary>
     void Update()
     {
     }
 
+    /// <summary>
+    /// Creates a new tile
+    /// </summary>
+    /// <param name="grid">The current grid</param>
+    /// <param name="offset">Offset compared to center</param>
+    /// <param name="type">Type of sector</param>
+    /// <param name="rType">Resource types</param>
+    /// <param name="pType">Population types</param>
+    /// <param name="team">Team name</param>
     private void CreateTile(KeyValuePair<int, int> grid, Vector3 offset, string type = null,
         Resource rType = Resource.NoResource, Inhabitance pType = Inhabitance.Uninhabited, Team team = Team.Uninhabited)
     {
@@ -297,11 +318,20 @@ public class Sector : MonoBehaviour
         _tileGrid[grid.Key, grid.Value] = tile;
     }
 
+    /// <summary>
+    /// Calls MapManager to make new sectors
+    /// </summary>
     public void GenerateNewSectors()
     {
         MapManager.Instance.GenerateNewSectors(transform.position, _gridPos);
     }
   
+    /// <summary>
+    /// Names the planets
+    /// </summary>
+    /// <param name="type">Type of planet</param>
+    /// <param name="count">Number of that type</param>
+    /// <returns></returns>
     private string PlanetSuffix(string type, int count)
     {
         string val = (_gridPos.Key < 0 ? _gridPos.Key.ToString() : "+" + _gridPos.Key.ToString());
@@ -318,6 +348,11 @@ public class Sector : MonoBehaviour
         return val;
     }
 
+    /// <summary>
+    /// Registers that a structure is deployed in space
+    /// </summary>
+    /// <param name="team">Team Name</param>
+    /// <param name="structure">Structure object</param>
     public void RegisterSpaceStructure(Team team, Structure structure)
     {
         if (!_deployedSpaceStructures.ContainsKey(team))
@@ -335,6 +370,12 @@ public class Sector : MonoBehaviour
         });
     }
 
+    /// <summary>
+    /// Gets list of all space structures
+    /// </summary>
+    /// <param name="team">Team Name</param>
+    /// <param name="type">Type of space structure to list</param>
+    /// <returns></returns>
     public List<Structure> GetSpaceStructures(Team team, string type)
     {
         if(_deployedSpaceStructures.ContainsKey(team) && _deployedSpaceStructures[team].ContainsKey(type))
@@ -342,11 +383,22 @@ public class Sector : MonoBehaviour
         return null;
     }
 
+    /// <summary>
+    /// Undeploy space structure
+    /// </summary>
+    /// <param name="team">Team Name</param>
+    /// <param name="structure">Structure object to undeploy</param>
     public void UnregisterSpaceStructure(Team team, Structure structure)
     {
         _deployedSpaceStructures[team][structure.Name].Remove(structure);
     }
 
+    /// <summary>
+    /// Finds best object for range to use in a sector
+    /// </summary>
+    /// <param name="team">Team Name</param>
+    /// <param name="type">Type of structure</param>
+    /// <returns></returns>
     public int GetBestRangeExtension(Team team, string type)
     {
         if(_deployedSpaceStructures.ContainsKey(team) && _deployedSpaceStructures[team].ContainsKey(type) && _deployedSpaceStructures[team][type].Count > 0)
@@ -364,6 +416,11 @@ public class Sector : MonoBehaviour
     // Y:
     // Same, actually.
 
+    /// <summary>
+    /// Determines if Valid Location
+    /// </summary>
+    /// <param name="pos">Position</param>
+    /// <returns></returns>
     public bool IsValidLocation(Vector3 pos)
     {
         var gridPos = WorldToGridArray(pos);
@@ -371,6 +428,11 @@ public class Sector : MonoBehaviour
         return IsValidLocation(gridPos);
     }
 
+    /// <summary>
+    /// Determines if Valid Location
+    /// </summary>
+    /// <param name="gridPos">Position in grid</param>
+    /// <returns></returns>
     public bool IsValidLocation(KeyValuePair<int, int> gridPos)
     {
         var x = gridPos.Key;
@@ -384,11 +446,22 @@ public class Sector : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Changes grid coordinates to world coordinates
+    /// </summary>
+    /// <param name="x">Horizontal value</param>
+    /// <param name="y">Vertical value</param>
+    /// <returns></returns>
     private Vector3 GridToWorld(int x, int y)
     {
         return GridToWorld(new KeyValuePair<int, int>(x, y));
     }
 
+    /// <summary>
+    /// Changes grid coordinates to world coordinates
+    /// </summary>
+    /// <param name="pos">Position in Grid Coordinates</param>
+    /// <returns></returns>
     private Vector3 GridToWorld(KeyValuePair<int, int> pos)
     {
         var x = pos.Key;
@@ -408,6 +481,11 @@ public class Sector : MonoBehaviour
         return new Vector3(fx, 0f, fy);
     }
 
+    /// <summary>
+    /// Changes World coordinates to grid coordinates
+    /// </summary>
+    /// <param name="point">Point to change</param>
+    /// <returns></returns>
     private KeyValuePair<int, int> RealWorldToGrid(Vector3 point)
     {
         var diff = point - this.transform.position;
@@ -426,6 +504,11 @@ public class Sector : MonoBehaviour
         return new KeyValuePair<int, int>(x, y);
     }
 
+    /// <summary>
+    /// Changes the world coordinates into the grid array
+    /// </summary>
+    /// <param name="point">Point to change</param>
+    /// <returns></returns>
     private KeyValuePair<int, int> WorldToGridArray(Vector3 point)
     {
         var diffreal = point - this.transform.position;
@@ -447,6 +530,11 @@ public class Sector : MonoBehaviour
         return new KeyValuePair<int, int>((int)(x + 0.5f), (int)(y + 0.5f));
     }
 
+    /// <summary>
+    /// Find tile at a point
+    /// </summary>
+    /// <param name="point">Point to find</param>
+    /// <returns></returns>
     public Tile GetTileAtPosition(Vector3 point)
     {
         var pos = WorldToGridArray(point);
@@ -459,6 +547,13 @@ public class Sector : MonoBehaviour
         return null;
     }
 	
+    /// <summary>
+    /// Creates a tile at the specified position
+    /// </summary>
+    /// <param name="type">Type</param>
+    /// <param name="pos">Position to create the tile</param>
+    /// <param name="team">Team Name</param>
+    /// <returns></returns>
     public Tile CreateTileAtPosition(string type, Vector3 pos, Team team)
     {
         var fixedPos = pos - this.transform.position;
@@ -471,6 +566,10 @@ public class Sector : MonoBehaviour
         return _tileGrid[gridPos.Key, gridPos.Value];
     }
 
+    /// <summary>
+    /// Deletes a tile
+    /// </summary>
+    /// <param name="tile">Tile object to delete</param>
     public void DeleteTile(Tile tile)
     {
         var grid = WorldToGridArray(tile.transform.position);
@@ -480,18 +579,29 @@ public class Sector : MonoBehaviour
         GameObject.Destroy(tile);
     }
 
+    /// <summary>
+    /// Give team ownership of tile
+    /// </summary>
+    /// <param name="team">Team Name</param>
     public void ClaimTile(Team team)
     {
         _ownershipCounts[team]++;
         DetermineOwner();
     }
 
+    /// <summary>
+    /// Take team ownership of tile
+    /// </summary>
+    /// <param name="team">Team Name</param>
     public void RelinquishTile(Team team)
     {
         _ownershipCounts[team]--;
         DetermineOwner();
     }
 
+    /// <summary>
+    /// Determine who owns tile
+    /// </summary>
     private void DetermineOwner()
     {
         // manage ties
@@ -521,6 +631,10 @@ public class Sector : MonoBehaviour
         GetComponent<Renderer>().material.SetColor("_Color", GameManager.Instance.PlayerColors[_owner]);
     }
 
+    /// <summary>
+    /// Return the team of the tile owner
+    /// </summary>
+    /// <returns></returns>
     public Team GetOwner()
     {
         //Team owner = Team.Uninhabited;
