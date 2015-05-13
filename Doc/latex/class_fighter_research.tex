@@ -1,0 +1,110 @@
+\hypertarget{class_fighter_research}{}\section{Fighter\+Research Class Reference}
+\label{class_fighter_research}\index{Fighter\+Research@{Fighter\+Research}}
+
+
+This class upgrades and acts as the base for the Fighter.  
+
+
+Inheritance diagram for Fighter\+Research\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_fighter_research}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_fighter_research_afb6786a6a73abbb31f1fb9ff8ad8d0ae}{Fighter\+Research} (\hyperlink{class_ship}{Ship} ship, List$<$ \hyperlink{class_research}{Research} $>$ prereqs)
+\begin{DoxyCompactList}\small\item\em Fighter Constructor \end{DoxyCompactList}\item 
+override Dictionary$<$ Resource, int $>$ \hyperlink{class_fighter_research_afd5beebea869ceeb759f36689cd2525b}{Upgrade\+Research} (string name, float reduction)
+\begin{DoxyCompactList}\small\item\em Upgrade the level of the \hyperlink{class_research}{Research} \end{DoxyCompactList}\item 
+override void \hyperlink{class_fighter_research_a8097d1c69f3c46d4f8e2dc90dc47bcb9}{Display} (Game\+Object panel, Dictionary$<$ Resource, int $>$ resources, float reduction)
+\begin{DoxyCompactList}\small\item\em Changes the display on the \hyperlink{class_research}{Research} panels \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+This class upgrades and acts as the base for the Fighter. 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_fighter_research_afb6786a6a73abbb31f1fb9ff8ad8d0ae}{}\index{Fighter\+Research@{Fighter\+Research}!Fighter\+Research@{Fighter\+Research}}
+\index{Fighter\+Research@{Fighter\+Research}!Fighter\+Research@{Fighter\+Research}}
+\subsubsection[{Fighter\+Research}]{\setlength{\rightskip}{0pt plus 5cm}Fighter\+Research.\+Fighter\+Research (
+\begin{DoxyParamCaption}
+\item[{{\bf Ship}}]{ship, }
+\item[{List$<$ {\bf Research} $>$}]{prereqs}
+\end{DoxyParamCaption}
+)}\label{class_fighter_research_afb6786a6a73abbb31f1fb9ff8ad8d0ae}
+
+
+Fighter Constructor 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ship} & The ship\\
+\hline
+{\em prereqs} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_fighter_research_a8097d1c69f3c46d4f8e2dc90dc47bcb9}{}\index{Fighter\+Research@{Fighter\+Research}!Display@{Display}}
+\index{Display@{Display}!Fighter\+Research@{Fighter\+Research}}
+\subsubsection[{Display}]{\setlength{\rightskip}{0pt plus 5cm}override void Fighter\+Research.\+Display (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{panel, }
+\item[{Dictionary$<$ Resource, int $>$}]{resources, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_fighter_research_a8097d1c69f3c46d4f8e2dc90dc47bcb9}
+
+
+Changes the display on the \hyperlink{class_research}{Research} panels 
+
+
+\begin{DoxyParams}{Parameters}
+{\em panel} & Panel of buttons\\
+\hline
+{\em resources} & Resources needed to obtain\\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_research_aa47288e846f7992eaf88e29c2c790dc0}{Research}.
+
+\hypertarget{class_fighter_research_afd5beebea869ceeb759f36689cd2525b}{}\index{Fighter\+Research@{Fighter\+Research}!Upgrade\+Research@{Upgrade\+Research}}
+\index{Upgrade\+Research@{Upgrade\+Research}!Fighter\+Research@{Fighter\+Research}}
+\subsubsection[{Upgrade\+Research}]{\setlength{\rightskip}{0pt plus 5cm}override Dictionary$<$Resource, int$>$ Fighter\+Research.\+Upgrade\+Research (
+\begin{DoxyParamCaption}
+\item[{string}]{name, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_fighter_research_afd5beebea869ceeb759f36689cd2525b}
+
+
+Upgrade the level of the \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & \\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a963cb6ac5e27b234a3da2b1be640bc6a}{Research}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Research/\+Military/Fighter\+Research.\+cs\end{DoxyCompactItemize}

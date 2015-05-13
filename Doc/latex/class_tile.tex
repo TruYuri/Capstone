@@ -1,0 +1,310 @@
+\hypertarget{class_tile}{}\section{Tile Class Reference}
+\label{class_tile}\index{Tile@{Tile}}
+
+
+Definition and behavior for tiles/planets. Like squad, one of the most important in the game.  
+
+
+Inheritance diagram for Tile\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_tile}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_tile_a6c6245ca6081374c89f24d8127852701}{Init} (\hyperlink{class_sector}{Sector} sector, string type, string name, Inhabitance p\+Type, int p, Resource r\+Type, int r\+Count, Tile\+Size size, Team team)
+\begin{DoxyCompactList}\small\item\em Initializes this tile. \end{DoxyCompactList}\item 
+void \hyperlink{class_tile_a62a229c715955e1e073eef742c18f6aa}{Claim} (Team team)
+\begin{DoxyCompactList}\small\item\em Claims this tile for a specified team. \end{DoxyCompactList}\item 
+string \hyperlink{class_tile_a6c1f5cb6c14376f6b56b71af5a8ea0bf}{Undeploy} (bool destroy\+Structure)
+\begin{DoxyCompactList}\small\item\em Undeploy this tile\textquotesingle{}s structure. \end{DoxyCompactList}\item 
+void \hyperlink{class_tile_a0387842ae96d1a56bad7a6b7d03fb0c0}{Deploy} (\hyperlink{class_structure}{Structure} ship, Team team)
+\begin{DoxyCompactList}\small\item\em Deploy a specified ship to this tile. \end{DoxyCompactList}\item 
+void \hyperlink{class_tile_a0c500ad3298b1bf5889354e93dd4a12d}{Gather\+And\+Grow} ()
+\begin{DoxyCompactList}\small\item\em Gather resources from this planet (if necessary) and grow the planet\textquotesingle{}s population. \end{DoxyCompactList}\item 
+float \hyperlink{class_tile_aac077bfa2782b5a4d03eb8683d3c0c97}{Calculate\+Defensive\+Power} ()
+\begin{DoxyCompactList}\small\item\em Calculate this planet\textquotesingle{}s defensive power. \end{DoxyCompactList}\item 
+void \hyperlink{class_tile_a5b363f183bff4074d9c7a6fd69a98097}{Set\+Diplomatic\+Effort} (Team team)
+\begin{DoxyCompactList}\small\item\em Create a diplomatic effort at this planet. \end{DoxyCompactList}\item 
+void \hyperlink{class_tile_ac013a5609e2b1a49d1c4a3b176c53e4e}{End\+Diplomatic\+Effort} (Team team)
+\begin{DoxyCompactList}\small\item\em Remove a diplomatic effort at this planet. \end{DoxyCompactList}\item 
+void \hyperlink{class_tile_af880b01f5b8be2145350fb16b4dc516f}{Populate\+Info\+Panel} (Game\+Object panel)
+\begin{DoxyCompactList}\small\item\em Populate a U\+I panel detailing this planet\textquotesingle{}s information. \end{DoxyCompactList}\item 
+bool \hyperlink{class_tile_a5aa05cf39a2e6ae60048c0870e552bec}{Is\+In\+Range} (\hyperlink{class_squad}{Squad} squad)
+\begin{DoxyCompactList}\small\item\em Checks if a squad is within interaction distance. \end{DoxyCompactList}\item 
+bool \hyperlink{class_tile_a6cb05494bb47e88f93a207281bca1530}{Is\+In\+Click\+Range} (Vector3 click)
+\begin{DoxyCompactList}\small\item\em Checks if a raycasted point is close enough to be considered as a click. \end{DoxyCompactList}\item 
+void \hyperlink{class_tile_a47560f3ae0221e1a3ddae1ff2b6befaa}{Populate\+Count\+List} (Game\+Object list, Battle\+Type b\+Type)
+\begin{DoxyCompactList}\small\item\em Populates a list with this planet\textquotesingle{}s soldier counts, including the structure. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_tile_a5c12ee761fc69198add7ad6e8ff78071}{}string {\bfseries Name}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_tile_a5c12ee761fc69198add7ad6e8ff78071}
+
+\item 
+\hypertarget{class_tile_aa1be06445c4936df44cda3c893b59c0b}{}Team {\bfseries Team}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_tile_aa1be06445c4936df44cda3c893b59c0b}
+
+\item 
+\hypertarget{class_tile_a748724bf5645fe844a58031d59fb42c6}{}\hyperlink{class_structure}{Structure} {\bfseries Structure}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_tile_a748724bf5645fe844a58031d59fb42c6}
+
+\item 
+\hypertarget{class_tile_ac9c86e3a449fc402b5924a92643bbf09}{}string {\bfseries Type}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_tile_ac9c86e3a449fc402b5924a92643bbf09}
+
+\item 
+\hypertarget{class_tile_a9fd9f0ae50d4477cf3638f8877ce0de3}{}\hyperlink{class_squad}{Squad} {\bfseries Squad}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_tile_a9fd9f0ae50d4477cf3638f8877ce0de3}
+
+\item 
+\hypertarget{class_tile_ad986eb9517020d01eca979fe1e30e624}{}float {\bfseries Radius}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_tile_ad986eb9517020d01eca979fe1e30e624}
+
+\item 
+\hypertarget{class_tile_a3bbd388fffcc6f46bb87cfdc758b2621}{}float {\bfseries Defensive\+Range}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_tile_a3bbd388fffcc6f46bb87cfdc758b2621}
+
+\item 
+\hypertarget{class_tile_a5a3d65a47759155b555b30e663a33d7b}{}int {\bfseries Population}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_tile_a5a3d65a47759155b555b30e663a33d7b}
+
+\item 
+\hypertarget{class_tile_acbd3fb30147a08d118c9a2d2243f5624}{}Inhabitance {\bfseries Population\+Type}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_tile_acbd3fb30147a08d118c9a2d2243f5624}
+
+\item 
+\hypertarget{class_tile_a4190097e326cab7878ac6837f943bfa0}{}Game\+Object {\bfseries Ring}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_tile_a4190097e326cab7878ac6837f943bfa0}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Definition and behavior for tiles/planets. Like squad, one of the most important in the game. 
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_tile_aac077bfa2782b5a4d03eb8683d3c0c97}{}\index{Tile@{Tile}!Calculate\+Defensive\+Power@{Calculate\+Defensive\+Power}}
+\index{Calculate\+Defensive\+Power@{Calculate\+Defensive\+Power}!Tile@{Tile}}
+\subsubsection[{Calculate\+Defensive\+Power}]{\setlength{\rightskip}{0pt plus 5cm}float Tile.\+Calculate\+Defensive\+Power (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_tile_aac077bfa2782b5a4d03eb8683d3c0c97}
+
+
+Calculate this planet\textquotesingle{}s defensive power. 
+
+\begin{DoxyReturn}{Returns}
+The defensive power.
+\end{DoxyReturn}
+\hypertarget{class_tile_a62a229c715955e1e073eef742c18f6aa}{}\index{Tile@{Tile}!Claim@{Claim}}
+\index{Claim@{Claim}!Tile@{Tile}}
+\subsubsection[{Claim}]{\setlength{\rightskip}{0pt plus 5cm}void Tile.\+Claim (
+\begin{DoxyParamCaption}
+\item[{Team}]{team}
+\end{DoxyParamCaption}
+)}\label{class_tile_a62a229c715955e1e073eef742c18f6aa}
+
+
+Claims this tile for a specified team. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em team} & The new owning team.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_tile_a0387842ae96d1a56bad7a6b7d03fb0c0}{}\index{Tile@{Tile}!Deploy@{Deploy}}
+\index{Deploy@{Deploy}!Tile@{Tile}}
+\subsubsection[{Deploy}]{\setlength{\rightskip}{0pt plus 5cm}void Tile.\+Deploy (
+\begin{DoxyParamCaption}
+\item[{{\bf Structure}}]{ship, }
+\item[{Team}]{team}
+\end{DoxyParamCaption}
+)}\label{class_tile_a0387842ae96d1a56bad7a6b7d03fb0c0}
+
+
+Deploy a specified ship to this tile. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ship} & The ship to deploy.\\
+\hline
+{\em team} & The team the ship belongs to.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_tile_ac013a5609e2b1a49d1c4a3b176c53e4e}{}\index{Tile@{Tile}!End\+Diplomatic\+Effort@{End\+Diplomatic\+Effort}}
+\index{End\+Diplomatic\+Effort@{End\+Diplomatic\+Effort}!Tile@{Tile}}
+\subsubsection[{End\+Diplomatic\+Effort}]{\setlength{\rightskip}{0pt plus 5cm}void Tile.\+End\+Diplomatic\+Effort (
+\begin{DoxyParamCaption}
+\item[{Team}]{team}
+\end{DoxyParamCaption}
+)}\label{class_tile_ac013a5609e2b1a49d1c4a3b176c53e4e}
+
+
+Remove a diplomatic effort at this planet. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em team} & The team ending diplomacy.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_tile_a0c500ad3298b1bf5889354e93dd4a12d}{}\index{Tile@{Tile}!Gather\+And\+Grow@{Gather\+And\+Grow}}
+\index{Gather\+And\+Grow@{Gather\+And\+Grow}!Tile@{Tile}}
+\subsubsection[{Gather\+And\+Grow}]{\setlength{\rightskip}{0pt plus 5cm}void Tile.\+Gather\+And\+Grow (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_tile_a0c500ad3298b1bf5889354e93dd4a12d}
+
+
+Gather resources from this planet (if necessary) and grow the planet\textquotesingle{}s population. 
+
+\hypertarget{class_tile_a6c6245ca6081374c89f24d8127852701}{}\index{Tile@{Tile}!Init@{Init}}
+\index{Init@{Init}!Tile@{Tile}}
+\subsubsection[{Init}]{\setlength{\rightskip}{0pt plus 5cm}void Tile.\+Init (
+\begin{DoxyParamCaption}
+\item[{{\bf Sector}}]{sector, }
+\item[{string}]{type, }
+\item[{string}]{name, }
+\item[{Inhabitance}]{p\+Type, }
+\item[{int}]{p, }
+\item[{Resource}]{r\+Type, }
+\item[{int}]{r\+Count, }
+\item[{Tile\+Size}]{size, }
+\item[{Team}]{team}
+\end{DoxyParamCaption}
+)}\label{class_tile_a6c6245ca6081374c89f24d8127852701}
+
+
+Initializes this tile. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sector} & The parent sector.\\
+\hline
+{\em type} & The planet type.\\
+\hline
+{\em name} & The planet name.\\
+\hline
+{\em p\+Type} & The population type.\\
+\hline
+{\em p} & The population count.\\
+\hline
+{\em r\+Type} & The resource type.\\
+\hline
+{\em r\+Count} & The resource count.\\
+\hline
+{\em size} & The planet size.\\
+\hline
+{\em team} & The owning team.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_tile_a6cb05494bb47e88f93a207281bca1530}{}\index{Tile@{Tile}!Is\+In\+Click\+Range@{Is\+In\+Click\+Range}}
+\index{Is\+In\+Click\+Range@{Is\+In\+Click\+Range}!Tile@{Tile}}
+\subsubsection[{Is\+In\+Click\+Range}]{\setlength{\rightskip}{0pt plus 5cm}bool Tile.\+Is\+In\+Click\+Range (
+\begin{DoxyParamCaption}
+\item[{Vector3}]{click}
+\end{DoxyParamCaption}
+)}\label{class_tile_a6cb05494bb47e88f93a207281bca1530}
+
+
+Checks if a raycasted point is close enough to be considered as a click. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em click} & The raycast hit position on the parent sector.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Bool indicating a successful click.
+\end{DoxyReturn}
+\hypertarget{class_tile_a5aa05cf39a2e6ae60048c0870e552bec}{}\index{Tile@{Tile}!Is\+In\+Range@{Is\+In\+Range}}
+\index{Is\+In\+Range@{Is\+In\+Range}!Tile@{Tile}}
+\subsubsection[{Is\+In\+Range}]{\setlength{\rightskip}{0pt plus 5cm}bool Tile.\+Is\+In\+Range (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{squad}
+\end{DoxyParamCaption}
+)}\label{class_tile_a5aa05cf39a2e6ae60048c0870e552bec}
+
+
+Checks if a squad is within interaction distance. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em squad} & The squad in consideration.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Bool indicating the squad is in range.
+\end{DoxyReturn}
+\hypertarget{class_tile_a47560f3ae0221e1a3ddae1ff2b6befaa}{}\index{Tile@{Tile}!Populate\+Count\+List@{Populate\+Count\+List}}
+\index{Populate\+Count\+List@{Populate\+Count\+List}!Tile@{Tile}}
+\subsubsection[{Populate\+Count\+List}]{\setlength{\rightskip}{0pt plus 5cm}void Tile.\+Populate\+Count\+List (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{list, }
+\item[{Battle\+Type}]{b\+Type}
+\end{DoxyParamCaption}
+)}\label{class_tile_a47560f3ae0221e1a3ddae1ff2b6befaa}
+
+
+Populates a list with this planet\textquotesingle{}s soldier counts, including the structure. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & The U\+I list to populate.\\
+\hline
+{\em b\+Type} & The battle type to consider.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_tile_af880b01f5b8be2145350fb16b4dc516f}{}\index{Tile@{Tile}!Populate\+Info\+Panel@{Populate\+Info\+Panel}}
+\index{Populate\+Info\+Panel@{Populate\+Info\+Panel}!Tile@{Tile}}
+\subsubsection[{Populate\+Info\+Panel}]{\setlength{\rightskip}{0pt plus 5cm}void Tile.\+Populate\+Info\+Panel (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{panel}
+\end{DoxyParamCaption}
+)}\label{class_tile_af880b01f5b8be2145350fb16b4dc516f}
+
+
+Populate a U\+I panel detailing this planet\textquotesingle{}s information. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em panel} & The panel to populate.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_tile_a5b363f183bff4074d9c7a6fd69a98097}{}\index{Tile@{Tile}!Set\+Diplomatic\+Effort@{Set\+Diplomatic\+Effort}}
+\index{Set\+Diplomatic\+Effort@{Set\+Diplomatic\+Effort}!Tile@{Tile}}
+\subsubsection[{Set\+Diplomatic\+Effort}]{\setlength{\rightskip}{0pt plus 5cm}void Tile.\+Set\+Diplomatic\+Effort (
+\begin{DoxyParamCaption}
+\item[{Team}]{team}
+\end{DoxyParamCaption}
+)}\label{class_tile_a5b363f183bff4074d9c7a6fd69a98097}
+
+
+Create a diplomatic effort at this planet. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em team} & The team attempting diplomacy.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_tile_a6c1f5cb6c14376f6b56b71af5a8ea0bf}{}\index{Tile@{Tile}!Undeploy@{Undeploy}}
+\index{Undeploy@{Undeploy}!Tile@{Tile}}
+\subsubsection[{Undeploy}]{\setlength{\rightskip}{0pt plus 5cm}string Tile.\+Undeploy (
+\begin{DoxyParamCaption}
+\item[{bool}]{destroy\+Structure}
+\end{DoxyParamCaption}
+)}\label{class_tile_a6c1f5cb6c14376f6b56b71af5a8ea0bf}
+
+
+Undeploy this tile\textquotesingle{}s structure. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em destroy\+Structure} & Indicate whether to destroy the structure after undeploying.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The planet type (for considering the undeploy type. i.\+e., undeploying a space structure requires extra work.)
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Scripts/Tile.\+cs\end{DoxyCompactItemize}

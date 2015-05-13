@@ -1,0 +1,191 @@
+\hypertarget{class_heavy_fighter_research}{}\section{Heavy\+Fighter\+Research Class Reference}
+\label{class_heavy_fighter_research}\index{Heavy\+Fighter\+Research@{Heavy\+Fighter\+Research}}
+
+
+This class upgrades and acts as the base for the Heavy Fighter.  
+
+
+Inheritance diagram for Heavy\+Fighter\+Research\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_heavy_fighter_research}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_heavy_fighter_research_a3b6b83b4c4dce96dafdefe3c9d2ce736}{Heavy\+Fighter\+Research} (\hyperlink{class_ship}{Ship} ship, List$<$ \hyperlink{class_research}{Research} $>$ prereqs)
+\begin{DoxyCompactList}\small\item\em Heavy Fighter Constructor \end{DoxyCompactList}\item 
+override Dictionary$<$ Resource, int $>$ \hyperlink{class_heavy_fighter_research_aad96c063ea5f6e3b473f4bd9dd7dcc86}{Upgrade\+Research} (string name, float reduction)
+\begin{DoxyCompactList}\small\item\em Upgrades the level of the \hyperlink{class_research}{Research} \end{DoxyCompactList}\item 
+override Dictionary$<$ Resource, int $>$ \hyperlink{class_heavy_fighter_research_ac5fb9e14f64823b2386e0dbc35992ea4}{Unlock} (float reduction)
+\begin{DoxyCompactList}\small\item\em Unlocks \hyperlink{class_research}{Research} \end{DoxyCompactList}\item 
+override bool \hyperlink{class_heavy_fighter_research_a5ff354ea940ac34f4da1be6246eba690}{Can\+Unlock} (Dictionary$<$ Resource, int $>$ resources, float reduction)
+\begin{DoxyCompactList}\small\item\em Determines if \hyperlink{class_research}{Research} can be unlocked \end{DoxyCompactList}\item 
+override void \hyperlink{class_heavy_fighter_research_a867ed4fb05de870ec77e80dd93ae5f19}{Display} (Game\+Object panel, Dictionary$<$ Resource, int $>$ resources, float reduction)
+\begin{DoxyCompactList}\small\item\em Changes panel display after upgrading \end{DoxyCompactList}\item 
+override void \hyperlink{class_heavy_fighter_research_a25476a66abf46ffb2b99d3d01b60c8a1}{Display\+Popup} (Game\+Object panel, string upgrade, float reduction)
+\begin{DoxyCompactList}\small\item\em Displays the popup for the \hyperlink{class_research}{Research} \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+This class upgrades and acts as the base for the Heavy Fighter. 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_heavy_fighter_research_a3b6b83b4c4dce96dafdefe3c9d2ce736}{}\index{Heavy\+Fighter\+Research@{Heavy\+Fighter\+Research}!Heavy\+Fighter\+Research@{Heavy\+Fighter\+Research}}
+\index{Heavy\+Fighter\+Research@{Heavy\+Fighter\+Research}!Heavy\+Fighter\+Research@{Heavy\+Fighter\+Research}}
+\subsubsection[{Heavy\+Fighter\+Research}]{\setlength{\rightskip}{0pt plus 5cm}Heavy\+Fighter\+Research.\+Heavy\+Fighter\+Research (
+\begin{DoxyParamCaption}
+\item[{{\bf Ship}}]{ship, }
+\item[{List$<$ {\bf Research} $>$}]{prereqs}
+\end{DoxyParamCaption}
+)}\label{class_heavy_fighter_research_a3b6b83b4c4dce96dafdefe3c9d2ce736}
+
+
+Heavy Fighter Constructor 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ship} & The ship\\
+\hline
+{\em prereqs} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_heavy_fighter_research_a5ff354ea940ac34f4da1be6246eba690}{}\index{Heavy\+Fighter\+Research@{Heavy\+Fighter\+Research}!Can\+Unlock@{Can\+Unlock}}
+\index{Can\+Unlock@{Can\+Unlock}!Heavy\+Fighter\+Research@{Heavy\+Fighter\+Research}}
+\subsubsection[{Can\+Unlock}]{\setlength{\rightskip}{0pt plus 5cm}override bool Heavy\+Fighter\+Research.\+Can\+Unlock (
+\begin{DoxyParamCaption}
+\item[{Dictionary$<$ Resource, int $>$}]{resources, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_heavy_fighter_research_a5ff354ea940ac34f4da1be6246eba690}
+
+
+Determines if \hyperlink{class_research}{Research} can be unlocked 
+
+
+\begin{DoxyParams}{Parameters}
+{\em resources} & Resources needed to obtain\\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a0dd2f3c56699958f10865537bd61a8d0}{Research}.
+
+\hypertarget{class_heavy_fighter_research_a867ed4fb05de870ec77e80dd93ae5f19}{}\index{Heavy\+Fighter\+Research@{Heavy\+Fighter\+Research}!Display@{Display}}
+\index{Display@{Display}!Heavy\+Fighter\+Research@{Heavy\+Fighter\+Research}}
+\subsubsection[{Display}]{\setlength{\rightskip}{0pt plus 5cm}override void Heavy\+Fighter\+Research.\+Display (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{panel, }
+\item[{Dictionary$<$ Resource, int $>$}]{resources, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_heavy_fighter_research_a867ed4fb05de870ec77e80dd93ae5f19}
+
+
+Changes panel display after upgrading 
+
+
+\begin{DoxyParams}{Parameters}
+{\em panel} & Panel of buttons\\
+\hline
+{\em resources} & Resources needed to obtain\\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_research_aa47288e846f7992eaf88e29c2c790dc0}{Research}.
+
+\hypertarget{class_heavy_fighter_research_a25476a66abf46ffb2b99d3d01b60c8a1}{}\index{Heavy\+Fighter\+Research@{Heavy\+Fighter\+Research}!Display\+Popup@{Display\+Popup}}
+\index{Display\+Popup@{Display\+Popup}!Heavy\+Fighter\+Research@{Heavy\+Fighter\+Research}}
+\subsubsection[{Display\+Popup}]{\setlength{\rightskip}{0pt plus 5cm}override void Heavy\+Fighter\+Research.\+Display\+Popup (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{panel, }
+\item[{string}]{upgrade, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_heavy_fighter_research_a25476a66abf46ffb2b99d3d01b60c8a1}
+
+
+Displays the popup for the \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em panel} & Panel of button hovered over\\
+\hline
+{\em upgrade} & Name of upgrade\\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_research_a3c61c95bc273b0effe02577c7e5d29f5}{Research}.
+
+\hypertarget{class_heavy_fighter_research_ac5fb9e14f64823b2386e0dbc35992ea4}{}\index{Heavy\+Fighter\+Research@{Heavy\+Fighter\+Research}!Unlock@{Unlock}}
+\index{Unlock@{Unlock}!Heavy\+Fighter\+Research@{Heavy\+Fighter\+Research}}
+\subsubsection[{Unlock}]{\setlength{\rightskip}{0pt plus 5cm}override Dictionary$<$Resource, int$>$ Heavy\+Fighter\+Research.\+Unlock (
+\begin{DoxyParamCaption}
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_heavy_fighter_research_ac5fb9e14f64823b2386e0dbc35992ea4}
+
+
+Unlocks \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a5ae3ebe38d15f37ce6cc61fa8a76c6fc}{Research}.
+
+\hypertarget{class_heavy_fighter_research_aad96c063ea5f6e3b473f4bd9dd7dcc86}{}\index{Heavy\+Fighter\+Research@{Heavy\+Fighter\+Research}!Upgrade\+Research@{Upgrade\+Research}}
+\index{Upgrade\+Research@{Upgrade\+Research}!Heavy\+Fighter\+Research@{Heavy\+Fighter\+Research}}
+\subsubsection[{Upgrade\+Research}]{\setlength{\rightskip}{0pt plus 5cm}override Dictionary$<$Resource, int$>$ Heavy\+Fighter\+Research.\+Upgrade\+Research (
+\begin{DoxyParamCaption}
+\item[{string}]{name, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_heavy_fighter_research_aad96c063ea5f6e3b473f4bd9dd7dcc86}
+
+
+Upgrades the level of the \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & \\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a963cb6ac5e27b234a3da2b1be640bc6a}{Research}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Research/\+Military/Heavy\+Fighter\+Research.\+cs\end{DoxyCompactItemize}

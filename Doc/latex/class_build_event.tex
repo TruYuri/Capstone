@@ -1,0 +1,97 @@
+\hypertarget{class_build_event}{}\section{Build\+Event Class Reference}
+\label{class_build_event}\index{Build\+Event@{Build\+Event}}
+
+
+Handles a build request.  
+
+
+Inheritance diagram for Build\+Event\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_build_event}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_build_event_a44d63e592cb6a90e2b23f2d741f4f6ed}{Build\+Event} (int turns, \hyperlink{class_player}{Player} player, \hyperlink{class_tile}{Tile} tile, \hyperlink{class_ship}{Ship} ship)
+\begin{DoxyCompactList}\small\item\em Constructor for a \hyperlink{class_build_event}{Build\+Event}. \end{DoxyCompactList}\item 
+override void \hyperlink{class_build_event_a69284737235550d9706292c5212ba228}{Progress} ()
+\begin{DoxyCompactList}\small\item\em Progresses the build event until it\textquotesingle{}s time to build. \end{DoxyCompactList}\item 
+override bool \hyperlink{class_build_event_a6b294461f83c3e855658190b0e4d96c8}{Assert\+Valid} ()
+\begin{DoxyCompactList}\small\item\em Ensures the build event is still valid. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Handles a build request. 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_build_event_a44d63e592cb6a90e2b23f2d741f4f6ed}{}\index{Build\+Event@{Build\+Event}!Build\+Event@{Build\+Event}}
+\index{Build\+Event@{Build\+Event}!Build\+Event@{Build\+Event}}
+\subsubsection[{Build\+Event}]{\setlength{\rightskip}{0pt plus 5cm}Build\+Event.\+Build\+Event (
+\begin{DoxyParamCaption}
+\item[{int}]{turns, }
+\item[{{\bf Player}}]{player, }
+\item[{{\bf Tile}}]{tile, }
+\item[{{\bf Ship}}]{ship}
+\end{DoxyParamCaption}
+)}\label{class_build_event_a44d63e592cb6a90e2b23f2d741f4f6ed}
+
+
+Constructor for a \hyperlink{class_build_event}{Build\+Event}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em turns} & \\
+\hline
+{\em player} & \\
+\hline
+{\em tile} & \\
+\hline
+{\em ship} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_build_event_a6b294461f83c3e855658190b0e4d96c8}{}\index{Build\+Event@{Build\+Event}!Assert\+Valid@{Assert\+Valid}}
+\index{Assert\+Valid@{Assert\+Valid}!Build\+Event@{Build\+Event}}
+\subsubsection[{Assert\+Valid}]{\setlength{\rightskip}{0pt plus 5cm}override bool Build\+Event.\+Assert\+Valid (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_build_event_a6b294461f83c3e855658190b0e4d96c8}
+
+
+Ensures the build event is still valid. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_game_event_a39cda54b07ab8ad842f2fc4fec588a9f}{Game\+Event}.
+
+\hypertarget{class_build_event_a69284737235550d9706292c5212ba228}{}\index{Build\+Event@{Build\+Event}!Progress@{Progress}}
+\index{Progress@{Progress}!Build\+Event@{Build\+Event}}
+\subsubsection[{Progress}]{\setlength{\rightskip}{0pt plus 5cm}override void Build\+Event.\+Progress (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_build_event_a69284737235550d9706292c5212ba228}
+
+
+Progresses the build event until it\textquotesingle{}s time to build. 
+
+
+
+Reimplemented from \hyperlink{class_game_event_af4e3b9e9da59c616f4136851b7a35130}{Game\+Event}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Events/Build\+Event.\+cs\end{DoxyCompactItemize}

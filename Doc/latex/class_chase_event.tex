@@ -1,0 +1,117 @@
+\hypertarget{class_chase_event}{}\section{Chase\+Event Class Reference}
+\label{class_chase_event}\index{Chase\+Event@{Chase\+Event}}
+
+
+Handles one squad chasing another.  
+
+
+Inheritance diagram for Chase\+Event\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_chase_event}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_chase_event_a451a00af93b1347a485e244739ceb994}{Chase\+Event} (\hyperlink{class_squad}{Squad} squad, \hyperlink{class_squad}{Squad} chase, \hyperlink{class_tile}{Tile} home\+Tile, float range, float velocity)
+\begin{DoxyCompactList}\small\item\em Constructor for the chase event. \end{DoxyCompactList}\item 
+override void \hyperlink{class_chase_event_a60d3a6a970fddc85e47adc5d2652a5bd}{Progress} ()
+\begin{DoxyCompactList}\small\item\em Keeps the chase in constant progression until invalid. \end{DoxyCompactList}\item 
+override void \hyperlink{class_chase_event_a6197d2cdf001ae96cc2f2e4996cbcd89}{Update} ()
+\begin{DoxyCompactList}\small\item\em Physically moves the chasing squad closer to its target. \end{DoxyCompactList}\item 
+override bool \hyperlink{class_chase_event_a78ff05e24a0671c734d0c4f50effa88b}{Assert\+Valid} ()
+\begin{DoxyCompactList}\small\item\em Ensures the chase is still valid. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Handles one squad chasing another. 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_chase_event_a451a00af93b1347a485e244739ceb994}{}\index{Chase\+Event@{Chase\+Event}!Chase\+Event@{Chase\+Event}}
+\index{Chase\+Event@{Chase\+Event}!Chase\+Event@{Chase\+Event}}
+\subsubsection[{Chase\+Event}]{\setlength{\rightskip}{0pt plus 5cm}Chase\+Event.\+Chase\+Event (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{squad, }
+\item[{{\bf Squad}}]{chase, }
+\item[{{\bf Tile}}]{home\+Tile, }
+\item[{float}]{range, }
+\item[{float}]{velocity}
+\end{DoxyParamCaption}
+)}\label{class_chase_event_a451a00af93b1347a485e244739ceb994}
+
+
+Constructor for the chase event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em squad} & \\
+\hline
+{\em chase} & \\
+\hline
+{\em home\+Tile} & \\
+\hline
+{\em range} & \\
+\hline
+{\em velocity} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_chase_event_a78ff05e24a0671c734d0c4f50effa88b}{}\index{Chase\+Event@{Chase\+Event}!Assert\+Valid@{Assert\+Valid}}
+\index{Assert\+Valid@{Assert\+Valid}!Chase\+Event@{Chase\+Event}}
+\subsubsection[{Assert\+Valid}]{\setlength{\rightskip}{0pt plus 5cm}override bool Chase\+Event.\+Assert\+Valid (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_chase_event_a78ff05e24a0671c734d0c4f50effa88b}
+
+
+Ensures the chase is still valid. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_game_event_a39cda54b07ab8ad842f2fc4fec588a9f}{Game\+Event}.
+
+\hypertarget{class_chase_event_a60d3a6a970fddc85e47adc5d2652a5bd}{}\index{Chase\+Event@{Chase\+Event}!Progress@{Progress}}
+\index{Progress@{Progress}!Chase\+Event@{Chase\+Event}}
+\subsubsection[{Progress}]{\setlength{\rightskip}{0pt plus 5cm}override void Chase\+Event.\+Progress (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_chase_event_a60d3a6a970fddc85e47adc5d2652a5bd}
+
+
+Keeps the chase in constant progression until invalid. 
+
+
+
+Reimplemented from \hyperlink{class_game_event_af4e3b9e9da59c616f4136851b7a35130}{Game\+Event}.
+
+\hypertarget{class_chase_event_a6197d2cdf001ae96cc2f2e4996cbcd89}{}\index{Chase\+Event@{Chase\+Event}!Update@{Update}}
+\index{Update@{Update}!Chase\+Event@{Chase\+Event}}
+\subsubsection[{Update}]{\setlength{\rightskip}{0pt plus 5cm}override void Chase\+Event.\+Update (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_chase_event_a6197d2cdf001ae96cc2f2e4996cbcd89}
+
+
+Physically moves the chasing squad closer to its target. 
+
+
+
+Reimplemented from \hyperlink{class_game_event_affc9765dad7ffeed5b68cd99027789ec}{Game\+Event}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Events/Chase\+Event.\+cs\end{DoxyCompactItemize}

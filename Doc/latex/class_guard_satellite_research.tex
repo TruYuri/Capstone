@@ -1,0 +1,191 @@
+\hypertarget{class_guard_satellite_research}{}\section{Guard\+Satellite\+Research Class Reference}
+\label{class_guard_satellite_research}\index{Guard\+Satellite\+Research@{Guard\+Satellite\+Research}}
+
+
+This class upgrades and acts as the base for the Guard Satellite.  
+
+
+Inheritance diagram for Guard\+Satellite\+Research\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_guard_satellite_research}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_guard_satellite_research_a476a4ead2c4e32ed60716f3fdab005ce}{Guard\+Satellite\+Research} (\hyperlink{class_ship}{Ship} ship, List$<$ \hyperlink{class_research}{Research} $>$ prereqs)
+\begin{DoxyCompactList}\small\item\em Guard Satellite Constructor \end{DoxyCompactList}\item 
+override Dictionary$<$ Resource, int $>$ \hyperlink{class_guard_satellite_research_aa69bdb692be9ee8ff073a3f963fc4045}{Upgrade\+Research} (string name, float reduction)
+\begin{DoxyCompactList}\small\item\em Upgrades the level of \hyperlink{class_research}{Research} \end{DoxyCompactList}\item 
+override Dictionary$<$ Resource, int $>$ \hyperlink{class_guard_satellite_research_aca565da13490a14ba76ee05b99ecabe6}{Unlock} (float reduction)
+\begin{DoxyCompactList}\small\item\em Unlocks the \hyperlink{class_research}{Research} \end{DoxyCompactList}\item 
+override bool \hyperlink{class_guard_satellite_research_a0c3e6fbc59ec84c659f44309d69be30f}{Can\+Unlock} (Dictionary$<$ Resource, int $>$ resources, float reduction)
+\begin{DoxyCompactList}\small\item\em Determines if \hyperlink{class_research}{Research} can be unlocked \end{DoxyCompactList}\item 
+override void \hyperlink{class_guard_satellite_research_a2840eeb59aecef270a2ee73842cd7649}{Display} (Game\+Object panel, Dictionary$<$ Resource, int $>$ resources, float reduction)
+\begin{DoxyCompactList}\small\item\em Changes display on panel of \hyperlink{class_research}{Research} \end{DoxyCompactList}\item 
+override void \hyperlink{class_guard_satellite_research_a28a87325e2fc2fb666c715560f85a15a}{Display\+Popup} (Game\+Object panel, string upgrade, float reduction)
+\begin{DoxyCompactList}\small\item\em Displays the popup for the \hyperlink{class_research}{Research} \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+This class upgrades and acts as the base for the Guard Satellite. 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_guard_satellite_research_a476a4ead2c4e32ed60716f3fdab005ce}{}\index{Guard\+Satellite\+Research@{Guard\+Satellite\+Research}!Guard\+Satellite\+Research@{Guard\+Satellite\+Research}}
+\index{Guard\+Satellite\+Research@{Guard\+Satellite\+Research}!Guard\+Satellite\+Research@{Guard\+Satellite\+Research}}
+\subsubsection[{Guard\+Satellite\+Research}]{\setlength{\rightskip}{0pt plus 5cm}Guard\+Satellite\+Research.\+Guard\+Satellite\+Research (
+\begin{DoxyParamCaption}
+\item[{{\bf Ship}}]{ship, }
+\item[{List$<$ {\bf Research} $>$}]{prereqs}
+\end{DoxyParamCaption}
+)}\label{class_guard_satellite_research_a476a4ead2c4e32ed60716f3fdab005ce}
+
+
+Guard Satellite Constructor 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ship} & The ship\\
+\hline
+{\em prereqs} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_guard_satellite_research_a0c3e6fbc59ec84c659f44309d69be30f}{}\index{Guard\+Satellite\+Research@{Guard\+Satellite\+Research}!Can\+Unlock@{Can\+Unlock}}
+\index{Can\+Unlock@{Can\+Unlock}!Guard\+Satellite\+Research@{Guard\+Satellite\+Research}}
+\subsubsection[{Can\+Unlock}]{\setlength{\rightskip}{0pt plus 5cm}override bool Guard\+Satellite\+Research.\+Can\+Unlock (
+\begin{DoxyParamCaption}
+\item[{Dictionary$<$ Resource, int $>$}]{resources, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_guard_satellite_research_a0c3e6fbc59ec84c659f44309d69be30f}
+
+
+Determines if \hyperlink{class_research}{Research} can be unlocked 
+
+
+\begin{DoxyParams}{Parameters}
+{\em resources} & Resources needed to obtain\\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a0dd2f3c56699958f10865537bd61a8d0}{Research}.
+
+\hypertarget{class_guard_satellite_research_a2840eeb59aecef270a2ee73842cd7649}{}\index{Guard\+Satellite\+Research@{Guard\+Satellite\+Research}!Display@{Display}}
+\index{Display@{Display}!Guard\+Satellite\+Research@{Guard\+Satellite\+Research}}
+\subsubsection[{Display}]{\setlength{\rightskip}{0pt plus 5cm}override void Guard\+Satellite\+Research.\+Display (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{panel, }
+\item[{Dictionary$<$ Resource, int $>$}]{resources, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_guard_satellite_research_a2840eeb59aecef270a2ee73842cd7649}
+
+
+Changes display on panel of \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em panel} & Panel of buttons\\
+\hline
+{\em resources} & Resources needed to obtain\\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_research_aa47288e846f7992eaf88e29c2c790dc0}{Research}.
+
+\hypertarget{class_guard_satellite_research_a28a87325e2fc2fb666c715560f85a15a}{}\index{Guard\+Satellite\+Research@{Guard\+Satellite\+Research}!Display\+Popup@{Display\+Popup}}
+\index{Display\+Popup@{Display\+Popup}!Guard\+Satellite\+Research@{Guard\+Satellite\+Research}}
+\subsubsection[{Display\+Popup}]{\setlength{\rightskip}{0pt plus 5cm}override void Guard\+Satellite\+Research.\+Display\+Popup (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{panel, }
+\item[{string}]{upgrade, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_guard_satellite_research_a28a87325e2fc2fb666c715560f85a15a}
+
+
+Displays the popup for the \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em panel} & Panel of button hovered over\\
+\hline
+{\em upgrade} & Name of upgrade\\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_research_a3c61c95bc273b0effe02577c7e5d29f5}{Research}.
+
+\hypertarget{class_guard_satellite_research_aca565da13490a14ba76ee05b99ecabe6}{}\index{Guard\+Satellite\+Research@{Guard\+Satellite\+Research}!Unlock@{Unlock}}
+\index{Unlock@{Unlock}!Guard\+Satellite\+Research@{Guard\+Satellite\+Research}}
+\subsubsection[{Unlock}]{\setlength{\rightskip}{0pt plus 5cm}override Dictionary$<$Resource, int$>$ Guard\+Satellite\+Research.\+Unlock (
+\begin{DoxyParamCaption}
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_guard_satellite_research_aca565da13490a14ba76ee05b99ecabe6}
+
+
+Unlocks the \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a5ae3ebe38d15f37ce6cc61fa8a76c6fc}{Research}.
+
+\hypertarget{class_guard_satellite_research_aa69bdb692be9ee8ff073a3f963fc4045}{}\index{Guard\+Satellite\+Research@{Guard\+Satellite\+Research}!Upgrade\+Research@{Upgrade\+Research}}
+\index{Upgrade\+Research@{Upgrade\+Research}!Guard\+Satellite\+Research@{Guard\+Satellite\+Research}}
+\subsubsection[{Upgrade\+Research}]{\setlength{\rightskip}{0pt plus 5cm}override Dictionary$<$Resource, int$>$ Guard\+Satellite\+Research.\+Upgrade\+Research (
+\begin{DoxyParamCaption}
+\item[{string}]{name, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_guard_satellite_research_aa69bdb692be9ee8ff073a3f963fc4045}
+
+
+Upgrades the level of \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & \\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a963cb6ac5e27b234a3da2b1be640bc6a}{Research}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Research/\+Military/Guard\+Satellite\+Research.\+cs\end{DoxyCompactItemize}

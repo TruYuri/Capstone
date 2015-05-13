@@ -1,0 +1,189 @@
+\hypertarget{class_game_manager}{}\section{Game\+Manager Class Reference}
+\label{class_game_manager}\index{Game\+Manager@{Game\+Manager}}
+
+
+Primary manager. Handles players and events.  
+
+
+Inheritance diagram for Game\+Manager\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_game_manager}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_game_manager_aa96cb6bfba6863bc1db6a0298862b531}{Init} (Team player)
+\begin{DoxyCompactList}\small\item\em Initializes the game. \end{DoxyCompactList}\item 
+void \hyperlink{class_game_manager_a54fcf6264af5230756d7359be2ba7835}{Add\+Human\+Player} (Team team)
+\begin{DoxyCompactList}\small\item\em Adds a human player to the player registry. \end{DoxyCompactList}\item 
+void \hyperlink{class_game_manager_a5c247b7f54dc0088d75d7e284034fe03}{Add\+A\+I\+Player} (Team team)
+\begin{DoxyCompactList}\small\item\em Adds an A\+I player to the player registry. \end{DoxyCompactList}\item 
+Dictionary$<$ string, \hyperlink{class_ship}{Ship} $>$ \hyperlink{class_game_manager_a9244fca24c585304d87a273dcd1320dd}{Generate\+Ship\+Defs} ()
+\begin{DoxyCompactList}\small\item\em Generates a new copy of the ship definitions read in at init() \end{DoxyCompactList}\item 
+\hyperlink{class_research_tree}{Research\+Tree} \hyperlink{class_game_manager_afea293389b7fe2bf339a228ce27cd4e2}{Generate\+Military\+Tree} (Dictionary$<$ string, \hyperlink{class_ship}{Ship} $>$ ship\+Defs)
+\begin{DoxyCompactList}\small\item\em Generates a new military research tree. \end{DoxyCompactList}\item 
+\hyperlink{class_research_tree}{Research\+Tree} \hyperlink{class_game_manager_a8b0eb6853c2f2f9319fcaeb5ddbae3a4}{Generate\+Science\+Tree} (Dictionary$<$ string, \hyperlink{class_ship}{Ship} $>$ ship\+Defs, \hyperlink{class_player}{Player} player)
+\begin{DoxyCompactList}\small\item\em Generates a new scientific research tree. \end{DoxyCompactList}\item 
+void \hyperlink{class_game_manager_a8173c6ad82694534cccccfc43d39de8f}{Add\+Event} (\hyperlink{class_game_event}{Game\+Event} game\+Event, bool immediate)
+\begin{DoxyCompactList}\small\item\em Registers a new event to process. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_game_manager_aca9cdc903197db645761481bc438d5bc}{}static System.\+Random {\bfseries Generator} = new System.\+Random()\label{class_game_manager_aca9cdc903197db645761481bc438d5bc}
+
+\end{DoxyCompactItemize}
+\subsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_game_manager_ad3e717f4fb0f378b969f4457de81f23e}{}static \hyperlink{class_game_manager}{Game\+Manager} {\bfseries Instance}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_game_manager_ad3e717f4fb0f378b969f4457de81f23e}
+
+\item 
+\hypertarget{class_game_manager_a2148964c08045eeffa55ae1f9fdf1a00}{}bool {\bfseries Paused}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_game_manager_a2148964c08045eeffa55ae1f9fdf1a00}
+
+\item 
+\hypertarget{class_game_manager_aac60fa24400ba0854925daadfef895f0}{}Dictionary$<$ Team, \hyperlink{class_player}{Player} $>$ {\bfseries Players}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_game_manager_aac60fa24400ba0854925daadfef895f0}
+
+\item 
+\hypertarget{class_game_manager_a8f8aa933bf456615255a56297815afde}{}Dictionary$<$ Team, Color $>$ {\bfseries Player\+Colors}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_game_manager_a8f8aa933bf456615255a56297815afde}
+
+\item 
+\hypertarget{class_game_manager_ac55a267b91a46343f3b7d60518372784}{}int {\bfseries Turns}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_game_manager_ac55a267b91a46343f3b7d60518372784}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Primary manager. Handles players and events. 
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_game_manager_a5c247b7f54dc0088d75d7e284034fe03}{}\index{Game\+Manager@{Game\+Manager}!Add\+A\+I\+Player@{Add\+A\+I\+Player}}
+\index{Add\+A\+I\+Player@{Add\+A\+I\+Player}!Game\+Manager@{Game\+Manager}}
+\subsubsection[{Add\+A\+I\+Player}]{\setlength{\rightskip}{0pt plus 5cm}void Game\+Manager.\+Add\+A\+I\+Player (
+\begin{DoxyParamCaption}
+\item[{Team}]{team}
+\end{DoxyParamCaption}
+)}\label{class_game_manager_a5c247b7f54dc0088d75d7e284034fe03}
+
+
+Adds an A\+I player to the player registry. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em team} & The A\+I player team.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_game_manager_a8173c6ad82694534cccccfc43d39de8f}{}\index{Game\+Manager@{Game\+Manager}!Add\+Event@{Add\+Event}}
+\index{Add\+Event@{Add\+Event}!Game\+Manager@{Game\+Manager}}
+\subsubsection[{Add\+Event}]{\setlength{\rightskip}{0pt plus 5cm}void Game\+Manager.\+Add\+Event (
+\begin{DoxyParamCaption}
+\item[{{\bf Game\+Event}}]{game\+Event, }
+\item[{bool}]{immediate}
+\end{DoxyParamCaption}
+)}\label{class_game_manager_a8173c6ad82694534cccccfc43d39de8f}
+
+
+Registers a new event to process. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game\+Event} & The event to process.\\
+\hline
+{\em immediate} & Indicates whether this event should begin this turn or the next.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_game_manager_a54fcf6264af5230756d7359be2ba7835}{}\index{Game\+Manager@{Game\+Manager}!Add\+Human\+Player@{Add\+Human\+Player}}
+\index{Add\+Human\+Player@{Add\+Human\+Player}!Game\+Manager@{Game\+Manager}}
+\subsubsection[{Add\+Human\+Player}]{\setlength{\rightskip}{0pt plus 5cm}void Game\+Manager.\+Add\+Human\+Player (
+\begin{DoxyParamCaption}
+\item[{Team}]{team}
+\end{DoxyParamCaption}
+)}\label{class_game_manager_a54fcf6264af5230756d7359be2ba7835}
+
+
+Adds a human player to the player registry. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em team} & The human player team.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_game_manager_afea293389b7fe2bf339a228ce27cd4e2}{}\index{Game\+Manager@{Game\+Manager}!Generate\+Military\+Tree@{Generate\+Military\+Tree}}
+\index{Generate\+Military\+Tree@{Generate\+Military\+Tree}!Game\+Manager@{Game\+Manager}}
+\subsubsection[{Generate\+Military\+Tree}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Research\+Tree} Game\+Manager.\+Generate\+Military\+Tree (
+\begin{DoxyParamCaption}
+\item[{Dictionary$<$ string, {\bf Ship} $>$}]{ship\+Defs}
+\end{DoxyParamCaption}
+)}\label{class_game_manager_afea293389b7fe2bf339a228ce27cd4e2}
+
+
+Generates a new military research tree. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ship\+Defs} & The ship definitions to base the research upon.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A new military research tree.
+\end{DoxyReturn}
+\hypertarget{class_game_manager_a8b0eb6853c2f2f9319fcaeb5ddbae3a4}{}\index{Game\+Manager@{Game\+Manager}!Generate\+Science\+Tree@{Generate\+Science\+Tree}}
+\index{Generate\+Science\+Tree@{Generate\+Science\+Tree}!Game\+Manager@{Game\+Manager}}
+\subsubsection[{Generate\+Science\+Tree}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Research\+Tree} Game\+Manager.\+Generate\+Science\+Tree (
+\begin{DoxyParamCaption}
+\item[{Dictionary$<$ string, {\bf Ship} $>$}]{ship\+Defs, }
+\item[{{\bf Player}}]{player}
+\end{DoxyParamCaption}
+)}\label{class_game_manager_a8b0eb6853c2f2f9319fcaeb5ddbae3a4}
+
+
+Generates a new scientific research tree. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ship\+Defs} & The ship definitions to base the research on.\\
+\hline
+{\em player} & The player this tree will belong to.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A new scientific research tree.
+\end{DoxyReturn}
+\hypertarget{class_game_manager_a9244fca24c585304d87a273dcd1320dd}{}\index{Game\+Manager@{Game\+Manager}!Generate\+Ship\+Defs@{Generate\+Ship\+Defs}}
+\index{Generate\+Ship\+Defs@{Generate\+Ship\+Defs}!Game\+Manager@{Game\+Manager}}
+\subsubsection[{Generate\+Ship\+Defs}]{\setlength{\rightskip}{0pt plus 5cm}Dictionary$<$string, {\bf Ship}$>$ Game\+Manager.\+Generate\+Ship\+Defs (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_game_manager_a9244fca24c585304d87a273dcd1320dd}
+
+
+Generates a new copy of the ship definitions read in at init() 
+
+\begin{DoxyReturn}{Returns}
+New player ship definitions.
+\end{DoxyReturn}
+\hypertarget{class_game_manager_aa96cb6bfba6863bc1db6a0298862b531}{}\index{Game\+Manager@{Game\+Manager}!Init@{Init}}
+\index{Init@{Init}!Game\+Manager@{Game\+Manager}}
+\subsubsection[{Init}]{\setlength{\rightskip}{0pt plus 5cm}void Game\+Manager.\+Init (
+\begin{DoxyParamCaption}
+\item[{Team}]{player}
+\end{DoxyParamCaption}
+)}\label{class_game_manager_aa96cb6bfba6863bc1db6a0298862b531}
+
+
+Initializes the game. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em player} & The team to set the human as.\\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Scripts/Game\+Manager.\+cs\end{DoxyCompactItemize}

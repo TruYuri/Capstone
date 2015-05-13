@@ -1,0 +1,154 @@
+\hypertarget{class_a_i_player}{}\section{A\+I\+Player Class Reference}
+\label{class_a_i_player}\index{A\+I\+Player@{A\+I\+Player}}
+
+
+Override of the \hyperlink{class_player}{Player} class for A\+I behavior.  
+
+
+Inheritance diagram for A\+I\+Player\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_a_i_player}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+override void \hyperlink{class_a_i_player_af0321d8f60d724c9b0a69ed9e5766911}{Init} (Team team)
+\begin{DoxyCompactList}\small\item\em Initializes the A\+I \hyperlink{class_player}{Player} \end{DoxyCompactList}\item 
+void \hyperlink{class_a_i_player_ac41ba1e00aee19f7880b2029cb0f8e2b}{Register\+Sector\+Squad} (\hyperlink{class_sector}{Sector} s, \hyperlink{class_squad}{Squad} sq)
+\begin{DoxyCompactList}\small\item\em Adds a new squad for this A\+I to manage in a sector \end{DoxyCompactList}\item 
+void \hyperlink{class_a_i_player_a5d72fbdbf9aa234aaabdd3d8c6a61fa3}{Register\+Defensive\+Squad} (\hyperlink{class_sector}{Sector} s, \hyperlink{class_tile}{Tile} t, \hyperlink{class_squad}{Squad} sq)
+\begin{DoxyCompactList}\small\item\em Adds a new squad for this A\+I to manage in a sector, around a tile \end{DoxyCompactList}\item 
+void \hyperlink{class_a_i_player_a56da84216f2f5aa6b98771e95d7a6978}{Update\+A\+I} (\hyperlink{class_squad}{Squad} sq)
+\begin{DoxyCompactList}\small\item\em Updates an A\+I squad\textquotesingle{}s behavior. \end{DoxyCompactList}\item 
+void \hyperlink{class_a_i_player_a082991cdc32c36771aefef8c288db3d1}{Set\+Squad\+Behaviors} (\hyperlink{class_sector}{Sector} s, \hyperlink{class_squad}{Squad} sq)
+\begin{DoxyCompactList}\small\item\em Updates player squad behaviors based on an enemy squad and location. \end{DoxyCompactList}\item 
+void \hyperlink{class_a_i_player_a538d8fb30dab69870c53bfbbf9775e7c}{Populate\+Random\+Squad} (\hyperlink{class_squad}{Squad} squad)
+\begin{DoxyCompactList}\small\item\em Populates a squad with random numbers of ships based on rules. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Override of the \hyperlink{class_player}{Player} class for A\+I behavior. 
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_a_i_player_af0321d8f60d724c9b0a69ed9e5766911}{}\index{A\+I\+Player@{A\+I\+Player}!Init@{Init}}
+\index{Init@{Init}!A\+I\+Player@{A\+I\+Player}}
+\subsubsection[{Init}]{\setlength{\rightskip}{0pt plus 5cm}override void A\+I\+Player.\+Init (
+\begin{DoxyParamCaption}
+\item[{Team}]{team}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_a_i_player_af0321d8f60d724c9b0a69ed9e5766911}
+
+
+Initializes the A\+I \hyperlink{class_player}{Player} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em team} & The A\+I player\textquotesingle{}s team.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_player_a080e71574a6955345c819bf76498a3b9}{Player}.
+
+\hypertarget{class_a_i_player_a538d8fb30dab69870c53bfbbf9775e7c}{}\index{A\+I\+Player@{A\+I\+Player}!Populate\+Random\+Squad@{Populate\+Random\+Squad}}
+\index{Populate\+Random\+Squad@{Populate\+Random\+Squad}!A\+I\+Player@{A\+I\+Player}}
+\subsubsection[{Populate\+Random\+Squad}]{\setlength{\rightskip}{0pt plus 5cm}void A\+I\+Player.\+Populate\+Random\+Squad (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{squad}
+\end{DoxyParamCaption}
+)}\label{class_a_i_player_a538d8fb30dab69870c53bfbbf9775e7c}
+
+
+Populates a squad with random numbers of ships based on rules. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em squad} & The squad to populate.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_a_i_player_a5d72fbdbf9aa234aaabdd3d8c6a61fa3}{}\index{A\+I\+Player@{A\+I\+Player}!Register\+Defensive\+Squad@{Register\+Defensive\+Squad}}
+\index{Register\+Defensive\+Squad@{Register\+Defensive\+Squad}!A\+I\+Player@{A\+I\+Player}}
+\subsubsection[{Register\+Defensive\+Squad}]{\setlength{\rightskip}{0pt plus 5cm}void A\+I\+Player.\+Register\+Defensive\+Squad (
+\begin{DoxyParamCaption}
+\item[{{\bf Sector}}]{s, }
+\item[{{\bf Tile}}]{t, }
+\item[{{\bf Squad}}]{sq}
+\end{DoxyParamCaption}
+)}\label{class_a_i_player_a5d72fbdbf9aa234aaabdd3d8c6a61fa3}
+
+
+Adds a new squad for this A\+I to manage in a sector, around a tile 
+
+
+\begin{DoxyParams}{Parameters}
+{\em s} & The sector to register in.\\
+\hline
+{\em t} & The tile to register at.\\
+\hline
+{\em sq} & The squad to register.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_a_i_player_ac41ba1e00aee19f7880b2029cb0f8e2b}{}\index{A\+I\+Player@{A\+I\+Player}!Register\+Sector\+Squad@{Register\+Sector\+Squad}}
+\index{Register\+Sector\+Squad@{Register\+Sector\+Squad}!A\+I\+Player@{A\+I\+Player}}
+\subsubsection[{Register\+Sector\+Squad}]{\setlength{\rightskip}{0pt plus 5cm}void A\+I\+Player.\+Register\+Sector\+Squad (
+\begin{DoxyParamCaption}
+\item[{{\bf Sector}}]{s, }
+\item[{{\bf Squad}}]{sq}
+\end{DoxyParamCaption}
+)}\label{class_a_i_player_ac41ba1e00aee19f7880b2029cb0f8e2b}
+
+
+Adds a new squad for this A\+I to manage in a sector 
+
+
+\begin{DoxyParams}{Parameters}
+{\em s} & The sector to register in.\\
+\hline
+{\em sq} & The squad to register.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_a_i_player_a082991cdc32c36771aefef8c288db3d1}{}\index{A\+I\+Player@{A\+I\+Player}!Set\+Squad\+Behaviors@{Set\+Squad\+Behaviors}}
+\index{Set\+Squad\+Behaviors@{Set\+Squad\+Behaviors}!A\+I\+Player@{A\+I\+Player}}
+\subsubsection[{Set\+Squad\+Behaviors}]{\setlength{\rightskip}{0pt plus 5cm}void A\+I\+Player.\+Set\+Squad\+Behaviors (
+\begin{DoxyParamCaption}
+\item[{{\bf Sector}}]{s, }
+\item[{{\bf Squad}}]{sq}
+\end{DoxyParamCaption}
+)}\label{class_a_i_player_a082991cdc32c36771aefef8c288db3d1}
+
+
+Updates player squad behaviors based on an enemy squad and location. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em s} & The active sector to use squads in.\\
+\hline
+{\em sq} & The enemy squad to consider.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_a_i_player_a56da84216f2f5aa6b98771e95d7a6978}{}\index{A\+I\+Player@{A\+I\+Player}!Update\+A\+I@{Update\+A\+I}}
+\index{Update\+A\+I@{Update\+A\+I}!A\+I\+Player@{A\+I\+Player}}
+\subsubsection[{Update\+A\+I}]{\setlength{\rightskip}{0pt plus 5cm}void A\+I\+Player.\+Update\+A\+I (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{sq}
+\end{DoxyParamCaption}
+)}\label{class_a_i_player_a56da84216f2f5aa6b98771e95d7a6978}
+
+
+Updates an A\+I squad\textquotesingle{}s behavior. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sq} & The squad to update.\\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Scripts/A\+I\+Player.\+cs\end{DoxyCompactItemize}

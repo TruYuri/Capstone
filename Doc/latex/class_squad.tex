@@ -1,0 +1,281 @@
+\hypertarget{class_squad}{}\section{Squad Class Reference}
+\label{class_squad}\index{Squad@{Squad}}
+
+
+The squad class. One of the most important classes in the game.  
+
+
+Inheritance diagram for Squad\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_squad}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_squad_a0fe0a369f21fabbbedd489fe9d58b7e7}{Init} (Team team, \hyperlink{class_sector}{Sector} sector, string name)
+\begin{DoxyCompactList}\small\item\em Initializes the squad. \end{DoxyCompactList}\item 
+float \hyperlink{class_squad_a5bafa1bfe9a68d968b0e1ca92266f893}{Calculate\+Troop\+Power} ()
+\begin{DoxyCompactList}\small\item\em Calculates the invasion/troop power this squad contains. \end{DoxyCompactList}\item 
+float \hyperlink{class_squad_a309ffcca0c76b9ddc31ca53fa94bff6b}{Calculate\+Ship\+Power} ()
+\begin{DoxyCompactList}\small\item\em Calculates the orbital/space/ship power this squad contains. \end{DoxyCompactList}\item 
+float \hyperlink{class_squad_aa9cd04052f829090b5af2d075947bc77}{Generate\+Win\+Chance} (\hyperlink{class_squad}{Squad} enemy)
+\begin{DoxyCompactList}\small\item\em Generates the chance this squad will win against a chosen enemy squad (space). \end{DoxyCompactList}\item 
+float \hyperlink{class_squad_a2a1c29eeab5e513a2cebc0df96b9e495}{Generate\+Win\+Chance} (\hyperlink{class_tile}{Tile} enemy)
+\begin{DoxyCompactList}\small\item\em Calculates the chance this squad will win against a chosen enemy tile (invasion). \end{DoxyCompactList}\item 
+Key\+Value\+Pair$<$ Team, Dictionary$<$ string, int $>$ $>$ \hyperlink{class_squad_a6b567c39426bab25b702b7cbcc830237}{Combat} (\hyperlink{class_squad}{Squad} enemy, float win\+Chance)
+\begin{DoxyCompactList}\small\item\em Performs combat with an enemy squad. \end{DoxyCompactList}\item 
+Key\+Value\+Pair$<$ Team, Dictionary$<$ string, int $>$ $>$ \hyperlink{class_squad_a9ffa0d9aac3ce662d1fcc6034f2b6129}{Combat} (\hyperlink{class_tile}{Tile} enemy, float win\+Chance)
+\begin{DoxyCompactList}\small\item\em Performs combat with an enemy tile (invasion) \end{DoxyCompactList}\item 
+\hyperlink{class_tile}{Tile} \hyperlink{class_squad_a72fd0fcfdbb9a4880df8dc58cd170c6c}{Deploy} (\hyperlink{class_structure}{Structure} structure, \hyperlink{class_tile}{Tile} tile)
+\begin{DoxyCompactList}\small\item\em Deploys a structure in this fleet to the specified tile. \end{DoxyCompactList}\item 
+Dictionary$<$ string, int $>$ \hyperlink{class_squad_a04adb494ca4424058756b487b1e7a3c1}{Count\+Soldiers} ()
+\begin{DoxyCompactList}\small\item\em Counts the soldiers in this squad. \end{DoxyCompactList}\item 
+void \hyperlink{class_squad_a7c27a69c356df81a05846bb6d08a4b69}{Populate\+Count\+List} (Game\+Object list, Battle\+Type b\+Type)
+\begin{DoxyCompactList}\small\item\em Populates a U\+I info about ships and soldiers in this squad. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \hyperlink{class_squad_a4c9e30d6ca34d7fd1789c6d7dd0513f1}{Clean\+Squads\+From\+List} (\hyperlink{class_player}{Player} player, List$<$ \hyperlink{class_squad}{Squad} $>$ squads)
+\begin{DoxyCompactList}\small\item\em Utility; Does cleanup of some squads if some were removed from play. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_squad_ac207af75892b4b3a7d5383e7737af654}{}Team {\bfseries Team}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_squad_ac207af75892b4b3a7d5383e7737af654}
+
+\item 
+\hypertarget{class_squad_add4ad224a05d0101e4a2ab7116d9417f}{}\hyperlink{class_game_event}{Game\+Event} {\bfseries Mission}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_squad_add4ad224a05d0101e4a2ab7116d9417f}
+
+\item 
+\hypertarget{class_squad_a6418ad8fede593e757f2044132a8c9a8}{}List$<$ \hyperlink{class_ship}{Ship} $>$ {\bfseries Ships}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_squad_a6418ad8fede593e757f2044132a8c9a8}
+
+\item 
+\hypertarget{class_squad_adfd66d53935cde44eba15c8528d58a3b}{}List$<$ \hyperlink{class_squad}{Squad} $>$ {\bfseries Colliders}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_squad_adfd66d53935cde44eba15c8528d58a3b}
+
+\item 
+\hypertarget{class_squad_a3ff00b065284676e4b3d633698b96bc5}{}\hyperlink{class_tile}{Tile} {\bfseries Tile}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_squad_a3ff00b065284676e4b3d633698b96bc5}
+
+\item 
+\hypertarget{class_squad_a68e53ea5669095dca8c047d3f2d38e07}{}\hyperlink{class_sector}{Sector} {\bfseries Sector}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_squad_a68e53ea5669095dca8c047d3f2d38e07}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The squad class. One of the most important classes in the game. 
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_squad_a309ffcca0c76b9ddc31ca53fa94bff6b}{}\index{Squad@{Squad}!Calculate\+Ship\+Power@{Calculate\+Ship\+Power}}
+\index{Calculate\+Ship\+Power@{Calculate\+Ship\+Power}!Squad@{Squad}}
+\subsubsection[{Calculate\+Ship\+Power}]{\setlength{\rightskip}{0pt plus 5cm}float Squad.\+Calculate\+Ship\+Power (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_squad_a309ffcca0c76b9ddc31ca53fa94bff6b}
+
+
+Calculates the orbital/space/ship power this squad contains. 
+
+\begin{DoxyReturn}{Returns}
+The ship power.
+\end{DoxyReturn}
+\hypertarget{class_squad_a5bafa1bfe9a68d968b0e1ca92266f893}{}\index{Squad@{Squad}!Calculate\+Troop\+Power@{Calculate\+Troop\+Power}}
+\index{Calculate\+Troop\+Power@{Calculate\+Troop\+Power}!Squad@{Squad}}
+\subsubsection[{Calculate\+Troop\+Power}]{\setlength{\rightskip}{0pt plus 5cm}float Squad.\+Calculate\+Troop\+Power (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_squad_a5bafa1bfe9a68d968b0e1ca92266f893}
+
+
+Calculates the invasion/troop power this squad contains. 
+
+\begin{DoxyReturn}{Returns}
+The troop power.
+\end{DoxyReturn}
+\hypertarget{class_squad_a4c9e30d6ca34d7fd1789c6d7dd0513f1}{}\index{Squad@{Squad}!Clean\+Squads\+From\+List@{Clean\+Squads\+From\+List}}
+\index{Clean\+Squads\+From\+List@{Clean\+Squads\+From\+List}!Squad@{Squad}}
+\subsubsection[{Clean\+Squads\+From\+List}]{\setlength{\rightskip}{0pt plus 5cm}static void Squad.\+Clean\+Squads\+From\+List (
+\begin{DoxyParamCaption}
+\item[{{\bf Player}}]{player, }
+\item[{List$<$ {\bf Squad} $>$}]{squads}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}\label{class_squad_a4c9e30d6ca34d7fd1789c6d7dd0513f1}
+
+
+Utility; Does cleanup of some squads if some were removed from play. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em player} & The player that owns the squad list.\\
+\hline
+{\em squads} & The squads to clean.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_squad_a6b567c39426bab25b702b7cbcc830237}{}\index{Squad@{Squad}!Combat@{Combat}}
+\index{Combat@{Combat}!Squad@{Squad}}
+\subsubsection[{Combat}]{\setlength{\rightskip}{0pt plus 5cm}Key\+Value\+Pair$<$Team, Dictionary$<$string, int$>$ $>$ Squad.\+Combat (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{enemy, }
+\item[{float}]{win\+Chance}
+\end{DoxyParamCaption}
+)}\label{class_squad_a6b567c39426bab25b702b7cbcc830237}
+
+
+Performs combat with an enemy squad. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em enemy} & The enemy squad.\\
+\hline
+{\em win\+Chance} & The odds of survival.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The winning team and a list of units lost in combat.
+\end{DoxyReturn}
+\hypertarget{class_squad_a9ffa0d9aac3ce662d1fcc6034f2b6129}{}\index{Squad@{Squad}!Combat@{Combat}}
+\index{Combat@{Combat}!Squad@{Squad}}
+\subsubsection[{Combat}]{\setlength{\rightskip}{0pt plus 5cm}Key\+Value\+Pair$<$Team, Dictionary$<$string, int$>$ $>$ Squad.\+Combat (
+\begin{DoxyParamCaption}
+\item[{{\bf Tile}}]{enemy, }
+\item[{float}]{win\+Chance}
+\end{DoxyParamCaption}
+)}\label{class_squad_a9ffa0d9aac3ce662d1fcc6034f2b6129}
+
+
+Performs combat with an enemy tile (invasion) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em enemy} & The enemy tile to combat.\\
+\hline
+{\em win\+Chance} & The odds of survival.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The winning team, and a list of soldiers lost.
+\end{DoxyReturn}
+\hypertarget{class_squad_a04adb494ca4424058756b487b1e7a3c1}{}\index{Squad@{Squad}!Count\+Soldiers@{Count\+Soldiers}}
+\index{Count\+Soldiers@{Count\+Soldiers}!Squad@{Squad}}
+\subsubsection[{Count\+Soldiers}]{\setlength{\rightskip}{0pt plus 5cm}Dictionary$<$string, int$>$ Squad.\+Count\+Soldiers (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_squad_a04adb494ca4424058756b487b1e7a3c1}
+
+
+Counts the soldiers in this squad. 
+
+\begin{DoxyReturn}{Returns}
+The total number of soldiers of each type.
+\end{DoxyReturn}
+\hypertarget{class_squad_a72fd0fcfdbb9a4880df8dc58cd170c6c}{}\index{Squad@{Squad}!Deploy@{Deploy}}
+\index{Deploy@{Deploy}!Squad@{Squad}}
+\subsubsection[{Deploy}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Tile} Squad.\+Deploy (
+\begin{DoxyParamCaption}
+\item[{{\bf Structure}}]{structure, }
+\item[{{\bf Tile}}]{tile}
+\end{DoxyParamCaption}
+)}\label{class_squad_a72fd0fcfdbb9a4880df8dc58cd170c6c}
+
+
+Deploys a structure in this fleet to the specified tile. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em structure} & The ship to deploy.\\
+\hline
+{\em tile} & The tile to deploy at.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The newly deployed tile.
+\end{DoxyReturn}
+\hypertarget{class_squad_aa9cd04052f829090b5af2d075947bc77}{}\index{Squad@{Squad}!Generate\+Win\+Chance@{Generate\+Win\+Chance}}
+\index{Generate\+Win\+Chance@{Generate\+Win\+Chance}!Squad@{Squad}}
+\subsubsection[{Generate\+Win\+Chance}]{\setlength{\rightskip}{0pt plus 5cm}float Squad.\+Generate\+Win\+Chance (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{enemy}
+\end{DoxyParamCaption}
+)}\label{class_squad_aa9cd04052f829090b5af2d075947bc77}
+
+
+Generates the chance this squad will win against a chosen enemy squad (space). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em enemy} & The combating squad.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The chance of success/victory.
+\end{DoxyReturn}
+\hypertarget{class_squad_a2a1c29eeab5e513a2cebc0df96b9e495}{}\index{Squad@{Squad}!Generate\+Win\+Chance@{Generate\+Win\+Chance}}
+\index{Generate\+Win\+Chance@{Generate\+Win\+Chance}!Squad@{Squad}}
+\subsubsection[{Generate\+Win\+Chance}]{\setlength{\rightskip}{0pt plus 5cm}float Squad.\+Generate\+Win\+Chance (
+\begin{DoxyParamCaption}
+\item[{{\bf Tile}}]{enemy}
+\end{DoxyParamCaption}
+)}\label{class_squad_a2a1c29eeab5e513a2cebc0df96b9e495}
+
+
+Calculates the chance this squad will win against a chosen enemy tile (invasion). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em enemy} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The chance of success/victory.
+\end{DoxyReturn}
+\hypertarget{class_squad_a0fe0a369f21fabbbedd489fe9d58b7e7}{}\index{Squad@{Squad}!Init@{Init}}
+\index{Init@{Init}!Squad@{Squad}}
+\subsubsection[{Init}]{\setlength{\rightskip}{0pt plus 5cm}void Squad.\+Init (
+\begin{DoxyParamCaption}
+\item[{Team}]{team, }
+\item[{{\bf Sector}}]{sector, }
+\item[{string}]{name}
+\end{DoxyParamCaption}
+)}\label{class_squad_a0fe0a369f21fabbbedd489fe9d58b7e7}
+
+
+Initializes the squad. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em team} & The squad\textquotesingle{}s team.\\
+\hline
+{\em sector} & The sector it originates from.\\
+\hline
+{\em name} & The squad\textquotesingle{}s name.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_squad_a7c27a69c356df81a05846bb6d08a4b69}{}\index{Squad@{Squad}!Populate\+Count\+List@{Populate\+Count\+List}}
+\index{Populate\+Count\+List@{Populate\+Count\+List}!Squad@{Squad}}
+\subsubsection[{Populate\+Count\+List}]{\setlength{\rightskip}{0pt plus 5cm}void Squad.\+Populate\+Count\+List (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{list, }
+\item[{Battle\+Type}]{b\+Type}
+\end{DoxyParamCaption}
+)}\label{class_squad_a7c27a69c356df81a05846bb6d08a4b69}
+
+
+Populates a U\+I info about ships and soldiers in this squad. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & The internal list name.\\
+\hline
+{\em b\+Type} & The battle type to consider for counting.\\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Ships/Squad.\+cs\end{DoxyCompactItemize}

@@ -1,0 +1,191 @@
+\hypertarget{class_transport_research}{}\section{Transport\+Research Class Reference}
+\label{class_transport_research}\index{Transport\+Research@{Transport\+Research}}
+
+
+This class upgrades and acts as the base for the Transport.  
+
+
+Inheritance diagram for Transport\+Research\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_transport_research}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_transport_research_aa3225042d7866664ecb2c6a384b83e49}{Transport\+Research} (\hyperlink{class_ship}{Ship} ship, List$<$ \hyperlink{class_research}{Research} $>$ prereqs)
+\begin{DoxyCompactList}\small\item\em Transport Constructor \end{DoxyCompactList}\item 
+override Dictionary$<$ Resource, int $>$ \hyperlink{class_transport_research_a623f99655f4ac62ec9e1e8f4b9080cd7}{Upgrade\+Research} (string name, float reduction)
+\begin{DoxyCompactList}\small\item\em Upgrade the \hyperlink{class_research}{Research} level \end{DoxyCompactList}\item 
+override Dictionary$<$ Resource, int $>$ \hyperlink{class_transport_research_ac1a1136943af994003495a76ba7c57d1}{Unlock} (float reduction)
+\begin{DoxyCompactList}\small\item\em Unlocks the \hyperlink{class_research}{Research} \end{DoxyCompactList}\item 
+override bool \hyperlink{class_transport_research_a07e38e1835293484cf40ba021d5f15a2}{Can\+Unlock} (Dictionary$<$ Resource, int $>$ resources, float reduction)
+\begin{DoxyCompactList}\small\item\em Determines whether \hyperlink{class_research}{Research} is unlockable \end{DoxyCompactList}\item 
+override void \hyperlink{class_transport_research_a256529705ede8b7493da051a84f38cc1}{Display} (Game\+Object panel, Dictionary$<$ Resource, int $>$ resources, float reduction)
+\begin{DoxyCompactList}\small\item\em Changes display of panels after upgrading \end{DoxyCompactList}\item 
+override void \hyperlink{class_transport_research_ab0b2c9bbf90ebffd9b21be7a73a999e1}{Display\+Popup} (Game\+Object panel, string upgrade, float reduction)
+\begin{DoxyCompactList}\small\item\em Display popup for \hyperlink{class_research}{Research} \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+This class upgrades and acts as the base for the Transport. 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_transport_research_aa3225042d7866664ecb2c6a384b83e49}{}\index{Transport\+Research@{Transport\+Research}!Transport\+Research@{Transport\+Research}}
+\index{Transport\+Research@{Transport\+Research}!Transport\+Research@{Transport\+Research}}
+\subsubsection[{Transport\+Research}]{\setlength{\rightskip}{0pt plus 5cm}Transport\+Research.\+Transport\+Research (
+\begin{DoxyParamCaption}
+\item[{{\bf Ship}}]{ship, }
+\item[{List$<$ {\bf Research} $>$}]{prereqs}
+\end{DoxyParamCaption}
+)}\label{class_transport_research_aa3225042d7866664ecb2c6a384b83e49}
+
+
+Transport Constructor 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ship} & The ship\\
+\hline
+{\em prereqs} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_transport_research_a07e38e1835293484cf40ba021d5f15a2}{}\index{Transport\+Research@{Transport\+Research}!Can\+Unlock@{Can\+Unlock}}
+\index{Can\+Unlock@{Can\+Unlock}!Transport\+Research@{Transport\+Research}}
+\subsubsection[{Can\+Unlock}]{\setlength{\rightskip}{0pt plus 5cm}override bool Transport\+Research.\+Can\+Unlock (
+\begin{DoxyParamCaption}
+\item[{Dictionary$<$ Resource, int $>$}]{resources, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_transport_research_a07e38e1835293484cf40ba021d5f15a2}
+
+
+Determines whether \hyperlink{class_research}{Research} is unlockable 
+
+
+\begin{DoxyParams}{Parameters}
+{\em resources} & Resources needed to obtain\\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a0dd2f3c56699958f10865537bd61a8d0}{Research}.
+
+\hypertarget{class_transport_research_a256529705ede8b7493da051a84f38cc1}{}\index{Transport\+Research@{Transport\+Research}!Display@{Display}}
+\index{Display@{Display}!Transport\+Research@{Transport\+Research}}
+\subsubsection[{Display}]{\setlength{\rightskip}{0pt plus 5cm}override void Transport\+Research.\+Display (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{panel, }
+\item[{Dictionary$<$ Resource, int $>$}]{resources, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_transport_research_a256529705ede8b7493da051a84f38cc1}
+
+
+Changes display of panels after upgrading 
+
+
+\begin{DoxyParams}{Parameters}
+{\em panel} & Panel of buttons\\
+\hline
+{\em resources} & Resources needed to obtain\\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_research_aa47288e846f7992eaf88e29c2c790dc0}{Research}.
+
+\hypertarget{class_transport_research_ab0b2c9bbf90ebffd9b21be7a73a999e1}{}\index{Transport\+Research@{Transport\+Research}!Display\+Popup@{Display\+Popup}}
+\index{Display\+Popup@{Display\+Popup}!Transport\+Research@{Transport\+Research}}
+\subsubsection[{Display\+Popup}]{\setlength{\rightskip}{0pt plus 5cm}override void Transport\+Research.\+Display\+Popup (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{panel, }
+\item[{string}]{upgrade, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_transport_research_ab0b2c9bbf90ebffd9b21be7a73a999e1}
+
+
+Display popup for \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em panel} & \\
+\hline
+{\em upgrade} & \\
+\hline
+{\em reduction} & \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_research_a3c61c95bc273b0effe02577c7e5d29f5}{Research}.
+
+\hypertarget{class_transport_research_ac1a1136943af994003495a76ba7c57d1}{}\index{Transport\+Research@{Transport\+Research}!Unlock@{Unlock}}
+\index{Unlock@{Unlock}!Transport\+Research@{Transport\+Research}}
+\subsubsection[{Unlock}]{\setlength{\rightskip}{0pt plus 5cm}override Dictionary$<$Resource, int$>$ Transport\+Research.\+Unlock (
+\begin{DoxyParamCaption}
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_transport_research_ac1a1136943af994003495a76ba7c57d1}
+
+
+Unlocks the \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a5ae3ebe38d15f37ce6cc61fa8a76c6fc}{Research}.
+
+\hypertarget{class_transport_research_a623f99655f4ac62ec9e1e8f4b9080cd7}{}\index{Transport\+Research@{Transport\+Research}!Upgrade\+Research@{Upgrade\+Research}}
+\index{Upgrade\+Research@{Upgrade\+Research}!Transport\+Research@{Transport\+Research}}
+\subsubsection[{Upgrade\+Research}]{\setlength{\rightskip}{0pt plus 5cm}override Dictionary$<$Resource, int$>$ Transport\+Research.\+Upgrade\+Research (
+\begin{DoxyParamCaption}
+\item[{string}]{name, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_transport_research_a623f99655f4ac62ec9e1e8f4b9080cd7}
+
+
+Upgrade the \hyperlink{class_research}{Research} level 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & \\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a963cb6ac5e27b234a3da2b1be640bc6a}{Research}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Research/\+Military/Transport\+Research.\+cs\end{DoxyCompactItemize}

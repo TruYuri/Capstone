@@ -1,0 +1,191 @@
+\hypertarget{class_warp_portal_research}{}\section{Warp\+Portal\+Research Class Reference}
+\label{class_warp_portal_research}\index{Warp\+Portal\+Research@{Warp\+Portal\+Research}}
+
+
+This class upgrades and acts as the base for the Warp Portal.  
+
+
+Inheritance diagram for Warp\+Portal\+Research\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_warp_portal_research}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_warp_portal_research_a06e5e8459b41aaf0f94636690d991fee}{Warp\+Portal\+Research} (\hyperlink{class_structure}{Structure} warp\+Portal, List$<$ \hyperlink{class_research}{Research} $>$ prereqs)
+\begin{DoxyCompactList}\small\item\em Constructor for Warp Portal \end{DoxyCompactList}\item 
+override Dictionary$<$ Resource, int $>$ \hyperlink{class_warp_portal_research_a2571a9c698b8874910de790e6d610a17}{Upgrade\+Research} (string name, float reduction)
+\begin{DoxyCompactList}\small\item\em Upgrade \end{DoxyCompactList}\item 
+override Dictionary$<$ Resource, int $>$ \hyperlink{class_warp_portal_research_a8692eb6be00975f366a2c53b1c84d55d}{Unlock} (float reduction)
+\begin{DoxyCompactList}\small\item\em Unlock the \hyperlink{class_research}{Research} \end{DoxyCompactList}\item 
+override bool \hyperlink{class_warp_portal_research_a49cdb8cdefd5302ee3f12e3dc45ca027}{Can\+Unlock} (Dictionary$<$ Resource, int $>$ resources, float reduction)
+\begin{DoxyCompactList}\small\item\em Able to Unlock \hyperlink{class_research}{Research} \end{DoxyCompactList}\item 
+override void \hyperlink{class_warp_portal_research_a2cd1bc8ac2783f9e412cddd55a4a3404}{Display} (Game\+Object panel, Dictionary$<$ Resource, int $>$ resources, float reduction)
+\begin{DoxyCompactList}\small\item\em Change info displayed on the panels for the \hyperlink{class_research}{Research} \end{DoxyCompactList}\item 
+override void \hyperlink{class_warp_portal_research_a41ca04d145f6522119839b5d9062f171}{Display\+Popup} (Game\+Object panel, string upgrade, float reduction)
+\begin{DoxyCompactList}\small\item\em Display popup \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+This class upgrades and acts as the base for the Warp Portal. 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_warp_portal_research_a06e5e8459b41aaf0f94636690d991fee}{}\index{Warp\+Portal\+Research@{Warp\+Portal\+Research}!Warp\+Portal\+Research@{Warp\+Portal\+Research}}
+\index{Warp\+Portal\+Research@{Warp\+Portal\+Research}!Warp\+Portal\+Research@{Warp\+Portal\+Research}}
+\subsubsection[{Warp\+Portal\+Research}]{\setlength{\rightskip}{0pt plus 5cm}Warp\+Portal\+Research.\+Warp\+Portal\+Research (
+\begin{DoxyParamCaption}
+\item[{{\bf Structure}}]{warp\+Portal, }
+\item[{List$<$ {\bf Research} $>$}]{prereqs}
+\end{DoxyParamCaption}
+)}\label{class_warp_portal_research_a06e5e8459b41aaf0f94636690d991fee}
+
+
+Constructor for Warp Portal 
+
+
+\begin{DoxyParams}{Parameters}
+{\em warp\+Portal} & \\
+\hline
+{\em prereqs} & \hyperlink{class_research}{Research} prerequisites\\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_warp_portal_research_a49cdb8cdefd5302ee3f12e3dc45ca027}{}\index{Warp\+Portal\+Research@{Warp\+Portal\+Research}!Can\+Unlock@{Can\+Unlock}}
+\index{Can\+Unlock@{Can\+Unlock}!Warp\+Portal\+Research@{Warp\+Portal\+Research}}
+\subsubsection[{Can\+Unlock}]{\setlength{\rightskip}{0pt plus 5cm}override bool Warp\+Portal\+Research.\+Can\+Unlock (
+\begin{DoxyParamCaption}
+\item[{Dictionary$<$ Resource, int $>$}]{resources, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_warp_portal_research_a49cdb8cdefd5302ee3f12e3dc45ca027}
+
+
+Able to Unlock \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em resources} & \\
+\hline
+{\em reduction} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a0dd2f3c56699958f10865537bd61a8d0}{Research}.
+
+\hypertarget{class_warp_portal_research_a2cd1bc8ac2783f9e412cddd55a4a3404}{}\index{Warp\+Portal\+Research@{Warp\+Portal\+Research}!Display@{Display}}
+\index{Display@{Display}!Warp\+Portal\+Research@{Warp\+Portal\+Research}}
+\subsubsection[{Display}]{\setlength{\rightskip}{0pt plus 5cm}override void Warp\+Portal\+Research.\+Display (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{panel, }
+\item[{Dictionary$<$ Resource, int $>$}]{resources, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_warp_portal_research_a2cd1bc8ac2783f9e412cddd55a4a3404}
+
+
+Change info displayed on the panels for the \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em panel} & \\
+\hline
+{\em resources} & \\
+\hline
+{\em reduction} & \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_research_aa47288e846f7992eaf88e29c2c790dc0}{Research}.
+
+\hypertarget{class_warp_portal_research_a41ca04d145f6522119839b5d9062f171}{}\index{Warp\+Portal\+Research@{Warp\+Portal\+Research}!Display\+Popup@{Display\+Popup}}
+\index{Display\+Popup@{Display\+Popup}!Warp\+Portal\+Research@{Warp\+Portal\+Research}}
+\subsubsection[{Display\+Popup}]{\setlength{\rightskip}{0pt plus 5cm}override void Warp\+Portal\+Research.\+Display\+Popup (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{panel, }
+\item[{string}]{upgrade, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_warp_portal_research_a41ca04d145f6522119839b5d9062f171}
+
+
+Display popup 
+
+
+\begin{DoxyParams}{Parameters}
+{\em panel} & \\
+\hline
+{\em upgrade} & \\
+\hline
+{\em reduction} & \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_research_a3c61c95bc273b0effe02577c7e5d29f5}{Research}.
+
+\hypertarget{class_warp_portal_research_a8692eb6be00975f366a2c53b1c84d55d}{}\index{Warp\+Portal\+Research@{Warp\+Portal\+Research}!Unlock@{Unlock}}
+\index{Unlock@{Unlock}!Warp\+Portal\+Research@{Warp\+Portal\+Research}}
+\subsubsection[{Unlock}]{\setlength{\rightskip}{0pt plus 5cm}override Dictionary$<$Resource, int$>$ Warp\+Portal\+Research.\+Unlock (
+\begin{DoxyParamCaption}
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_warp_portal_research_a8692eb6be00975f366a2c53b1c84d55d}
+
+
+Unlock the \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em reduction} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a5ae3ebe38d15f37ce6cc61fa8a76c6fc}{Research}.
+
+\hypertarget{class_warp_portal_research_a2571a9c698b8874910de790e6d610a17}{}\index{Warp\+Portal\+Research@{Warp\+Portal\+Research}!Upgrade\+Research@{Upgrade\+Research}}
+\index{Upgrade\+Research@{Upgrade\+Research}!Warp\+Portal\+Research@{Warp\+Portal\+Research}}
+\subsubsection[{Upgrade\+Research}]{\setlength{\rightskip}{0pt plus 5cm}override Dictionary$<$Resource, int$>$ Warp\+Portal\+Research.\+Upgrade\+Research (
+\begin{DoxyParamCaption}
+\item[{string}]{name, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_warp_portal_research_a2571a9c698b8874910de790e6d610a17}
+
+
+Upgrade 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & \\
+\hline
+{\em reduction} & Reduction in cost from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a963cb6ac5e27b234a3da2b1be640bc6a}{Research}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Research/\+Science/Warp\+Portal\+Research.\+cs\end{DoxyCompactItemize}

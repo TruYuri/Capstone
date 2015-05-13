@@ -1,0 +1,115 @@
+\hypertarget{class_battle_event}{}\section{Battle\+Event Class Reference}
+\label{class_battle_event}\index{Battle\+Event@{Battle\+Event}}
+
+
+Handles a registered battle.  
+
+
+Inheritance diagram for Battle\+Event\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_battle_event}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_battle_event_a50da85dfd481392da0abb531bd22795c}{Battle\+Event} (\hyperlink{class_squad}{Squad} squad1, \hyperlink{class_squad}{Squad} squad2)
+\begin{DoxyCompactList}\small\item\em Establishes a battle between two squads. \end{DoxyCompactList}\item 
+\hyperlink{class_battle_event_a7ab8f52991156616cf087c759873e60d}{Battle\+Event} (int turns, \hyperlink{class_squad}{Squad} squad, \hyperlink{class_tile}{Tile} tile)
+\begin{DoxyCompactList}\small\item\em Establishes a battle between a squad and a tile. \end{DoxyCompactList}\item 
+override void \hyperlink{class_battle_event_a5555b2adc60389a54aff08e76314f9df}{Progress} ()
+\begin{DoxyCompactList}\small\item\em Starts the battle. Pauses the game if the human player is involved, and instead enables the appropriate battle screens. \end{DoxyCompactList}\item 
+override bool \hyperlink{class_battle_event_a95ddc833b90864085cf633fc3490ba23}{Assert\+Valid} ()
+\begin{DoxyCompactList}\small\item\em Asserts the validity of the battle. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Handles a registered battle. 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_battle_event_a50da85dfd481392da0abb531bd22795c}{}\index{Battle\+Event@{Battle\+Event}!Battle\+Event@{Battle\+Event}}
+\index{Battle\+Event@{Battle\+Event}!Battle\+Event@{Battle\+Event}}
+\subsubsection[{Battle\+Event}]{\setlength{\rightskip}{0pt plus 5cm}Battle\+Event.\+Battle\+Event (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{squad1, }
+\item[{{\bf Squad}}]{squad2}
+\end{DoxyParamCaption}
+)}\label{class_battle_event_a50da85dfd481392da0abb531bd22795c}
+
+
+Establishes a battle between two squads. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em squad1} & \\
+\hline
+{\em squad2} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_battle_event_a7ab8f52991156616cf087c759873e60d}{}\index{Battle\+Event@{Battle\+Event}!Battle\+Event@{Battle\+Event}}
+\index{Battle\+Event@{Battle\+Event}!Battle\+Event@{Battle\+Event}}
+\subsubsection[{Battle\+Event}]{\setlength{\rightskip}{0pt plus 5cm}Battle\+Event.\+Battle\+Event (
+\begin{DoxyParamCaption}
+\item[{int}]{turns, }
+\item[{{\bf Squad}}]{squad, }
+\item[{{\bf Tile}}]{tile}
+\end{DoxyParamCaption}
+)}\label{class_battle_event_a7ab8f52991156616cf087c759873e60d}
+
+
+Establishes a battle between a squad and a tile. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em turns} & \\
+\hline
+{\em squad} & \\
+\hline
+{\em tile} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_battle_event_a95ddc833b90864085cf633fc3490ba23}{}\index{Battle\+Event@{Battle\+Event}!Assert\+Valid@{Assert\+Valid}}
+\index{Assert\+Valid@{Assert\+Valid}!Battle\+Event@{Battle\+Event}}
+\subsubsection[{Assert\+Valid}]{\setlength{\rightskip}{0pt plus 5cm}override bool Battle\+Event.\+Assert\+Valid (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_battle_event_a95ddc833b90864085cf633fc3490ba23}
+
+
+Asserts the validity of the battle. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_game_event_a39cda54b07ab8ad842f2fc4fec588a9f}{Game\+Event}.
+
+\hypertarget{class_battle_event_a5555b2adc60389a54aff08e76314f9df}{}\index{Battle\+Event@{Battle\+Event}!Progress@{Progress}}
+\index{Progress@{Progress}!Battle\+Event@{Battle\+Event}}
+\subsubsection[{Progress}]{\setlength{\rightskip}{0pt plus 5cm}override void Battle\+Event.\+Progress (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_battle_event_a5555b2adc60389a54aff08e76314f9df}
+
+
+Starts the battle. Pauses the game if the human player is involved, and instead enables the appropriate battle screens. 
+
+
+
+Reimplemented from \hyperlink{class_game_event_af4e3b9e9da59c616f4136851b7a35130}{Game\+Event}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Events/Battle\+Event.\+cs\end{DoxyCompactItemize}

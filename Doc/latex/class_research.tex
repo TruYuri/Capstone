@@ -1,0 +1,253 @@
+\hypertarget{class_research}{}\section{Research Class Reference}
+\label{class_research}\index{Research@{Research}}
+
+
+\hyperlink{class_research}{Research} Screens Overhead, which all \hyperlink{class_research}{Research} inherits from  
+
+
+Inheritance diagram for Research\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=11.000000cm]{class_research}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_research_a1e63a15415de84a82fb91005c214f289}{Research} (string name, int level, List$<$ \hyperlink{class_research}{Research} $>$ prereqs)
+\begin{DoxyCompactList}\small\item\em Constructor for \hyperlink{class_research}{Research} Overhead \end{DoxyCompactList}\item 
+virtual Dictionary$<$ Resource, int $>$ \hyperlink{class_research_a963cb6ac5e27b234a3da2b1be640bc6a}{Upgrade\+Research} (string name, float reduction)
+\begin{DoxyCompactList}\small\item\em Virtual for upgrading individual research \end{DoxyCompactList}\item 
+virtual Dictionary$<$ Resource, int $>$ \hyperlink{class_research_a5ae3ebe38d15f37ce6cc61fa8a76c6fc}{Unlock} (float reduction)
+\begin{DoxyCompactList}\small\item\em Virtual for unlocking new \hyperlink{class_research}{Research} \end{DoxyCompactList}\item 
+virtual bool \hyperlink{class_research_a0dd2f3c56699958f10865537bd61a8d0}{Can\+Unlock} (Dictionary$<$ Resource, int $>$ resources, float reduction)
+\begin{DoxyCompactList}\small\item\em Virtual for determining if new \hyperlink{class_research}{Research} can be unlocked \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_research_aa47288e846f7992eaf88e29c2c790dc0}{Display} (Game\+Object panel, Dictionary$<$ Resource, int $>$ resources, float reduction)
+\begin{DoxyCompactList}\small\item\em Virtual for displaying the current \hyperlink{class_research}{Research} values \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_research_a3c61c95bc273b0effe02577c7e5d29f5}{Display\+Popup} (Game\+Object panel, string upgrade, float reduction)
+\begin{DoxyCompactList}\small\item\em Virtual for displaying popup with how much unlocking costs \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \hyperlink{class_research_a4587dfdaf5c7a833979bd5dc99b2df14}{Can\+Upgrade} (string name, Dictionary$<$ Resource, int $>$ resources, float reduction)
+\begin{DoxyCompactList}\small\item\em Determines if possible to upgrade to next level of \hyperlink{class_research}{Research} \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_research_a9e831f2d8af6d09f73c18c4cf7a57531}{}string {\bfseries name}\label{class_research_a9e831f2d8af6d09f73c18c4cf7a57531}
+
+\item 
+\hypertarget{class_research_aa8a8d7d0ec2ba74c1c3e7456c3aa34d3}{}int {\bfseries level}\label{class_research_aa8a8d7d0ec2ba74c1c3e7456c3aa34d3}
+
+\item 
+\hypertarget{class_research_a8d836c7c08da55ce7252e930f82802ed}{}Dictionary$<$ string, int $>$ {\bfseries upgrades}\label{class_research_a8d836c7c08da55ce7252e930f82802ed}
+
+\item 
+\hypertarget{class_research_a066f8eaa069e8897235e5a6b5d42f9f9}{}List$<$ \hyperlink{class_research}{Research} $>$ {\bfseries prereqs}\label{class_research_a066f8eaa069e8897235e5a6b5d42f9f9}
+
+\item 
+\hypertarget{class_research_a74569e73f1d5433bd21e4337a02f0052}{}Dictionary$<$ string, Dictionary$<$ Resource, int $>$ $>$ {\bfseries costs}\label{class_research_a74569e73f1d5433bd21e4337a02f0052}
+
+\item 
+\hypertarget{class_research_a8cfc91c2753092d5b06ffb4f3af0fb50}{}bool {\bfseries unlocked}\label{class_research_a8cfc91c2753092d5b06ffb4f3af0fb50}
+
+\end{DoxyCompactItemize}
+\subsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_research_a529316950f52970424f508b335ab3512}{}bool {\bfseries Unlocked}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_research_a529316950f52970424f508b335ab3512}
+
+\item 
+\hypertarget{class_research_a442b02022689c076fd3856303be56547}{}string {\bfseries Name}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_research_a442b02022689c076fd3856303be56547}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{class_research}{Research} Screens Overhead, which all \hyperlink{class_research}{Research} inherits from 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_research_a1e63a15415de84a82fb91005c214f289}{}\index{Research@{Research}!Research@{Research}}
+\index{Research@{Research}!Research@{Research}}
+\subsubsection[{Research}]{\setlength{\rightskip}{0pt plus 5cm}Research.\+Research (
+\begin{DoxyParamCaption}
+\item[{string}]{name, }
+\item[{int}]{level, }
+\item[{List$<$ {\bf Research} $>$}]{prereqs}
+\end{DoxyParamCaption}
+)}\label{class_research_a1e63a15415de84a82fb91005c214f289}
+
+
+Constructor for \hyperlink{class_research}{Research} Overhead 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & \hyperlink{class_research}{Research} Name\\
+\hline
+{\em level} & \hyperlink{class_research}{Research} Level\\
+\hline
+{\em prereqs} & \hyperlink{class_research}{Research} Prerequisites\\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_research_a0dd2f3c56699958f10865537bd61a8d0}{}\index{Research@{Research}!Can\+Unlock@{Can\+Unlock}}
+\index{Can\+Unlock@{Can\+Unlock}!Research@{Research}}
+\subsubsection[{Can\+Unlock}]{\setlength{\rightskip}{0pt plus 5cm}virtual bool Research.\+Can\+Unlock (
+\begin{DoxyParamCaption}
+\item[{Dictionary$<$ Resource, int $>$}]{resources, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_research_a0dd2f3c56699958f10865537bd61a8d0}
+
+
+Virtual for determining if new \hyperlink{class_research}{Research} can be unlocked 
+
+
+\begin{DoxyParams}{Parameters}
+{\em resources} & Resources needed to obtain\\
+\hline
+{\em reduction} & Reduction amount from \hyperlink{class_research}{Research} already achieved\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented in \hyperlink{class_behemoth_research_ae2f40eec72e442430f9b222720935c28}{Behemoth\+Research}, \hyperlink{class_heavy_fighter_research_a5ff354ea940ac34f4da1be6246eba690}{Heavy\+Fighter\+Research}, \hyperlink{class_transport_research_a07e38e1835293484cf40ba021d5f15a2}{Transport\+Research}, \hyperlink{class_guard_satellite_research_a0c3e6fbc59ec84c659f44309d69be30f}{Guard\+Satellite\+Research}, \hyperlink{class_relay_research_aa7cbfc1ff3f4cfc244ba16bc62357b36}{Relay\+Research}, and \hyperlink{class_warp_portal_research_a49cdb8cdefd5302ee3f12e3dc45ca027}{Warp\+Portal\+Research}.
+
+\hypertarget{class_research_a4587dfdaf5c7a833979bd5dc99b2df14}{}\index{Research@{Research}!Can\+Upgrade@{Can\+Upgrade}}
+\index{Can\+Upgrade@{Can\+Upgrade}!Research@{Research}}
+\subsubsection[{Can\+Upgrade}]{\setlength{\rightskip}{0pt plus 5cm}bool Research.\+Can\+Upgrade (
+\begin{DoxyParamCaption}
+\item[{string}]{name, }
+\item[{Dictionary$<$ Resource, int $>$}]{resources, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}\label{class_research_a4587dfdaf5c7a833979bd5dc99b2df14}
+
+
+Determines if possible to upgrade to next level of \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & \\
+\hline
+{\em resources} & Resources needed to obtain\\
+\hline
+{\em reduction} & Reduction amount from research already achieved\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{class_research_aa47288e846f7992eaf88e29c2c790dc0}{}\index{Research@{Research}!Display@{Display}}
+\index{Display@{Display}!Research@{Research}}
+\subsubsection[{Display}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Research.\+Display (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{panel, }
+\item[{Dictionary$<$ Resource, int $>$}]{resources, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_research_aa47288e846f7992eaf88e29c2c790dc0}
+
+
+Virtual for displaying the current \hyperlink{class_research}{Research} values 
+
+
+\begin{DoxyParams}{Parameters}
+{\em panel} & \\
+\hline
+{\em resources} & Resources needed to obtain\\
+\hline
+{\em reduction} & Reduction amount from \hyperlink{class_research}{Research} already achieved\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \hyperlink{class_behemoth_research_adb2765eedd2746e4f460e50f4f93dc8a}{Behemoth\+Research}, \hyperlink{class_heavy_fighter_research_a867ed4fb05de870ec77e80dd93ae5f19}{Heavy\+Fighter\+Research}, \hyperlink{class_transport_research_a256529705ede8b7493da051a84f38cc1}{Transport\+Research}, \hyperlink{class_guard_satellite_research_a2840eeb59aecef270a2ee73842cd7649}{Guard\+Satellite\+Research}, \hyperlink{class_efficiency_research_ac8caf0085703357f8811ab1989a682ec}{Efficiency\+Research}, \hyperlink{class_command_ship_research_aa8393ffcf2b144a67686e1c1486a7848}{Command\+Ship\+Research}, \hyperlink{class_complex_research_a038a03231a819764dc9d2ee7a55233e6}{Complex\+Research}, \hyperlink{class_relay_research_af891a7b31495e6c74a92f535a4941f48}{Relay\+Research}, \hyperlink{class_warp_portal_research_a2cd1bc8ac2783f9e412cddd55a4a3404}{Warp\+Portal\+Research}, and \hyperlink{class_fighter_research_a8097d1c69f3c46d4f8e2dc90dc47bcb9}{Fighter\+Research}.
+
+\hypertarget{class_research_a3c61c95bc273b0effe02577c7e5d29f5}{}\index{Research@{Research}!Display\+Popup@{Display\+Popup}}
+\index{Display\+Popup@{Display\+Popup}!Research@{Research}}
+\subsubsection[{Display\+Popup}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Research.\+Display\+Popup (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{panel, }
+\item[{string}]{upgrade, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_research_a3c61c95bc273b0effe02577c7e5d29f5}
+
+
+Virtual for displaying popup with how much unlocking costs 
+
+
+\begin{DoxyParams}{Parameters}
+{\em panel} & Panel of button being hovered over\\
+\hline
+{\em upgrade} & Name of upgrade\\
+\hline
+{\em reduction} & Reduction amount from \hyperlink{class_research}{Research} already achieved\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \hyperlink{class_behemoth_research_aba2442416ed87cb23061f9e3c5ca382c}{Behemoth\+Research}, \hyperlink{class_heavy_fighter_research_a25476a66abf46ffb2b99d3d01b60c8a1}{Heavy\+Fighter\+Research}, \hyperlink{class_transport_research_ab0b2c9bbf90ebffd9b21be7a73a999e1}{Transport\+Research}, \hyperlink{class_guard_satellite_research_a28a87325e2fc2fb666c715560f85a15a}{Guard\+Satellite\+Research}, \hyperlink{class_relay_research_a336f93531b6182411330914ccf6718b5}{Relay\+Research}, and \hyperlink{class_warp_portal_research_a41ca04d145f6522119839b5d9062f171}{Warp\+Portal\+Research}.
+
+\hypertarget{class_research_a5ae3ebe38d15f37ce6cc61fa8a76c6fc}{}\index{Research@{Research}!Unlock@{Unlock}}
+\index{Unlock@{Unlock}!Research@{Research}}
+\subsubsection[{Unlock}]{\setlength{\rightskip}{0pt plus 5cm}virtual Dictionary$<$Resource, int$>$ Research.\+Unlock (
+\begin{DoxyParamCaption}
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_research_a5ae3ebe38d15f37ce6cc61fa8a76c6fc}
+
+
+Virtual for unlocking new \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em reduction} & Reduction amount from \hyperlink{class_research}{Research} already achieved\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented in \hyperlink{class_behemoth_research_ac0026673318671bec69fc5aeddd1c989}{Behemoth\+Research}, \hyperlink{class_heavy_fighter_research_ac5fb9e14f64823b2386e0dbc35992ea4}{Heavy\+Fighter\+Research}, \hyperlink{class_transport_research_ac1a1136943af994003495a76ba7c57d1}{Transport\+Research}, \hyperlink{class_guard_satellite_research_aca565da13490a14ba76ee05b99ecabe6}{Guard\+Satellite\+Research}, \hyperlink{class_relay_research_a384b0d81a52c38523fa370f6ece80909}{Relay\+Research}, and \hyperlink{class_warp_portal_research_a8692eb6be00975f366a2c53b1c84d55d}{Warp\+Portal\+Research}.
+
+\hypertarget{class_research_a963cb6ac5e27b234a3da2b1be640bc6a}{}\index{Research@{Research}!Upgrade\+Research@{Upgrade\+Research}}
+\index{Upgrade\+Research@{Upgrade\+Research}!Research@{Research}}
+\subsubsection[{Upgrade\+Research}]{\setlength{\rightskip}{0pt plus 5cm}virtual Dictionary$<$Resource, int$>$ Research.\+Upgrade\+Research (
+\begin{DoxyParamCaption}
+\item[{string}]{name, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_research_a963cb6ac5e27b234a3da2b1be640bc6a}
+
+
+Virtual for upgrading individual research 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & \\
+\hline
+{\em reduction} & Reduction amount for \hyperlink{class_research}{Research} already achieved\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented in \hyperlink{class_complex_research_a310412a49ffc06dfc21b7bb9777199d1}{Complex\+Research}, \hyperlink{class_behemoth_research_a46f83061d749e4b6cc7d7704460c0f29}{Behemoth\+Research}, \hyperlink{class_heavy_fighter_research_aad96c063ea5f6e3b473f4bd9dd7dcc86}{Heavy\+Fighter\+Research}, \hyperlink{class_efficiency_research_adf0a3b0d4af0e434b6a01d8f6142182b}{Efficiency\+Research}, \hyperlink{class_fighter_research_afd5beebea869ceeb759f36689cd2525b}{Fighter\+Research}, \hyperlink{class_command_ship_research_a17c455c45c0551795ed2dac84d10a9b2}{Command\+Ship\+Research}, \hyperlink{class_guard_satellite_research_aa69bdb692be9ee8ff073a3f963fc4045}{Guard\+Satellite\+Research}, \hyperlink{class_transport_research_a623f99655f4ac62ec9e1e8f4b9080cd7}{Transport\+Research}, \hyperlink{class_relay_research_a0262fccebce475efa4ab3d376b4a45ae}{Relay\+Research}, and \hyperlink{class_warp_portal_research_a2571a9c698b8874910de790e6d610a17}{Warp\+Portal\+Research}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Research/Research.\+cs\end{DoxyCompactItemize}

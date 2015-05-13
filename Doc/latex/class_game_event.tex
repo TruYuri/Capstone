@@ -1,0 +1,119 @@
+\hypertarget{class_game_event}{}\section{Game\+Event Class Reference}
+\label{class_game_event}\index{Game\+Event@{Game\+Event}}
+
+
+Base class for all events. Defines functions crucial to frequent and timed calls for proper event handling in a queue.  
+
+
+Inheritance diagram for Game\+Event\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=11.000000cm]{class_game_event}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_game_event_a0cfd1ef30d8926f7e87d01a683a23cf0}{Game\+Event} (int turns)
+\begin{DoxyCompactList}\small\item\em Base constructor for any game event. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_game_event_af4e3b9e9da59c616f4136851b7a35130}{Progress} ()
+\begin{DoxyCompactList}\small\item\em Called once per turn for each event. Advances it to the next stage as appropriate. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_game_event_affc9765dad7ffeed5b68cd99027789ec}{Update} ()
+\begin{DoxyCompactList}\small\item\em Updates events continually. This is for, say, cosmetic stuff. \end{DoxyCompactList}\item 
+virtual bool \hyperlink{class_game_event_a39cda54b07ab8ad842f2fc4fec588a9f}{Assert\+Valid} ()
+\begin{DoxyCompactList}\small\item\em Used by the event system to ensure this event is still valid, otherwise bugs will occur. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_game_event_add7aa902c0daaf24b1a190ddb32d3ca1}{}Game\+Event\+Stage {\bfseries \+\_\+stage}\label{class_game_event_add7aa902c0daaf24b1a190ddb32d3ca1}
+
+\item 
+\hypertarget{class_game_event_a8466650a7c83a9b8a64436b0a06e18e8}{}int {\bfseries \+\_\+remaining\+Turns}\label{class_game_event_a8466650a7c83a9b8a64436b0a06e18e8}
+
+\end{DoxyCompactItemize}
+\subsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_game_event_ab0314aa5a0cdef45eee58e908687118d}{}Game\+Event\+Stage {\bfseries Stage}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_game_event_ab0314aa5a0cdef45eee58e908687118d}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Base class for all events. Defines functions crucial to frequent and timed calls for proper event handling in a queue. 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_game_event_a0cfd1ef30d8926f7e87d01a683a23cf0}{}\index{Game\+Event@{Game\+Event}!Game\+Event@{Game\+Event}}
+\index{Game\+Event@{Game\+Event}!Game\+Event@{Game\+Event}}
+\subsubsection[{Game\+Event}]{\setlength{\rightskip}{0pt plus 5cm}Game\+Event.\+Game\+Event (
+\begin{DoxyParamCaption}
+\item[{int}]{turns}
+\end{DoxyParamCaption}
+)}\label{class_game_event_a0cfd1ef30d8926f7e87d01a683a23cf0}
+
+
+Base constructor for any game event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em turns} & The number of turns until this event expires.\\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_game_event_a39cda54b07ab8ad842f2fc4fec588a9f}{}\index{Game\+Event@{Game\+Event}!Assert\+Valid@{Assert\+Valid}}
+\index{Assert\+Valid@{Assert\+Valid}!Game\+Event@{Game\+Event}}
+\subsubsection[{Assert\+Valid}]{\setlength{\rightskip}{0pt plus 5cm}virtual bool Game\+Event.\+Assert\+Valid (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_game_event_a39cda54b07ab8ad842f2fc4fec588a9f}
+
+
+Used by the event system to ensure this event is still valid, otherwise bugs will occur. 
+
+\begin{DoxyReturn}{Returns}
+Boolean indicating if this event is still valid.
+\end{DoxyReturn}
+
+
+Reimplemented in \hyperlink{class_travel_event_ab0c6c17356f85b9628da7bfe06914f16}{Travel\+Event}, \hyperlink{class_battle_event_a95ddc833b90864085cf633fc3490ba23}{Battle\+Event}, \hyperlink{class_deploy_event_a9e4512636f367c42fb0c17639af7cd1a}{Deploy\+Event}, \hyperlink{class_undeploy_event_a594626ee9eeebb54edf305cc6271ef8a}{Undeploy\+Event}, \hyperlink{class_retreat_event_af91b9bde8576eac93000146daeec411a}{Retreat\+Event}, \hyperlink{class_chase_event_a78ff05e24a0671c734d0c4f50effa88b}{Chase\+Event}, \hyperlink{class_diplomacy_event_a163c0891b4fa3389c5c51e8b6a762726}{Diplomacy\+Event}, \hyperlink{class_warp_event_ace9d3145103ab72a68f75308b1de57ce}{Warp\+Event}, and \hyperlink{class_build_event_a6b294461f83c3e855658190b0e4d96c8}{Build\+Event}.
+
+\hypertarget{class_game_event_af4e3b9e9da59c616f4136851b7a35130}{}\index{Game\+Event@{Game\+Event}!Progress@{Progress}}
+\index{Progress@{Progress}!Game\+Event@{Game\+Event}}
+\subsubsection[{Progress}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Game\+Event.\+Progress (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_game_event_af4e3b9e9da59c616f4136851b7a35130}
+
+
+Called once per turn for each event. Advances it to the next stage as appropriate. 
+
+
+
+Reimplemented in \hyperlink{class_battle_event_a5555b2adc60389a54aff08e76314f9df}{Battle\+Event}, \hyperlink{class_travel_event_a0e6687db5718ae7342cdae88013f604c}{Travel\+Event}, \hyperlink{class_deploy_event_a65f83dee4eaa234ff7e753792a5fc4f9}{Deploy\+Event}, \hyperlink{class_chase_event_a60d3a6a970fddc85e47adc5d2652a5bd}{Chase\+Event}, \hyperlink{class_undeploy_event_a94f9db4ee4c2a647cf9b96d9751c4285}{Undeploy\+Event}, \hyperlink{class_build_event_a69284737235550d9706292c5212ba228}{Build\+Event}, \hyperlink{class_warp_event_a04806691764296e3907f9f78ede040cc}{Warp\+Event}, \hyperlink{class_diplomacy_event_a0ba4ef9fe3725fc078b7585646331d94}{Diplomacy\+Event}, \hyperlink{class_retreat_event_a3ef1bd850bc58ef3f8e83176be49412f}{Retreat\+Event}, and \hyperlink{class_command_ship_lost_event_ae40df10e4b39aa564af5c8a2a24c5bed}{Command\+Ship\+Lost\+Event}.
+
+\hypertarget{class_game_event_affc9765dad7ffeed5b68cd99027789ec}{}\index{Game\+Event@{Game\+Event}!Update@{Update}}
+\index{Update@{Update}!Game\+Event@{Game\+Event}}
+\subsubsection[{Update}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Game\+Event.\+Update (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_game_event_affc9765dad7ffeed5b68cd99027789ec}
+
+
+Updates events continually. This is for, say, cosmetic stuff. 
+
+
+
+Reimplemented in \hyperlink{class_travel_event_ac82ebd0d8c07b4d4de101832aa4daab4}{Travel\+Event}, and \hyperlink{class_chase_event_a6197d2cdf001ae96cc2f2e4996cbcd89}{Chase\+Event}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Events/Game\+Event.\+cs\end{DoxyCompactItemize}

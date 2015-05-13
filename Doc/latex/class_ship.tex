@@ -1,0 +1,257 @@
+\hypertarget{class_ship}{}\section{Ship Class Reference}
+\label{class_ship}\index{Ship@{Ship}}
+
+
+\hyperlink{class_ship}{Ship} definition class.  
+
+
+Inheritance diagram for Ship\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_ship}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_ship_aebcc555eb1057469c19efbcdf85ed5c8}{Ship} (string name, float hull, float firepower, float speed, int capacity, int r\+Capacity, int plating, Ship\+Properties ship\+Properties)
+\begin{DoxyCompactList}\small\item\em Constructor for a ship \end{DoxyCompactList}\item 
+Key\+Value\+Pair$<$ bool, Dictionary$<$ Resource, int $>$ $>$ \hyperlink{class_ship_a4c61b780123b8a5e3ed5bcf64dedb6e2}{Can\+Construct} (Dictionary$<$ Resource, int $>$ resources, int n, float r)
+\begin{DoxyCompactList}\small\item\em Indicates if this ship can be constructed. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_ship_a44022d06a9026eccaa7ce8a499509c74}{Recalculate\+Resources} ()
+\begin{DoxyCompactList}\small\item\em Updates the resources needed to build this ship. \end{DoxyCompactList}\item 
+int \hyperlink{class_ship_ad7d1051aa85fa6436799a03dcdf25cbc}{Count\+Population} ()
+\begin{DoxyCompactList}\small\item\em Sums this ship\textquotesingle{}s populations. \end{DoxyCompactList}\item 
+int \hyperlink{class_ship_a566dd165ae8196de2bf89527b1f3fc2f}{Count\+Resources} ()
+\begin{DoxyCompactList}\small\item\em Sums this ship\textquotesingle{}s total resources. \end{DoxyCompactList}\item 
+virtual \hyperlink{class_ship}{Ship} \hyperlink{class_ship_a64926f0a5ee6d4052d680a453b17d1d9}{Copy} ()
+\begin{DoxyCompactList}\small\item\em Creates a copy of this ship. For construction. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_ship_ab9430db4eda75ef7ec77f5f7ff1b9bdd}{}bool {\bfseries unlocked}\label{class_ship_ab9430db4eda75ef7ec77f5f7ff1b9bdd}
+
+\item 
+\hypertarget{class_ship_a1ff0d583487e03928204095baa86c942}{}string {\bfseries name}\label{class_ship_a1ff0d583487e03928204095baa86c942}
+
+\item 
+\hypertarget{class_ship_ae1e8efa4b9a74c4840b895381ade8aa5}{}float {\bfseries hull}\label{class_ship_ae1e8efa4b9a74c4840b895381ade8aa5}
+
+\item 
+\hypertarget{class_ship_aaee623b717517fe78d7b7df63cbac657}{}float {\bfseries firepower}\label{class_ship_aaee623b717517fe78d7b7df63cbac657}
+
+\item 
+\hypertarget{class_ship_afdbbfbe108985ec9575440ad268cd00f}{}float {\bfseries speed}\label{class_ship_afdbbfbe108985ec9575440ad268cd00f}
+
+\item 
+\hypertarget{class_ship_a0b302cc2af0e84ea0778e09024b016df}{}int {\bfseries capacity}\label{class_ship_a0b302cc2af0e84ea0778e09024b016df}
+
+\item 
+\hypertarget{class_ship_ae000b41ada157293d5f19bb27bc647b9}{}float {\bfseries protection}\label{class_ship_ae000b41ada157293d5f19bb27bc647b9}
+
+\item 
+\hypertarget{class_ship_a47481b067e6f06c6ae3934a4b8c752aa}{}int {\bfseries resource\+Capacity}\label{class_ship_a47481b067e6f06c6ae3934a4b8c752aa}
+
+\item 
+\hypertarget{class_ship_a8634a5d5b303ca88e3f07cee57cd65a1}{}int {\bfseries plating}\label{class_ship_a8634a5d5b303ca88e3f07cee57cd65a1}
+
+\item 
+\hypertarget{class_ship_a3cfea075b9e5efb98262a14492181ca5}{}Dictionary$<$ Inhabitance, int $>$ {\bfseries population}\label{class_ship_a3cfea075b9e5efb98262a14492181ca5}
+
+\item 
+\hypertarget{class_ship_a3f67d530ff6b2d59bbd3f5c922432514}{}Dictionary$<$ Resource, int $>$ {\bfseries required\+Resources}\label{class_ship_a3f67d530ff6b2d59bbd3f5c922432514}
+
+\item 
+\hypertarget{class_ship_a36a4e89e389b90b28cc4f04db9b80ab4}{}Dictionary$<$ Resource, int $>$ {\bfseries resources}\label{class_ship_a36a4e89e389b90b28cc4f04db9b80ab4}
+
+\item 
+\hypertarget{class_ship_ad433e5693f803ea54b41180eae929eab}{}Ship\+Properties {\bfseries ship\+Properties}\label{class_ship_ad433e5693f803ea54b41180eae929eab}
+
+\item 
+\hypertarget{class_ship_a19055edd019236d0c49352723fe0f268}{}bool {\bfseries is\+Deployed}\label{class_ship_a19055edd019236d0c49352723fe0f268}
+
+\end{DoxyCompactItemize}
+\subsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_ship_ad6c7faad25ed7c9f3d8696eaaed17af7}{}bool {\bfseries Is\+Deployed}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_ship_ad6c7faad25ed7c9f3d8696eaaed17af7}
+
+\item 
+\hypertarget{class_ship_a8f50fbb546c77434ff604c52bc27ef0e}{}string {\bfseries Name}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_ship_a8f50fbb546c77434ff604c52bc27ef0e}
+
+\item 
+\hypertarget{class_ship_a1c3a9444437b672fd513721a3631a175}{}float {\bfseries Hull}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_ship_a1c3a9444437b672fd513721a3631a175}
+
+\item 
+\hypertarget{class_ship_a0febc2a8feda5fe39aeb5842fa52426f}{}float {\bfseries Firepower}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_ship_a0febc2a8feda5fe39aeb5842fa52426f}
+
+\item 
+\hypertarget{class_ship_a919b48e06ce810b8d9d2f90f3d3fd655}{}float {\bfseries Speed}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_ship_a919b48e06ce810b8d9d2f90f3d3fd655}
+
+\item 
+\hypertarget{class_ship_a18e4d291683bd50bbcaa975a89a5a6dc}{}int {\bfseries Capacity}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_ship_a18e4d291683bd50bbcaa975a89a5a6dc}
+
+\item 
+\hypertarget{class_ship_a12ffee2de72cb863d6f3105662b43ad2}{}int {\bfseries Plating}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_ship_a12ffee2de72cb863d6f3105662b43ad2}
+
+\item 
+\hypertarget{class_ship_ad8ebf8a205f81c80e3149ce91dcc926c}{}int {\bfseries Resource\+Capacity}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_ship_ad8ebf8a205f81c80e3149ce91dcc926c}
+
+\item 
+\hypertarget{class_ship_a7464aeadf6629b8eea69e6ad78bd0835}{}float {\bfseries Protection}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_ship_a7464aeadf6629b8eea69e6ad78bd0835}
+
+\item 
+\hypertarget{class_ship_ad3e1ad39a10c09f2ff3d9e67a3df288e}{}bool {\bfseries Unlocked}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_ship_ad3e1ad39a10c09f2ff3d9e67a3df288e}
+
+\item 
+\hypertarget{class_ship_a0e5068b43ba79e25e3d6ece3a5b79527}{}Dictionary$<$ Resource, int $>$ {\bfseries Resources}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_ship_a0e5068b43ba79e25e3d6ece3a5b79527}
+
+\item 
+\hypertarget{class_ship_afee1d15f928804cddb698f591231dace}{}Dictionary$<$ Resource, int $>$ {\bfseries Required\+Resources}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_ship_afee1d15f928804cddb698f591231dace}
+
+\item 
+\hypertarget{class_ship_a0c439a5143b6134ed179337b5fa3e81b}{}Dictionary$<$ Inhabitance, int $>$ {\bfseries Population}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_ship_a0c439a5143b6134ed179337b5fa3e81b}
+
+\item 
+\hypertarget{class_ship_a3388467724834569f66cdc95e091292b}{}Ship\+Properties {\bfseries Ship\+Properties}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_ship_a3388467724834569f66cdc95e091292b}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{class_ship}{Ship} definition class. 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_ship_aebcc555eb1057469c19efbcdf85ed5c8}{}\index{Ship@{Ship}!Ship@{Ship}}
+\index{Ship@{Ship}!Ship@{Ship}}
+\subsubsection[{Ship}]{\setlength{\rightskip}{0pt plus 5cm}Ship.\+Ship (
+\begin{DoxyParamCaption}
+\item[{string}]{name, }
+\item[{float}]{hull, }
+\item[{float}]{firepower, }
+\item[{float}]{speed, }
+\item[{int}]{capacity, }
+\item[{int}]{r\+Capacity, }
+\item[{int}]{plating, }
+\item[{Ship\+Properties}]{ship\+Properties}
+\end{DoxyParamCaption}
+)}\label{class_ship_aebcc555eb1057469c19efbcdf85ed5c8}
+
+
+Constructor for a ship 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & \\
+\hline
+{\em hull} & \\
+\hline
+{\em firepower} & \\
+\hline
+{\em speed} & \\
+\hline
+{\em capacity} & Soldier capacity\\
+\hline
+{\em r\+Capacity} & Resource capacity\\
+\hline
+{\em plating} & Current plating research level\\
+\hline
+{\em ship\+Properties} & Bitfield properties determining ship behavior\\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_ship_a4c61b780123b8a5e3ed5bcf64dedb6e2}{}\index{Ship@{Ship}!Can\+Construct@{Can\+Construct}}
+\index{Can\+Construct@{Can\+Construct}!Ship@{Ship}}
+\subsubsection[{Can\+Construct}]{\setlength{\rightskip}{0pt plus 5cm}Key\+Value\+Pair$<$bool, Dictionary$<$Resource, int$>$ $>$ Ship.\+Can\+Construct (
+\begin{DoxyParamCaption}
+\item[{Dictionary$<$ Resource, int $>$}]{resources, }
+\item[{int}]{n, }
+\item[{float}]{r}
+\end{DoxyParamCaption}
+)}\label{class_ship_a4c61b780123b8a5e3ed5bcf64dedb6e2}
+
+
+Indicates if this ship can be constructed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em resources} & The resource pool being used.\\
+\hline
+{\em n} & The number of this ship to build.\\
+\hline
+{\em r} & The cost reduction by percentage.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A boolean indicating if the resources were adequate, and the resources to build if so.
+\end{DoxyReturn}
+\hypertarget{class_ship_a64926f0a5ee6d4052d680a453b17d1d9}{}\index{Ship@{Ship}!Copy@{Copy}}
+\index{Copy@{Copy}!Ship@{Ship}}
+\subsubsection[{Copy}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf Ship} Ship.\+Copy (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_ship_a64926f0a5ee6d4052d680a453b17d1d9}
+
+
+Creates a copy of this ship. For construction. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented in \hyperlink{class_structure_ae96b383348aca0ba43c2a57496b1761c}{Structure}.
+
+\hypertarget{class_ship_ad7d1051aa85fa6436799a03dcdf25cbc}{}\index{Ship@{Ship}!Count\+Population@{Count\+Population}}
+\index{Count\+Population@{Count\+Population}!Ship@{Ship}}
+\subsubsection[{Count\+Population}]{\setlength{\rightskip}{0pt plus 5cm}int Ship.\+Count\+Population (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_ship_ad7d1051aa85fa6436799a03dcdf25cbc}
+
+
+Sums this ship\textquotesingle{}s populations. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{class_ship_a566dd165ae8196de2bf89527b1f3fc2f}{}\index{Ship@{Ship}!Count\+Resources@{Count\+Resources}}
+\index{Count\+Resources@{Count\+Resources}!Ship@{Ship}}
+\subsubsection[{Count\+Resources}]{\setlength{\rightskip}{0pt plus 5cm}int Ship.\+Count\+Resources (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_ship_a566dd165ae8196de2bf89527b1f3fc2f}
+
+
+Sums this ship\textquotesingle{}s total resources. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{class_ship_a44022d06a9026eccaa7ce8a499509c74}{}\index{Ship@{Ship}!Recalculate\+Resources@{Recalculate\+Resources}}
+\index{Recalculate\+Resources@{Recalculate\+Resources}!Ship@{Ship}}
+\subsubsection[{Recalculate\+Resources}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Ship.\+Recalculate\+Resources (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_ship_a44022d06a9026eccaa7ce8a499509c74}
+
+
+Updates the resources needed to build this ship. 
+
+
+
+Reimplemented in \hyperlink{class_structure_ab88e4905beed6a2caafe1b7cbfc109b7}{Structure}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Ships/Ship.\+cs\end{DoxyCompactItemize}

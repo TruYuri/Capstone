@@ -1,0 +1,228 @@
+\hypertarget{class_map_manager}{}\section{Map\+Manager Class Reference}
+\label{class_map_manager}\index{Map\+Manager@{Map\+Manager}}
+
+
+Manages map generation, including the map of sectors and minimap generation.  
+
+
+Inheritance diagram for Map\+Manager\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_map_manager}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_map_manager_a52cc3160cc0c90840920dda998a14de1}{Init} ()
+\begin{DoxyCompactList}\small\item\em Initializes the \hyperlink{class_map_manager}{Map\+Manager}, reading in values from Planets.\+ini and generating the first sector. \end{DoxyCompactList}\item 
+void \hyperlink{class_map_manager_aa880f73a5fdd3c8434cda8f1fba2deeb}{Generate\+New\+Sectors} (Vector3 real\+Position, Key\+Value\+Pair$<$ int, int $>$ grid\+Position)
+\begin{DoxyCompactList}\small\item\em Generates new sectors around the specific one, if they don\textquotesingle{}t exist yet. \end{DoxyCompactList}\item 
+\hyperlink{class_sector}{Sector} \hyperlink{class_map_manager_a491495d53fc51d72b6255a7171e05219}{Find\+Nearest\+Sector} (\hyperlink{class_sector}{Sector} sector, Vector3 detail)
+\begin{DoxyCompactList}\small\item\em Finds the sector closest to the specified sector and position. \end{DoxyCompactList}\item 
+Texture2\+D \hyperlink{class_map_manager_a335b65b22b46a6fe36642e76da4b727b}{Generate\+Map} (\hyperlink{class_sector}{Sector} center, Dictionary$<$ \hyperlink{class_sector}{Sector}, Color $>$ highlights)
+\begin{DoxyCompactList}\small\item\em Generates a minimap at the specified center with specified color highlights. \end{DoxyCompactList}\item 
+List$<$ \hyperlink{class_sector}{Sector} $>$ \hyperlink{class_map_manager_a53545e01b20a39cd61e40767bb74b17f}{Get\+Neighbors} (\hyperlink{class_sector}{Sector} sector)
+\begin{DoxyCompactList}\small\item\em Finds neighboring sectors. \end{DoxyCompactList}\item 
+Dictionary$<$ \hyperlink{class_structure}{Structure}, \hyperlink{class_sector}{Sector} $>$ \hyperlink{class_map_manager_aec6fadac270ce921e195dbb197ad6338}{Find\+Portals} (Team team, \hyperlink{class_structure}{Structure} portal, \hyperlink{class_sector}{Sector} start)
+\begin{DoxyCompactList}\small\item\em Finds warp portals around a start portal and sector. \end{DoxyCompactList}\item 
+List$<$ \hyperlink{class_sector}{Sector} $>$ \hyperlink{class_map_manager_ac1fa70e543427314f046c643fc225451}{A\+Star\+Search} (\hyperlink{class_sector}{Sector} start, \hyperlink{class_sector}{Sector} goal, int start\+Range=0, Team team=Team.\+Uninhabited, string type=\char`\"{}\char`\"{})
+\begin{DoxyCompactList}\small\item\em A$\ast$ search for general pathfinding and command/relay ranges. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_map_manager_a8b7161b17052288f0f1d8e822629d5ed}{}static \hyperlink{class_map_manager}{Map\+Manager} {\bfseries Instance}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_map_manager_a8b7161b17052288f0f1d8e822629d5ed}
+
+\item 
+\hypertarget{class_map_manager_a2d1e787c44c8bfd6697def55e6472f7f}{}Dictionary$<$ string, float $>$ {\bfseries Planet\+Type\+Spawn\+Table}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_map_manager_a2d1e787c44c8bfd6697def55e6472f7f}
+
+\item 
+\hypertarget{class_map_manager_a661720b3368f2e08d422ef52b0b4c8fa}{}Dictionary$<$ string, float $>$ {\bfseries Deploy\+Spawn\+Table}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_map_manager_a661720b3368f2e08d422ef52b0b4c8fa}
+
+\item 
+\hypertarget{class_map_manager_a6a017da4d7f9e3f2446f0421a0d3e47f}{}Dictionary$<$ string, \hyperlink{struct_texture_atlas_details}{Texture\+Atlas\+Details} $>$ {\bfseries Planet\+Texture\+Table}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_map_manager_a6a017da4d7f9e3f2446f0421a0d3e47f}
+
+\item 
+\hypertarget{class_map_manager_ae8dd00a2301b16154d920fe5ef028cb9}{}Dictionary$<$ string, Dictionary$<$ Inhabitance, float $>$ $>$ {\bfseries Planet\+Inhabitance\+Spawn\+Table}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_map_manager_ae8dd00a2301b16154d920fe5ef028cb9}
+
+\item 
+\hypertarget{class_map_manager_a7991bb12fb212b9b5afda735b2fb8d19}{}Dictionary$<$ string, Dictionary$<$ Resource, float $>$ $>$ {\bfseries Planet\+Resource\+Spawn\+Table}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_map_manager_a7991bb12fb212b9b5afda735b2fb8d19}
+
+\item 
+\hypertarget{class_map_manager_a29725869358b848553ad634f9ed1b98d}{}Dictionary$<$ string, Dictionary$<$ string, string $>$ $>$ {\bfseries Planet\+Spawn\+Details}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_map_manager_a29725869358b848553ad634f9ed1b98d}
+
+\item 
+\hypertarget{class_map_manager_a6ba45e61b3261dc150f0ba53b146a928}{}Dictionary$<$ int, Dictionary$<$ int, \hyperlink{class_sector}{Sector} $>$ $>$ {\bfseries Sector\+Map}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_map_manager_a6ba45e61b3261dc150f0ba53b146a928}
+
+\item 
+\hypertarget{class_map_manager_aaa4af93f400d530e87ea5904b145b597}{}Dictionary$<$ Resource, List$<$ string $>$ $>$ {\bfseries Resource\+Planet\+Types}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_map_manager_aaa4af93f400d530e87ea5904b145b597}
+
+\item 
+\hypertarget{class_map_manager_a7ded5ed018f5fbadd8db883fefe90e39}{}Dictionary$<$ Resource, float $>$ {\bfseries Resource\+Rates}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_map_manager_a7ded5ed018f5fbadd8db883fefe90e39}
+
+\item 
+\hypertarget{class_map_manager_a93c6c73797de4783b6e96173fbc81f4d}{}Texture2\+D {\bfseries Minimap}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_map_manager_a93c6c73797de4783b6e96173fbc81f4d}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Manages map generation, including the map of sectors and minimap generation. 
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_map_manager_ac1fa70e543427314f046c643fc225451}{}\index{Map\+Manager@{Map\+Manager}!A\+Star\+Search@{A\+Star\+Search}}
+\index{A\+Star\+Search@{A\+Star\+Search}!Map\+Manager@{Map\+Manager}}
+\subsubsection[{A\+Star\+Search}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Sector}$>$ Map\+Manager.\+A\+Star\+Search (
+\begin{DoxyParamCaption}
+\item[{{\bf Sector}}]{start, }
+\item[{{\bf Sector}}]{goal, }
+\item[{int}]{start\+Range = {\ttfamily 0}, }
+\item[{Team}]{team = {\ttfamily Team.Uninhabited}, }
+\item[{string}]{type = {\ttfamily \char`\"{}\char`\"{}}}
+\end{DoxyParamCaption}
+)}\label{class_map_manager_ac1fa70e543427314f046c643fc225451}
+
+
+A$\ast$ search for general pathfinding and command/relay ranges. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em start} & The starting sector.\\
+\hline
+{\em goal} & The goal sector.\\
+\hline
+{\em start\+Range} & The initial range, if applicable.\\
+\hline
+{\em team} & The team to restrict to, if applicable.\\
+\hline
+{\em type} & The type of object to search for.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A working path between start and goal, or null if none exists.
+\end{DoxyReturn}
+\hypertarget{class_map_manager_a491495d53fc51d72b6255a7171e05219}{}\index{Map\+Manager@{Map\+Manager}!Find\+Nearest\+Sector@{Find\+Nearest\+Sector}}
+\index{Find\+Nearest\+Sector@{Find\+Nearest\+Sector}!Map\+Manager@{Map\+Manager}}
+\subsubsection[{Find\+Nearest\+Sector}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Sector} Map\+Manager.\+Find\+Nearest\+Sector (
+\begin{DoxyParamCaption}
+\item[{{\bf Sector}}]{sector, }
+\item[{Vector3}]{detail}
+\end{DoxyParamCaption}
+)}\label{class_map_manager_a491495d53fc51d72b6255a7171e05219}
+
+
+Finds the sector closest to the specified sector and position. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sector} & The current sector.\\
+\hline
+{\em detail} & The real coordinates to find closest to.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The closest sector.
+\end{DoxyReturn}
+\hypertarget{class_map_manager_aec6fadac270ce921e195dbb197ad6338}{}\index{Map\+Manager@{Map\+Manager}!Find\+Portals@{Find\+Portals}}
+\index{Find\+Portals@{Find\+Portals}!Map\+Manager@{Map\+Manager}}
+\subsubsection[{Find\+Portals}]{\setlength{\rightskip}{0pt plus 5cm}Dictionary$<${\bf Structure}, {\bf Sector}$>$ Map\+Manager.\+Find\+Portals (
+\begin{DoxyParamCaption}
+\item[{Team}]{team, }
+\item[{{\bf Structure}}]{portal, }
+\item[{{\bf Sector}}]{start}
+\end{DoxyParamCaption}
+)}\label{class_map_manager_aec6fadac270ce921e195dbb197ad6338}
+
+
+Finds warp portals around a start portal and sector. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em team} & The team the portals belong to.\\
+\hline
+{\em portal} & The starting portal.\\
+\hline
+{\em start} & The starting sector.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Table mapping portals to their sectors.
+\end{DoxyReturn}
+\hypertarget{class_map_manager_a335b65b22b46a6fe36642e76da4b727b}{}\index{Map\+Manager@{Map\+Manager}!Generate\+Map@{Generate\+Map}}
+\index{Generate\+Map@{Generate\+Map}!Map\+Manager@{Map\+Manager}}
+\subsubsection[{Generate\+Map}]{\setlength{\rightskip}{0pt plus 5cm}Texture2\+D Map\+Manager.\+Generate\+Map (
+\begin{DoxyParamCaption}
+\item[{{\bf Sector}}]{center, }
+\item[{Dictionary$<$ {\bf Sector}, Color $>$}]{highlights}
+\end{DoxyParamCaption}
+)}\label{class_map_manager_a335b65b22b46a6fe36642e76da4b727b}
+
+
+Generates a minimap at the specified center with specified color highlights. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em center} & The sector at minimap center.\\
+\hline
+{\em highlights} & Sectors that should be highlighted with a specific color (not team ownership!)\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The new minimap.
+\end{DoxyReturn}
+\hypertarget{class_map_manager_aa880f73a5fdd3c8434cda8f1fba2deeb}{}\index{Map\+Manager@{Map\+Manager}!Generate\+New\+Sectors@{Generate\+New\+Sectors}}
+\index{Generate\+New\+Sectors@{Generate\+New\+Sectors}!Map\+Manager@{Map\+Manager}}
+\subsubsection[{Generate\+New\+Sectors}]{\setlength{\rightskip}{0pt plus 5cm}void Map\+Manager.\+Generate\+New\+Sectors (
+\begin{DoxyParamCaption}
+\item[{Vector3}]{real\+Position, }
+\item[{Key\+Value\+Pair$<$ int, int $>$}]{grid\+Position}
+\end{DoxyParamCaption}
+)}\label{class_map_manager_aa880f73a5fdd3c8434cda8f1fba2deeb}
+
+
+Generates new sectors around the specific one, if they don\textquotesingle{}t exist yet. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em real\+Position} & The position to generated around in real coords.\\
+\hline
+{\em grid\+Position} & The position to generated around in grid coords.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_map_manager_a53545e01b20a39cd61e40767bb74b17f}{}\index{Map\+Manager@{Map\+Manager}!Get\+Neighbors@{Get\+Neighbors}}
+\index{Get\+Neighbors@{Get\+Neighbors}!Map\+Manager@{Map\+Manager}}
+\subsubsection[{Get\+Neighbors}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Sector}$>$ Map\+Manager.\+Get\+Neighbors (
+\begin{DoxyParamCaption}
+\item[{{\bf Sector}}]{sector}
+\end{DoxyParamCaption}
+)}\label{class_map_manager_a53545e01b20a39cd61e40767bb74b17f}
+
+
+Finds neighboring sectors. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sector} & The sector to get neighbors of.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A list of neighbor sectors.
+\end{DoxyReturn}
+\hypertarget{class_map_manager_a52cc3160cc0c90840920dda998a14de1}{}\index{Map\+Manager@{Map\+Manager}!Init@{Init}}
+\index{Init@{Init}!Map\+Manager@{Map\+Manager}}
+\subsubsection[{Init}]{\setlength{\rightskip}{0pt plus 5cm}void Map\+Manager.\+Init (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_map_manager_a52cc3160cc0c90840920dda998a14de1}
+
+
+Initializes the \hyperlink{class_map_manager}{Map\+Manager}, reading in values from Planets.\+ini and generating the first sector. 
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Scripts/Map\+Manager.\+cs\end{DoxyCompactItemize}

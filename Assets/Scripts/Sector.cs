@@ -3,9 +3,10 @@ using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// Definition for Sectors generated through MapManager. Self-generates internal components (tiles)
+/// </summary>
 [System.Serializable]
-
- 
 public class Sector : MonoBehaviour
 {
     private static UnityEngine.Object Tile;

@@ -1,0 +1,191 @@
+\hypertarget{class_behemoth_research}{}\section{Behemoth\+Research Class Reference}
+\label{class_behemoth_research}\index{Behemoth\+Research@{Behemoth\+Research}}
+
+
+This class upgrades and acts as the base for the Behemoth.  
+
+
+Inheritance diagram for Behemoth\+Research\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_behemoth_research}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_behemoth_research_a9d1b5d80c07bcc4121fd1bc17e124d03}{Behemoth\+Research} (\hyperlink{class_ship}{Ship} ship, List$<$ \hyperlink{class_research}{Research} $>$ prereqs)
+\begin{DoxyCompactList}\small\item\em Behemoth Constructor \end{DoxyCompactList}\item 
+override Dictionary$<$ Resource, int $>$ \hyperlink{class_behemoth_research_a46f83061d749e4b6cc7d7704460c0f29}{Upgrade\+Research} (string name, float reduction)
+\begin{DoxyCompactList}\small\item\em Upgrades the level of the \hyperlink{class_research}{Research} \end{DoxyCompactList}\item 
+override Dictionary$<$ Resource, int $>$ \hyperlink{class_behemoth_research_ac0026673318671bec69fc5aeddd1c989}{Unlock} (float reduction)
+\begin{DoxyCompactList}\small\item\em Unlock the \hyperlink{class_research}{Research} \end{DoxyCompactList}\item 
+override bool \hyperlink{class_behemoth_research_ae2f40eec72e442430f9b222720935c28}{Can\+Unlock} (Dictionary$<$ Resource, int $>$ resources, float reduction)
+\begin{DoxyCompactList}\small\item\em Determines if the \hyperlink{class_research}{Research} can be unlocked \end{DoxyCompactList}\item 
+override void \hyperlink{class_behemoth_research_adb2765eedd2746e4f460e50f4f93dc8a}{Display} (Game\+Object panel, Dictionary$<$ Resource, int $>$ resources, float reduction)
+\begin{DoxyCompactList}\small\item\em Changes the panels of the \hyperlink{class_research}{Research} \end{DoxyCompactList}\item 
+override void \hyperlink{class_behemoth_research_aba2442416ed87cb23061f9e3c5ca382c}{Display\+Popup} (Game\+Object panel, string upgrade, float reduction)
+\begin{DoxyCompactList}\small\item\em Displays popups of the \hyperlink{class_research}{Research} \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+This class upgrades and acts as the base for the Behemoth. 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_behemoth_research_a9d1b5d80c07bcc4121fd1bc17e124d03}{}\index{Behemoth\+Research@{Behemoth\+Research}!Behemoth\+Research@{Behemoth\+Research}}
+\index{Behemoth\+Research@{Behemoth\+Research}!Behemoth\+Research@{Behemoth\+Research}}
+\subsubsection[{Behemoth\+Research}]{\setlength{\rightskip}{0pt plus 5cm}Behemoth\+Research.\+Behemoth\+Research (
+\begin{DoxyParamCaption}
+\item[{{\bf Ship}}]{ship, }
+\item[{List$<$ {\bf Research} $>$}]{prereqs}
+\end{DoxyParamCaption}
+)}\label{class_behemoth_research_a9d1b5d80c07bcc4121fd1bc17e124d03}
+
+
+Behemoth Constructor 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ship} & The ship\\
+\hline
+{\em prereqs} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_behemoth_research_ae2f40eec72e442430f9b222720935c28}{}\index{Behemoth\+Research@{Behemoth\+Research}!Can\+Unlock@{Can\+Unlock}}
+\index{Can\+Unlock@{Can\+Unlock}!Behemoth\+Research@{Behemoth\+Research}}
+\subsubsection[{Can\+Unlock}]{\setlength{\rightskip}{0pt plus 5cm}override bool Behemoth\+Research.\+Can\+Unlock (
+\begin{DoxyParamCaption}
+\item[{Dictionary$<$ Resource, int $>$}]{resources, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_behemoth_research_ae2f40eec72e442430f9b222720935c28}
+
+
+Determines if the \hyperlink{class_research}{Research} can be unlocked 
+
+
+\begin{DoxyParams}{Parameters}
+{\em resources} & Resources needed to obtain\\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a0dd2f3c56699958f10865537bd61a8d0}{Research}.
+
+\hypertarget{class_behemoth_research_adb2765eedd2746e4f460e50f4f93dc8a}{}\index{Behemoth\+Research@{Behemoth\+Research}!Display@{Display}}
+\index{Display@{Display}!Behemoth\+Research@{Behemoth\+Research}}
+\subsubsection[{Display}]{\setlength{\rightskip}{0pt plus 5cm}override void Behemoth\+Research.\+Display (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{panel, }
+\item[{Dictionary$<$ Resource, int $>$}]{resources, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_behemoth_research_adb2765eedd2746e4f460e50f4f93dc8a}
+
+
+Changes the panels of the \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em panel} & Panel of buttons\\
+\hline
+{\em resources} & Resources needed to obtain\\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_research_aa47288e846f7992eaf88e29c2c790dc0}{Research}.
+
+\hypertarget{class_behemoth_research_aba2442416ed87cb23061f9e3c5ca382c}{}\index{Behemoth\+Research@{Behemoth\+Research}!Display\+Popup@{Display\+Popup}}
+\index{Display\+Popup@{Display\+Popup}!Behemoth\+Research@{Behemoth\+Research}}
+\subsubsection[{Display\+Popup}]{\setlength{\rightskip}{0pt plus 5cm}override void Behemoth\+Research.\+Display\+Popup (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{panel, }
+\item[{string}]{upgrade, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_behemoth_research_aba2442416ed87cb23061f9e3c5ca382c}
+
+
+Displays popups of the \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em panel} & Panel of button hovered over\\
+\hline
+{\em upgrade} & Name of upgrade\\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_research_a3c61c95bc273b0effe02577c7e5d29f5}{Research}.
+
+\hypertarget{class_behemoth_research_ac0026673318671bec69fc5aeddd1c989}{}\index{Behemoth\+Research@{Behemoth\+Research}!Unlock@{Unlock}}
+\index{Unlock@{Unlock}!Behemoth\+Research@{Behemoth\+Research}}
+\subsubsection[{Unlock}]{\setlength{\rightskip}{0pt plus 5cm}override Dictionary$<$Resource, int$>$ Behemoth\+Research.\+Unlock (
+\begin{DoxyParamCaption}
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_behemoth_research_ac0026673318671bec69fc5aeddd1c989}
+
+
+Unlock the \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a5ae3ebe38d15f37ce6cc61fa8a76c6fc}{Research}.
+
+\hypertarget{class_behemoth_research_a46f83061d749e4b6cc7d7704460c0f29}{}\index{Behemoth\+Research@{Behemoth\+Research}!Upgrade\+Research@{Upgrade\+Research}}
+\index{Upgrade\+Research@{Upgrade\+Research}!Behemoth\+Research@{Behemoth\+Research}}
+\subsubsection[{Upgrade\+Research}]{\setlength{\rightskip}{0pt plus 5cm}override Dictionary$<$Resource, int$>$ Behemoth\+Research.\+Upgrade\+Research (
+\begin{DoxyParamCaption}
+\item[{string}]{name, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_behemoth_research_a46f83061d749e4b6cc7d7704460c0f29}
+
+
+Upgrades the level of the \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & \\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a963cb6ac5e27b234a3da2b1be640bc6a}{Research}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Research/\+Military/Behemoth\+Research.\+cs\end{DoxyCompactItemize}

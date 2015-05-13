@@ -1,0 +1,110 @@
+\hypertarget{class_command_ship_research}{}\section{Command\+Ship\+Research Class Reference}
+\label{class_command_ship_research}\index{Command\+Ship\+Research@{Command\+Ship\+Research}}
+
+
+This class upgrades and acts as the base for the Command \hyperlink{class_ship}{Ship}.  
+
+
+Inheritance diagram for Command\+Ship\+Research\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_command_ship_research}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_command_ship_research_ae7b8818db1baff5897f6561e8e18e739}{Command\+Ship\+Research} (\hyperlink{class_ship}{Ship} ship, List$<$ \hyperlink{class_research}{Research} $>$ prereqs)
+\begin{DoxyCompactList}\small\item\em Command \hyperlink{class_ship}{Ship} Constructor \end{DoxyCompactList}\item 
+override Dictionary$<$ Resource, int $>$ \hyperlink{class_command_ship_research_a17c455c45c0551795ed2dac84d10a9b2}{Upgrade\+Research} (string name, float reduction)
+\begin{DoxyCompactList}\small\item\em Upgrade the level of the \hyperlink{class_research}{Research} \end{DoxyCompactList}\item 
+override void \hyperlink{class_command_ship_research_aa8393ffcf2b144a67686e1c1486a7848}{Display} (Game\+Object panel, Dictionary$<$ Resource, int $>$ resources, float reduction)
+\begin{DoxyCompactList}\small\item\em Changes the display panels for the \hyperlink{class_research}{Research} \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+This class upgrades and acts as the base for the Command \hyperlink{class_ship}{Ship}. 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_command_ship_research_ae7b8818db1baff5897f6561e8e18e739}{}\index{Command\+Ship\+Research@{Command\+Ship\+Research}!Command\+Ship\+Research@{Command\+Ship\+Research}}
+\index{Command\+Ship\+Research@{Command\+Ship\+Research}!Command\+Ship\+Research@{Command\+Ship\+Research}}
+\subsubsection[{Command\+Ship\+Research}]{\setlength{\rightskip}{0pt plus 5cm}Command\+Ship\+Research.\+Command\+Ship\+Research (
+\begin{DoxyParamCaption}
+\item[{{\bf Ship}}]{ship, }
+\item[{List$<$ {\bf Research} $>$}]{prereqs}
+\end{DoxyParamCaption}
+)}\label{class_command_ship_research_ae7b8818db1baff5897f6561e8e18e739}
+
+
+Command \hyperlink{class_ship}{Ship} Constructor 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ship} & The ship\\
+\hline
+{\em prereqs} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_command_ship_research_aa8393ffcf2b144a67686e1c1486a7848}{}\index{Command\+Ship\+Research@{Command\+Ship\+Research}!Display@{Display}}
+\index{Display@{Display}!Command\+Ship\+Research@{Command\+Ship\+Research}}
+\subsubsection[{Display}]{\setlength{\rightskip}{0pt plus 5cm}override void Command\+Ship\+Research.\+Display (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{panel, }
+\item[{Dictionary$<$ Resource, int $>$}]{resources, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_command_ship_research_aa8393ffcf2b144a67686e1c1486a7848}
+
+
+Changes the display panels for the \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em panel} & Panel of button being hovered over\\
+\hline
+{\em resources} & Resources needed to obtain\\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_research_aa47288e846f7992eaf88e29c2c790dc0}{Research}.
+
+\hypertarget{class_command_ship_research_a17c455c45c0551795ed2dac84d10a9b2}{}\index{Command\+Ship\+Research@{Command\+Ship\+Research}!Upgrade\+Research@{Upgrade\+Research}}
+\index{Upgrade\+Research@{Upgrade\+Research}!Command\+Ship\+Research@{Command\+Ship\+Research}}
+\subsubsection[{Upgrade\+Research}]{\setlength{\rightskip}{0pt plus 5cm}override Dictionary$<$Resource, int$>$ Command\+Ship\+Research.\+Upgrade\+Research (
+\begin{DoxyParamCaption}
+\item[{string}]{name, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_command_ship_research_a17c455c45c0551795ed2dac84d10a9b2}
+
+
+Upgrade the level of the \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & \\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a963cb6ac5e27b234a3da2b1be640bc6a}{Research}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Research/\+Science/Command\+Ship\+Research.\+cs\end{DoxyCompactItemize}

@@ -1,0 +1,189 @@
+\hypertarget{class_relay_research}{}\section{Relay\+Research Class Reference}
+\label{class_relay_research}\index{Relay\+Research@{Relay\+Research}}
+
+
+This class upgrades and acts as the base for the Relay.  
+
+
+Inheritance diagram for Relay\+Research\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_relay_research}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_relay_research_a1f0e3d74e66752e2d22647fb85cd08c8}{Relay\+Research} (\hyperlink{class_structure}{Structure} relay, List$<$ \hyperlink{class_research}{Research} $>$ prereqs)
+\begin{DoxyCompactList}\small\item\em Relay Constructor \end{DoxyCompactList}\item 
+override Dictionary$<$ Resource, int $>$ \hyperlink{class_relay_research_a0262fccebce475efa4ab3d376b4a45ae}{Upgrade\+Research} (string name, float reduction)
+\begin{DoxyCompactList}\small\item\em Upgrades the level of the \hyperlink{class_research}{Research} \end{DoxyCompactList}\item 
+override Dictionary$<$ Resource, int $>$ \hyperlink{class_relay_research_a384b0d81a52c38523fa370f6ece80909}{Unlock} (float reduction)
+\begin{DoxyCompactList}\small\item\em Unlocks research \end{DoxyCompactList}\item 
+override bool \hyperlink{class_relay_research_aa7cbfc1ff3f4cfc244ba16bc62357b36}{Can\+Unlock} (Dictionary$<$ Resource, int $>$ resources, float reduction)
+\begin{DoxyCompactList}\small\item\em Determines if it can be unlocked \end{DoxyCompactList}\item 
+override void \hyperlink{class_relay_research_af891a7b31495e6c74a92f535a4941f48}{Display} (Game\+Object panel, Dictionary$<$ Resource, int $>$ resources, float reduction)
+\begin{DoxyCompactList}\small\item\em Change info displayed on the panels for the \hyperlink{class_research}{Research} \end{DoxyCompactList}\item 
+override void \hyperlink{class_relay_research_a336f93531b6182411330914ccf6718b5}{Display\+Popup} (Game\+Object panel, string upgrade, float reduction)
+\begin{DoxyCompactList}\small\item\em Displays popups for the upgrade \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+This class upgrades and acts as the base for the Relay. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_relay_research_a1f0e3d74e66752e2d22647fb85cd08c8}{}\index{Relay\+Research@{Relay\+Research}!Relay\+Research@{Relay\+Research}}
+\index{Relay\+Research@{Relay\+Research}!Relay\+Research@{Relay\+Research}}
+\subsubsection[{Relay\+Research}]{\setlength{\rightskip}{0pt plus 5cm}Relay\+Research.\+Relay\+Research (
+\begin{DoxyParamCaption}
+\item[{{\bf Structure}}]{relay, }
+\item[{List$<$ {\bf Research} $>$}]{prereqs}
+\end{DoxyParamCaption}
+)}\label{class_relay_research_a1f0e3d74e66752e2d22647fb85cd08c8}
+
+
+Relay Constructor 
+
+
+\begin{DoxyParams}{Parameters}
+{\em relay} & \\
+\hline
+{\em prereqs} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_relay_research_aa7cbfc1ff3f4cfc244ba16bc62357b36}{}\index{Relay\+Research@{Relay\+Research}!Can\+Unlock@{Can\+Unlock}}
+\index{Can\+Unlock@{Can\+Unlock}!Relay\+Research@{Relay\+Research}}
+\subsubsection[{Can\+Unlock}]{\setlength{\rightskip}{0pt plus 5cm}override bool Relay\+Research.\+Can\+Unlock (
+\begin{DoxyParamCaption}
+\item[{Dictionary$<$ Resource, int $>$}]{resources, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_relay_research_aa7cbfc1ff3f4cfc244ba16bc62357b36}
+
+
+Determines if it can be unlocked 
+
+
+\begin{DoxyParams}{Parameters}
+{\em resources} & Resources needed to obtain\\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a0dd2f3c56699958f10865537bd61a8d0}{Research}.
+
+\hypertarget{class_relay_research_af891a7b31495e6c74a92f535a4941f48}{}\index{Relay\+Research@{Relay\+Research}!Display@{Display}}
+\index{Display@{Display}!Relay\+Research@{Relay\+Research}}
+\subsubsection[{Display}]{\setlength{\rightskip}{0pt plus 5cm}override void Relay\+Research.\+Display (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{panel, }
+\item[{Dictionary$<$ Resource, int $>$}]{resources, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_relay_research_af891a7b31495e6c74a92f535a4941f48}
+
+
+Change info displayed on the panels for the \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em panel} & \\
+\hline
+{\em resources} & \\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_research_aa47288e846f7992eaf88e29c2c790dc0}{Research}.
+
+\hypertarget{class_relay_research_a336f93531b6182411330914ccf6718b5}{}\index{Relay\+Research@{Relay\+Research}!Display\+Popup@{Display\+Popup}}
+\index{Display\+Popup@{Display\+Popup}!Relay\+Research@{Relay\+Research}}
+\subsubsection[{Display\+Popup}]{\setlength{\rightskip}{0pt plus 5cm}override void Relay\+Research.\+Display\+Popup (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{panel, }
+\item[{string}]{upgrade, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_relay_research_a336f93531b6182411330914ccf6718b5}
+
+
+Displays popups for the upgrade 
+
+
+\begin{DoxyParams}{Parameters}
+{\em panel} & The panel of the button hovered over\\
+\hline
+{\em upgrade} & Name of upgrade\\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_research_a3c61c95bc273b0effe02577c7e5d29f5}{Research}.
+
+\hypertarget{class_relay_research_a384b0d81a52c38523fa370f6ece80909}{}\index{Relay\+Research@{Relay\+Research}!Unlock@{Unlock}}
+\index{Unlock@{Unlock}!Relay\+Research@{Relay\+Research}}
+\subsubsection[{Unlock}]{\setlength{\rightskip}{0pt plus 5cm}override Dictionary$<$Resource, int$>$ Relay\+Research.\+Unlock (
+\begin{DoxyParamCaption}
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_relay_research_a384b0d81a52c38523fa370f6ece80909}
+
+
+Unlocks research 
+
+
+\begin{DoxyParams}{Parameters}
+{\em reduction} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a5ae3ebe38d15f37ce6cc61fa8a76c6fc}{Research}.
+
+\hypertarget{class_relay_research_a0262fccebce475efa4ab3d376b4a45ae}{}\index{Relay\+Research@{Relay\+Research}!Upgrade\+Research@{Upgrade\+Research}}
+\index{Upgrade\+Research@{Upgrade\+Research}!Relay\+Research@{Relay\+Research}}
+\subsubsection[{Upgrade\+Research}]{\setlength{\rightskip}{0pt plus 5cm}override Dictionary$<$Resource, int$>$ Relay\+Research.\+Upgrade\+Research (
+\begin{DoxyParamCaption}
+\item[{string}]{name, }
+\item[{float}]{reduction}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_relay_research_a0262fccebce475efa4ab3d376b4a45ae}
+
+
+Upgrades the level of the \hyperlink{class_research}{Research} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & \\
+\hline
+{\em reduction} & Reduction in cost of current \hyperlink{class_research}{Research} from completed \hyperlink{class_research}{Research}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_research_a963cb6ac5e27b234a3da2b1be640bc6a}{Research}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Research/\+Science/Relay\+Research.\+cs\end{DoxyCompactItemize}

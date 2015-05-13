@@ -1,0 +1,73 @@
+\hypertarget{class_i_n_i_parser}{}\section{I\+N\+I\+Parser Class Reference}
+\label{class_i_n_i_parser}\index{I\+N\+I\+Parser@{I\+N\+I\+Parser}}
+
+
+Custom I\+N\+I parser to read in game data from Ships.\+ini and Planets.\+ini  
+
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_i_n_i_parser_ab8fd5f1cf3917cd98b9b9399ec19b5dd}{I\+N\+I\+Parser} (string file\+Name)
+\begin{DoxyCompactList}\small\item\em Constructor \end{DoxyCompactList}\item 
+Dictionary$<$ string, Dictionary$<$ string, string $>$ $>$ \hyperlink{class_i_n_i_parser_a0ecfdeaaa35c71683eaeabc028a9beb3}{Parse\+I\+N\+I} ()
+\begin{DoxyCompactList}\small\item\em Progresses through the file line by line, creating tables appropriate to section headers and details. \end{DoxyCompactList}\item 
+void \hyperlink{class_i_n_i_parser_a4ebe242bfcefb5b373f77b0bc1e7f1df}{Close\+I\+N\+I} ()
+\begin{DoxyCompactList}\small\item\em Closes the opened file. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Custom I\+N\+I parser to read in game data from Ships.\+ini and Planets.\+ini 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_i_n_i_parser_ab8fd5f1cf3917cd98b9b9399ec19b5dd}{}\index{I\+N\+I\+Parser@{I\+N\+I\+Parser}!I\+N\+I\+Parser@{I\+N\+I\+Parser}}
+\index{I\+N\+I\+Parser@{I\+N\+I\+Parser}!I\+N\+I\+Parser@{I\+N\+I\+Parser}}
+\subsubsection[{I\+N\+I\+Parser}]{\setlength{\rightskip}{0pt plus 5cm}I\+N\+I\+Parser.\+I\+N\+I\+Parser (
+\begin{DoxyParamCaption}
+\item[{string}]{file\+Name}
+\end{DoxyParamCaption}
+)}\label{class_i_n_i_parser_ab8fd5f1cf3917cd98b9b9399ec19b5dd}
+
+
+Constructor 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file\+Name} & The name of the file to parse.\\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_i_n_i_parser_a4ebe242bfcefb5b373f77b0bc1e7f1df}{}\index{I\+N\+I\+Parser@{I\+N\+I\+Parser}!Close\+I\+N\+I@{Close\+I\+N\+I}}
+\index{Close\+I\+N\+I@{Close\+I\+N\+I}!I\+N\+I\+Parser@{I\+N\+I\+Parser}}
+\subsubsection[{Close\+I\+N\+I}]{\setlength{\rightskip}{0pt plus 5cm}void I\+N\+I\+Parser.\+Close\+I\+N\+I (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_i_n_i_parser_a4ebe242bfcefb5b373f77b0bc1e7f1df}
+
+
+Closes the opened file. 
+
+\hypertarget{class_i_n_i_parser_a0ecfdeaaa35c71683eaeabc028a9beb3}{}\index{I\+N\+I\+Parser@{I\+N\+I\+Parser}!Parse\+I\+N\+I@{Parse\+I\+N\+I}}
+\index{Parse\+I\+N\+I@{Parse\+I\+N\+I}!I\+N\+I\+Parser@{I\+N\+I\+Parser}}
+\subsubsection[{Parse\+I\+N\+I}]{\setlength{\rightskip}{0pt plus 5cm}Dictionary$<$string, Dictionary$<$string, string$>$ $>$ I\+N\+I\+Parser.\+Parse\+I\+N\+I (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_i_n_i_parser_a0ecfdeaaa35c71683eaeabc028a9beb3}
+
+
+Progresses through the file line by line, creating tables appropriate to section headers and details. 
+
+\begin{DoxyReturn}{Returns}
+The generated section/detail table.
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Scripts/I\+N\+I\+Parser.\+cs\end{DoxyCompactItemize}

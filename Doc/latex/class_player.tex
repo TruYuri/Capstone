@@ -1,0 +1,981 @@
+\hypertarget{class_player}{}\section{Player Class Reference}
+\label{class_player}\index{Player@{Player}}
+
+
+The base class for both player types (human and A\+I). Contains many base functions that the player types can use or expand.  
+
+
+Inheritance diagram for Player\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_player}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \hyperlink{class_player_a080e71574a6955345c819bf76498a3b9}{Init} (Team team)
+\begin{DoxyCompactList}\small\item\em Initializes the player. Asks the \hyperlink{class_game_manager}{Game\+Manager} for new player definitions. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_player_a361fd63247679d1a993cbb8bf3efe412}{Control} (Game\+Object game\+Object)
+\begin{DoxyCompactList}\small\item\em Sets this player\textquotesingle{}s current controlled object. Calculates if the new squad is in range of the command squad. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_a4819312f0a8c10f8e6c9cfbf3233adfa}{Upgrade\+Research} (string type, string research, string property)
+\begin{DoxyCompactList}\small\item\em Upgrades the research of the specified type, name, and detail. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_aecd6ff3f38c968e910dd34416f49fd9c}{Create\+Battle\+Event} (\hyperlink{class_squad}{Squad} squad1, \hyperlink{class_tile}{Tile} tile)
+\begin{DoxyCompactList}\small\item\em Instantiates a battle event for this player. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_a7661e192785c1722a820dc09cc5f5145}{Create\+Battle\+Event} (\hyperlink{class_squad}{Squad} squad1, \hyperlink{class_squad}{Squad} squad2)
+\begin{DoxyCompactList}\small\item\em Instantiates a battle event for this player. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_ac8ec326ee52c5d405b9764ac3794f58b}{Create\+Retreat\+Event} ()
+\begin{DoxyCompactList}\small\item\em Instantiates a retreat event for this player\textquotesingle{}s controlled squad. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_a09e42ba337cfc0b8d81186cc980c4a27}{Create\+Build\+Event} (string ship\+Name)
+\begin{DoxyCompactList}\small\item\em Instantiates a build event for this player at the controlled tile. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_a668069722ca0fdadb0f61ef5e39dd541}{Create\+Deploy\+Event} (int ship\+Index)
+\begin{DoxyCompactList}\small\item\em Instantiates a deploy event for this player. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_a6c7302210ee5e2f6385556b334cb7b2b}{Create\+Undeploy\+Event} (bool destroy)
+\begin{DoxyCompactList}\small\item\em Instantiates an undeploy event for this player at the controlled tile. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_ad63e7f94e6076b2e5f224ae4366e05c2}{Create\+Undeploy\+Event} (\hyperlink{class_tile}{Tile} tile, bool destroy)
+\begin{DoxyCompactList}\small\item\em Instantiates an undeploy event for this player at a specified tile. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_ad160953a5ad1a06fdae7811560d542b9}{Create\+Diplomacy\+Event} ()
+\begin{DoxyCompactList}\small\item\em Instantiates a diplomacy event for this player at the controlled tile. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_ae9ca049e45010b4fb4df852c77b65b82}{Create\+Chase\+Event} (\hyperlink{class_squad}{Squad} squad, \hyperlink{class_squad}{Squad} chase, \hyperlink{class_tile}{Tile} ht, float range, float speed)
+\begin{DoxyCompactList}\small\item\em Instantiates a chase event for this player. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_af2aa2569d28ad50209a183585711a8eb}{Create\+Travel\+Event} (\hyperlink{class_squad}{Squad} squad, \hyperlink{class_sector}{Sector} to\+Sector, Vector3 dest, float speed)
+\begin{DoxyCompactList}\small\item\em Instantiates a travel event for this player. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_a90de313e281a584573a62db7aac602d0}{Create\+Command\+Ship\+Lost\+Event} (Vector3 pos, \hyperlink{class_squad}{Squad} squad)
+\begin{DoxyCompactList}\small\item\em Instantiates a Command \hyperlink{class_ship}{Ship} Lost event for this player. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_a842e0d3ac8f4b7d2b9421f7c0dc60a75}{Create\+Warp\+Event} (\hyperlink{class_tile}{Tile} exit\+Gate, \hyperlink{class_squad}{Squad} squad)
+\begin{DoxyCompactList}\small\item\em Instantiates a warp event for this player. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_abb52796720f91baf5dbc678626bb0045}{End\+Turn} ()
+\begin{DoxyCompactList}\small\item\em Simply ends this player\textquotesingle{}s turn. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_a14a3824a55beb9d6f95555bcbb50b90a}{Count\+Stations} ()
+\begin{DoxyCompactList}\small\item\em Sums the number of applicable research resources. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_player_a3705ecd22d3aeb4146d0081e1cbd4055}{Turn\+End} ()
+\begin{DoxyCompactList}\small\item\em Used by \hyperlink{class_game_manager}{Game\+Manager} at the end of each turn. Progresses any owned tile growth. \end{DoxyCompactList}\item 
+virtual float \hyperlink{class_player_a46b9f70ab158242937f4c7a8d97bdd73}{Prepare\+Battle\+Conditions} (\hyperlink{class_squad}{Squad} squad1, \hyperlink{class_squad}{Squad} squad2, Battle\+Type battle\+Type)
+\begin{DoxyCompactList}\small\item\em Initializes battle between two squads. \end{DoxyCompactList}\item 
+bool \hyperlink{class_player_acec08dc9fb002e67a8f854d94af05550}{Diplomatic\+Effort} (\hyperlink{class_tile}{Tile} tile)
+\begin{DoxyCompactList}\small\item\em Attempts a diplomatic effort. \end{DoxyCompactList}\item 
+virtual Key\+Value\+Pair$<$ Key\+Value\+Pair$<$ Team, Battle\+Type $>$, Dictionary$<$ string, int $>$ $>$ \hyperlink{class_player_a69d2a97cac4e2f0831eda783c851cbd7}{Battle} (float player\+Chance, Battle\+Type battle\+Type, \hyperlink{class_squad}{Squad} player, \hyperlink{class_squad}{Squad} enemy)
+\begin{DoxyCompactList}\small\item\em Battles two squads. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_ae056c6c5c7d80e459bcabd4231a32c8a}{End\+Battle\+Conditions} (bool win)
+\begin{DoxyCompactList}\small\item\em Cleans up variables post-\/battle. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_player_a7fdf09acf1c08b434350599981dcd078}{Clean\+Squad} (\hyperlink{class_squad}{Squad} squad)
+\begin{DoxyCompactList}\small\item\em Utility; cleans up squads around the selected if they have been removed from play. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_a01265b89e1df1c43b291824eda3a3410}{Delete\+Squad} (\hyperlink{class_squad}{Squad} squad)
+\begin{DoxyCompactList}\small\item\em Removes a squad from this player\textquotesingle{}s registry. \end{DoxyCompactList}\item 
+\hyperlink{class_squad}{Squad} \hyperlink{class_player_a7fbef0af9e6f977f7097dfec45365554}{Create\+New\+Squad} (\hyperlink{class_squad}{Squad} from\+Squad, string name=\char`\"{}Squad\char`\"{})
+\begin{DoxyCompactList}\small\item\em Creates a new squad for this player. \end{DoxyCompactList}\item 
+\hyperlink{class_squad}{Squad} \hyperlink{class_player_a027795b9b4606910ca9c4eaf2cba243d}{Create\+New\+Squad} (Vector3 position, \hyperlink{class_sector}{Sector} sector, string name=\char`\"{}Squad\char`\"{})
+\begin{DoxyCompactList}\small\item\em Creates a new squad for this player. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_af4b0c200bf3e862398acd008c68a6778}{Create\+New\+Command\+Ship} (\hyperlink{class_tile}{Tile} tile)
+\begin{DoxyCompactList}\small\item\em Instantiates a new command ship for this player. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_aeb685561ebc33646e84dbc69170270e4}{Claim\+Tile} (\hyperlink{class_tile}{Tile} tile)
+\begin{DoxyCompactList}\small\item\em Claims a tile for this player. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_ad20ccbfecd961e98d8c9dd4d41a8bcbc}{Relinquish\+Tile} (\hyperlink{class_tile}{Tile} tile)
+\begin{DoxyCompactList}\small\item\em Removes a tile from this player. \end{DoxyCompactList}\item 
+\hyperlink{class_ship}{Ship} \hyperlink{class_player_a8445439fb78ea72b4a33f18b6025955a}{Add\+Ship} (\hyperlink{class_squad}{Squad} squad, string name)
+\begin{DoxyCompactList}\small\item\em Adds a ship to a squad. \end{DoxyCompactList}\item 
+\hyperlink{class_ship}{Ship} \hyperlink{class_player_a9a12c76a22e895704af3fdd60780df29}{Add\+Ship} (\hyperlink{class_squad}{Squad} squad, \hyperlink{class_ship}{Ship} ship)
+\begin{DoxyCompactList}\small\item\em Adds an existing ship to a squad. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_a7f173a71c04d605af9962e66d8f13b31}{Remove\+Ship} (\hyperlink{class_squad}{Squad} squad, \hyperlink{class_ship}{Ship} ship)
+\begin{DoxyCompactList}\small\item\em Removes a ship from a squad. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_ac9832514df13d86317ab3c52adde3be9}{Remove\+All\+Ships} (\hyperlink{class_squad}{Squad} squad)
+\begin{DoxyCompactList}\small\item\em Removes all ships from a squad. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_a60cbe4a79b74c068b51b0862c451f1a8}{Add\+Soldiers} (\hyperlink{class_tile}{Tile} tile, Inhabitance type, int count)
+\begin{DoxyCompactList}\small\item\em Adds soldiers to a tile. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_ac709c13eb4440f32f7c9220feac3c511}{Add\+Soldiers} (\hyperlink{class_ship}{Ship} ship, Inhabitance type, int count)
+\begin{DoxyCompactList}\small\item\em Adds soldiers to a ship. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_a8092a2162d3aa83ce05fa12fe2ac3671}{Add\+Soldiers} (Inhabitance type, int count)
+\begin{DoxyCompactList}\small\item\em Adds soldiers to the general registry. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_a6aa0e9cc98441f260ef850ebc08d04e8}{Remove\+Soldiers} (\hyperlink{class_tile}{Tile} tile, bool structure, Inhabitance type, int count)
+\begin{DoxyCompactList}\small\item\em Removes soldiers from a tile. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_a6f8bdffca632c22a6aefea9440054680}{Remove\+Soldiers} (\hyperlink{class_ship}{Ship} ship, Inhabitance type, int count)
+\begin{DoxyCompactList}\small\item\em Removes soldiers from a ship. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_a23f2eb75dd95c44375428a309eb6cac0}{Add\+Resources} (\hyperlink{class_ship}{Ship} ship, Resource type, int count)
+\begin{DoxyCompactList}\small\item\em Adds resources to a ship. \end{DoxyCompactList}\item 
+void \hyperlink{class_player_a945bc71e57184ce896e3f20f590cf5a8}{Remove\+Resources} (\hyperlink{class_ship}{Ship} ship, Resource type, int count)
+\begin{DoxyCompactList}\small\item\em Removes resources from a ship. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_player_a219cc9a5227026d97d7a90779792e8d3}{}const string {\bfseries S\+Q\+U\+A\+D\+\_\+\+P\+R\+E\+F\+A\+B} = \char`\"{}Squad\char`\"{}\label{class_player_a219cc9a5227026d97d7a90779792e8d3}
+
+\item 
+\hypertarget{class_player_a7fb32a2fb262f0275fcbf5e9e5611135}{}bool {\bfseries \+\_\+turn\+Ended}\label{class_player_a7fb32a2fb262f0275fcbf5e9e5611135}
+
+\item 
+\hypertarget{class_player_a60515b3795a2f8263501dea634eb3cba}{}Team {\bfseries \+\_\+team}\label{class_player_a60515b3795a2f8263501dea634eb3cba}
+
+\item 
+\hypertarget{class_player_aef41a5a7f0c3e188b2f85297aa89fb82}{}\hyperlink{class_squad}{Squad} {\bfseries \+\_\+controlled\+Squad}\label{class_player_aef41a5a7f0c3e188b2f85297aa89fb82}
+
+\item 
+\hypertarget{class_player_ac6a2a6bea4fa090127350ce8400aa36a}{}\hyperlink{class_tile}{Tile} {\bfseries \+\_\+controlled\+Tile}\label{class_player_ac6a2a6bea4fa090127350ce8400aa36a}
+
+\item 
+\hypertarget{class_player_a3971954dd35d1e5b243fa45e4874b90e}{}\hyperlink{class_ship}{Ship} {\bfseries \+\_\+command\+Ship}\label{class_player_a3971954dd35d1e5b243fa45e4874b90e}
+
+\item 
+\hypertarget{class_player_ab06a9eef34081d8c1f05ce0974032631}{}\hyperlink{class_squad}{Squad} {\bfseries \+\_\+command\+Ship\+Squad}\label{class_player_ab06a9eef34081d8c1f05ce0974032631}
+
+\item 
+\hypertarget{class_player_a7eb018243d5737a533f1686a704c0e4d}{}Dictionary$<$ string, \hyperlink{class_ship}{Ship} $>$ {\bfseries \+\_\+ship\+Definitions}\label{class_player_a7eb018243d5737a533f1686a704c0e4d}
+
+\item 
+\hypertarget{class_player_ab03194e95cb1287203c4a8b3bfd2cda5}{}Dictionary$<$ string, Hash\+Set$<$ \hyperlink{class_ship}{Ship} $>$ $>$ {\bfseries \+\_\+ship\+Registry}\label{class_player_ab03194e95cb1287203c4a8b3bfd2cda5}
+
+\item 
+\hypertarget{class_player_a3b866c79c3c8b01e75f24088477e6c16}{}Dictionary$<$ Inhabitance, int $>$ {\bfseries \+\_\+soldier\+Registry}\label{class_player_a3b866c79c3c8b01e75f24088477e6c16}
+
+\item 
+\hypertarget{class_player_a79ea04b40862fca437479425901520cd}{}Dictionary$<$ Resource, int $>$ {\bfseries \+\_\+resource\+Registry}\label{class_player_a79ea04b40862fca437479425901520cd}
+
+\item 
+\hypertarget{class_player_afe2729abe46f9ee44f834323397f0a27}{}List$<$ \hyperlink{class_squad}{Squad} $>$ {\bfseries \+\_\+squads}\label{class_player_afe2729abe46f9ee44f834323397f0a27}
+
+\item 
+\hypertarget{class_player_a6c0fee6ce65539afa78f37fb7a36f3c2}{}List$<$ \hyperlink{class_tile}{Tile} $>$ {\bfseries \+\_\+tiles}\label{class_player_a6c0fee6ce65539afa78f37fb7a36f3c2}
+
+\item 
+\hypertarget{class_player_a68e258b5b4ad9e280c1f372524f14f85}{}\hyperlink{class_research_tree}{Research\+Tree} {\bfseries \+\_\+military\+Tree}\label{class_player_a68e258b5b4ad9e280c1f372524f14f85}
+
+\item 
+\hypertarget{class_player_a411ecb6b4cac8ff38b874b10ac720dbe}{}\hyperlink{class_research_tree}{Research\+Tree} {\bfseries \+\_\+science\+Tree}\label{class_player_a411ecb6b4cac8ff38b874b10ac720dbe}
+
+\item 
+\hypertarget{class_player_a9d2cb58f08e70405f6e97595f4fb0336}{}float {\bfseries \+\_\+rcost\+Reduction}\label{class_player_a9d2cb58f08e70405f6e97595f4fb0336}
+
+\item 
+\hypertarget{class_player_add0623a379a030346d0e02bf16dd7540}{}bool {\bfseries \+\_\+controlled\+Is\+Within\+Range}\label{class_player_add0623a379a030346d0e02bf16dd7540}
+
+\item 
+\hypertarget{class_player_a101167b6c4fdc4b957a27c9fbeb52147}{}int {\bfseries \+\_\+relay\+Distance}\label{class_player_a101167b6c4fdc4b957a27c9fbeb52147}
+
+\item 
+\hypertarget{class_player_aaf9015fbf64595ae3b5c38127f3971b0}{}\hyperlink{class_squad}{Squad} {\bfseries \+\_\+player\+Squad}\label{class_player_aaf9015fbf64595ae3b5c38127f3971b0}
+
+\item 
+\hypertarget{class_player_a0caffe8c031be13b5b0939cdebca1682}{}\hyperlink{class_squad}{Squad} {\bfseries \+\_\+enemy\+Squad}\label{class_player_a0caffe8c031be13b5b0939cdebca1682}
+
+\item 
+\hypertarget{class_player_ad5be20bec0143a6c2532e7c46326c39f}{}\hyperlink{class_game_event}{Game\+Event} {\bfseries \+\_\+p1\+Mission}\label{class_player_ad5be20bec0143a6c2532e7c46326c39f}
+
+\item 
+\hypertarget{class_player_af1491a94e6ce1069301652e2835d2b6f}{}\hyperlink{class_game_event}{Game\+Event} {\bfseries \+\_\+p2\+Mission}\label{class_player_af1491a94e6ce1069301652e2835d2b6f}
+
+\item 
+\hypertarget{class_player_ad6b63b9797e7151a50ae96d283c0fc1a}{}float {\bfseries \+\_\+win\+Chance}\label{class_player_ad6b63b9797e7151a50ae96d283c0fc1a}
+
+\item 
+\hypertarget{class_player_a559ff2b27b08ba42308ae0dec9fe969c}{}Battle\+Type {\bfseries \+\_\+current\+Battle\+Type}\label{class_player_a559ff2b27b08ba42308ae0dec9fe969c}
+
+\end{DoxyCompactItemize}
+\subsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_player_afa5203cae11ff60cf384d53276b8452d}{}Team {\bfseries Team}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_player_afa5203cae11ff60cf384d53276b8452d}
+
+\item 
+\hypertarget{class_player_adb3a1f695a1c6dd1c6fa765416f8ad18}{}List$<$ \hyperlink{class_tile}{Tile} $>$ {\bfseries Tiles}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_player_adb3a1f695a1c6dd1c6fa765416f8ad18}
+
+\item 
+\hypertarget{class_player_a859c9fdd54b6dc795b7e00a2ca14209c}{}List$<$ \hyperlink{class_squad}{Squad} $>$ {\bfseries Squads}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_player_a859c9fdd54b6dc795b7e00a2ca14209c}
+
+\item 
+\hypertarget{class_player_ad2acb9043a0a07b40de6ed68b9b77901}{}bool {\bfseries Turn\+Ended}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_player_ad2acb9043a0a07b40de6ed68b9b77901}
+
+\item 
+\hypertarget{class_player_afd617adb3cad5ec63bb48d8d1f6493d2}{}bool {\bfseries Controlled\+Is\+Within\+Range}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_player_afd617adb3cad5ec63bb48d8d1f6493d2}
+
+\item 
+\hypertarget{class_player_a83e107d1e137e7b89eb5c2ee57dadfd0}{}Dictionary$<$ string, \hyperlink{class_ship}{Ship} $>$ {\bfseries Ship\+Definitions}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_player_a83e107d1e137e7b89eb5c2ee57dadfd0}
+
+\item 
+\hypertarget{class_player_aa00ea7bf43a0aacbd7506803564a8e2a}{}float {\bfseries Research\+Cost\+Reduction}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_player_aa00ea7bf43a0aacbd7506803564a8e2a}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The base class for both player types (human and A\+I). Contains many base functions that the player types can use or expand. 
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_player_a23f2eb75dd95c44375428a309eb6cac0}{}\index{Player@{Player}!Add\+Resources@{Add\+Resources}}
+\index{Add\+Resources@{Add\+Resources}!Player@{Player}}
+\subsubsection[{Add\+Resources}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Add\+Resources (
+\begin{DoxyParamCaption}
+\item[{{\bf Ship}}]{ship, }
+\item[{Resource}]{type, }
+\item[{int}]{count}
+\end{DoxyParamCaption}
+)}\label{class_player_a23f2eb75dd95c44375428a309eb6cac0}
+
+
+Adds resources to a ship. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ship} & The ship to add to.\\
+\hline
+{\em type} & The resource type.\\
+\hline
+{\em count} & The amount of resoures to add.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_a8445439fb78ea72b4a33f18b6025955a}{}\index{Player@{Player}!Add\+Ship@{Add\+Ship}}
+\index{Add\+Ship@{Add\+Ship}!Player@{Player}}
+\subsubsection[{Add\+Ship}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Ship} Player.\+Add\+Ship (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{squad, }
+\item[{string}]{name}
+\end{DoxyParamCaption}
+)}\label{class_player_a8445439fb78ea72b4a33f18b6025955a}
+
+
+Adds a ship to a squad. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em squad} & The squad to add to.\\
+\hline
+{\em name} & The name of the ship to add.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The new ship.
+\end{DoxyReturn}
+\hypertarget{class_player_a9a12c76a22e895704af3fdd60780df29}{}\index{Player@{Player}!Add\+Ship@{Add\+Ship}}
+\index{Add\+Ship@{Add\+Ship}!Player@{Player}}
+\subsubsection[{Add\+Ship}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Ship} Player.\+Add\+Ship (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{squad, }
+\item[{{\bf Ship}}]{ship}
+\end{DoxyParamCaption}
+)}\label{class_player_a9a12c76a22e895704af3fdd60780df29}
+
+
+Adds an existing ship to a squad. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em squad} & The squad to add to.\\
+\hline
+{\em ship} & The ship to add.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The added ship.
+\end{DoxyReturn}
+\hypertarget{class_player_a60cbe4a79b74c068b51b0862c451f1a8}{}\index{Player@{Player}!Add\+Soldiers@{Add\+Soldiers}}
+\index{Add\+Soldiers@{Add\+Soldiers}!Player@{Player}}
+\subsubsection[{Add\+Soldiers}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Add\+Soldiers (
+\begin{DoxyParamCaption}
+\item[{{\bf Tile}}]{tile, }
+\item[{Inhabitance}]{type, }
+\item[{int}]{count}
+\end{DoxyParamCaption}
+)}\label{class_player_a60cbe4a79b74c068b51b0862c451f1a8}
+
+
+Adds soldiers to a tile. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tile} & The tile to add to.\\
+\hline
+{\em type} & The type of soldier.\\
+\hline
+{\em count} & The amount of soldiers to add.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_ac709c13eb4440f32f7c9220feac3c511}{}\index{Player@{Player}!Add\+Soldiers@{Add\+Soldiers}}
+\index{Add\+Soldiers@{Add\+Soldiers}!Player@{Player}}
+\subsubsection[{Add\+Soldiers}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Add\+Soldiers (
+\begin{DoxyParamCaption}
+\item[{{\bf Ship}}]{ship, }
+\item[{Inhabitance}]{type, }
+\item[{int}]{count}
+\end{DoxyParamCaption}
+)}\label{class_player_ac709c13eb4440f32f7c9220feac3c511}
+
+
+Adds soldiers to a ship. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ship} & The ship to add to.\\
+\hline
+{\em type} & The type of soldier.\\
+\hline
+{\em count} & The amount of soldiers to add.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_a8092a2162d3aa83ce05fa12fe2ac3671}{}\index{Player@{Player}!Add\+Soldiers@{Add\+Soldiers}}
+\index{Add\+Soldiers@{Add\+Soldiers}!Player@{Player}}
+\subsubsection[{Add\+Soldiers}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Add\+Soldiers (
+\begin{DoxyParamCaption}
+\item[{Inhabitance}]{type, }
+\item[{int}]{count}
+\end{DoxyParamCaption}
+)}\label{class_player_a8092a2162d3aa83ce05fa12fe2ac3671}
+
+
+Adds soldiers to the general registry. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em type} & The soldier type to add.\\
+\hline
+{\em count} & The amount of soldiers to add.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_a69d2a97cac4e2f0831eda783c851cbd7}{}\index{Player@{Player}!Battle@{Battle}}
+\index{Battle@{Battle}!Player@{Player}}
+\subsubsection[{Battle}]{\setlength{\rightskip}{0pt plus 5cm}virtual Key\+Value\+Pair$<$Key\+Value\+Pair$<$Team, Battle\+Type$>$, Dictionary$<$string, int$>$ $>$ Player.\+Battle (
+\begin{DoxyParamCaption}
+\item[{float}]{player\+Chance, }
+\item[{Battle\+Type}]{battle\+Type, }
+\item[{{\bf Squad}}]{player, }
+\item[{{\bf Squad}}]{enemy}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_player_a69d2a97cac4e2f0831eda783c851cbd7}
+
+
+Battles two squads. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em player\+Chance} & The odds of this player\textquotesingle{}s success.\\
+\hline
+{\em battle\+Type} & The type of battle.\\
+\hline
+{\em player} & This player\textquotesingle{}s squad.\\
+\hline
+{\em enemy} & The combating squad.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The winning team and battle type, as well as the list of units lost.
+\end{DoxyReturn}
+
+
+Reimplemented in \hyperlink{class_human_player_acec8f5e48d38f90059506d8551c63238}{Human\+Player}.
+
+\hypertarget{class_player_aeb685561ebc33646e84dbc69170270e4}{}\index{Player@{Player}!Claim\+Tile@{Claim\+Tile}}
+\index{Claim\+Tile@{Claim\+Tile}!Player@{Player}}
+\subsubsection[{Claim\+Tile}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Claim\+Tile (
+\begin{DoxyParamCaption}
+\item[{{\bf Tile}}]{tile}
+\end{DoxyParamCaption}
+)}\label{class_player_aeb685561ebc33646e84dbc69170270e4}
+
+
+Claims a tile for this player. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tile} & The tile to claim.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_a7fdf09acf1c08b434350599981dcd078}{}\index{Player@{Player}!Clean\+Squad@{Clean\+Squad}}
+\index{Clean\+Squad@{Clean\+Squad}!Player@{Player}}
+\subsubsection[{Clean\+Squad}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Player.\+Clean\+Squad (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{squad}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_player_a7fdf09acf1c08b434350599981dcd078}
+
+
+Utility; cleans up squads around the selected if they have been removed from play. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em squad} & The squad to clean up.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_a361fd63247679d1a993cbb8bf3efe412}{}\index{Player@{Player}!Control@{Control}}
+\index{Control@{Control}!Player@{Player}}
+\subsubsection[{Control}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Player.\+Control (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{game\+Object}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_player_a361fd63247679d1a993cbb8bf3efe412}
+
+
+Sets this player\textquotesingle{}s current controlled object. Calculates if the new squad is in range of the command squad. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game\+Object} & The object to control.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \hyperlink{class_human_player_a329d94217d51375a5656e4b0c5ec7969}{Human\+Player}.
+
+\hypertarget{class_player_a14a3824a55beb9d6f95555bcbb50b90a}{}\index{Player@{Player}!Count\+Stations@{Count\+Stations}}
+\index{Count\+Stations@{Count\+Stations}!Player@{Player}}
+\subsubsection[{Count\+Stations}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Count\+Stations (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_player_a14a3824a55beb9d6f95555bcbb50b90a}
+
+
+Sums the number of applicable research resources. 
+
+\hypertarget{class_player_aecd6ff3f38c968e910dd34416f49fd9c}{}\index{Player@{Player}!Create\+Battle\+Event@{Create\+Battle\+Event}}
+\index{Create\+Battle\+Event@{Create\+Battle\+Event}!Player@{Player}}
+\subsubsection[{Create\+Battle\+Event}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Create\+Battle\+Event (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{squad1, }
+\item[{{\bf Tile}}]{tile}
+\end{DoxyParamCaption}
+)}\label{class_player_aecd6ff3f38c968e910dd34416f49fd9c}
+
+
+Instantiates a battle event for this player. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em squad1} & The combating squad.\\
+\hline
+{\em tile} & The combating tile.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_a7661e192785c1722a820dc09cc5f5145}{}\index{Player@{Player}!Create\+Battle\+Event@{Create\+Battle\+Event}}
+\index{Create\+Battle\+Event@{Create\+Battle\+Event}!Player@{Player}}
+\subsubsection[{Create\+Battle\+Event}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Create\+Battle\+Event (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{squad1, }
+\item[{{\bf Squad}}]{squad2}
+\end{DoxyParamCaption}
+)}\label{class_player_a7661e192785c1722a820dc09cc5f5145}
+
+
+Instantiates a battle event for this player. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em squad1} & The first combating squad.\\
+\hline
+{\em squad2} & The second combating squad.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_a09e42ba337cfc0b8d81186cc980c4a27}{}\index{Player@{Player}!Create\+Build\+Event@{Create\+Build\+Event}}
+\index{Create\+Build\+Event@{Create\+Build\+Event}!Player@{Player}}
+\subsubsection[{Create\+Build\+Event}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Create\+Build\+Event (
+\begin{DoxyParamCaption}
+\item[{string}]{ship\+Name}
+\end{DoxyParamCaption}
+)}\label{class_player_a09e42ba337cfc0b8d81186cc980c4a27}
+
+
+Instantiates a build event for this player at the controlled tile. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ship\+Name} & The name of the ship to build.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_ae9ca049e45010b4fb4df852c77b65b82}{}\index{Player@{Player}!Create\+Chase\+Event@{Create\+Chase\+Event}}
+\index{Create\+Chase\+Event@{Create\+Chase\+Event}!Player@{Player}}
+\subsubsection[{Create\+Chase\+Event}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Create\+Chase\+Event (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{squad, }
+\item[{{\bf Squad}}]{chase, }
+\item[{{\bf Tile}}]{ht, }
+\item[{float}]{range, }
+\item[{float}]{speed}
+\end{DoxyParamCaption}
+)}\label{class_player_ae9ca049e45010b4fb4df852c77b65b82}
+
+
+Instantiates a chase event for this player. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em squad} & The player\textquotesingle{}s squad.\\
+\hline
+{\em chase} & The squad to chase.\\
+\hline
+{\em ht} & The squad\textquotesingle{}s anchor tile (can be null).\\
+\hline
+{\em range} & The range from the possible anchor it can go.\\
+\hline
+{\em speed} & The velocity at which to chase.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_a90de313e281a584573a62db7aac602d0}{}\index{Player@{Player}!Create\+Command\+Ship\+Lost\+Event@{Create\+Command\+Ship\+Lost\+Event}}
+\index{Create\+Command\+Ship\+Lost\+Event@{Create\+Command\+Ship\+Lost\+Event}!Player@{Player}}
+\subsubsection[{Create\+Command\+Ship\+Lost\+Event}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Create\+Command\+Ship\+Lost\+Event (
+\begin{DoxyParamCaption}
+\item[{Vector3}]{pos, }
+\item[{{\bf Squad}}]{squad}
+\end{DoxyParamCaption}
+)}\label{class_player_a90de313e281a584573a62db7aac602d0}
+
+
+Instantiates a Command \hyperlink{class_ship}{Ship} Lost event for this player. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pos} & The position the command ship was destroyed.\\
+\hline
+{\em squad} & The command ship\textquotesingle{}s former squad, if it still exists.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_a668069722ca0fdadb0f61ef5e39dd541}{}\index{Player@{Player}!Create\+Deploy\+Event@{Create\+Deploy\+Event}}
+\index{Create\+Deploy\+Event@{Create\+Deploy\+Event}!Player@{Player}}
+\subsubsection[{Create\+Deploy\+Event}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Create\+Deploy\+Event (
+\begin{DoxyParamCaption}
+\item[{int}]{ship\+Index}
+\end{DoxyParamCaption}
+)}\label{class_player_a668069722ca0fdadb0f61ef5e39dd541}
+
+
+Instantiates a deploy event for this player. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ship\+Index} & The index of the ship in the controlled squad\textquotesingle{}s ship list to deploy.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_ad160953a5ad1a06fdae7811560d542b9}{}\index{Player@{Player}!Create\+Diplomacy\+Event@{Create\+Diplomacy\+Event}}
+\index{Create\+Diplomacy\+Event@{Create\+Diplomacy\+Event}!Player@{Player}}
+\subsubsection[{Create\+Diplomacy\+Event}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Create\+Diplomacy\+Event (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_player_ad160953a5ad1a06fdae7811560d542b9}
+
+
+Instantiates a diplomacy event for this player at the controlled tile. 
+
+\hypertarget{class_player_af4b0c200bf3e862398acd008c68a6778}{}\index{Player@{Player}!Create\+New\+Command\+Ship@{Create\+New\+Command\+Ship}}
+\index{Create\+New\+Command\+Ship@{Create\+New\+Command\+Ship}!Player@{Player}}
+\subsubsection[{Create\+New\+Command\+Ship}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Create\+New\+Command\+Ship (
+\begin{DoxyParamCaption}
+\item[{{\bf Tile}}]{tile}
+\end{DoxyParamCaption}
+)}\label{class_player_af4b0c200bf3e862398acd008c68a6778}
+
+
+Instantiates a new command ship for this player. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tile} & The tile at which to spawn.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_a7fbef0af9e6f977f7097dfec45365554}{}\index{Player@{Player}!Create\+New\+Squad@{Create\+New\+Squad}}
+\index{Create\+New\+Squad@{Create\+New\+Squad}!Player@{Player}}
+\subsubsection[{Create\+New\+Squad}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Squad} Player.\+Create\+New\+Squad (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{from\+Squad, }
+\item[{string}]{name = {\ttfamily \char`\"{}Squad\char`\"{}}}
+\end{DoxyParamCaption}
+)}\label{class_player_a7fbef0af9e6f977f7097dfec45365554}
+
+
+Creates a new squad for this player. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from\+Squad} & \hyperlink{class_squad}{Squad} to branch from.\\
+\hline
+{\em name} & Name of the new squad.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The new squad.
+\end{DoxyReturn}
+\hypertarget{class_player_a027795b9b4606910ca9c4eaf2cba243d}{}\index{Player@{Player}!Create\+New\+Squad@{Create\+New\+Squad}}
+\index{Create\+New\+Squad@{Create\+New\+Squad}!Player@{Player}}
+\subsubsection[{Create\+New\+Squad}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Squad} Player.\+Create\+New\+Squad (
+\begin{DoxyParamCaption}
+\item[{Vector3}]{position, }
+\item[{{\bf Sector}}]{sector, }
+\item[{string}]{name = {\ttfamily \char`\"{}Squad\char`\"{}}}
+\end{DoxyParamCaption}
+)}\label{class_player_a027795b9b4606910ca9c4eaf2cba243d}
+
+
+Creates a new squad for this player. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em position} & Position to create this squad at.\\
+\hline
+{\em sector} & The sector for the new squad.\\
+\hline
+{\em name} & The new squad\textquotesingle{}s name.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The new squad.
+\end{DoxyReturn}
+\hypertarget{class_player_ac8ec326ee52c5d405b9764ac3794f58b}{}\index{Player@{Player}!Create\+Retreat\+Event@{Create\+Retreat\+Event}}
+\index{Create\+Retreat\+Event@{Create\+Retreat\+Event}!Player@{Player}}
+\subsubsection[{Create\+Retreat\+Event}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Create\+Retreat\+Event (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_player_ac8ec326ee52c5d405b9764ac3794f58b}
+
+
+Instantiates a retreat event for this player\textquotesingle{}s controlled squad. 
+
+\hypertarget{class_player_af2aa2569d28ad50209a183585711a8eb}{}\index{Player@{Player}!Create\+Travel\+Event@{Create\+Travel\+Event}}
+\index{Create\+Travel\+Event@{Create\+Travel\+Event}!Player@{Player}}
+\subsubsection[{Create\+Travel\+Event}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Create\+Travel\+Event (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{squad, }
+\item[{{\bf Sector}}]{to\+Sector, }
+\item[{Vector3}]{dest, }
+\item[{float}]{speed}
+\end{DoxyParamCaption}
+)}\label{class_player_af2aa2569d28ad50209a183585711a8eb}
+
+
+Instantiates a travel event for this player. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em squad} & The squad to travel.\\
+\hline
+{\em to\+Sector} & The sector to travel to.\\
+\hline
+{\em dest} & The specific coordinates to reach.\\
+\hline
+{\em speed} & The speed at which to travel between turns.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_a6c7302210ee5e2f6385556b334cb7b2b}{}\index{Player@{Player}!Create\+Undeploy\+Event@{Create\+Undeploy\+Event}}
+\index{Create\+Undeploy\+Event@{Create\+Undeploy\+Event}!Player@{Player}}
+\subsubsection[{Create\+Undeploy\+Event}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Create\+Undeploy\+Event (
+\begin{DoxyParamCaption}
+\item[{bool}]{destroy}
+\end{DoxyParamCaption}
+)}\label{class_player_a6c7302210ee5e2f6385556b334cb7b2b}
+
+
+Instantiates an undeploy event for this player at the controlled tile. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em destroy} & Indicates whether the deployed structure should be destroyed.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_ad63e7f94e6076b2e5f224ae4366e05c2}{}\index{Player@{Player}!Create\+Undeploy\+Event@{Create\+Undeploy\+Event}}
+\index{Create\+Undeploy\+Event@{Create\+Undeploy\+Event}!Player@{Player}}
+\subsubsection[{Create\+Undeploy\+Event}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Create\+Undeploy\+Event (
+\begin{DoxyParamCaption}
+\item[{{\bf Tile}}]{tile, }
+\item[{bool}]{destroy}
+\end{DoxyParamCaption}
+)}\label{class_player_ad63e7f94e6076b2e5f224ae4366e05c2}
+
+
+Instantiates an undeploy event for this player at a specified tile. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tile} & The tile to undeploy from.\\
+\hline
+{\em destroy} & Indicates whether the deployed structure should be destroyed.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_a842e0d3ac8f4b7d2b9421f7c0dc60a75}{}\index{Player@{Player}!Create\+Warp\+Event@{Create\+Warp\+Event}}
+\index{Create\+Warp\+Event@{Create\+Warp\+Event}!Player@{Player}}
+\subsubsection[{Create\+Warp\+Event}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Create\+Warp\+Event (
+\begin{DoxyParamCaption}
+\item[{{\bf Tile}}]{exit\+Gate, }
+\item[{{\bf Squad}}]{squad}
+\end{DoxyParamCaption}
+)}\label{class_player_a842e0d3ac8f4b7d2b9421f7c0dc60a75}
+
+
+Instantiates a warp event for this player. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em exit\+Gate} & The tile/portal to exit from.\\
+\hline
+{\em squad} & The squad to warp.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_a01265b89e1df1c43b291824eda3a3410}{}\index{Player@{Player}!Delete\+Squad@{Delete\+Squad}}
+\index{Delete\+Squad@{Delete\+Squad}!Player@{Player}}
+\subsubsection[{Delete\+Squad}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Delete\+Squad (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{squad}
+\end{DoxyParamCaption}
+)}\label{class_player_a01265b89e1df1c43b291824eda3a3410}
+
+
+Removes a squad from this player\textquotesingle{}s registry. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em squad} & The squad to remove.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_acec08dc9fb002e67a8f854d94af05550}{}\index{Player@{Player}!Diplomatic\+Effort@{Diplomatic\+Effort}}
+\index{Diplomatic\+Effort@{Diplomatic\+Effort}!Player@{Player}}
+\subsubsection[{Diplomatic\+Effort}]{\setlength{\rightskip}{0pt plus 5cm}bool Player.\+Diplomatic\+Effort (
+\begin{DoxyParamCaption}
+\item[{{\bf Tile}}]{tile}
+\end{DoxyParamCaption}
+)}\label{class_player_acec08dc9fb002e67a8f854d94af05550}
+
+
+Attempts a diplomatic effort. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tile} & The tile to attempt diplomacy upon.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A boolean indicating success.
+\end{DoxyReturn}
+\hypertarget{class_player_ae056c6c5c7d80e459bcabd4231a32c8a}{}\index{Player@{Player}!End\+Battle\+Conditions@{End\+Battle\+Conditions}}
+\index{End\+Battle\+Conditions@{End\+Battle\+Conditions}!Player@{Player}}
+\subsubsection[{End\+Battle\+Conditions}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+End\+Battle\+Conditions (
+\begin{DoxyParamCaption}
+\item[{bool}]{win}
+\end{DoxyParamCaption}
+)}\label{class_player_ae056c6c5c7d80e459bcabd4231a32c8a}
+
+
+Cleans up variables post-\/battle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em win} & Whether or not this player won the ending battle.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_abb52796720f91baf5dbc678626bb0045}{}\index{Player@{Player}!End\+Turn@{End\+Turn}}
+\index{End\+Turn@{End\+Turn}!Player@{Player}}
+\subsubsection[{End\+Turn}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+End\+Turn (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_player_abb52796720f91baf5dbc678626bb0045}
+
+
+Simply ends this player\textquotesingle{}s turn. 
+
+\hypertarget{class_player_a080e71574a6955345c819bf76498a3b9}{}\index{Player@{Player}!Init@{Init}}
+\index{Init@{Init}!Player@{Player}}
+\subsubsection[{Init}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Player.\+Init (
+\begin{DoxyParamCaption}
+\item[{Team}]{team}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_player_a080e71574a6955345c819bf76498a3b9}
+
+
+Initializes the player. Asks the \hyperlink{class_game_manager}{Game\+Manager} for new player definitions. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em team} & This player\textquotesingle{}s team.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \hyperlink{class_human_player_a8e9c0c036d1597acd5b31c965e4c5f2a}{Human\+Player}, and \hyperlink{class_a_i_player_af0321d8f60d724c9b0a69ed9e5766911}{A\+I\+Player}.
+
+\hypertarget{class_player_a46b9f70ab158242937f4c7a8d97bdd73}{}\index{Player@{Player}!Prepare\+Battle\+Conditions@{Prepare\+Battle\+Conditions}}
+\index{Prepare\+Battle\+Conditions@{Prepare\+Battle\+Conditions}!Player@{Player}}
+\subsubsection[{Prepare\+Battle\+Conditions}]{\setlength{\rightskip}{0pt plus 5cm}virtual float Player.\+Prepare\+Battle\+Conditions (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{squad1, }
+\item[{{\bf Squad}}]{squad2, }
+\item[{Battle\+Type}]{battle\+Type}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_player_a46b9f70ab158242937f4c7a8d97bdd73}
+
+
+Initializes battle between two squads. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em squad1} & The first battle squad.\\
+\hline
+{\em squad2} & The second battle squad.\\
+\hline
+{\em battle\+Type} & The type of battle to start.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The clamped win chance for this player.
+\end{DoxyReturn}
+
+
+Reimplemented in \hyperlink{class_human_player_a716048001a62fd94bcae01adf0cf39f8}{Human\+Player}.
+
+\hypertarget{class_player_ad20ccbfecd961e98d8c9dd4d41a8bcbc}{}\index{Player@{Player}!Relinquish\+Tile@{Relinquish\+Tile}}
+\index{Relinquish\+Tile@{Relinquish\+Tile}!Player@{Player}}
+\subsubsection[{Relinquish\+Tile}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Relinquish\+Tile (
+\begin{DoxyParamCaption}
+\item[{{\bf Tile}}]{tile}
+\end{DoxyParamCaption}
+)}\label{class_player_ad20ccbfecd961e98d8c9dd4d41a8bcbc}
+
+
+Removes a tile from this player. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tile} & The tile to remove.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_ac9832514df13d86317ab3c52adde3be9}{}\index{Player@{Player}!Remove\+All\+Ships@{Remove\+All\+Ships}}
+\index{Remove\+All\+Ships@{Remove\+All\+Ships}!Player@{Player}}
+\subsubsection[{Remove\+All\+Ships}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Remove\+All\+Ships (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{squad}
+\end{DoxyParamCaption}
+)}\label{class_player_ac9832514df13d86317ab3c52adde3be9}
+
+
+Removes all ships from a squad. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em squad} & The squad to remove from.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_a945bc71e57184ce896e3f20f590cf5a8}{}\index{Player@{Player}!Remove\+Resources@{Remove\+Resources}}
+\index{Remove\+Resources@{Remove\+Resources}!Player@{Player}}
+\subsubsection[{Remove\+Resources}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Remove\+Resources (
+\begin{DoxyParamCaption}
+\item[{{\bf Ship}}]{ship, }
+\item[{Resource}]{type, }
+\item[{int}]{count}
+\end{DoxyParamCaption}
+)}\label{class_player_a945bc71e57184ce896e3f20f590cf5a8}
+
+
+Removes resources from a ship. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ship} & The ship to remove from.\\
+\hline
+{\em type} & The resource type.\\
+\hline
+{\em count} & The amount of resources to remove.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_a7f173a71c04d605af9962e66d8f13b31}{}\index{Player@{Player}!Remove\+Ship@{Remove\+Ship}}
+\index{Remove\+Ship@{Remove\+Ship}!Player@{Player}}
+\subsubsection[{Remove\+Ship}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Remove\+Ship (
+\begin{DoxyParamCaption}
+\item[{{\bf Squad}}]{squad, }
+\item[{{\bf Ship}}]{ship}
+\end{DoxyParamCaption}
+)}\label{class_player_a7f173a71c04d605af9962e66d8f13b31}
+
+
+Removes a ship from a squad. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em squad} & The squad to remove from.\\
+\hline
+{\em ship} & The ship to remove.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_a6aa0e9cc98441f260ef850ebc08d04e8}{}\index{Player@{Player}!Remove\+Soldiers@{Remove\+Soldiers}}
+\index{Remove\+Soldiers@{Remove\+Soldiers}!Player@{Player}}
+\subsubsection[{Remove\+Soldiers}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Remove\+Soldiers (
+\begin{DoxyParamCaption}
+\item[{{\bf Tile}}]{tile, }
+\item[{bool}]{structure, }
+\item[{Inhabitance}]{type, }
+\item[{int}]{count}
+\end{DoxyParamCaption}
+)}\label{class_player_a6aa0e9cc98441f260ef850ebc08d04e8}
+
+
+Removes soldiers from a tile. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tile} & The tile to remove from.\\
+\hline
+{\em structure} & Indicates if the planet structure should be considered.\\
+\hline
+{\em type} & The soldier type.\\
+\hline
+{\em count} & The soldier count.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_a6f8bdffca632c22a6aefea9440054680}{}\index{Player@{Player}!Remove\+Soldiers@{Remove\+Soldiers}}
+\index{Remove\+Soldiers@{Remove\+Soldiers}!Player@{Player}}
+\subsubsection[{Remove\+Soldiers}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Remove\+Soldiers (
+\begin{DoxyParamCaption}
+\item[{{\bf Ship}}]{ship, }
+\item[{Inhabitance}]{type, }
+\item[{int}]{count}
+\end{DoxyParamCaption}
+)}\label{class_player_a6f8bdffca632c22a6aefea9440054680}
+
+
+Removes soldiers from a ship. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ship} & The ship to remove from.\\
+\hline
+{\em type} & The soldier type.\\
+\hline
+{\em count} & The amount of soldiers to remove.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_player_a3705ecd22d3aeb4146d0081e1cbd4055}{}\index{Player@{Player}!Turn\+End@{Turn\+End}}
+\index{Turn\+End@{Turn\+End}!Player@{Player}}
+\subsubsection[{Turn\+End}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Player.\+Turn\+End (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_player_a3705ecd22d3aeb4146d0081e1cbd4055}
+
+
+Used by \hyperlink{class_game_manager}{Game\+Manager} at the end of each turn. Progresses any owned tile growth. 
+
+
+
+Reimplemented in \hyperlink{class_human_player_a270584c064fe79c046b307fe8eba08d2}{Human\+Player}.
+
+\hypertarget{class_player_a4819312f0a8c10f8e6c9cfbf3233adfa}{}\index{Player@{Player}!Upgrade\+Research@{Upgrade\+Research}}
+\index{Upgrade\+Research@{Upgrade\+Research}!Player@{Player}}
+\subsubsection[{Upgrade\+Research}]{\setlength{\rightskip}{0pt plus 5cm}void Player.\+Upgrade\+Research (
+\begin{DoxyParamCaption}
+\item[{string}]{type, }
+\item[{string}]{research, }
+\item[{string}]{property}
+\end{DoxyParamCaption}
+)}\label{class_player_a4819312f0a8c10f8e6c9cfbf3233adfa}
+
+
+Upgrades the research of the specified type, name, and detail. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em type} & Military or Scientific\\
+\hline
+{\em research} & The name of the research to upgrade.\\
+\hline
+{\em property} & The specific property of that research to upgrade.\\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Scripts/Player.\+cs\end{DoxyCompactItemize}

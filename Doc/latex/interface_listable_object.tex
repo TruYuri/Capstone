@@ -1,0 +1,125 @@
+\hypertarget{interface_listable_object}{}\section{Listable\+Object Interface Reference}
+\label{interface_listable_object}\index{Listable\+Object@{Listable\+Object}}
+
+
+Interface to define how common U\+I objects interface via code.  
+
+
+Inheritance diagram for Listable\+Object\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{interface_listable_object}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+Game\+Object \hyperlink{interface_listable_object_a9d56c92f6bc509033acd8e4907341161}{Create\+List\+Entry} (string list\+Name, int index, System.\+Object data)
+\begin{DoxyCompactList}\small\item\em Generates a panel nested in a U\+I list. \end{DoxyCompactList}\item 
+Game\+Object \hyperlink{interface_listable_object_a9d802fbc18d07dd248350f0b09868f4d}{Create\+Build\+List\+Entry} (string list\+Name, int index, System.\+Object data)
+\begin{DoxyCompactList}\small\item\em Generates a panel for the object in a construction list. \end{DoxyCompactList}\item 
+void \hyperlink{interface_listable_object_a785c74f9662cc1430df5fd8cb1705901}{Populate\+Build\+Info} (Game\+Object pop\+Up, System.\+Object data)
+\begin{DoxyCompactList}\small\item\em Populates a popup window detailing this object\textquotesingle{}s info to consider for construction. \end{DoxyCompactList}\item 
+void \hyperlink{interface_listable_object_a54d6224a73481ceab1099cbcff8f484a}{Populate\+General\+Info} (Game\+Object pop\+Up, System.\+Object data)
+\begin{DoxyCompactList}\small\item\em Populates a popop window detailing this existing object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Interface to define how common U\+I objects interface via code. 
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{interface_listable_object_a9d802fbc18d07dd248350f0b09868f4d}{}\index{Listable\+Object@{Listable\+Object}!Create\+Build\+List\+Entry@{Create\+Build\+List\+Entry}}
+\index{Create\+Build\+List\+Entry@{Create\+Build\+List\+Entry}!Listable\+Object@{Listable\+Object}}
+\subsubsection[{Create\+Build\+List\+Entry}]{\setlength{\rightskip}{0pt plus 5cm}Game\+Object Listable\+Object.\+Create\+Build\+List\+Entry (
+\begin{DoxyParamCaption}
+\item[{string}]{list\+Name, }
+\item[{int}]{index, }
+\item[{System.\+Object}]{data}
+\end{DoxyParamCaption}
+)}\label{interface_listable_object_a9d802fbc18d07dd248350f0b09868f4d}
+
+
+Generates a panel for the object in a construction list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em list\+Name} & The internal list name.\\
+\hline
+{\em index} & The list index.\\
+\hline
+{\em data} & Optional data.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A new build list panel.
+\end{DoxyReturn}
+\hypertarget{interface_listable_object_a9d56c92f6bc509033acd8e4907341161}{}\index{Listable\+Object@{Listable\+Object}!Create\+List\+Entry@{Create\+List\+Entry}}
+\index{Create\+List\+Entry@{Create\+List\+Entry}!Listable\+Object@{Listable\+Object}}
+\subsubsection[{Create\+List\+Entry}]{\setlength{\rightskip}{0pt plus 5cm}Game\+Object Listable\+Object.\+Create\+List\+Entry (
+\begin{DoxyParamCaption}
+\item[{string}]{list\+Name, }
+\item[{int}]{index, }
+\item[{System.\+Object}]{data}
+\end{DoxyParamCaption}
+)}\label{interface_listable_object_a9d56c92f6bc509033acd8e4907341161}
+
+
+Generates a panel nested in a U\+I list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em list\+Name} & The internal list name.\\
+\hline
+{\em index} & The list index.\\
+\hline
+{\em data} & Optional data.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A new list panel.
+\end{DoxyReturn}
+\hypertarget{interface_listable_object_a785c74f9662cc1430df5fd8cb1705901}{}\index{Listable\+Object@{Listable\+Object}!Populate\+Build\+Info@{Populate\+Build\+Info}}
+\index{Populate\+Build\+Info@{Populate\+Build\+Info}!Listable\+Object@{Listable\+Object}}
+\subsubsection[{Populate\+Build\+Info}]{\setlength{\rightskip}{0pt plus 5cm}void Listable\+Object.\+Populate\+Build\+Info (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{pop\+Up, }
+\item[{System.\+Object}]{data}
+\end{DoxyParamCaption}
+)}\label{interface_listable_object_a785c74f9662cc1430df5fd8cb1705901}
+
+
+Populates a popup window detailing this object\textquotesingle{}s info to consider for construction. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pop\+Up} & The popup panel.\\
+\hline
+{\em data} & Optional data.\\
+\hline
+\end{DoxyParams}
+\hypertarget{interface_listable_object_a54d6224a73481ceab1099cbcff8f484a}{}\index{Listable\+Object@{Listable\+Object}!Populate\+General\+Info@{Populate\+General\+Info}}
+\index{Populate\+General\+Info@{Populate\+General\+Info}!Listable\+Object@{Listable\+Object}}
+\subsubsection[{Populate\+General\+Info}]{\setlength{\rightskip}{0pt plus 5cm}void Listable\+Object.\+Populate\+General\+Info (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{pop\+Up, }
+\item[{System.\+Object}]{data}
+\end{DoxyParamCaption}
+)}\label{interface_listable_object_a54d6224a73481ceab1099cbcff8f484a}
+
+
+Populates a popop window detailing this existing object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pop\+Up} & The popup panel.\\
+\hline
+{\em data} & Optional data.\\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Scripts/Listable\+Object.\+cs\end{DoxyCompactItemize}

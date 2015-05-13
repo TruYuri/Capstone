@@ -1,0 +1,316 @@
+\hypertarget{class_sector}{}\section{Sector Class Reference}
+\label{class_sector}\index{Sector@{Sector}}
+
+
+Definition for Sectors generated through \hyperlink{class_map_manager}{Map\+Manager}. Self-\/generates internal components (tiles)  
+
+
+Inheritance diagram for Sector\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_sector}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_sector_af16372ab07bfaff9c7d1f39a4240f079}{Init} (Key\+Value\+Pair$<$ int, int $>$ grid\+Pos)
+\begin{DoxyCompactList}\small\item\em Initialize the program values \end{DoxyCompactList}\item 
+void \hyperlink{class_sector_af8b84b2f8fa4ccdc2cf58a9f32fb0b28}{Generate\+New\+Sectors} ()
+\begin{DoxyCompactList}\small\item\em Calls \hyperlink{class_map_manager}{Map\+Manager} to make new sectors \end{DoxyCompactList}\item 
+void \hyperlink{class_sector_ae0e35f65cbd250cd36c0372213ca8191}{Register\+Space\+Structure} (Team team, \hyperlink{class_structure}{Structure} structure)
+\begin{DoxyCompactList}\small\item\em Registers that a structure is deployed in space \end{DoxyCompactList}\item 
+List$<$ \hyperlink{class_structure}{Structure} $>$ \hyperlink{class_sector_a1574ef79ca69119b547b58968f67a9fc}{Get\+Space\+Structures} (Team team, string type)
+\begin{DoxyCompactList}\small\item\em Gets list of all space structures \end{DoxyCompactList}\item 
+void \hyperlink{class_sector_a8c67595872a205af83ceba5c97629519}{Unregister\+Space\+Structure} (Team team, \hyperlink{class_structure}{Structure} structure)
+\begin{DoxyCompactList}\small\item\em Undeploy space structure \end{DoxyCompactList}\item 
+int \hyperlink{class_sector_a4a2f9551839eac2173a5f0f213402b36}{Get\+Best\+Range\+Extension} (Team team, string type)
+\begin{DoxyCompactList}\small\item\em Finds best object for range to use in a sector \end{DoxyCompactList}\item 
+bool \hyperlink{class_sector_abf04ea8c8a5a705b2b9b877d283e9993}{Is\+Valid\+Location} (Vector3 pos)
+\begin{DoxyCompactList}\small\item\em Determines if Valid Location \end{DoxyCompactList}\item 
+bool \hyperlink{class_sector_ab9ddf44c83d20d72535dad7469e43ee0}{Is\+Valid\+Location} (Key\+Value\+Pair$<$ int, int $>$ grid\+Pos)
+\begin{DoxyCompactList}\small\item\em Determines if Valid Location \end{DoxyCompactList}\item 
+\hyperlink{class_tile}{Tile} \hyperlink{class_sector_ad998ffd83c0dcb8bc99261ecfe72fb51}{Get\+Tile\+At\+Position} (Vector3 point)
+\begin{DoxyCompactList}\small\item\em Find tile at a point \end{DoxyCompactList}\item 
+\hyperlink{class_tile}{Tile} \hyperlink{class_sector_ac444ed54120cae14ef2b6551d2a45823}{Create\+Tile\+At\+Position} (string type, Vector3 pos, Team team)
+\begin{DoxyCompactList}\small\item\em Creates a tile at the specified position \end{DoxyCompactList}\item 
+void \hyperlink{class_sector_aab402113879db97b63409e2fd9df16fa}{Delete\+Tile} (\hyperlink{class_tile}{Tile} tile)
+\begin{DoxyCompactList}\small\item\em Deletes a tile \end{DoxyCompactList}\item 
+void \hyperlink{class_sector_a89ff1f23f9bbdf12bef9aae444f72ed4}{Claim\+Tile} (Team team)
+\begin{DoxyCompactList}\small\item\em Give team ownership of tile \end{DoxyCompactList}\item 
+void \hyperlink{class_sector_a89b0b70d55252a20e2fc009c2c9939ea}{Relinquish\+Tile} (Team team)
+\begin{DoxyCompactList}\small\item\em Take team ownership of tile \end{DoxyCompactList}\item 
+Team \hyperlink{class_sector_a1b57918142cfdc9893ff4a37c1a7fb34}{Get\+Owner} ()
+\begin{DoxyCompactList}\small\item\em Return the team of the tile owner \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_sector_a780ae4c330d40c3409f8ca15cdbe66a0}{}Key\+Value\+Pair$<$ int, int $>$ {\bfseries Grid\+Position}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_sector_a780ae4c330d40c3409f8ca15cdbe66a0}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Definition for Sectors generated through \hyperlink{class_map_manager}{Map\+Manager}. Self-\/generates internal components (tiles) 
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_sector_a89ff1f23f9bbdf12bef9aae444f72ed4}{}\index{Sector@{Sector}!Claim\+Tile@{Claim\+Tile}}
+\index{Claim\+Tile@{Claim\+Tile}!Sector@{Sector}}
+\subsubsection[{Claim\+Tile}]{\setlength{\rightskip}{0pt plus 5cm}void Sector.\+Claim\+Tile (
+\begin{DoxyParamCaption}
+\item[{Team}]{team}
+\end{DoxyParamCaption}
+)}\label{class_sector_a89ff1f23f9bbdf12bef9aae444f72ed4}
+
+
+Give team ownership of tile 
+
+
+\begin{DoxyParams}{Parameters}
+{\em team} & Team Name\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_sector_ac444ed54120cae14ef2b6551d2a45823}{}\index{Sector@{Sector}!Create\+Tile\+At\+Position@{Create\+Tile\+At\+Position}}
+\index{Create\+Tile\+At\+Position@{Create\+Tile\+At\+Position}!Sector@{Sector}}
+\subsubsection[{Create\+Tile\+At\+Position}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Tile} Sector.\+Create\+Tile\+At\+Position (
+\begin{DoxyParamCaption}
+\item[{string}]{type, }
+\item[{Vector3}]{pos, }
+\item[{Team}]{team}
+\end{DoxyParamCaption}
+)}\label{class_sector_ac444ed54120cae14ef2b6551d2a45823}
+
+
+Creates a tile at the specified position 
+
+
+\begin{DoxyParams}{Parameters}
+{\em type} & Type\\
+\hline
+{\em pos} & Position to create the tile\\
+\hline
+{\em team} & Team Name\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{class_sector_aab402113879db97b63409e2fd9df16fa}{}\index{Sector@{Sector}!Delete\+Tile@{Delete\+Tile}}
+\index{Delete\+Tile@{Delete\+Tile}!Sector@{Sector}}
+\subsubsection[{Delete\+Tile}]{\setlength{\rightskip}{0pt plus 5cm}void Sector.\+Delete\+Tile (
+\begin{DoxyParamCaption}
+\item[{{\bf Tile}}]{tile}
+\end{DoxyParamCaption}
+)}\label{class_sector_aab402113879db97b63409e2fd9df16fa}
+
+
+Deletes a tile 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tile} & \hyperlink{class_tile}{Tile} object to delete\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_sector_af8b84b2f8fa4ccdc2cf58a9f32fb0b28}{}\index{Sector@{Sector}!Generate\+New\+Sectors@{Generate\+New\+Sectors}}
+\index{Generate\+New\+Sectors@{Generate\+New\+Sectors}!Sector@{Sector}}
+\subsubsection[{Generate\+New\+Sectors}]{\setlength{\rightskip}{0pt plus 5cm}void Sector.\+Generate\+New\+Sectors (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_sector_af8b84b2f8fa4ccdc2cf58a9f32fb0b28}
+
+
+Calls \hyperlink{class_map_manager}{Map\+Manager} to make new sectors 
+
+\hypertarget{class_sector_a4a2f9551839eac2173a5f0f213402b36}{}\index{Sector@{Sector}!Get\+Best\+Range\+Extension@{Get\+Best\+Range\+Extension}}
+\index{Get\+Best\+Range\+Extension@{Get\+Best\+Range\+Extension}!Sector@{Sector}}
+\subsubsection[{Get\+Best\+Range\+Extension}]{\setlength{\rightskip}{0pt plus 5cm}int Sector.\+Get\+Best\+Range\+Extension (
+\begin{DoxyParamCaption}
+\item[{Team}]{team, }
+\item[{string}]{type}
+\end{DoxyParamCaption}
+)}\label{class_sector_a4a2f9551839eac2173a5f0f213402b36}
+
+
+Finds best object for range to use in a sector 
+
+
+\begin{DoxyParams}{Parameters}
+{\em team} & Team Name\\
+\hline
+{\em type} & Type of structure\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{class_sector_a1b57918142cfdc9893ff4a37c1a7fb34}{}\index{Sector@{Sector}!Get\+Owner@{Get\+Owner}}
+\index{Get\+Owner@{Get\+Owner}!Sector@{Sector}}
+\subsubsection[{Get\+Owner}]{\setlength{\rightskip}{0pt plus 5cm}Team Sector.\+Get\+Owner (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_sector_a1b57918142cfdc9893ff4a37c1a7fb34}
+
+
+Return the team of the tile owner 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{class_sector_a1574ef79ca69119b547b58968f67a9fc}{}\index{Sector@{Sector}!Get\+Space\+Structures@{Get\+Space\+Structures}}
+\index{Get\+Space\+Structures@{Get\+Space\+Structures}!Sector@{Sector}}
+\subsubsection[{Get\+Space\+Structures}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Structure}$>$ Sector.\+Get\+Space\+Structures (
+\begin{DoxyParamCaption}
+\item[{Team}]{team, }
+\item[{string}]{type}
+\end{DoxyParamCaption}
+)}\label{class_sector_a1574ef79ca69119b547b58968f67a9fc}
+
+
+Gets list of all space structures 
+
+
+\begin{DoxyParams}{Parameters}
+{\em team} & Team Name\\
+\hline
+{\em type} & Type of space structure to list\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{class_sector_ad998ffd83c0dcb8bc99261ecfe72fb51}{}\index{Sector@{Sector}!Get\+Tile\+At\+Position@{Get\+Tile\+At\+Position}}
+\index{Get\+Tile\+At\+Position@{Get\+Tile\+At\+Position}!Sector@{Sector}}
+\subsubsection[{Get\+Tile\+At\+Position}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Tile} Sector.\+Get\+Tile\+At\+Position (
+\begin{DoxyParamCaption}
+\item[{Vector3}]{point}
+\end{DoxyParamCaption}
+)}\label{class_sector_ad998ffd83c0dcb8bc99261ecfe72fb51}
+
+
+Find tile at a point 
+
+
+\begin{DoxyParams}{Parameters}
+{\em point} & Point to find\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{class_sector_af16372ab07bfaff9c7d1f39a4240f079}{}\index{Sector@{Sector}!Init@{Init}}
+\index{Init@{Init}!Sector@{Sector}}
+\subsubsection[{Init}]{\setlength{\rightskip}{0pt plus 5cm}void Sector.\+Init (
+\begin{DoxyParamCaption}
+\item[{Key\+Value\+Pair$<$ int, int $>$}]{grid\+Pos}
+\end{DoxyParamCaption}
+)}\label{class_sector_af16372ab07bfaff9c7d1f39a4240f079}
+
+
+Initialize the program values 
+
+
+\begin{DoxyParams}{Parameters}
+{\em grid\+Pos} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_sector_abf04ea8c8a5a705b2b9b877d283e9993}{}\index{Sector@{Sector}!Is\+Valid\+Location@{Is\+Valid\+Location}}
+\index{Is\+Valid\+Location@{Is\+Valid\+Location}!Sector@{Sector}}
+\subsubsection[{Is\+Valid\+Location}]{\setlength{\rightskip}{0pt plus 5cm}bool Sector.\+Is\+Valid\+Location (
+\begin{DoxyParamCaption}
+\item[{Vector3}]{pos}
+\end{DoxyParamCaption}
+)}\label{class_sector_abf04ea8c8a5a705b2b9b877d283e9993}
+
+
+Determines if Valid Location 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pos} & Position\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{class_sector_ab9ddf44c83d20d72535dad7469e43ee0}{}\index{Sector@{Sector}!Is\+Valid\+Location@{Is\+Valid\+Location}}
+\index{Is\+Valid\+Location@{Is\+Valid\+Location}!Sector@{Sector}}
+\subsubsection[{Is\+Valid\+Location}]{\setlength{\rightskip}{0pt plus 5cm}bool Sector.\+Is\+Valid\+Location (
+\begin{DoxyParamCaption}
+\item[{Key\+Value\+Pair$<$ int, int $>$}]{grid\+Pos}
+\end{DoxyParamCaption}
+)}\label{class_sector_ab9ddf44c83d20d72535dad7469e43ee0}
+
+
+Determines if Valid Location 
+
+
+\begin{DoxyParams}{Parameters}
+{\em grid\+Pos} & Position in grid\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{class_sector_ae0e35f65cbd250cd36c0372213ca8191}{}\index{Sector@{Sector}!Register\+Space\+Structure@{Register\+Space\+Structure}}
+\index{Register\+Space\+Structure@{Register\+Space\+Structure}!Sector@{Sector}}
+\subsubsection[{Register\+Space\+Structure}]{\setlength{\rightskip}{0pt plus 5cm}void Sector.\+Register\+Space\+Structure (
+\begin{DoxyParamCaption}
+\item[{Team}]{team, }
+\item[{{\bf Structure}}]{structure}
+\end{DoxyParamCaption}
+)}\label{class_sector_ae0e35f65cbd250cd36c0372213ca8191}
+
+
+Registers that a structure is deployed in space 
+
+
+\begin{DoxyParams}{Parameters}
+{\em team} & Team Name\\
+\hline
+{\em structure} & \hyperlink{class_structure}{Structure} object\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_sector_a89b0b70d55252a20e2fc009c2c9939ea}{}\index{Sector@{Sector}!Relinquish\+Tile@{Relinquish\+Tile}}
+\index{Relinquish\+Tile@{Relinquish\+Tile}!Sector@{Sector}}
+\subsubsection[{Relinquish\+Tile}]{\setlength{\rightskip}{0pt plus 5cm}void Sector.\+Relinquish\+Tile (
+\begin{DoxyParamCaption}
+\item[{Team}]{team}
+\end{DoxyParamCaption}
+)}\label{class_sector_a89b0b70d55252a20e2fc009c2c9939ea}
+
+
+Take team ownership of tile 
+
+
+\begin{DoxyParams}{Parameters}
+{\em team} & Team Name\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_sector_a8c67595872a205af83ceba5c97629519}{}\index{Sector@{Sector}!Unregister\+Space\+Structure@{Unregister\+Space\+Structure}}
+\index{Unregister\+Space\+Structure@{Unregister\+Space\+Structure}!Sector@{Sector}}
+\subsubsection[{Unregister\+Space\+Structure}]{\setlength{\rightskip}{0pt plus 5cm}void Sector.\+Unregister\+Space\+Structure (
+\begin{DoxyParamCaption}
+\item[{Team}]{team, }
+\item[{{\bf Structure}}]{structure}
+\end{DoxyParamCaption}
+)}\label{class_sector_a8c67595872a205af83ceba5c97629519}
+
+
+Undeploy space structure 
+
+
+\begin{DoxyParams}{Parameters}
+{\em team} & Team Name\\
+\hline
+{\em structure} & \hyperlink{class_structure}{Structure} object to undeploy\\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Scripts/Sector.\+cs\end{DoxyCompactItemize}

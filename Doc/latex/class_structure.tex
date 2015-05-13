@@ -1,0 +1,232 @@
+\hypertarget{class_structure}{}\section{Structure Class Reference}
+\label{class_structure}\index{Structure@{Structure}}
+
+
+Extension of \hyperlink{class_ship}{Ship} to handle structure behavior.  
+
+
+Inheritance diagram for Structure\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_structure}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_structure_a792dfc745239398bdea2ebdd8dd48233}{Structure} (string name, float hull, float firepower, float speed, int capacity, int r\+Capacity, float defense, int deployed\+Capacity, int gather\+Rate, int range, List$<$ string $>$ constructables, Ship\+Properties ship\+Properties, Resource\+Gather\+Type type)
+\begin{DoxyCompactList}\small\item\em Constructor for the \hyperlink{class_structure}{Structure} class. \end{DoxyCompactList}\item 
+override void \hyperlink{class_structure_ab88e4905beed6a2caafe1b7cbfc109b7}{Recalculate\+Resources} ()
+\begin{DoxyCompactList}\small\item\em Recalculate the resources needed to build this structure. \end{DoxyCompactList}\item 
+override \hyperlink{class_ship}{Ship} \hyperlink{class_structure_ae96b383348aca0ba43c2a57496b1761c}{Copy} ()
+\begin{DoxyCompactList}\small\item\em Make a copy of this ship. Intended for building. \end{DoxyCompactList}\item 
+List$<$ Key\+Value\+Pair$<$ Resource\+Gather\+Type, int $>$ $>$ \hyperlink{class_structure_a61847ddf27249ffba7a905010aaf1c4d}{Gather} (Resource r\+Type, int resources, Inhabitance p\+Type, int population, Team team)
+\begin{DoxyCompactList}\small\item\em Gather resources at this structure\textquotesingle{}s tile. \end{DoxyCompactList}\item 
+void \hyperlink{class_structure_af20a7802b5040cbe4f478b74ad95f57d}{Deploy} (\hyperlink{class_tile}{Tile} tile)
+\begin{DoxyCompactList}\small\item\em Deploy this structure to a tile. \end{DoxyCompactList}\item 
+void \hyperlink{class_structure_ae04874fbb3f76ac90dcdd880d94b258c}{Undeploy} (\hyperlink{class_tile}{Tile} tile)
+\begin{DoxyCompactList}\small\item\em Undeploy this structure from a tile. \end{DoxyCompactList}\item 
+void \hyperlink{class_structure_ad7d795f89739631a8bdad29ef6d1900e}{Populate\+Structure\+Panel} (Game\+Object list)
+\begin{DoxyCompactList}\small\item\em Populate a U\+I panel with a deployed structure\textquotesingle{}s info. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_structure_af324ae30365d4a5049d57327478185e3}{}float {\bfseries Defense}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_structure_af324ae30365d4a5049d57327478185e3}
+
+\item 
+\hypertarget{class_structure_a5ad3b8896676fec813559adb196f5463}{}int {\bfseries Deployed\+Capacity}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_structure_a5ad3b8896676fec813559adb196f5463}
+
+\item 
+\hypertarget{class_structure_a194598de7ed6c95771026d8213b945b3}{}int {\bfseries Gather\+Rate}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_structure_a194598de7ed6c95771026d8213b945b3}
+
+\item 
+\hypertarget{class_structure_a52d85aae54d96762dd8efc6670ddddb5}{}int {\bfseries Range}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_structure_a52d85aae54d96762dd8efc6670ddddb5}
+
+\item 
+\hypertarget{class_structure_a4106be359eca9d8190ac6510c3579777}{}\hyperlink{class_tile}{Tile} {\bfseries Tile}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}\label{class_structure_a4106be359eca9d8190ac6510c3579777}
+
+\item 
+\hypertarget{class_structure_aa04d1ef61b75f78b64b467397e44b435}{}List$<$ string $>$ {\bfseries Constructables}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}\label{class_structure_aa04d1ef61b75f78b64b467397e44b435}
+
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Extension of \hyperlink{class_ship}{Ship} to handle structure behavior. 
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_structure_a792dfc745239398bdea2ebdd8dd48233}{}\index{Structure@{Structure}!Structure@{Structure}}
+\index{Structure@{Structure}!Structure@{Structure}}
+\subsubsection[{Structure}]{\setlength{\rightskip}{0pt plus 5cm}Structure.\+Structure (
+\begin{DoxyParamCaption}
+\item[{string}]{name, }
+\item[{float}]{hull, }
+\item[{float}]{firepower, }
+\item[{float}]{speed, }
+\item[{int}]{capacity, }
+\item[{int}]{r\+Capacity, }
+\item[{float}]{defense, }
+\item[{int}]{deployed\+Capacity, }
+\item[{int}]{gather\+Rate, }
+\item[{int}]{range, }
+\item[{List$<$ string $>$}]{constructables, }
+\item[{Ship\+Properties}]{ship\+Properties, }
+\item[{Resource\+Gather\+Type}]{type}
+\end{DoxyParamCaption}
+)}\label{class_structure_a792dfc745239398bdea2ebdd8dd48233}
+
+
+Constructor for the \hyperlink{class_structure}{Structure} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & \\
+\hline
+{\em hull} & \\
+\hline
+{\em firepower} & \\
+\hline
+{\em speed} & \\
+\hline
+{\em capacity} & \\
+\hline
+{\em r\+Capacity} & \\
+\hline
+{\em defense} & \\
+\hline
+{\em deployed\+Capacity} & \\
+\hline
+{\em gather\+Rate} & \\
+\hline
+{\em range} & \\
+\hline
+{\em constructables} & \\
+\hline
+{\em ship\+Properties} & \\
+\hline
+{\em type} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_structure_ae96b383348aca0ba43c2a57496b1761c}{}\index{Structure@{Structure}!Copy@{Copy}}
+\index{Copy@{Copy}!Structure@{Structure}}
+\subsubsection[{Copy}]{\setlength{\rightskip}{0pt plus 5cm}override {\bf Ship} Structure.\+Copy (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_structure_ae96b383348aca0ba43c2a57496b1761c}
+
+
+Make a copy of this ship. Intended for building. 
+
+\begin{DoxyReturn}{Returns}
+A new copy of this ship.
+\end{DoxyReturn}
+
+
+Reimplemented from \hyperlink{class_ship_a64926f0a5ee6d4052d680a453b17d1d9}{Ship}.
+
+\hypertarget{class_structure_af20a7802b5040cbe4f478b74ad95f57d}{}\index{Structure@{Structure}!Deploy@{Deploy}}
+\index{Deploy@{Deploy}!Structure@{Structure}}
+\subsubsection[{Deploy}]{\setlength{\rightskip}{0pt plus 5cm}void Structure.\+Deploy (
+\begin{DoxyParamCaption}
+\item[{{\bf Tile}}]{tile}
+\end{DoxyParamCaption}
+)}\label{class_structure_af20a7802b5040cbe4f478b74ad95f57d}
+
+
+Deploy this structure to a tile. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tile} & The tile to deploy to.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_structure_a61847ddf27249ffba7a905010aaf1c4d}{}\index{Structure@{Structure}!Gather@{Gather}}
+\index{Gather@{Gather}!Structure@{Structure}}
+\subsubsection[{Gather}]{\setlength{\rightskip}{0pt plus 5cm}List$<$Key\+Value\+Pair$<$Resource\+Gather\+Type, int$>$ $>$ Structure.\+Gather (
+\begin{DoxyParamCaption}
+\item[{Resource}]{r\+Type, }
+\item[{int}]{resources, }
+\item[{Inhabitance}]{p\+Type, }
+\item[{int}]{population, }
+\item[{Team}]{team}
+\end{DoxyParamCaption}
+)}\label{class_structure_a61847ddf27249ffba7a905010aaf1c4d}
+
+
+Gather resources at this structure\textquotesingle{}s tile. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em r\+Type} & The resource type of the tile.\\
+\hline
+{\em resources} & The amount of resources at the tile.\\
+\hline
+{\em p\+Type} & The tile\textquotesingle{}s population type.\\
+\hline
+{\em population} & The tile\textquotesingle{}s population.\\
+\hline
+{\em team} & The tile\textquotesingle{}s team.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The type of resources gathered, and their amounts gathered.
+\end{DoxyReturn}
+\hypertarget{class_structure_ad7d795f89739631a8bdad29ef6d1900e}{}\index{Structure@{Structure}!Populate\+Structure\+Panel@{Populate\+Structure\+Panel}}
+\index{Populate\+Structure\+Panel@{Populate\+Structure\+Panel}!Structure@{Structure}}
+\subsubsection[{Populate\+Structure\+Panel}]{\setlength{\rightskip}{0pt plus 5cm}void Structure.\+Populate\+Structure\+Panel (
+\begin{DoxyParamCaption}
+\item[{Game\+Object}]{list}
+\end{DoxyParamCaption}
+)}\label{class_structure_ad7d795f89739631a8bdad29ef6d1900e}
+
+
+Populate a U\+I panel with a deployed structure\textquotesingle{}s info. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & The U\+I panel to populate.\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_structure_ab88e4905beed6a2caafe1b7cbfc109b7}{}\index{Structure@{Structure}!Recalculate\+Resources@{Recalculate\+Resources}}
+\index{Recalculate\+Resources@{Recalculate\+Resources}!Structure@{Structure}}
+\subsubsection[{Recalculate\+Resources}]{\setlength{\rightskip}{0pt plus 5cm}override void Structure.\+Recalculate\+Resources (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_structure_ab88e4905beed6a2caafe1b7cbfc109b7}
+
+
+Recalculate the resources needed to build this structure. 
+
+
+
+Reimplemented from \hyperlink{class_ship_a44022d06a9026eccaa7ce8a499509c74}{Ship}.
+
+\hypertarget{class_structure_ae04874fbb3f76ac90dcdd880d94b258c}{}\index{Structure@{Structure}!Undeploy@{Undeploy}}
+\index{Undeploy@{Undeploy}!Structure@{Structure}}
+\subsubsection[{Undeploy}]{\setlength{\rightskip}{0pt plus 5cm}void Structure.\+Undeploy (
+\begin{DoxyParamCaption}
+\item[{{\bf Tile}}]{tile}
+\end{DoxyParamCaption}
+)}\label{class_structure_ae04874fbb3f76ac90dcdd880d94b258c}
+
+
+Undeploy this structure from a tile. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tile} & The tile to undeploy from.\\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Assets/\+Ships/Structure.\+cs\end{DoxyCompactItemize}
