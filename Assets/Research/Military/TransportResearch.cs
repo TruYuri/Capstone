@@ -2,6 +2,9 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+/// <summary>
+/// This class upgrades and acts as the base for the Transport.
+/// </summary>
 public class TransportResearch : Research
 {
     private const string ARMOR = "Armor";
@@ -11,6 +14,11 @@ public class TransportResearch : Research
 
     private Ship transportShip;
 
+    /// <summary>
+    /// Transport Constructor
+    /// </summary>
+    /// <param name="ship">The ship</param>
+    /// <param name="prereqs"></param>
     public TransportResearch(Ship ship, List<Research> prereqs)
         : base(ship.Name, 2, prereqs)
     {
@@ -35,6 +43,12 @@ public class TransportResearch : Research
         RecalculateResourceCosts(0);
     }
 
+    /// <summary>
+    /// Upgrade the Research level
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
+    /// <returns></returns>
     public override Dictionary<Resource, int> UpgradeResearch(string name, float reduction)
     {
 
@@ -65,6 +79,10 @@ public class TransportResearch : Research
         return r;
     }
 
+    /// <summary>
+    /// Recalculate the Resources after upgrading
+    /// </summary>
+    /// <param name="reduction"></param>
     private void RecalculateResourceCosts(float reduction)
     {
         costs[ARMOR] = new Dictionary<Resource, int>()
@@ -98,6 +116,11 @@ public class TransportResearch : Research
         }
     }
 
+    /// <summary>
+    /// Unlocks the Research
+    /// </summary>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
+    /// <returns></returns>
     public override Dictionary<Resource, int> Unlock(float reduction)
     {
         base.Unlock(reduction);
@@ -106,6 +129,12 @@ public class TransportResearch : Research
         return transportShip.CanConstruct(null, 5, reduction).Value;
     }
 
+    /// <summary>
+    /// Determines whether Research is unlockable
+    /// </summary>
+    /// <param name="resources">Resources needed to obtain</param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
+    /// <returns></returns>
     public override bool CanUnlock(Dictionary<Resource, int> resources, float reduction)
     {
         if (unlocked || transportShip.Unlocked)
@@ -120,6 +149,12 @@ public class TransportResearch : Research
         return unlock;
     }
 
+    /// <summary>
+    /// Changes display of panels after upgrading
+    /// </summary>
+    /// <param name="panel">Panel of buttons</param>
+    /// <param name="resources">Resources needed to obtain</param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction) 
     {
         RecalculateResourceCosts(reduction);
@@ -176,6 +211,12 @@ public class TransportResearch : Research
             items[PLATING].GetComponent<Button>().interactable = false;
     }
 
+    /// <summary>
+    /// Display popup for Research
+    /// </summary>
+    /// <param name="panel"></param>
+    /// <param name="upgrade"></param>
+    /// <param name="reduction"></param>
     public override void DisplayPopup(GameObject panel, string upgrade, float reduction)
     {
         if (upgrade == "Unlock")

@@ -2,7 +2,9 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-// This class upgrades various concepts but also acts as the base for the Resource Transport, thus is a military script.
+/// <summary>
+/// This class upgrades and acts as the base for the Warp Portal.
+/// </summary>
 public class WarpPortalResearch : Research
 {
     private const string RANGE = "Range";
@@ -10,6 +12,11 @@ public class WarpPortalResearch : Research
 
     private Structure warpPortal;
 
+    /// <summary>
+    /// Constructor for Warp Portal
+    /// </summary>
+    /// <param name="warpPortal"></param>
+    /// <param name="prereqs">Research prerequisites</param>
     public WarpPortalResearch(Structure warpPortal, List<Research> prereqs)
         : base(warpPortal.Name, 5, prereqs)
     {
@@ -30,6 +37,12 @@ public class WarpPortalResearch : Research
         }
     }
 
+    /// <summary>
+    /// Upgrade
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="reduction">Reduction in cost from completed Research</param>
+    /// <returns></returns>
     public override Dictionary<Resource, int> UpgradeResearch(string name, float reduction)
     {
         switch(name)
@@ -50,6 +63,10 @@ public class WarpPortalResearch : Research
         return r;
     }
 
+    /// <summary>
+    /// Get the new cost of Upgrade and Unit
+    /// </summary>
+    /// <param name="reduction"></param>
     private void RecalculateResourceCosts(float reduction)
     {
         costs[DEFENSE] = new Dictionary<Resource, int>()
@@ -72,6 +89,11 @@ public class WarpPortalResearch : Research
         }
     }
 
+    /// <summary>
+    /// Unlock the Research
+    /// </summary>
+    /// <param name="reduction"></param>
+    /// <returns></returns>
     public override Dictionary<Resource, int> Unlock(float reduction)
     {
         base.Unlock(reduction);
@@ -79,6 +101,12 @@ public class WarpPortalResearch : Research
         return warpPortal.CanConstruct(null, 5, reduction).Value;
     }
 
+    /// <summary>
+    /// Able to Unlock Research
+    /// </summary>
+    /// <param name="resources"></param>
+    /// <param name="reduction"></param>
+    /// <returns></returns>
     public override bool CanUnlock(Dictionary<Resource, int> resources, float reduction)
     {
         if (unlocked || warpPortal.Unlocked)
@@ -93,6 +121,12 @@ public class WarpPortalResearch : Research
         return unlock;
     }
 
+    /// <summary>
+    /// Change info displayed on the panels for the Research
+    /// </summary>
+    /// <param name="panel"></param>
+    /// <param name="resources"></param>
+    /// <param name="reduction"></param>
     public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)
     {
         RecalculateResourceCosts(reduction);
@@ -142,6 +176,12 @@ public class WarpPortalResearch : Research
         }
     }
 
+    /// <summary>
+    /// Display popup
+    /// </summary>
+    /// <param name="panel"></param>
+    /// <param name="upgrade"></param>
+    /// <param name="reduction"></param>
     public override void DisplayPopup(GameObject panel, string upgrade, float reduction)
     {
         if (upgrade == "Unlock")

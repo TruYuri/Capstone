@@ -2,6 +2,9 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+/// <summary>
+/// This class upgrades and acts as the base for the Behemoth.
+/// </summary>
 public class BehemothResearch : Research
 {
     private const string ARMOR = "Armor";
@@ -13,6 +16,11 @@ public class BehemothResearch : Research
 
     private Ship behemothShip;
 
+    /// <summary>
+    /// Behemoth Constructor
+    /// </summary>
+    /// <param name="ship">The ship</param>
+    /// <param name="prereqs"></param>
     public BehemothResearch(Ship ship, List<Research> prereqs)
         : base(ship.Name, 5, prereqs)
     {
@@ -39,6 +47,12 @@ public class BehemothResearch : Research
         RecalculateResourceCosts(0);
     }
 
+    /// <summary>
+    /// Upgrades the level of the Research
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
+    /// <returns></returns>
     public override Dictionary<Resource, int> UpgradeResearch(string name, float reduction)
     {
         switch (name)
@@ -77,6 +91,10 @@ public class BehemothResearch : Research
         return r;
     }
 
+    /// <summary>
+    /// Recalculate the costs after upgrading
+    /// </summary>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     private void RecalculateResourceCosts(float reduction)
     {
         costs[ARMOR] = new Dictionary<Resource, int>()
@@ -121,6 +139,11 @@ public class BehemothResearch : Research
         }
     }
 
+    /// <summary>
+    /// Unlock the Research
+    /// </summary>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
+    /// <returns></returns>
     public override Dictionary<Resource, int> Unlock(float reduction)
     {
         base.Unlock(reduction);
@@ -128,6 +151,12 @@ public class BehemothResearch : Research
         return behemothShip.CanConstruct(null, 5, reduction).Value;
     }
 
+    /// <summary>
+    /// Determines if the Research can be unlocked
+    /// </summary>
+    /// <param name="resources">Resources needed to obtain</param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
+    /// <returns></returns>
     public override bool CanUnlock(Dictionary<Resource, int> resources, float reduction)
     {
         if (unlocked || behemothShip.Unlocked)
@@ -142,6 +171,12 @@ public class BehemothResearch : Research
         return unlock;
     }
 
+    /// <summary>
+    /// Changes the panels of the Research
+    /// </summary>
+    /// <param name="panel">Panel of buttons</param>
+    /// <param name="resources">Resources needed to obtain</param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)
     {
         RecalculateResourceCosts(reduction);
@@ -203,6 +238,12 @@ public class BehemothResearch : Research
             items[TORPEDOES].GetComponent<Button>().interactable = false;
     }
 
+    /// <summary>
+    /// Displays popups of the Research
+    /// </summary>
+    /// <param name="panel">Panel of button hovered over</param>
+    /// <param name="upgrade">Name of upgrade</param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     public override void DisplayPopup(GameObject panel, string upgrade, float reduction)
     {
         if(upgrade == "Unlock")

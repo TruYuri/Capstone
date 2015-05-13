@@ -2,7 +2,9 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-// This class upgrades various concepts but also acts as the base for the Resource Transport, thus is a military script.
+/// <summary>
+/// This class upgrades and acts as the base for Efficiency Research.
+/// </summary>
 public class EfficiencyResearch : Research
 {
     private const string GATHERING = "Gathering";
@@ -13,6 +15,12 @@ public class EfficiencyResearch : Research
     private Dictionary<string, Ship> shipDefinitions;
     private Player player;
 
+    /// <summary>
+    /// Efficiency Constructor
+    /// </summary>
+    /// <param name="shipDefinitions"></param>
+    /// <param name="prereqs"></param>
+    /// <param name="player"></param>
     public EfficiencyResearch(Dictionary<string, Ship> shipDefinitions, List<Research> prereqs, Player player)
         : base("Efficiency", 2, prereqs)
     {
@@ -39,6 +47,12 @@ public class EfficiencyResearch : Research
         RecalculateResourceCosts(0);
     }
 
+    /// <summary>
+    /// Upgrades the level of Research
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
+    /// <returns></returns>
     public override Dictionary<Resource, int> UpgradeResearch(string name, float reduction)
     {
         switch(name)
@@ -83,6 +97,10 @@ public class EfficiencyResearch : Research
         return r;
     }
 
+    /// <summary>
+    /// Recalculate the Resource Costs after upgrading
+    /// </summary>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     private void RecalculateResourceCosts(float reduction)
     {
         costs[GATHERING] = new Dictionary<Resource, int>()
@@ -126,6 +144,12 @@ public class EfficiencyResearch : Research
         }
     }
 
+    /// <summary>
+    /// Change the display of the panels for the Research
+    /// </summary>
+    /// <param name="panel">Panel of button being hovered over</param>
+    /// <param name="resources">Resources needed to obtain</param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)
     {
         RecalculateResourceCosts(reduction);

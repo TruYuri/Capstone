@@ -2,6 +2,9 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+/// <summary>
+/// This class upgrades and acts as the base for the Command Ship.
+/// </summary>
 public class CommandShipResearch : Research
 {
     private const string ARMOR = "Armor";
@@ -12,6 +15,11 @@ public class CommandShipResearch : Research
 
     Ship commandShip;
 
+    /// <summary>
+    /// Command Ship Constructor
+    /// </summary>
+    /// <param name="ship">The ship</param>
+    /// <param name="prereqs"></param>
     public CommandShipResearch(Ship ship, List<Research> prereqs)
         : base(ship.Name, 1, prereqs)
     {
@@ -38,6 +46,12 @@ public class CommandShipResearch : Research
         RecalculateResourceCosts(0);
     }
 
+    /// <summary>
+    /// Upgrade the level of the Research
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
+    /// <returns></returns>
     public override Dictionary<Resource, int> UpgradeResearch(string name, float reduction)
     {
         switch (name)
@@ -72,6 +86,10 @@ public class CommandShipResearch : Research
         return r;
     }
 
+    /// <summary>
+    /// Recalculate the costs after upgrading
+    /// </summary>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     private void RecalculateResourceCosts(float reduction)
     {
         costs[ARMOR] = new Dictionary<Resource, int>()
@@ -110,6 +128,12 @@ public class CommandShipResearch : Research
         }
     }
 
+    /// <summary>
+    /// Changes the display panels for the Research
+    /// </summary>
+    /// <param name="panel">Panel of button being hovered over</param>
+    /// <param name="resources">Resources needed to obtain</param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)
     {
         RecalculateResourceCosts(reduction);

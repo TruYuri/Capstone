@@ -2,7 +2,10 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-// This class upgrades various concepts but also acts as the base for the Resource Transport, thus is a military script.
+/// <summary>
+/// This class upgrades and acts as the base for the Relay.
+/// </summary>
+/// 
 public class RelayResearch : Research
 {
     private const string RANGE = "Range";
@@ -10,6 +13,11 @@ public class RelayResearch : Research
 
     private Structure relay;
 
+    /// <summary>
+    /// Relay Constructor
+    /// </summary>
+    /// <param name="relay"></param>
+    /// <param name="prereqs"></param>
     public RelayResearch(Structure relay, List<Research> prereqs) 
         : base(relay.Name, 4, prereqs)
     {
@@ -32,6 +40,12 @@ public class RelayResearch : Research
         RecalculateResourceCosts(0);
     }
 
+    /// <summary>
+    /// Upgrades the level of the Research
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
+    /// <returns></returns>
     public override Dictionary<Resource, int> UpgradeResearch(string name, float reduction)
     {
         switch(name)
@@ -52,6 +66,10 @@ public class RelayResearch : Research
         return r;
     }
 
+    /// <summary>
+    /// Recalculates the costs after an upgrade
+    /// </summary>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     private void RecalculateResourceCosts(float reduction)
     {
         costs[DEFENSE] = new Dictionary<Resource, int>()
@@ -74,6 +92,11 @@ public class RelayResearch : Research
         }
     }
 
+    /// <summary>
+    /// Unlocks research
+    /// </summary>
+    /// <param name="reduction"></param>
+    /// <returns></returns>
     public override Dictionary<Resource, int> Unlock(float reduction)
     {
         base.Unlock(reduction);
@@ -81,6 +104,12 @@ public class RelayResearch : Research
         return relay.CanConstruct(null, 5, reduction).Value;
     }
 
+    /// <summary>
+    /// Determines if it can be unlocked
+    /// </summary>
+    /// <param name="resources">Resources needed to obtain</param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
+    /// <returns></returns>
     public override bool CanUnlock(Dictionary<Resource, int> resources, float reduction)
     {
         if (unlocked || relay.Unlocked)
@@ -93,6 +122,12 @@ public class RelayResearch : Research
         return unlock;
     }
 
+    /// <summary>
+    /// Change info displayed on the panels for the Research
+    /// </summary>
+    /// <param name="panel"></param>
+    /// <param name="resources"></param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)
     {
         RecalculateResourceCosts(reduction);
@@ -142,6 +177,12 @@ public class RelayResearch : Research
         }
     }
 
+    /// <summary>
+    /// Displays popups for the upgrade
+    /// </summary>
+    /// <param name="panel">The panel of the button hovered over</param>
+    /// <param name="upgrade">Name of upgrade</param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     public override void DisplayPopup(GameObject panel, string upgrade, float reduction)
     {
         if (upgrade == "Unlock")

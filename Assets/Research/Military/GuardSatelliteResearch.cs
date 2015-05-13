@@ -2,6 +2,9 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+/// <summary>
+/// This class upgrades and acts as the base for the Guard Satellite.
+/// </summary>
 public class GuardSatelliteResearch : Research
 {
     private const string ARMOR = "Armor";
@@ -11,6 +14,11 @@ public class GuardSatelliteResearch : Research
 
     private Ship guardSatelliteShip;
 
+    /// <summary>
+    /// Guard Satellite Constructor
+    /// </summary>
+    /// <param name="ship">The ship</param>
+    /// <param name="prereqs"></param>
     public GuardSatelliteResearch(Ship ship, List<Research> prereqs) 
         : base(ship.Name, 3, prereqs)
     {
@@ -35,6 +43,12 @@ public class GuardSatelliteResearch : Research
         RecalculateResourceCosts(0);
     }
 
+    /// <summary>
+    /// Upgrades the level of Research
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
+    /// <returns></returns>
     public override Dictionary<Resource, int> UpgradeResearch(string name, float reduction)
     {
         switch (name)
@@ -65,6 +79,10 @@ public class GuardSatelliteResearch : Research
         return r;
     }
 
+    /// <summary>
+    /// Recalculates the costs after upgrading
+    /// </summary>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     private void RecalculateResourceCosts(float reduction)
     {
         costs[ARMOR] = new Dictionary<Resource, int>()
@@ -97,6 +115,11 @@ public class GuardSatelliteResearch : Research
         }
     }
 
+    /// <summary>
+    /// Unlocks the Research
+    /// </summary>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
+    /// <returns></returns>
     public override Dictionary<Resource, int> Unlock(float reduction)
     {
         base.Unlock(reduction);
@@ -104,6 +127,12 @@ public class GuardSatelliteResearch : Research
         return guardSatelliteShip.CanConstruct(null, 5, reduction).Value;
     }
 
+    /// <summary>
+    /// Determines if Research can be unlocked
+    /// </summary>
+    /// <param name="resources">Resources needed to obtain</param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
+    /// <returns></returns>
     public override bool CanUnlock(Dictionary<Resource, int> resources, float reduction)
     {
         if (unlocked || guardSatelliteShip.Unlocked)
@@ -118,6 +147,12 @@ public class GuardSatelliteResearch : Research
         return unlock;
     }
 
+    /// <summary>
+    /// Changes display on panel of Research
+    /// </summary>
+    /// <param name="panel">Panel of buttons</param>
+    /// <param name="resources">Resources needed to obtain</param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)
     {
         RecalculateResourceCosts(reduction);
@@ -174,6 +209,12 @@ public class GuardSatelliteResearch : Research
             items[PLATING].GetComponent<Button>().interactable = false;
     }
 
+    /// <summary>
+    /// Displays the popup for the Research
+    /// </summary>
+    /// <param name="panel">Panel of button hovered over</param>
+    /// <param name="upgrade">Name of upgrade</param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     public override void DisplayPopup(GameObject panel, string upgrade, float reduction)
     {
         if (upgrade == "Unlock")

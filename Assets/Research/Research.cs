@@ -2,6 +2,9 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+/// <summary>
+/// Research Screens Overhead, which all Research inherits from
+/// </summary>
 public class Research
 {
     protected string name;
@@ -14,6 +17,12 @@ public class Research
     public bool Unlocked { get { return unlocked; } }
     public string Name { get { return name; } }
 
+    /// <summary>
+    /// Constructor for Research Overhead
+    /// </summary>
+    /// <param name="name">Research Name</param>
+    /// <param name="level">Research Level</param>
+    /// <param name="prereqs">Research Prerequisites</param>
     public Research(string name, int level, List<Research> prereqs)
     {
         this.costs = new Dictionary<string, Dictionary<Resource, int>>();
@@ -23,6 +32,13 @@ public class Research
         this.name = name;
     }
 
+    /// <summary>
+    /// Determines if possible to upgrade to next level of Research
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="resources">Resources needed to obtain</param>
+    /// <param name="reduction">Reduction amount from research already achieved</param>
+    /// <returns></returns>
     protected bool CanUpgrade(string name, Dictionary<Resource, int> resources, float reduction)
     {
         var invalidLevel = upgrades[name] >= 10;
@@ -40,21 +56,50 @@ public class Research
         return false;
     }
 
+    /// <summary>
+    /// Virtual for upgrading individual research
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="reduction">Reduction amount for Research already achieved</param>
+    /// <returns></returns>
     public virtual Dictionary<Resource, int> UpgradeResearch(string name, float reduction) { return new Dictionary<Resource, int>(); }
 
+    /// <summary>
+    /// Virtual for unlocking new Research
+    /// </summary>
+    /// <param name="reduction">Reduction amount from Research already achieved</param>
+    /// <returns></returns>
     public virtual Dictionary<Resource, int> Unlock(float reduction)
     {
         unlocked = true;
         return new Dictionary<Resource, int>();
     }
 
+    /// <summary>
+    /// Virtual for determining if new Research can be unlocked
+    /// </summary>
+    /// <param name="resources">Resources needed to obtain</param>
+    /// <param name="reduction">Reduction amount from Research already achieved</param>
+    /// <returns></returns>
     public virtual bool CanUnlock(Dictionary<Resource, int> resources, float reduction)
     {
         return true;
     }
 
+    /// <summary>
+    /// Virtual for displaying the current Research values
+    /// </summary>
+    /// <param name="panel"></param>
+    /// <param name="resources">Resources needed to obtain</param>
+    /// <param name="reduction">Reduction amount from Research already achieved</param>
     public virtual void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction) { }
 
+    /// <summary>
+    /// Virtual for displaying popup with how much unlocking costs
+    /// </summary>
+    /// <param name="panel">Panel of button being hovered over</param>
+    /// <param name="upgrade">Name of upgrade</param>
+    /// <param name="reduction">Reduction amount from Research already achieved</param>
     public virtual void DisplayPopup(GameObject panel, string upgrade, float reduction) 
     {
         panel.transform.FindChild("ForestText").GetComponent<Text>().text = costs[upgrade][Resource.Forest].ToString();

@@ -2,6 +2,9 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+/// <summary>
+/// This class upgrades and acts as the base for the Fighter.
+/// </summary>
 public class FighterResearch : Research
 {
     private const string ARMOR = "Armor";
@@ -11,6 +14,11 @@ public class FighterResearch : Research
 
     private Ship fighterShip;
 
+    /// <summary>
+    /// Fighter Constructor
+    /// </summary>
+    /// <param name="ship">The ship</param>
+    /// <param name="prereqs"></param>
     public FighterResearch(Ship ship, List<Research> prereqs) 
         : base(ship.Name, 1, prereqs)
     {
@@ -38,6 +46,12 @@ public class FighterResearch : Research
         RecalculateResourceCosts(0);
     }
 
+    /// <summary>
+    /// Upgrade the level of the Research
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
+    /// <returns></returns>
     public override Dictionary<Resource, int> UpgradeResearch(string name, float reduction) 
     {
         switch(name)
@@ -67,6 +81,10 @@ public class FighterResearch : Research
         return r;
     }
 
+    /// <summary>
+    /// Recalculates the cost after upgrading
+    /// </summary>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     private void RecalculateResourceCosts(float reduction)
     {
         costs[ARMOR] = new Dictionary<Resource, int>()
@@ -100,6 +118,12 @@ public class FighterResearch : Research
         }
     }
 
+    /// <summary>
+    /// Changes the display on the Research panels
+    /// </summary>
+    /// <param name="panel">Panel of buttons</param>
+    /// <param name="resources">Resources needed to obtain</param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)
     {
         RecalculateResourceCosts(reduction);

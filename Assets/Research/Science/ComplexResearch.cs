@@ -2,7 +2,9 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-// This class upgrades various concepts but also acts as the base for the Resource Transport, thus is a military script.
+/// <summary>
+/// This class upgrades and acts as the base for the Complex Research.
+/// </summary>
 public class ComplexResearch : Research
 {
     private const string DEFENSE = "Defense";
@@ -10,6 +12,11 @@ public class ComplexResearch : Research
 
     private Dictionary<string, Structure> structureDefinitions;
 
+    /// <summary>
+    /// Complex Constructor
+    /// </summary>
+    /// <param name="shipDefinitions"></param>
+    /// <param name="prereqs"></param>
     public ComplexResearch(Dictionary<string, Ship> shipDefinitions, List<Research> prereqs)
         : base("Complex", 3, prereqs)
     {
@@ -46,6 +53,12 @@ public class ComplexResearch : Research
         RecalculateResourceCosts(0);
     }
 
+    /// <summary>
+    /// Upgrade the level of the Research
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
+    /// <returns></returns>
     public override Dictionary<Resource, int> UpgradeResearch(string name, float reduction)
     {
         switch (name)
@@ -66,6 +79,10 @@ public class ComplexResearch : Research
         return r;
     }
 
+    /// <summary>
+    /// Recalculate the costs after upgrading
+    /// </summary>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     private void RecalculateResourceCosts(float reduction)
     {
         costs[DEFENSE] = new Dictionary<Resource, int>()
@@ -89,6 +106,9 @@ public class ComplexResearch : Research
         }
     }
 
+    /// <summary>
+    /// Upgrade the Complex Defense
+    /// </summary>
     private void UpgradeDefense()
     {
         upgrades[DEFENSE]++;
@@ -97,6 +117,9 @@ public class ComplexResearch : Research
             ship.Value.Defense += ship.Value.Defense * 0.1f;
     }
 
+    /// <summary>
+    /// Upgrade the Complex Capacity
+    /// </summary>
     private void UpgradeCapacity()
     {
         upgrades[CAPACITY]++;
@@ -105,6 +128,12 @@ public class ComplexResearch : Research
             ship.Value.DeployedCapacity += Mathf.CeilToInt(ship.Value.DeployedCapacity * 0.1f);
     }
 
+    /// <summary>
+    /// Change the display panels for the Research
+    /// </summary>
+    /// <param name="panel">Panel of button being hovered over</param>
+    /// <param name="resources">Recources needed to obtain</param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)
     {
         RecalculateResourceCosts(reduction);

@@ -2,6 +2,9 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+/// <summary>
+/// This class upgrades and acts as the base for the Heavy Fighter.
+/// </summary>
 public class HeavyFighterResearch : Research
 {
     private const string ARMOR = "Armor";
@@ -13,6 +16,11 @@ public class HeavyFighterResearch : Research
 
     private Ship heavyFighterShip;
 
+    /// <summary>
+    /// Heavy Fighter Constructor
+    /// </summary>
+    /// <param name="ship">The ship</param>
+    /// <param name="prereqs"></param>
     public HeavyFighterResearch(Ship ship, List<Research> prereqs)
         : base(ship.Name, 4, prereqs)
     {
@@ -39,6 +47,12 @@ public class HeavyFighterResearch : Research
         RecalculateResourceCosts(0);
     }
 
+    /// <summary>
+    /// Upgrades the level of the Research
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
+    /// <returns></returns>
     public override Dictionary<Resource, int> UpgradeResearch(string name, float reduction)
     {
         switch (name)
@@ -77,6 +91,10 @@ public class HeavyFighterResearch : Research
         return r;
     }
 
+    /// <summary>
+    /// Recalculates Research costs after upgrading
+    /// </summary>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     private void RecalculateResourceCosts(float reduction)
     {
         costs[ARMOR] = new Dictionary<Resource, int>()
@@ -121,6 +139,11 @@ public class HeavyFighterResearch : Research
         }
     }
 
+    /// <summary>
+    /// Unlocks Research
+    /// </summary>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
+    /// <returns></returns>
     public override Dictionary<Resource, int> Unlock(float reduction)
     {
         base.Unlock(reduction);
@@ -128,6 +151,12 @@ public class HeavyFighterResearch : Research
         return heavyFighterShip.CanConstruct(null, 5, reduction).Value;
     }
 
+    /// <summary>
+    /// Determines if Research can be unlocked
+    /// </summary>
+    /// <param name="resources">Resources needed to obtain</param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
+    /// <returns></returns>
     public override bool CanUnlock(Dictionary<Resource, int> resources, float reduction)
     {
         if (unlocked || heavyFighterShip.Unlocked)
@@ -142,6 +171,12 @@ public class HeavyFighterResearch : Research
         return unlock;
     }
 
+    /// <summary>
+    /// Changes panel display after upgrading
+    /// </summary>
+    /// <param name="panel">Panel of buttons</param>
+    /// <param name="resources">Resources needed to obtain</param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     public override void Display(GameObject panel, Dictionary<Resource, int> resources, float reduction)
     {
         RecalculateResourceCosts(reduction);
@@ -203,6 +238,12 @@ public class HeavyFighterResearch : Research
             items[TORPEDOES].GetComponent<Button>().interactable = false;
     }
 
+    /// <summary>
+    /// Displays the popup for the Research
+    /// </summary>
+    /// <param name="panel">Panel of button hovered over</param>
+    /// <param name="upgrade">Name of upgrade</param>
+    /// <param name="reduction">Reduction in cost of current Research from completed Research</param>
     public override void DisplayPopup(GameObject panel, string upgrade, float reduction)
     {
         if (upgrade == "Unlock")
