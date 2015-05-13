@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// Handles a squad travelling through space to a new destination.
+/// </summary>
 public class TravelEvent : GameEvent 
 {
     private Squad _squad;

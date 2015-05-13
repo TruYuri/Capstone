@@ -6,6 +6,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+/// <summary>
+/// Manages all GUI behavior.
+/// </summary>
 public class GUIManager : MonoBehaviour 
 {
     private static GUIManager _instance;

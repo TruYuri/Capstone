@@ -4,6 +4,9 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// Manages map generation, including the map of sectors and minimap generation.
+/// </summary>
 public class MapManager : MonoBehaviour
 {
     private readonly Vector3 TOP_RIGHT_OFFSET = new Vector3(93.1f, 0.0f, 140.6f);
@@ -39,11 +42,11 @@ public class MapManager : MonoBehaviour
     private Dictionary<string, Dictionary<Inhabitance, float>> _planetInhabitanceSpawnTable;
     private Dictionary<string, Dictionary<Resource, float>> _planetResourceSpawnTable;
     private Dictionary<string, Dictionary<string, string>> _planetSpawnDetails;
-    private Dictionary<Resource, List<string>> _resourcePlanetTypes; // new
-    private Dictionary<Resource, float> _resourceRate; // new
+    private Dictionary<Resource, List<string>> _resourcePlanetTypes;
+    private Dictionary<Resource, float> _resourceRate;
     private Texture2D _textureAtlas;
     private Dictionary<int, Dictionary<int, Sector>> _sectorMap;
-    //private Dictionary<Sector, KeyValuePair<Color, Color>> _drawnSectors;
+
     private KeyValuePair<int, int> _minMapSectors;
     private KeyValuePair<int, int> _maxMapSectors;
     private Texture2D _minimap;
@@ -71,6 +74,9 @@ public class MapManager : MonoBehaviour
     public Dictionary<Resource, float> ResourceRates { get { return _resourceRate; } } // new
     public Texture2D Minimap { get { return _minimap; } }
 
+    /// <summary>
+    /// Initializes the MapManager, reading in values from Planets.ini and generating the first sector.
+    /// </summary>
     public void Init()
     {
         _instance = this;
@@ -208,6 +214,11 @@ public class MapManager : MonoBehaviour
         GenerateSector(Vector3.zero, 0, 0);
     }
 
+    /// <summary>
+    /// Generates new sectors around the specific one, if they don't exist yet.
+    /// </summary>
+    /// <param name="realPosition">The position to generated around in real coords.</param>
+    /// <param name="gridPosition">The position to generated around in grid coords.</param>
     public void GenerateNewSectors(Vector3 realPosition, KeyValuePair<int, int> gridPosition)
     {
         var position = realPosition;
@@ -234,6 +245,12 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Finds the sector closest to the specified sector and position.
+    /// </summary>
+    /// <param name="sector">The current sector.</param>
+    /// <param name="detail">The real coordinates to find closest to.</param>
+    /// <returns>The closest sector.</returns>
     public Sector FindNearestSector(Sector sector, Vector3 detail)
     {
         var v = sector.GridPosition.Key;
@@ -275,6 +292,15 @@ public class MapManager : MonoBehaviour
         return closest;
     }
 
+    /// <summary>
+    /// Generates the minimap center of a tile in minimap coordinates.
+    /// </summary>
+    /// <param name="centerX">The texture's center x.</param>
+    /// <param name="centerY">The texture's center y.</param>
+    /// <param name="v">The sector map vertical coord.</param>
+    /// <param name="h">The sector map horizontal coord.</param>
+    /// <param name="even">Indicates if the sector is originally on an even row, before minimap adjustments.</param>
+    /// <returns>Center of the tile in minimap coordinates.</returns>
     private KeyValuePair<int, int> GenerateCenter(int centerX, int centerY, int v, int h, bool even)
     {
         // offset stuff
@@ -292,6 +318,12 @@ public class MapManager : MonoBehaviour
         return new KeyValuePair<int, int>(posX, posY);
     }
 
+    /// <summary>
+    /// Generates a minimap at the specified center with specified color highlights.
+    /// </summary>
+    /// <param name="center">The sector at minimap center.</param>
+    /// <param name="highlights">Sectors that should be highlighted with a specific color (not team ownership!)</param>
+    /// <returns>The new minimap.</returns>
     public Texture2D GenerateMap(Sector center, Dictionary<Sector, Color> highlights)
     {
         var width = 256 * 5;
@@ -363,6 +395,13 @@ public class MapManager : MonoBehaviour
         return _minimap;
     }
 
+    /// <summary>
+    /// Creates a new sector.
+    /// </summary>
+    /// <param name="position">The real world coords of the sector.</param>
+    /// <param name="vertical">The vertical grid position.</param>
+    /// <param name="horizontal">The horizontal grid position.</param>
+    /// <returns>Integer indicating the number of sectors generated.</returns>
     private int GenerateSector(Vector3 position, int vertical, int horizontal)
     {
         if (!_sectorMap.ContainsKey(vertical))
@@ -391,6 +430,11 @@ public class MapManager : MonoBehaviour
         return 0;
     }
 
+    /// <summary>
+    /// Finds neighboring sectors.
+    /// </summary>
+    /// <param name="sector">The sector to get neighbors of.</param>
+    /// <returns>A list of neighbor sectors.</returns>
     public List<Sector> GetNeighbors(Sector sector)
     {
         var n = new List<Sector>();
@@ -419,6 +463,13 @@ public class MapManager : MonoBehaviour
         return n;
     }
 
+    /// <summary>
+    /// Finds warp portals around a start portal and sector.
+    /// </summary>
+    /// <param name="team">The team the portals belong to.</param>
+    /// <param name="portal">The starting portal.</param>
+    /// <param name="start">The starting sector.</param>
+    /// <returns>Table mapping portals to their sectors.</returns>
     public Dictionary<Structure, Sector> FindPortals(Team team, Structure portal, Sector start)
     {
         var sectors = FindWarpsRecursive(team, start.GridPosition.Key, start.GridPosition.Value, portal.Range);
@@ -435,6 +486,14 @@ public class MapManager : MonoBehaviour
         return gates;
     }
 
+    /// <summary>
+    /// Recursively search neighboring sectors for warp portals.
+    /// </summary>
+    /// <param name="team">The portals' team.</param>
+    /// <param name="v">The sector vertical position.</param>
+    /// <param name="h">The sector horizontal position. </param>
+    /// <param name="range">Remaining range from the starting portal.</param>
+    /// <returns>A table of found portals.</returns>
     private HashSet<Sector> FindWarpsRecursive(Team team, int v, int h, int range)
     {
         HashSet<Sector> portals = new HashSet<Sector>();
@@ -471,6 +530,9 @@ public class MapManager : MonoBehaviour
         return portals;
     }
 
+    /// <summary>
+    /// A node class for searching sectors paths through A*. A node is a combination of the current path and specified search parameters.
+    /// </summary>
     private class AStarSectorNode
     {
         public List<KeyValuePair<int, int>> sectorPath;
@@ -480,6 +542,14 @@ public class MapManager : MonoBehaviour
         public string type;
         public Team team;
 
+        /// <summary>
+        /// Constructor for the A* node class.
+        /// </summary>
+        /// <param name="path">The sector path this node contains.</param>
+        /// <param name="gf">g(x) cost function</param>
+        /// <param name="startRange">Range remaining from the start, if applicable.</param>
+        /// <param name="team">The team to restrict the search to.</param>
+        /// <param name="type">The object type to search for.</param>
         public AStarSectorNode(List<KeyValuePair<int, int>> path, int gf, int startRange, Team team, string type)
         {
             this.sectorPath = path;
@@ -491,6 +561,10 @@ public class MapManager : MonoBehaviour
             // alternative: h = sum of sqrt dist from goal
         }
 
+        /// <summary>
+        /// Generate successor nodes.
+        /// </summary>
+        /// <returns>A list of successor nodes.</returns>
         public List<AStarSectorNode> succ()
         {
             List<AStarSectorNode> children = new List<AStarSectorNode>();
@@ -523,6 +597,12 @@ public class MapManager : MonoBehaviour
             return children;
         }
 
+        /// <summary>
+        /// Create a new successor node.
+        /// </summary>
+        /// <param name="x">Sector map vertical position.</param>
+        /// <param name="y">Sector map horizontal position.</param>
+        /// <returns></returns>
         private AStarSectorNode New(int x, int y)
         {
             var list = new List<KeyValuePair<int, int>>(sectorPath);
@@ -542,6 +622,15 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// A* search for general pathfinding and command/relay ranges.
+    /// </summary>
+    /// <param name="start">The starting sector.</param>
+    /// <param name="goal">The goal sector.</param>
+    /// <param name="startRange">The initial range, if applicable.</param>
+    /// <param name="team">The team to restrict to, if applicable.</param>
+    /// <param name="type">The type of object to search for.</param>
+    /// <returns>A working path between start and goal, or null if none exists.</returns>
     public List<Sector> AStarSearch(Sector start, Sector goal, int startRange = 0, Team team = Team.Uninhabited, string type = "")
     {
         var fringe = new List<AStarSectorNode>();
