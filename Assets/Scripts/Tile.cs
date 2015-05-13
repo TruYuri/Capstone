@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// Definition and behavior for tiles/planets. Like squad, one of the most important in the game.
+/// </summary>
 public class Tile : MonoBehaviour, ListableObject
 {
     private const string TILE_LISTING_PREFAB = "TileListing";
@@ -41,7 +44,18 @@ public class Tile : MonoBehaviour, ListableObject
     public Inhabitance PopulationType {  get { return _planetInhabitance; } }
     public GameObject Ring { get { return _circle; } }
 
-	// New Generation code - handled in Sector/GenerateTile, sent here
+	/// <summary>
+	/// Initializes this tile.
+	/// </summary>
+	/// <param name="sector">The parent sector.</param>
+	/// <param name="type">The planet type.</param>
+	/// <param name="name">The planet name.</param>
+	/// <param name="pType">The population type.</param>
+	/// <param name="p">The population count.</param>
+	/// <param name="rType">The resource type.</param>
+	/// <param name="rCount">The resource count.</param>
+	/// <param name="size">The planet size.</param>
+	/// <param name="team">The owning team.</param>
     public void Init(Sector sector, string type, string name, Inhabitance pType, int p, Resource rType, int rCount, TileSize size, Team team)
     {
         _squad = this.GetComponent<Squad>();
@@ -117,11 +131,9 @@ public class Tile : MonoBehaviour, ListableObject
         _circle.GetComponent<Renderer>().material.SetColor("_Color", GameManager.Instance.PlayerColors[_team]);
     }
 
-    void Start()
-    {
-    }
-
-	// Update is called once per frame
+	/// <summary>
+	/// Enables or disables the rendered if visible/not visible on screen.
+	/// </summary>
 	void Update () 
     {
 
@@ -135,6 +147,10 @@ public class Tile : MonoBehaviour, ListableObject
         }
 	}
 
+    /// <summary>
+    /// Claims this tile for a specified team.
+    /// </summary>
+    /// <param name="team">The new owning team.</param>
     public void Claim(Team team)
     {
         _circle.GetComponent<Renderer>().material.SetColor("_Color", GameManager.Instance.PlayerColors[team]);
@@ -163,6 +179,11 @@ public class Tile : MonoBehaviour, ListableObject
         HumanPlayer.Instance.Control(HumanPlayer.Instance.Squad.gameObject);
     }
 
+    /// <summary>
+    /// Undeploy this tile's structure.
+    /// </summary>
+    /// <param name="destroyStructure">Indicate whether to destroy the structure after undeploying.</param>
+    /// <returns>The planet type (for considering the undeploy type. i.e., undeploying a space structure requires extra work.)</returns>
     public string Undeploy(bool destroyStructure)
     {
         if (_structure == null)
@@ -185,7 +206,12 @@ public class Tile : MonoBehaviour, ListableObject
         return _planetType;
     }
 
-    public void Deploy(Structure ship, ShipProperties structureType, Team team)
+    /// <summary>
+    /// Deploy a specified ship to this tile.
+    /// </summary>
+    /// <param name="ship">The ship to deploy.</param>
+    /// <param name="team">The team the ship belongs to.</param>
+    public void Deploy(Structure ship, Team team)
     {
         if(_team != team)
             Claim(team);
@@ -193,6 +219,9 @@ public class Tile : MonoBehaviour, ListableObject
         _structure.Deploy(this);
     }
 
+    /// <summary>
+    /// Gather resources from this planet (if necessary) and grow the planet's population.
+    /// </summary>
     public void GatherAndGrow()
     {
         if (_structure == null)
@@ -221,7 +250,11 @@ public class Tile : MonoBehaviour, ListableObject
             }
         }
     }
-
+    
+    /// <summary>
+    /// Calculate this planet's defensive power.
+    /// </summary>
+    /// <returns>The defensive power.</returns>
     public float CalculateDefensivePower()
     {
         var power = 0f;
@@ -243,6 +276,10 @@ public class Tile : MonoBehaviour, ListableObject
         return power * (_team == Team.Kharkyr ? 1.15f : 1f);
     }
 
+    /// <summary>
+    /// Create a diplomatic effort at this planet.
+    /// </summary>
+    /// <param name="team">The team attempting diplomacy.</param>
     public void SetDiplomaticEffort(Team team)
     {
         if (!_diplomacy.ContainsKey(team))
@@ -251,11 +288,19 @@ public class Tile : MonoBehaviour, ListableObject
             _diplomacy[team] = true;
     }
 
+    /// <summary>
+    /// Remove a diplomatic effort at this planet.
+    /// </summary>
+    /// <param name="team">The team ending diplomacy.</param>
     public void EndDiplomaticEffort(Team team)
     {
         _diplomacy[team] = false;
     }
 
+    /// <summary>
+    /// Populate a UI panel detailing this planet's information.
+    /// </summary>
+    /// <param name="panel">The panel to populate.</param>
     public void PopulateInfoPanel(GameObject panel)
     {
         var tileRenderer = this.GetComponent<ParticleSystem>().GetComponent<Renderer>();
@@ -326,16 +371,31 @@ public class Tile : MonoBehaviour, ListableObject
         panel.transform.FindChild("TotalPopulation").GetComponent<Text>().text = total.ToString();
     }
 
+    /// <summary>
+    /// Checks if a squad is within interaction distance.
+    /// </summary>
+    /// <param name="squad">The squad in consideration.</param>
+    /// <returns>Bool indicating the squad is in range.</returns>
     public bool IsInRange(Squad squad)
     {
         return (squad.transform.position - transform.position).sqrMagnitude <= (_radius * _radius);
     }
 
+    /// <summary>
+    /// Checks if a raycasted point is close enough to be considered as a click.
+    /// </summary>
+    /// <param name="click">The raycast hit position on the parent sector.</param>
+    /// <returns>Bool indicating a successful click.</returns>
     public bool IsInClickRange(Vector3 click)
     {
         return (click - transform.position).sqrMagnitude <= (_clickRadius * _clickRadius);
     }
 
+    /// <summary>
+    /// Populates a list with this planet's soldier counts, including the structure.
+    /// </summary>
+    /// <param name="list">The UI list to populate.</param>
+    /// <param name="bType">The battle type to consider.</param>
     public void PopulateCountList(GameObject list, BattleType bType)
     {
         var squadEntry = Resources.Load<GameObject>(SQUAD_COUNT_PREFAB);
@@ -367,7 +427,13 @@ public class Tile : MonoBehaviour, ListableObject
         }
     }
 
-    // for info lists later
+    /// <summary>
+    /// Creates a list entry with this planet's basic info.
+    /// </summary>
+    /// <param name="listName">The internal list name.</param>
+    /// <param name="index">The index in the list.</param>
+    /// <param name="data">Optional data.</param>
+    /// <returns>The new list item.</returns>
     GameObject ListableObject.CreateListEntry(string listName, int index, System.Object data) 
     {
         var tileEntry = Resources.Load<GameObject>(TILE_LISTING_PREFAB);

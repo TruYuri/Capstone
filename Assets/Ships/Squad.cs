@@ -457,11 +457,11 @@ public class Squad : MonoBehaviour, ListableObject
     {
         _currentTile = tile;
         if (_currentTile != null) // planetary deploy
-            _currentTile.Deploy(structure, ShipProperties.GroundStructure, _team);
+            _currentTile.Deploy(structure, _team);
         else // space deploy
         {
             _currentTile = _currentSector.CreateTileAtPosition(structure.Name, transform.position, _team);
-            _currentTile.Deploy(structure, ShipProperties.SpaceStructure, _team);
+            _currentTile.Deploy(structure, _team);
             _currentSector.RegisterSpaceStructure(_team, structure);
         }
 
